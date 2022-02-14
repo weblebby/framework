@@ -1,0 +1,1 @@
+<div class="uppercase text-sm text-zinc-500 font-bold px-4 mb-1">{{ $slot }}</div>
