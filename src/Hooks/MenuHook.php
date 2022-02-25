@@ -2,6 +2,9 @@
 
 namespace Feadmin\Hooks;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+
 class MenuHook
 {
     private string $lastLocation;
@@ -31,17 +34,53 @@ class MenuHook
 
     public function add(array $item): self
     {
-        $this->menus[$this->lastLocation][$this->lastCategory]['items'][] = $item;
+        $items = $this->menus[$this->lastLocation][$this->lastCategory]['items'] ?? [];
+
+        $this->menus[$this->lastLocation][$this->lastCategory]['items'][] = [
+            'position' => count($items) * 10,
+            ...$item,
+        ];
 
         return $this;
     }
 
-    public function get(string $location = null): array
+    public function get(): Collection
     {
-        if (is_null($location)) {
-            return $this->menus;
+        return collect($this->menus[$this->lastLocation])
+            ->map(function ($location) {
+                $location['items'] = collect($location['items'])
+                    ->filter(fn ($item) => $this->userCanDisplay($item))
+                    ->sortBy('position')
+                    ->values();
+
+                return $location;
+            })
+            ->filter(function ($location) {
+                return $location['items']->count() > 0;
+            })
+            ->sortBy('position');
+    }
+
+    private function userCanDisplay(array $item): bool
+    {
+        if (isset($item['can'])) {
+            if (auth()->user()->hasRole('Super Admin')) {
+                return true;
+            }
+
+            $item['can'] = Arr::wrap($item['can']);
+
+            foreach ($item['can'] as $value) {
+                if (is_string($value) && auth()->user()->cannot($value)) {
+                    return false;
+                }
+
+                if (is_callable($value) && !$value()) {
+                    return false;
+                }
+            }
         }
 
-        return $this->menus[$location];
+        return true;
     }
 }

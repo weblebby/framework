@@ -1,6 +1,6 @@
 <x-feadmin::layouts.panel>
     <x-slot name="scripts">
-        <script src="{{ mix('js/navigation.js') }}"></script>
+        <script src="{{ mix('js/navigation.js', 'vendor/feadmin') }}"></script>
         <script>
             @if ($errors->item->any())
                 Drawer.open(document.getElementById('drawer-create-menu-item'), { isError: true })

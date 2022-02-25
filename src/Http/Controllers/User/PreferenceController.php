@@ -16,13 +16,13 @@ class PreferenceController extends Controller
     {
         return redirect()->route(
             'admin::preferences.show',
-            key(Feadmin::currentPanel()->preferences($this->namespace)->get())
+            key(Feadmin::panel()->preferences($this->namespace)->get())
         );
     }
 
     public function show(string $bag): View
     {
-        $findedBag = Feadmin::currentPanel()
+        $findedBag = Feadmin::panel()
             ->preferences($this->namespace)
             ->get()[$bag] ?? null;
 
@@ -40,8 +40,13 @@ class PreferenceController extends Controller
 
     public function update(Request $request, string $bag, string $namespace = null): RedirectResponse
     {
-        $fields = Feadmin::currentPanel()->preferences($namespace ?: $this->namespace)->getFields($bag);
-        $validated = $request->validate($fields->pluck('rules', 'name')->toArray());
+        $fields = Feadmin::panel()
+            ->preferences($namespace ?: $this->namespace)
+            ->fields($bag);
+
+        $validated = $request->validate(
+            $fields->pluck('rules', 'name')->toArray()
+        );
 
         $uploadables = [];
 

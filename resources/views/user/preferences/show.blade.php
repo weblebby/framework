@@ -8,7 +8,7 @@
             <div class="grid grid-cols-5 gap-3">
                 <div>
                     <x-feadmin::link-card>
-                        @foreach (Feadmin::currentPanel()->preferences($namespace)->get() as $id => $bag)
+                        @foreach (Feadmin::panel()->preferences($namespace)->get() as $id => $bag)
                             <x-feadmin::link-card.item
                                 href="{{ route('admin::preferences.show', $id) }}"
                                 :active="$selectedBag === $id">
@@ -21,7 +21,7 @@
                     <x-feadmin::card padding>
                         <x-feadmin::form :action="route('admin::preferences.update', $selectedBag)" method="PUT" enctype="multipart/form-data">
                             <div class="space-y-3">
-                                @foreach (Feadmin::currentPanel()->preferences($namespace)->getFields($selectedBag) as $field)
+                                @foreach (Feadmin::panel()->preferences($namespace)->fields($selectedBag) as $field)
                                     <x-feadmin::form.field :field="$field" />
                                 @endforeach
                                 <x-feadmin::button type="submit">@t('Kaydet', 'admin')</x-feadmin::button>

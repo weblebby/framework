@@ -31,39 +31,7 @@ class PreferenceGroupHook
         return $this;
     }
 
-    public function get(): array
-    {
-        return collect($this->namespaces[$this->lastNamespace])
-            ->sortBy('position')
-            ->map(function ($preference, $namespace) {
-                $rest = Preference::hook()->namespaces($this->lastNamespace)[$namespace] ?? [];
-
-                return [
-                    ...$preference,
-                    ...$rest,
-                ];
-            })
-            ->toArray();
-    }
-
-    public function dotted(): Collection
-    {
-        $map = function ($preferences, $namespace) {
-            return collect($preferences)->mapWithKeys(
-                fn ($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
-            );
-        };
-
-        if (true) {
-            return $map($this->get(), $this->lastNamespace);
-        }
-
-        return collect($this->get())
-            ->map(fn ($preferences, $namespace) => $map($preferences, $namespace))
-            ->collapse();
-    }
-
-    public function getField(string $group, string $key): ?array
+    public function field(string $group, string $key): ?array
     {
         $preferences = $this->get();
 
@@ -82,8 +50,63 @@ class PreferenceGroupHook
         }));
     }
 
-    public function getFields(string $group): Collection
+    public function fields(string $group): Collection
     {
-        return collect($this->get()[$group]['fields'])->sortBy('position')->values();
+        return collect($this->get()[$group]['fields'] ?? [])
+            ->sortBy('position')
+            ->values();
+    }
+
+    public function getAll(): array
+    {
+        return $this->namespaces;
+    }
+
+    public function get(): array
+    {
+        return collect($this->namespaces[$this->lastNamespace])
+            ->sortBy('position')
+            ->map(function ($preference, $namespace) {
+                $rest = Preference::hook()->namespaces($this->lastNamespace)[$namespace] ?? null;
+
+                if (is_null($rest)) {
+                    return false;
+                }
+
+                return [
+                    ...$preference,
+                    ...$rest,
+                ];
+            })
+            ->filter()
+            ->toArray();
+    }
+
+    public function toDotted(bool $all = false): Collection
+    {
+        $map = function ($preferences, $namespace) {
+            return collect($preferences)->mapWithKeys(
+                fn ($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
+            );
+        };
+
+        if ($all !== true) {
+            return $map($this->get(), $this->lastNamespace);
+        }
+
+        return collect($this->getAll())
+            ->map(fn ($preferences, $namespace) => $map($preferences, $namespace))
+            ->collapse()
+            ->sortByDesc(fn ($_, $key) => str_starts_with($key, 'core.'));
+    }
+
+    public function toDottedAll(): Collection
+    {
+        return $this->toDotted(true);
+    }
+
+    public function toPermissions(): Collection
+    {
+        return $this->toDotted()->keys()->map(fn ($bag) => "preference:{$bag}");
     }
 }

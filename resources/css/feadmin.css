@@ -1,0 +1,67 @@
+@import './nestable.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html,
+    body {
+        @apply flex w-full h-full bg-zinc-200;
+    }
+
+    .drawer {
+        @apply min-w-[20rem] bg-white;
+    }
+
+    .toastr {
+        @apply flex flex-col gap-2 fixed top-0 left-1/2 -translate-x-1/2 z-50 mt-4;
+    }
+
+    .toastr__item {
+        @apply py-2 px-4 rounded shadow-lg max-w-md 
+            bg-white/30 backdrop-blur-sm border border-zinc-50/40
+            cursor-pointer transition-all duration-300 ease-in-out opacity-0 -mt-10;
+    }
+
+    .toastr__item--born {
+        @apply opacity-100 mt-0;
+    }
+
+    .drawer {
+        @apply bg-white min-w-full lg:min-w-[30rem] fixed z-40 right-0 inset-y-0 p-4 translate-x-full
+            transition-transform duration-300 ease-in-out space-y-4;
+    }
+
+    .drawer--open {
+        @apply translate-x-0;
+    }
+
+    .drawer__overlay {
+        @apply fixed inset-0 bg-black/20 backdrop-blur z-30 opacity-0 transition-all;
+    }
+
+    .drawer__overlay--fade-in {
+        @apply opacity-100;
+    }
+
+    button:disabled {
+        @apply opacity-75 pointer-events-none select-none;
+    }
+
+    .btn--loading {
+        @apply cursor-not-allowed opacity-50 select-none pointer-events-none;
+    }
+
+    [data-spinner] {
+        @apply hidden;
+    }
+
+    .btn--loading [data-spinner] {
+        @apply block;
+    }
+}
+
+#page .ck-editor__editable {
+    min-height: 600px;
+}

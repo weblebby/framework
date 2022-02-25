@@ -19,7 +19,7 @@
                     </x-feadmin::form.group>
                 </x-feadmin::card>
                 <x-feadmin::card class="space-y-5" padding>
-                    @foreach (Feadmin::currentPanel()->permissions()->get() as $key => $group)
+                    @foreach (Feadmin::panel()->permissions()->get() as $key => $group)
                         <div>
                             <h3 class="text-lg font-medium leading-none">{{ $group['title'] }}</h3>
                             @if ($group['description'] ?? null)

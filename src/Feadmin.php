@@ -11,7 +11,7 @@ class Feadmin
 
     private string $currentPanel;
 
-    public function currentPanel(string $panel = null): string|PanelHook
+    public function panel(string $panel = null): string|PanelHook
     {
         if (filled($panel)) {
             $this->currentPanel = $panel;

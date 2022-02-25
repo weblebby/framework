@@ -1,6 +1,6 @@
 <?php
 
-namespace Core\Listeners;
+namespace Feadmin\Listeners;
 
 use Spatie\MediaLibrary\Conversions\Events\ConversionHasBeenCompleted;
 

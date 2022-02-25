@@ -2,8 +2,6 @@
 
 namespace Feadmin\Hooks;
 
-use Feadmin\Facades\Feadmin;
-use Feadmin\Facades\Preference;
 use Illuminate\Support\Collection;
 
 class PreferenceHook
@@ -57,7 +55,7 @@ class PreferenceHook
         return $this;
     }
 
-    public function namespaces(string $id = null): ?array
+    public function namespaces(string $namespace = null): ?array
     {
         if ($this->checkAbilities) {
             $namespaces = collect($this->namespaces)
@@ -71,11 +69,11 @@ class PreferenceHook
             $namespaces = $this->namespaces;
         }
 
-        if (is_null($id)) {
+        if (is_null($namespace)) {
             return $namespaces;
         }
 
-        return $namespaces[$id] ?? null;
+        return $namespaces[$namespace] ?? null;
     }
 
     public function add(array $field): self
@@ -99,5 +97,31 @@ class PreferenceHook
         ];
 
         return $this;
+    }
+
+    public function field(string $group, string $key): ?array
+    {
+        $preferences = $this->namespaces($this->lastNamespace);
+
+        if (is_null($preferences)) {
+            return null;
+        }
+
+        $group = $preferences[$group] ?? null;
+
+        if (is_null($group)) {
+            return null;
+        }
+
+        return head(array_filter($group['fields'], function ($field) use ($key) {
+            return $field['key'] === $key;
+        }));
+    }
+
+    public function fields(string $group): Collection
+    {
+        return collect($this->namespaces($this->lastNamespace)[$group]['fields'])
+            ->sortBy('position')
+            ->values();
     }
 }

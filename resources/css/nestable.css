@@ -1,0 +1,74 @@
+.dd {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.dd-list {
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.dd-list .dd-list {
+    padding-left: 30px;
+}
+
+.dd-item,
+.dd-placeholder {
+    display: block;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    min-height: 20px;
+}
+
+.dd-expand {
+    display: none;
+}
+
+.dd-collapse {
+    display: flex;
+}
+
+.dd-collapsed .dd-list,
+.dd-collapsed .dd-collapse {
+    display: none;
+}
+
+.dd-collapsed .dd-expand {
+    display: flex;
+}
+
+.dd-placeholder {
+    padding: 0;
+    min-height: 30px;
+    background: #f2fbff;
+    border: 1px dashed #b6bcbf;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+.dd-dragel {
+    position: absolute;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.dd-nochildren .dd-placeholder {
+    display: none;
+}
+
+.dd {
+    @apply bg-zinc-100;
+}
+.dd-list > .dd-item > .dd-list .navigation-item {
+    @apply border-l;
+}
+.dd-item > .dd-collapse,
+.dd-item > .dd-expand {
+    @apply w-8 h-14 relative float-left items-center justify-center;
+}

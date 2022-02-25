@@ -12,7 +12,7 @@
                     >@t('Oturumu kapat', 'admin')</x-feadmin::button>
                 </x-feadmin::form>
             </div>
-            @foreach (Feadmin::currentPanel()->menus()->get('sidebar') as $category)
+            @foreach (Feadmin::panel()->menus('sidebar')->get() as $category)
                 <x-feadmin::nav>
                     @if ($category['title'])
                         <x-feadmin::nav.title>{{ $category['title'] }}</x-feadmin::nav.title>
