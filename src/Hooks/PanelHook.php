@@ -62,6 +62,11 @@ class PanelHook
         return $this->name;
     }
 
+    public function route($name, $parameters = [], $absolute = true): string
+    {
+        return route($this->as() . $name, $parameters, $absolute);
+    }
+
     public function features(array $features = null): self|array
     {
         if (is_null($features)) {

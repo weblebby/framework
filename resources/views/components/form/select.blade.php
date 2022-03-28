@@ -1,7 +1,7 @@
 @aware(['name', 'bind', 'bag' => 'default'])
 @props(['default' => $bind->$name ?? null])
 
-@php($id = FormComponent::id($name))
+@php($id = FormComponent::id($name, $bag))
 @php($dottedName = FormComponent::dottedName($name))
 
 <select

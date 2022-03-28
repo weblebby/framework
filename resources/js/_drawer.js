@@ -50,7 +50,12 @@ document.querySelectorAll('[data-drawer]').forEach(button => {
         e.preventDefault()
 
         const drawer = document.querySelector(button.dataset.drawer)
-        Drawer.open(drawer, { related: button })
+
+        if (drawer.classList.contains('drawer--open')) {
+            Drawer.close(drawer, { related: button })
+        } else {
+            Drawer.open(drawer, { related: button })
+        }
     })
 })
 

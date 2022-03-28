@@ -1,5 +1,5 @@
 export function t(key, group = 'default', params = {}) {
-    const finded = window.Translations.find(
+    const finded = window.Feadmin.Translations.find(
         item => item.group === group && item.key === key
     )
 

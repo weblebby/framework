@@ -10,12 +10,11 @@
         name="{{ $name }}"
         {{ $attributes
             ->merge([
-                'type' => 'checkbox',
-                'value' => '1',
+                'type' => 'radio',
                 'checked' => FormComponent::checked($dottedName, $default, $attributes),
             ])
             ->class('w-6 h-6
-                    rounded
+                    rounded-full
                     border-gray-300
                     text-sky-600
                     shadow-sm

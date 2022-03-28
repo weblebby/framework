@@ -29,8 +29,16 @@
     }
 
     .drawer {
-        @apply bg-white min-w-full lg:min-w-[30rem] fixed z-40 right-0 inset-y-0 p-4 translate-x-full
+        @apply bg-zinc-100 min-w-full lg:min-w-[30rem] fixed z-40 right-0 inset-y-0 p-4 translate-x-full
             transition-transform duration-300 ease-in-out space-y-4;
+    }
+
+    .drawer--half {
+        @apply min-w-max w-2/3;
+    }
+
+    .drawer--from-left {
+        @apply left-0 right-auto -translate-x-full;
     }
 
     .drawer--open {

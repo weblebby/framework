@@ -64,9 +64,9 @@ class FeadminServiceProvider extends ServiceProvider
             'laravellocalization.supportedLocales' => $supportedLocales,
         ]);
 
-        Localization::group('admin', [
-            'title' => t('Admin paneli', 'admin'),
-            'description' => t('Admin panelindeki metinleri çevirin.', 'admin'),
+        Localization::group('panel', [
+            'title' => t('Panel', 'panel'),
+            'description' => t('Paneldeki metinleri çevirin.', 'panel'),
         ]);
 
         Localization::group('routes', [

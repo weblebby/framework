@@ -82,9 +82,16 @@ document.querySelectorAll('[data-drawer]').forEach(function (button) {
   button.addEventListener('click', function (e) {
     e.preventDefault();
     var drawer = document.querySelector(button.dataset.drawer);
-    Drawer.open(drawer, {
-      related: button
-    });
+
+    if (drawer.classList.contains('drawer--open')) {
+      Drawer.close(drawer, {
+        related: button
+      });
+    } else {
+      Drawer.open(drawer, {
+        related: button
+      });
+    }
   });
 });
 document.querySelectorAll('[data-drawer-close]').forEach(function (button) {
@@ -239,6 +246,7 @@ overlay === null || overlay === void 0 ? void 0 : overlay.addEventListener('clic
     Modal.close(overlay);
   }
 });
+window.Feadmin.Modal = Modal;
 
 /***/ }),
 

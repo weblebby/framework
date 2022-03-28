@@ -44,7 +44,7 @@ class LocalizationService
         $this->translations = DB::table('locale_translations')->get();
 
         $this->setDefaultLocale();
-        $this->setCurrentLocale();
+        $this->setCurrentLocale(app()->getLocale());
     }
 
     public function get(
@@ -184,10 +184,12 @@ class LocalizationService
             ];
     }
 
-    private function setCurrentLocale(): void
+    public function setCurrentLocale(string $locale): void
     {
+        app()->setLocale($locale);
+
         $preferredLocale = $this->getPreferredLocale([
-            ['code' => app()->getLocale()],
+            ['code' => $locale],
             ['is_default' => true],
             [],
         ]);

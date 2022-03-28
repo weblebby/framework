@@ -14,9 +14,11 @@ class PreferenceController extends Controller
 
     public function index(): RedirectResponse
     {
-        return redirect()->route(
-            'admin::preferences.show',
-            key(Feadmin::panel()->preferences($this->namespace)->get())
+        return redirect(
+            Feadmin::panel()->route(
+                'preferences.show',
+                key(Feadmin::panel()->preferences($this->namespace)->get())
+            )
         );
     }
 

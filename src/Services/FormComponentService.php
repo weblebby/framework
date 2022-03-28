@@ -13,12 +13,18 @@ class FormComponentService
 
     public function dottedName(?string $name): string
     {
-        return str_replace('[]', '', $name);
+        return str_replace(['[]', ']', '['], ['', '', '.'], $name);
     }
 
-    public function id(?string $id): string
+    public function id(?string $id, string $bag = null): string
     {
-        return str_replace('[]', '', $id);
+        $id = str_replace('[]', '', $id);
+
+        if ($bag !== 'default' && !is_null($bag)) {
+            $id = "{$bag}_{$id}";
+        }
+
+        return $id;
     }
 
     public function checked(string $name, mixed $default, $attributes): bool

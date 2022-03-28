@@ -56,3 +56,5 @@ overlay?.addEventListener('click', e => {
         Modal.close(overlay)
     }
 })
+
+window.Feadmin.Modal = Modal

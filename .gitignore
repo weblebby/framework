@@ -7,5 +7,6 @@ Thumbs.db
 /phpunit.xml
 /.idea
 /.vscode
+/public
 .phpunit.result.cache
 *.map
