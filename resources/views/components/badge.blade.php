@@ -1,3 +1,3 @@
-<div class="rounded-full bg-zinc-800 text-white text-xs uppercase font-medium px-2 py-0.5">
+<div class="fd-rounded-full fd-bg-zinc-800 fd-text-white fd-text-xs fd-uppercase fd-font-medium fd-px-2 fd-py-0.5">
     {{ $slot }}
 </div>

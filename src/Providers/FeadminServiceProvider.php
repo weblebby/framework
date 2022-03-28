@@ -49,8 +49,6 @@ class FeadminServiceProvider extends ServiceProvider
             return "<?php echo t({$expression}) ?>";
         });
 
-        $this->app->setLocale(Localization::getCurrentLocale()->code);
-
         $allLocales = Localization::getAllLocales();
         $availableLocaleCodes = Localization::getAvailableLocales()->pluck('code')->toArray();
         $supportedLocales = $allLocales->whereIn('code', $availableLocaleCodes)->toArray();
@@ -61,12 +59,8 @@ class FeadminServiceProvider extends ServiceProvider
 
         config([
             'translatable.locales' => $availableLocaleCodes,
+            'translatable.use_fallback' => true,
             'laravellocalization.supportedLocales' => $supportedLocales,
-        ]);
-
-        Localization::group('panel', [
-            'title' => t('Panel', 'panel'),
-            'description' => t('Paneldeki metinleri çevirin.', 'panel'),
         ]);
     }
 

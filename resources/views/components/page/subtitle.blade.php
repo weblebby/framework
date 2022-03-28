@@ -1,1 +1,1 @@
-<p {{ $attributes->class('text-xl font-medium text-zinc-500') }}>{{ $slot }}</p>
+<p {{ $attributes->class('fd-text-xl fd-font-medium fd-text-zinc-500') }}>{{ $slot }}</p>

@@ -1,8 +1,8 @@
 @props(['back'])
 
-<div {{ $attributes->class('flex items-start flex-col gap-5') }}>
+<div {{ $attributes->class('fd-flex fd-items-start fd-flex-col fd-gap-5') }}>
     @if ((isset($actions) && filled($actions->toHtml())) || isset($back))
-        <div class="flex gap-2">
+        <div class="fd-flex fd-gap-2">
             @if ($back ?? null)
                 <x-feadmin::button
                     as="a"

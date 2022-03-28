@@ -1,1 +1,1 @@
-<div class="uppercase text-sm text-zinc-500 font-bold px-4 mb-1">{{ $slot }}</div>
+<div class="fd-uppercase fd-text-sm fd-text-zinc-500 fd-font-bold fd-px-4 fd-mb-1">{{ $slot }}</div>

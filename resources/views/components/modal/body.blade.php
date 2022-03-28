@@ -1,1 +1,1 @@
-<div {{ $attributes->class('py-3 px-4') }}>{{ $slot }}</div>
+<div {{ $attributes->class('fd-py-3 fd-px-4') }}>{{ $slot }}</div>

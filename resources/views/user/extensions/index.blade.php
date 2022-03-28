@@ -5,7 +5,7 @@
             <x-feadmin::page.subtitle>@t('Eklentiler ile sitenizi zenginleştirin', 'panel')</x-feadmin::page.subtitle>
         </div>
         <div>
-            <div class="grid grid-cols-4 gap-3">
+            <div class="fd-grid fd-grid-cols-4 fd-gap-3">
                 @foreach (extensions()->all() as $extension)
                     <x-feadmin::extension-card :extension="$extension" />
                 @endforeach

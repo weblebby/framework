@@ -10,6 +10,7 @@ for (let i = 0; i < paths.length; i++) {
 
 module.exports = {
     content,
+    prefix: 'fd-',
     theme: {
         extend: {},
     },

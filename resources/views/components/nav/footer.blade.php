@@ -1,9 +1,9 @@
-<div class="px-4">
-    <div class="text-zinc-400">
-        <div class="text-sm">v{{ Feadmin::version() }}</div>
-        <a href="https://www.weblebby.com" target="_blank" class="text-xs">@t('powered by weblebby', 'driver')</a>
+<div class="fd-px-4">
+    <div class="fd-text-zinc-400">
+        <div class="fd-text-sm">v{{ Feadmin::version() }}</div>
+        <a href="https://www.weblebby.com" target="_blank" class="fd-text-xs">@t('powered by weblebby', 'driver')</a>
     </div>
-    <x-feadmin::form :action="route('logout')" class="text-sm mt-4">
+    <x-feadmin::form :action="route('logout')" class="fd-text-sm fd-mt-4">
         <x-feadmin::button
             type="submit"
             variant="outline-light"

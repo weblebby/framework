@@ -7,24 +7,24 @@
 
 @php
     $colorClasses = match($color) {
-        'red' => 'bg-red-100 text-red-500 shadow-red-200 border-red-300',
-        'green' => 'bg-green-100 text-green-500 shadow-green-200 border-green-300',
-        'orange' => 'bg-orange-100 text-orange-500 shadow-orange-200 border-orange-300',
-        default => 'bg-zinc-100 text-zinc-600 shadow-zinc-200 border-zinc-300',
+        'red' => 'fd-bg-red-100 fd-text-red-500 fd-shadow-red-200 fd-border-red-300',
+        'green' => 'fd-bg-green-100 fd-text-green-500 fd-shadow-green-200 fd-border-green-300',
+        'orange' => 'fd-bg-orange-100 fd-text-orange-500 fd-shadow-orange-200 fd-border-orange-300',
+        default => 'fd-bg-zinc-100 fd-text-zinc-600 fd-shadow-zinc-200 fd-border-zinc-300',
     };
 
     $typeClasses = match($type) {
-        'minimal' => 'px-3 py-2 border-l-2',
-        default => 'shadow p-4',
+        'minimal' => 'fd-px-3 fd-py-2 fd-border-l-2',
+        default => 'fd-shadow fd-p-4',
     };
 @endphp
 
 <div {{ $attributes
-    ->class('rounded font-medium')
+    ->class('fd-rounded fd-font-medium')
     ->class($colorClasses)
     ->class($typeClasses) }}>
     <div>{{ $slot }}</div>
     @if ($subtitle ?? false && $subtitle->isNotEmpty())
-        <div class="text-sm font-normal">{{ $subtitle }}</div>
+        <div class="fd-text-sm fd-font-normal">{{ $subtitle }}</div>
     @endif
 </div>

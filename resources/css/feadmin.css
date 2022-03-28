@@ -7,66 +7,66 @@
 @layer base {
     html,
     body {
-        @apply flex w-full h-full bg-zinc-200;
+        @apply fd-flex fd-w-full fd-h-full fd-bg-zinc-200;
     }
 
     .drawer {
-        @apply min-w-[20rem] bg-white;
+        @apply fd-min-w-[20rem] fd-bg-white;
     }
 
     .toastr {
-        @apply flex flex-col gap-2 fixed top-0 left-1/2 -translate-x-1/2 z-50 mt-4;
+        @apply fd-flex fd-flex-col fd-gap-2 fd-fixed fd-top-0 fd-left-1/2 -fd-translate-x-1/2 fd-z-50 fd-mt-4;
     }
 
     .toastr__item {
-        @apply py-2 px-4 rounded shadow-lg max-w-md 
-            bg-white/30 backdrop-blur-sm border border-zinc-50/40
-            cursor-pointer transition-all duration-300 ease-in-out opacity-0 -mt-10;
+        @apply fd-py-2 fd-px-4 fd-rounded fd-shadow-lg fd-max-w-md 
+            fd-bg-white/30 fd-backdrop-blur-sm fd-border fd-border-zinc-50/40
+            fd-cursor-pointer fd-transition-all fd-duration-300 fd-ease-in-out fd-opacity-0 -fd-mt-10;
     }
 
     .toastr__item--born {
-        @apply opacity-100 mt-0;
+        @apply fd-opacity-100 fd-mt-0;
     }
 
     .drawer {
-        @apply bg-zinc-100 min-w-full lg:min-w-[30rem] fixed z-40 right-0 inset-y-0 p-4 translate-x-full
-            transition-transform duration-300 ease-in-out space-y-4;
+        @apply fd-bg-zinc-100 fd-min-w-full lg:fd-min-w-[30rem] fd-fixed fd-z-40 fd-right-0 fd-inset-y-0 fd-p-4 fd-translate-x-full
+            fd-transition-transform fd-duration-300 fd-ease-in-out fd-space-y-4;
     }
 
     .drawer--half {
-        @apply min-w-max w-2/3;
+        @apply fd-min-w-max fd-w-2/3;
     }
 
     .drawer--from-left {
-        @apply left-0 right-auto -translate-x-full;
+        @apply fd-left-0 fd-right-auto -fd-translate-x-full;
     }
 
     .drawer--open {
-        @apply translate-x-0;
+        @apply fd-translate-x-0;
     }
 
     .drawer__overlay {
-        @apply fixed inset-0 bg-black/20 backdrop-blur z-30 opacity-0 transition-all;
+        @apply fd-fixed fd-inset-0 fd-bg-black/20 fd-backdrop-blur fd-z-30 fd-opacity-0 fd-transition-all;
     }
 
     .drawer__overlay--fade-in {
-        @apply opacity-100;
+        @apply fd-opacity-100;
     }
 
     button:disabled {
-        @apply opacity-75 pointer-events-none select-none;
+        @apply fd-opacity-75 fd-pointer-events-none fd-select-none;
     }
 
     .btn--loading {
-        @apply cursor-not-allowed opacity-50 select-none pointer-events-none;
+        @apply fd-cursor-not-allowed fd-opacity-50 fd-select-none fd-pointer-events-none;
     }
 
     [data-spinner] {
-        @apply hidden;
+        @apply fd-hidden;
     }
 
     .btn--loading [data-spinner] {
-        @apply block;
+        @apply fd-block;
     }
 }
 

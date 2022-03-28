@@ -5,7 +5,7 @@
             <x-feadmin::page.subtitle>@t('Sevgili :name, yönetim paneline hoş geldin', 'admin', ['name' => auth()->user()->first_name])</x-feadmin::page.subtitle>
         </div>
         <div>
-            <div class="grid grid-cols-4 gap-4">
+            <div class="fd-grid fd-grid-cols-4 fd-gap-4">
                 <x-feadmin::card padding>Selam</x-feadmin::card>
                 <x-feadmin::card padding>Selam</x-feadmin::card>
                 <x-feadmin::card padding>Selam</x-feadmin::card>

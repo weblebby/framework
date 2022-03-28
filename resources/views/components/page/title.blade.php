@@ -1,1 +1,1 @@
-<h1 {{ $attributes->class('text-3xl font-bold text-zinc-800') }}>{{ $slot }}</h1>
+<h1 {{ $attributes->class('fd-text-3xl fd-font-bold fd-text-zinc-800') }}>{{ $slot }}</h1>

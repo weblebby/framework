@@ -1,5 +1,5 @@
 @foreach (Feadmin::panel()->menus('sidebar')->get() as $category)
-    <x-feadmin::nav class="pr-3">
+    <x-feadmin::nav class="fd-pr-3">
         @if ($category['title'])
             <x-feadmin::nav.title>{{ $category['title'] }}</x-feadmin::nav.title>
         @endif

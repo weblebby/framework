@@ -1,5 +1,5 @@
 <x-feadmin::layouts.panel>
-    <x-feadmin::page class="w-2/3 mx-auto">
+    <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
         <x-feadmin::page.head :back="route('admin::users.index')">
             <x-slot name="actions">
                 @can('role:create')
@@ -14,7 +14,7 @@
             <x-feadmin::page.title>@t('Kullanıcı rolleri', 'panel')</x-feadmin::page.title>
             <x-feadmin::page.subtitle>@t('Rolleri yönetin', 'panel')</x-feadmin::page.subtitle>
         </x-feadmin::page.head>
-        <div class="space-y-3">
+        <div class="fd-space-y-3">
             <x-feadmin::table>
                 <x-feadmin::table.head>
                     <x-feadmin::table.th>@t('Rol', 'panel')</x-feadmin::table.th>
@@ -24,7 +24,7 @@
                 <x-feadmin::table.body>
                     @foreach ($roles as $role)
                         <tr>
-                            <x-feadmin::table.td class="font-medium text-lg">
+                            <x-feadmin::table.td class="fd-font-medium fd-text-lg">
                                 @can('role:update')
                                     <a href="{{ route('admin::roles.edit', $role) }}">{{ $role->name }}</a>
                                 @else
@@ -34,7 +34,7 @@
                             <x-feadmin::table.td>{{ Localization::date($role->created_at) }}</x-feadmin::table.td>
                             <x-feadmin::table.td>
                                 @unless ($role->is_default)
-                                    <div class="ml-auto">
+                                    <div class="fd-ml-auto">
                                         @can('role:delete')
                                             <x-feadmin::button
                                                 size="sm"

@@ -11,12 +11,12 @@
             'id' => $id ?? false,
             'name' => $name ?? false,
         ])
-        ->class('block
-            w-full
-            focus:border-sky-300
-            focus:ring
-            focus:ring-sky-200
-            focus:ring-opacity-50
-            transition')
-        ->class($errors->{$bag}->has($dottedName) ? 'border-red-500' : '') }}
+        ->class('fd-block
+            fd-w-full
+            focus:fd-border-sky-300
+            focus:fd-ring
+            focus:fd-ring-sky-200
+            focus:fd-ring-opacity-50
+            fd-transition')
+        ->class($errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}
 >

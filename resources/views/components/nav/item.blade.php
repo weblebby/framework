@@ -1,10 +1,10 @@
 @props(['icon', 'active' => false])
 
 <a {{ $attributes
-    ->class('flex items-center gap-3 flex-1 px-4 py-1.5 rounded-r-full font-medium')
-    ->class($active ? 'bg-zinc-800 text-zinc-200' : 'text-zinc-600 hover:bg-zinc-300 transition-colors') }}>
+    ->class('fd-flex fd-items-center fd-gap-3 fd-flex-1 fd-px-4 fd-py-1.5 fd-rounded-r-full fd-font-medium')
+    ->class($active ? 'fd-bg-zinc-800 fd-text-zinc-200' : 'fd-text-zinc-600 hover:fd-bg-zinc-300 fd-transition-colors') }}>
     @if ($icon ?? null)
-        <x-dynamic-component component="feadmin::icons.{{ $icon }}" class="w-5 h-5" />
+        <x-dynamic-component component="feadmin::icons.{{ $icon }}" class="fd-w-5 fd-h-5" />
     @endif
     <span>{{ $slot }}</span>
 </a>

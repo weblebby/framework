@@ -1,7 +1,7 @@
 <div {{ $attributes
-    ->class('fixed inset-0 bg-black/40 flex items-center justify-center z-50')
+    ->class('fd-fixed fd-inset-0 fd-bg-black/40 fd-flex fd-items-center fd-justify-center fd-z-50')
     ->merge(['style' => 'display:none', 'data-modal' => true]) }}>
-    <div class="w-full max-w-xl bg-white rounded shadow-xl">
+    <div class="fd-w-full fd-max-w-xl fd-bg-white fd-rounded fd-shadow-xl">
         {{ $slot }}
     </div>
 </div>

@@ -17,13 +17,13 @@
             @endif
         </div>
         <div>
-            <div class="grid grid-cols-5 gap-3">
-                <div class="space-y-3">
+            <div class="fd-grid fd-grid-cols-5 fd-gap-3">
+                <div class="fd-space-y-3">
                     @if ($availableLocales->isNotEmpty())
                         <x-feadmin::link-card>
                             @foreach ($availableLocales as $locale)
                                 <x-feadmin::link-card.item
-                                    class="justify-between"
+                                    class="fd-justify-between"
                                     href="{{ route('admin::locales.show', $locale->id) }}"
                                     :active="$locale->id === ($selectedLocale->id ?? null)">
                                     {{ Localization::display($locale->code) }}
@@ -44,9 +44,9 @@
                         </x-feadmin::link-card>
                     @endcan
                 </div>
-                <div class="col-span-4">
+                <div class="fd-col-span-4">
                     @if ($selectedLocale ?? null)
-                        <div class="flex items-center gap-2 mb-3">
+                        <div class="fd-flex fd-items-center fd-gap-2 fd-mb-3">
                             @foreach (Localization::groups() as $key => $group)
                                 <x-feadmin::button
                                     as="a"
@@ -55,7 +55,7 @@
                                     upper
                                 >{{ $group['title'] }}</x-feadmin::button>
                             @endforeach
-                            <div class="flex gap-3 ml-auto">
+                            <div class="fd-flex fd-gap-3 fd-ml-auto">
                                 @can('locale:delete')
                                     <x-feadmin::button
                                         data-modal-open="#modal-delete-locale"
@@ -76,24 +76,24 @@
                             </div>
                         </div>
                         @if ($selectedGroup ?? null)
-                            <x-feadmin::card class="divide-y">
-                                <div class="py-2 px-4 text-zinc-500">{{ $selectedGroup['description'] }}</div>
-                                <div class="py-4 space-y-3">
+                            <x-feadmin::card class="fd-divide-y">
+                                <div class="fd-py-2 fd-px-4 fd-text-zinc-500">{{ $selectedGroup['description'] }}</div>
+                                <div class="fd-py-4 fd-space-y-3">
                                     @foreach ($translations as $translation)
-                                        <div class="grid grid-cols-2 divide-x">
-                                            <div class="px-4">
-                                                <div class="relative">
+                                        <div class="fd-grid fd-grid-cols-2 fd-divide-x">
+                                            <div class="fd-px-4">
+                                                <div class="fd-relative">
                                                     <x-feadmin::form.input
                                                         :default="$translation->value"
                                                         readonly
                                                     />
-                                                    <div class="absolute right-4 top-1/2 -translate-y-1/2">
+                                                    <div class="fd-absolute fd-right-4 fd-top-1/2 -fd-translate-y-1/2">
                                                         <x-feadmin::badge>{{ Localization::getDefaultLocale()->code }}</x-feadmin::badge>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="px-4">
-                                                <div class="relative">
+                                            <div class="fd-px-4">
+                                                <div class="fd-relative">
                                                     <x-feadmin::form.input
                                                         :default="t($translation->key, $translation->group, [], $selectedLocale->code)"
                                                         :data-key="$translation->key"
@@ -103,7 +103,7 @@
                                                         tabindex="1"
                                                         :readonly="auth()->user()->cannot('locale:translate')"
                                                     />
-                                                    <div class="absolute right-4 top-1/2 -translate-y-1/2">
+                                                    <div class="fd-absolute fd-right-4 fd-top-1/2 -fd-translate-y-1/2">
                                                         <x-feadmin::badge>{{ $selectedLocale->code }}</x-feadmin::badge>
                                                     </div>
                                                 </div>

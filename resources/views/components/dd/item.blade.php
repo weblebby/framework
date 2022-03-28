@@ -1,10 +1,10 @@
 @props(['item', 'readonly' => false])
 
 <li class="dd-item" data-id="{{ $item->id }}">
-    <div class="navigation-item px-4 py-3 border-y -mt-[1px] bg-white group">
-        <div class="flex items-center justify-between">
+    <div class="navigation-item fd-px-4 fd-py-3 fd-border-y -fd-mt-[1px] fd-bg-white fd-group">
+        <div class="fd-flex fd-items-center fd-justify-between">
             <span>{{ $item->title }}</span>
-            <div class="flex items-center gap-1 dd-nodrag opacity-0 group-hover:opacity-100 transition-opacity">
+            <div class="dd-nodrag fd-flex fd-items-center fd-gap-1 fd-opacity-0 group-hover:fd-opacity-100 fd-transition-opacity">
                 @if ($readonly !== true)
                     <x-feadmin::button
                         icon="pencil-fill"

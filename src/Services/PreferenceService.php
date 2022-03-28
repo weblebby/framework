@@ -2,7 +2,6 @@
 
 namespace Feadmin\Services;
 
-use Feadmin\Facades\Feadmin;
 use Feadmin\Hooks\PreferenceHook;
 use Feadmin\Models\Preference;
 use Illuminate\Support\HtmlString;

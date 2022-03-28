@@ -5,7 +5,7 @@
             <x-feadmin::page.subtitle>@t('Sitenizin tüm ayarlarını buradan yönetin', 'panel')</x-feadmin::page.subtitle>
         </div>
         <div>
-            <div class="grid grid-cols-5 gap-3">
+            <div class="fd-grid fd-grid-cols-5 fd-gap-3">
                 <div>
                     <x-feadmin::link-card>
                         @foreach (Feadmin::panel()->preferences($namespace)->get() as $id => $bag)
@@ -17,10 +17,10 @@
                         @endforeach
                     </x-feadmin::link-card>
                 </div>
-                <div class="col-span-4">
+                <div class="fd-col-span-4">
                     <x-feadmin::card padding>
                         <x-feadmin::form :action="route('admin::preferences.update', $selectedBag)" method="PUT" enctype="multipart/form-data">
-                            <div class="space-y-3">
+                            <div class="fd-space-y-3">
                                 @foreach (Feadmin::panel()->preferences($namespace)->fields($selectedBag) as $field)
                                     <x-feadmin::form.field :field="$field" />
                                 @endforeach

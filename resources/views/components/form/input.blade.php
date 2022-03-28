@@ -12,17 +12,17 @@
             'id' => $id ?? false,
             'name' => $name ?? false,
         ])
-        ->class('block
-            w-full
-            rounded-md
-            border-gray-300
-            shadow-sm
-            focus:border-sky-300
-            focus:ring
-            focus:ring-sky-200
-            focus:ring-opacity-50
-            read-only:opacity-70
-            read-only:bg-zinc-200
-            transition')
-        ->class($errors->{$bag}->has($dottedName) ? 'border-red-500' : '') }}
+        ->class('fd-block
+            fd-w-full
+            fd-rounded-md
+            fd-border-gray-300
+            fd-shadow-sm
+            focus:fd-border-sky-300
+            focus:fd-ring
+            focus:fd-ring-sky-200
+            focus:fd-ring-opacity-50
+            read-only:fd-opacity-70
+            read-only:fd-bg-zinc-200
+            fd-transition')
+        ->class($errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}
 >

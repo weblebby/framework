@@ -1,11 +1,11 @@
 @props(['extension'])
 
 <x-feadmin::card padding>
-    <div class="flex items-center gap-2 text-zinc-700">
-        <h3 class="font-medium">{{ $extension->plural_title }}</h3>
+    <div class="fd-flex fd-items-center fd-gap-2 fd-text-zinc-700">
+        <h3 class="fd-font-medium">{{ $extension->plural_title }}</h3>
     </div>
-    <div class="text-zinc-600 text-sm mt-1">{{ $extension->description }}</div>
-    <x-feadmin::form :action="route('admin::extensions.' . ($extension->is_enabled ? 'disable' : 'enable'), $extension->id)" method="PUT" class="flex items-center justify-between gap-2 mt-3">
+    <div class="fd-text-zinc-600 fd-text-sm fd-mt-1">{{ $extension->description }}</div>
+    <x-feadmin::form :action="route('admin::extensions.' . ($extension->is_enabled ? 'disable' : 'enable'), $extension->id)" method="PUT" class="fd-flex fd-items-center fd-justify-between fd-gap-2 fd-mt-3">
         @if ($extension->is_enabled)
             @can('extension:update')
                 <x-feadmin::button icon="check" variant="green" size="sm">@t('Etkin', 'panel')</x-feadmin::button>

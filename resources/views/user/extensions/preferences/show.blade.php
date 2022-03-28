@@ -5,7 +5,7 @@
             <x-feadmin::page.subtitle>@t(':extension modülünü ayarlayın', 'admin', ['extension' => $extension->singular_title])</x-feadmin::page.subtitle>
         </x-feadmin::page.head>
         <div>
-            <div class="{{ count($namespaces) > 1 ? 'grid grid-cols-5 gap-3' : '' }}">
+            <div class="{{ count($namespaces) > 1 ? 'fd-grid fd-grid-cols-5 fd-gap-3' : '' }}">
                 @if(count($namespaces) > 1)
                     <div>
                         <x-feadmin::link-card>
@@ -19,10 +19,10 @@
                         </x-feadmin::link-card>
                     </div>
                 @endif
-                <div class="col-span-4">
+                <div class="fd-col-span-4">
                     <x-feadmin::card padding>
                         <x-feadmin::form :action="route('admin::extensions.preferences.update', [$extension->id, $selectedBag])" method="PUT" enctype="multipart/form-data">
-                            <div class="space-y-3">
+                            <div class="fd-space-y-3">
                                 @foreach (PreferenceManager::getFields($extension->id, $selectedBag) as $field)
                                     <x-feadmin::form.field :field="$field" />
                                 @endforeach

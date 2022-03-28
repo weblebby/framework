@@ -1,1 +1,1 @@
-<tbody {{ $attributes->class('divide-y divide-zinc-200') }}>{{ $slot }}</tbody>
+<tbody {{ $attributes->class('fd-divide-y fd-divide-zinc-200') }}>{{ $slot }}</tbody>

@@ -4,7 +4,7 @@
 @php($id = FormComponent::id($name, $bag))
 @php($dottedName = FormComponent::dottedName($name))
 
-<label class="inline-flex items-center">
+<label class="fd-inline-flex fd-items-center">
     <input
         id="{{ $id }}"
         name="{{ $name }}"
@@ -14,19 +14,20 @@
                 'value' => '1',
                 'checked' => FormComponent::checked($dottedName, $default, $attributes),
             ])
-            ->class('w-6 h-6
-                    rounded
-                    border-gray-300
-                    text-sky-600
-                    shadow-sm
-                    focus:border-sky-300
-                    focus:ring
-                    focus:ring-offset-0
-                    focus:ring-sky-200
-                    focus:ring-opacity-50')
-            ->class($errors->{$bag}->has($dottedName) ? 'border-red-500' : '') }}
+            ->class('fd-w-6
+                    fd-h-6
+                    fd-rounded
+                    fd-border-gray-300
+                    fd-text-sky-600
+                    fd-shadow-sm
+                    focus:fd-border-sky-300
+                    focus:fd-ring
+                    focus:fd-ring-offset-0
+                    focus:fd-ring-sky-200
+                    focus:fd-ring-opacity-50')
+            ->class($errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}
     >
     @if ($label ?? false)
-        <span class="ml-2">{{ $label }}</span>
+        <span class="fd-ml-2">{{ $label }}</span>
     @endif
 </label>

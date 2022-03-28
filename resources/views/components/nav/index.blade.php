@@ -1,1 +1,1 @@
-<nav {{ $attributes->class('flex flex-col gap-1') }}>{{ $slot }}</nav>
+<nav {{ $attributes->class('fd-flex fd-flex-col fd-gap-1') }}>{{ $slot }}</nav>

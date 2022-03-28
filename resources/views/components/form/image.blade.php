@@ -1,15 +1,15 @@
 @aware(['name'])
 @props(['name', 'image'])
 
-<label class="rounded-lg overflow-hidden block cursor-pointer relative" data-form-image>
+<label class="fd-rounded-lg fd-overflow-hidden fd-block fd-cursor-pointer fd-relative" data-form-image>
     <input type="file" name="{{ $name }}" class="hidden" />
-    <div class="h-60" data-image-wrapper>
+    <div class="fd-h-60" data-image-wrapper>
         @if ($image ?? null)
-            <img class="w-full h-full object-cover" src="{{ $image }}">
+            <img class="fd-w-full fd-h-full fd-object-cover" src="{{ $image }}">
         @endif
     </div>
-    <div class="absolute inset-0 text-white bg-black/40 flex flex-col gap-3 items-center justify-center">
-        <x-feadmin::icons.upload class="w-8 h-8" />
-        <span class="font-medium">{{ isset($image) ? t('Görseli değiştir', 'panel') : t('Görsel yükle', 'panel') }}</span>
+    <div class="fd-absolute fd-inset-0 fd-text-white fd-bg-black/40 fd-flex fd-flex-col fd-gap-3 fd-items-center fd-justify-center">
+        <x-feadmin::icons.upload class="fd-w-8 fd-h-8" />
+        <span class="fd-font-medium">{{ isset($image) ? t('Görseli değiştir', 'panel') : t('Görsel yükle', 'panel') }}</span>
     </div>
 </label>

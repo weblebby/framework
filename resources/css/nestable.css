@@ -63,12 +63,12 @@
 }
 
 .dd {
-    @apply bg-zinc-100;
+    @apply fd-bg-zinc-100;
 }
 .dd-list > .dd-item > .dd-list .navigation-item {
-    @apply border-l;
+    @apply fd-border-l;
 }
 .dd-item > .dd-collapse,
 .dd-item > .dd-expand {
-    @apply w-8 h-14 relative float-left items-center justify-center;
+    @apply fd-w-8 fd-h-14 fd-relative fd-float-left fd-items-center fd-justify-center;
 }
