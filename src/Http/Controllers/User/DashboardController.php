@@ -9,7 +9,7 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
-        seo()->title(t('Panel', 'admin'));
+        seo()->title(t('Panel', 'panel'));
 
         return view('feadmin::user.dashboard');
     }

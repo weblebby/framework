@@ -26,7 +26,7 @@
                                 @foreach (PreferenceManager::getFields($extension->id, $selectedBag) as $field)
                                     <x-feadmin::form.field :field="$field" />
                                 @endforeach
-                                <x-feadmin::button type="submit">@t('Kaydet', 'admin')</x-feadmin::button>
+                                <x-feadmin::button type="submit">@t('Kaydet', 'panel')</x-feadmin::button>
                             </div>
                         </x-feadmin::form>
                     </x-feadmin::card>

@@ -10,10 +10,10 @@
         <div>
             @if ($selectedLocale ?? null)
                 <x-feadmin::page.title>{{ $localeName = Localization::display($selectedLocale->code) }}</x-feadmin::page.title>
-                <x-feadmin::page.subtitle>@t('Çevirileri düzenleyin', 'admin')</x-feadmin::page.subtitle>
+                <x-feadmin::page.subtitle>@t('Çevirileri düzenleyin', 'panel')</x-feadmin::page.subtitle>
             @else
-                <x-feadmin::page.title>@t('Diller', 'admin')</x-feadmin::page.title>
-                <x-feadmin::page.subtitle>@t('Sitenizin dillerini yönetin', 'admin')</x-feadmin::page.subtitle>
+                <x-feadmin::page.title>@t('Diller', 'panel')</x-feadmin::page.title>
+                <x-feadmin::page.subtitle>@t('Sitenizin dillerini yönetin', 'panel')</x-feadmin::page.subtitle>
             @endif
         </div>
         <div>
@@ -28,7 +28,7 @@
                                     :active="$locale->id === ($selectedLocale->id ?? null)">
                                     {{ Localization::display($locale->code) }}
                                     @if ($locale->is_default)
-                                        <x-feadmin::badge>@t('Varsayılan', 'admin')</x-feadmin::badge>
+                                        <x-feadmin::badge>@t('Varsayılan', 'panel')</x-feadmin::badge>
                                     @endif
                                 </x-feadmin::link-card.item>
                             @endforeach
@@ -40,7 +40,7 @@
                                 as="button"
                                 icon="plus"
                                 data-drawer="#drawer-create-locale"
-                            >@t('Yeni dil', 'admin')</x-feadmin::link-card.item>
+                            >@t('Yeni dil', 'panel')</x-feadmin::link-card.item>
                         </x-feadmin::link-card>
                     @endcan
                 </div>
@@ -61,7 +61,7 @@
                                         data-modal-open="#modal-delete-locale"
                                         variant="red"
                                         upper
-                                    >@t('Dili sil', 'admin')</x-feadmin::button>
+                                    >@t('Dili sil', 'panel')</x-feadmin::button>
                                 @endcan
                                 @can('locale:translate')
                                     <x-feadmin::form :action="route('admin::locales.sync')">
@@ -70,7 +70,7 @@
                                             variant="light"
                                             icon="arrow-clockwise"
                                             upper
-                                        >@t('Çevirileri senkronize et', 'admin')</x-feadmin::button>
+                                        >@t('Çevirileri senkronize et', 'panel')</x-feadmin::button>
                                     </x-feadmin::form>
                                 @endcan
                             </div>
@@ -114,15 +114,15 @@
                             </x-feadmin::card>
                         @else
                             <x-feadmin::empty
-                                :title="t('Grup seçin', 'admin')"
-                                :content="t('Yönetmek istediğiniz çeviri grubunu seçin', 'admin')"
+                                :title="t('Grup seçin', 'panel')"
+                                :content="t('Yönetmek istediğiniz çeviri grubunu seçin', 'panel')"
                             />
                         @endif
                     @else
                         <x-feadmin::empty
                             icon="translate"
-                            :title="t('Dil seçin', 'admin')"
-                            :content="t('Yönetmek istediğiniz dili seçin', 'admin')"
+                            :title="t('Dil seçin', 'panel')"
+                            :content="t('Yönetmek istediğiniz dili seçin', 'panel')"
                         />
                     @endif
                 </div>
@@ -131,21 +131,21 @@
     </x-feadmin::page>
     @can('locale:create')
         <x-feadmin::drawer id="drawer-create-locale">
-            <x-feadmin::drawer.header :title="t('Yeni dil', 'admin')" />
+            <x-feadmin::drawer.header :title="t('Yeni dil', 'panel')" />
             <x-feadmin::form class="space-y-3" :action="route('admin::locales.store')">
                 <x-feadmin::form.group name="code">
-                    <x-feadmin::form.label>@t('Dil', 'admin')</x-feadmin::form.label>
+                    <x-feadmin::form.label>@t('Dil', 'panel')</x-feadmin::form.label>
                     <x-feadmin::form.select data-drawer-focus>
-                        <option selected disabled>@t('Dil seçin', 'admin')</option>
+                        <option selected disabled>@t('Dil seçin', 'panel')</option>
                         @foreach ($remainingLocales as $code => $locale)
                             <x-feadmin::form.option value="{{ $code }}">{{ $locale }}</x-feadmin::form.option>
                         @endforeach
                     </x-feadmin::form.select>
                 </x-feadmin::form.group>
                 <x-feadmin::form.group name="is_default">
-                    <x-feadmin::form.checkbox :label="t('Varsayılan dil', 'admin')" />
+                    <x-feadmin::form.checkbox :label="t('Varsayılan dil', 'panel')" />
                 </x-feadmin::form.group>
-                <x-feadmin::button type="submit">@t('Oluştur', 'admin')</x-feadmin::button>
+                <x-feadmin::button type="submit">@t('Oluştur', 'panel')</x-feadmin::button>
             </x-feadmin::form>
         </x-feadmin::drawer>
     @endcan
@@ -155,7 +155,7 @@
                 id="modal-delete-locale"
                 :action="route('admin::locales.destroy', $selectedLocale->id)"
                 :title="t(':locale dilini siliyorsunuz', 'admin', ['locale' => $localeName])"
-                :subtitle="t('Bu dili ve ilişkili tüm çevirileri silmek istediğinize emin misiniz?', 'admin')"
+                :subtitle="t('Bu dili ve ilişkili tüm çevirileri silmek istediğinize emin misiniz?', 'panel')"
             />
         @endif
     @endcan

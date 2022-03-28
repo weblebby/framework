@@ -1,14 +1,14 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page class="w-2/3 mx-auto">
         <x-feadmin::page.head :back="route('admin::roles.index')">
-            <x-feadmin::page.title>@t('Rol oluşturun', 'admin')</x-feadmin::page.title>
-            <x-feadmin::page.subtitle>@t('Yeni bir kullanıcı rolü oluşturun', 'admin')</x-feadmin::page.subtitle>
+            <x-feadmin::page.title>@t('Rol oluşturun', 'panel')</x-feadmin::page.title>
+            <x-feadmin::page.subtitle>@t('Yeni bir kullanıcı rolü oluşturun', 'panel')</x-feadmin::page.subtitle>
         </x-feadmin::page.head>
         <x-feadmin::form class="space-y-3" :action="route('admin::roles.store')">
             <x-feadmin::card class="space-y-3" padding>
                 <x-feadmin::form.group name="name">
-                    <x-feadmin::form.label>@t('Rol adı', 'admin')</x-feadmin::form.label>
-                    <x-feadmin::form.input :placeholder="t('örn: Editör', 'admin')" autofocus />
+                    <x-feadmin::form.label>@t('Rol adı', 'panel')</x-feadmin::form.label>
+                    <x-feadmin::form.input :placeholder="t('örn: Editör', 'panel')" autofocus />
                 </x-feadmin::form.group>
             </x-feadmin::card>
             <x-feadmin::card class="space-y-5" padding>
@@ -28,7 +28,7 @@
                     </div>
                 @endforeach
             </x-feadmin::card>
-            <x-feadmin::button type="submit">@t('Oluştur', 'admin')</x-feadmin::button>
+            <x-feadmin::button type="submit">@t('Oluştur', 'panel')</x-feadmin::button>
             <x-feadmin::form.sticky-submit />
         </x-feadmin::form>
     </x-feadmin::page>

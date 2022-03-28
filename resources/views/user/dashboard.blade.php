@@ -1,7 +1,7 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page>
         <div>
-            <x-feadmin::page.title>@t('Ana Sayfa', 'admin')</x-feadmin::page.title>
+            <x-feadmin::page.title>@t('Ana Sayfa', 'panel')</x-feadmin::page.title>
             <x-feadmin::page.subtitle>@t('Sevgili :name, yönetim paneline hoş geldin', 'admin', ['name' => auth()->user()->first_name])</x-feadmin::page.subtitle>
         </div>
         <div>

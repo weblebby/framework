@@ -23,15 +23,15 @@
                             variant="red"
                             icon="x"
                             data-modal-open="#modal-delete-navigation"
-                        >@t('Sil', 'admin')</x-feadmin::button>
+                        >@t('Sil', 'panel')</x-feadmin::button>
                     @endcan
                 </x-slot>
                 <x-feadmin::page.title>{{ $selectedNavigation->title }}</x-feadmin::page.title>
             </x-feadmin::page.head>
         @else
             <div>
-                <x-feadmin::page.title>@t('Menüler', 'admin')</x-feadmin::page.title>
-                <x-feadmin::page.subtitle>@t('Sitenizin header gibi bölümlerinde yer alan menüleri yönetin', 'admin')</x-feadmin::page.subtitle>
+                <x-feadmin::page.title>@t('Menüler', 'panel')</x-feadmin::page.title>
+                <x-feadmin::page.subtitle>@t('Sitenizin header gibi bölümlerinde yer alan menüleri yönetin', 'panel')</x-feadmin::page.subtitle>
             </div>
         @endif
         <div>
@@ -41,20 +41,20 @@
                         <x-feadmin::form class="col-span-3" :action="route('admin::navigations.update', $selectedNavigation)" method="PUT">
                             <x-feadmin::card class="space-y-3" padding>
                                 <x-feadmin::form.group name="title">
-                                    <x-feadmin::form.label>@t('Başlık', 'admin')</x-feadmin::form.label>
+                                    <x-feadmin::form.label>@t('Başlık', 'panel')</x-feadmin::form.label>
                                     <x-feadmin::form.input
-                                        :placeholder="t('örn. Ana menü', 'admin')"
+                                        :placeholder="t('örn. Ana menü', 'panel')"
                                         :default="$selectedNavigation->title"
                                     />
                                 </x-feadmin::form.group>
                                 <x-feadmin::form.group name="handle">
-                                    <x-feadmin::form.label>@t('Tanımlayıcı', 'admin')</x-feadmin::form.label>
+                                    <x-feadmin::form.label>@t('Tanımlayıcı', 'panel')</x-feadmin::form.label>
                                     <x-feadmin::form.input
-                                        :placeholder="t('örn. ana-menu', 'admin')"
+                                        :placeholder="t('örn. ana-menu', 'panel')"
                                         :default="$selectedNavigation->handle"
                                     />
                                 </x-feadmin::form.group>
-                                <x-feadmin::button type="submit" size="sm">@t('Kaydet', 'admin')</x-feadmin::button>
+                                <x-feadmin::button type="submit" size="sm">@t('Kaydet', 'panel')</x-feadmin::button>
                             </x-feadmin::card>
                         </x-feadmin::form>
                     @endcan
@@ -69,7 +69,7 @@
                                 </div>
                             </div>
                             @can('navigation:update')
-                                <x-feadmin::dd.create-button>{{ t('Yeni öğe ekle', 'admin') }}</x-feadmin::dd.create-button>
+                                <x-feadmin::dd.create-button>{{ t('Yeni öğe ekle', 'panel') }}</x-feadmin::dd.create-button>
                             @endcan
                         </x-feadmin::card>
                     </div>
@@ -77,8 +77,8 @@
                     <div class="col-span-7">
                         <x-feadmin::empty
                             icon="plus"
-                            :title="t('Menü oluşturun veya seçin', 'admin')"
-                            :content="t('Öğeleri yönetmek için bir menü seçin', 'admin')"
+                            :title="t('Menü oluşturun veya seçin', 'panel')"
+                            :content="t('Öğeleri yönetmek için bir menü seçin', 'panel')"
                         />
                     </div>
                 @endif
@@ -99,7 +99,7 @@
                                 as="button"
                                 icon="plus"
                                 data-drawer="#drawer-create-navigation"
-                            >@t('Yeni menü', 'admin')</x-feadmin::link-card.item>
+                            >@t('Yeni menü', 'panel')</x-feadmin::link-card.item>
                         </x-feadmin::link-card>
                     @endcan
                 </div>
@@ -108,7 +108,7 @@
     </x-feadmin::page>
     @if ($selectedNavigation ?? null)
         <x-feadmin::drawer id="drawer-create-menu-item">
-            <x-feadmin::drawer.header :title="t('Yeni öğe ekle', 'admin')" />
+            <x-feadmin::drawer.header :title="t('Yeni öğe ekle', 'panel')" />
             <x-feadmin::form
                 :action="route('admin::navigations.items.store', $selectedNavigation)"
                 bag="item"
@@ -117,33 +117,33 @@
             >
                 <input type="hidden" name="parent_id" value={{ old('parent_id') }}>
                 <x-feadmin::form.group name="title">
-                    <x-feadmin::form.label>@t('Menü başlığı', 'admin')</x-feadmin::form.label>
+                    <x-feadmin::form.label>@t('Menü başlığı', 'panel')</x-feadmin::form.label>
                     <x-feadmin::form.input data-drawer-focus />
                 </x-feadmin::form.group>
                 <x-feadmin::form.group name="is_smart_menu">
-                    <x-feadmin::form.checkbox :label="t('Otomatik menü', 'admin')" />
+                    <x-feadmin::form.checkbox :label="t('Otomatik menü', 'panel')" />
                 </x-feadmin::form.group>
                 <div class="space-y-3" data-smart-item>
                     <x-feadmin::form.group name="smart_type">
-                        <x-feadmin::form.label>@t('Otomatik menü', 'admin')</x-feadmin::form.label>
+                        <x-feadmin::form.label>@t('Otomatik menü', 'panel')</x-feadmin::form.label>
                         <x-feadmin::form.select>
-                            <x-feadmin::form.option value="" selected disabled>@t('Menü seçiniz', 'admin')</x-feadmin::form.option>
+                            <x-feadmin::form.option value="" selected disabled>@t('Menü seçiniz', 'panel')</x-feadmin::form.option>
                             @foreach ($smartMenuItems as $item)
                                 <x-feadmin::form.option value="{{ $item->id }}">{{ $item->plural_title }}</x-feadmin::form.option>
                             @endforeach
                         </x-feadmin::form.select>
                     </x-feadmin::form.group>
                     <x-feadmin::form.group name="smart_limit">
-                        <x-feadmin::form.label>@t('Limit', 'admin')</x-feadmin::form.label>
+                        <x-feadmin::form.label>@t('Limit', 'panel')</x-feadmin::form.label>
                         <x-feadmin::form.input default="5" />
                     </x-feadmin::form.group>
                 </div>
                 <div class="space-y-3" data-manuel-item>
                     <x-feadmin::form.group name="linkable">
-                        <x-feadmin::form.label>@t('Bağlantı türü', 'admin')</x-feadmin::form.label>
+                        <x-feadmin::form.label>@t('Bağlantı türü', 'panel')</x-feadmin::form.label>
                         <x-feadmin::form.select>
-                            <x-feadmin::form.option value="">@t('Manuel bağlantı', 'admin')</x-feadmin::form.option>
-                            <x-feadmin::form.option value="homepage">@t('Ana sayfa', 'admin')</x-feadmin::form.option>
+                            <x-feadmin::form.option value="">@t('Manuel bağlantı', 'panel')</x-feadmin::form.option>
+                            <x-feadmin::form.option value="homepage">@t('Ana sayfa', 'panel')</x-feadmin::form.option>
                             @foreach (NavigationLinkableManager::linkables() as $linkable)
                                 <optgroup label="{{ $linkable['title'] }}">
                                     @foreach ($linkable['links'] as $link)
@@ -154,45 +154,45 @@
                         </x-feadmin::form.select>
                     </x-feadmin::form.group>
                     <x-feadmin::form.group name="link">
-                        <x-feadmin::form.label>@t('Menü bağlantısı', 'admin')</x-feadmin::form.label>
+                        <x-feadmin::form.label>@t('Menü bağlantısı', 'panel')</x-feadmin::form.label>
                         <x-feadmin::form.input placeholder="https://" />
                     </x-feadmin::form.group>
                 </div>
                 <x-feadmin::form.group name="open_in_new_tab">
-                    <x-feadmin::form.checkbox :label="t('Yeni sekmede aç', 'admin')" />
+                    <x-feadmin::form.checkbox :label="t('Yeni sekmede aç', 'panel')" />
                 </x-feadmin::form.group>
                 <x-feadmin::form.group name="is_active">
-                    <x-feadmin::form.checkbox :label="t('Aktif', 'admin')" :default="true" />
+                    <x-feadmin::form.checkbox :label="t('Aktif', 'panel')" :default="true" />
                 </x-feadmin::form.group>
-                <x-feadmin::button type="submit">@t('Kaydet', 'admin')</x-feadmin::button>
+                <x-feadmin::button type="submit">@t('Kaydet', 'panel')</x-feadmin::button>
             </x-feadmin::form>
         </x-feadmin::drawer>
         <x-feadmin::modal.destroy
             id="modal-delete-item"
-            :title="t('Menü öğesini sil', 'admin')"
-            :subtitle="t('Bu ve (eğer varsa) altındaki öğeler kalıcı olarak silinecektir.', 'admin')"
+            :title="t('Menü öğesini sil', 'panel')"
+            :subtitle="t('Bu ve (eğer varsa) altındaki öğeler kalıcı olarak silinecektir.', 'panel')"
         />
         <x-feadmin::modal.destroy
             id="modal-delete-navigation"
-            :title="t('Menüyü sil', 'admin')"
+            :title="t('Menüyü sil', 'panel')"
             :action="route('admin::navigations.destroy', $selectedNavigation)"
         />
     @endif
     <x-feadmin::drawer id="drawer-create-navigation">
-        <x-feadmin::drawer.header :title="t('Yeni menü', 'admin')" />
+        <x-feadmin::drawer.header :title="t('Yeni menü', 'panel')" />
         <x-feadmin::form class="space-y-3" :action="route('admin::navigations.store')">
             <x-feadmin::form.group name="title">
-                <x-feadmin::form.label>@t('Başlık', 'admin')</x-feadmin::form.label>
+                <x-feadmin::form.label>@t('Başlık', 'panel')</x-feadmin::form.label>
                 <x-feadmin::form.input
-                    :placeholder="t('örn. Ana menü', 'admin')"
+                    :placeholder="t('örn. Ana menü', 'panel')"
                     data-drawer-focus
                 />
             </x-feadmin::form.group>
             <x-feadmin::form.group name="handle">
-                <x-feadmin::form.label>@t('Tanımlayıcı', 'admin')</x-feadmin::form.label>
-                <x-feadmin::form.input :placeholder="t('örn. ana-menu', 'admin')" />
+                <x-feadmin::form.label>@t('Tanımlayıcı', 'panel')</x-feadmin::form.label>
+                <x-feadmin::form.input :placeholder="t('örn. ana-menu', 'panel')" />
             </x-feadmin::form.group>
-            <x-feadmin::button type="submit">@t('Oluştur', 'admin')</x-feadmin::button>
+            <x-feadmin::button type="submit">@t('Oluştur', 'panel')</x-feadmin::button>
         </x-feadmin::form>
     </x-feadmin::drawer>
 </x-feadmin::layouts.panel>

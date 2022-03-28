@@ -68,11 +68,6 @@ class FeadminServiceProvider extends ServiceProvider
             'title' => t('Panel', 'panel'),
             'description' => t('Paneldeki metinleri çevirin.', 'panel'),
         ]);
-
-        Localization::group('routes', [
-            'title' => t('Sayfa adresleri', 'admin'),
-            'description' => t('Sitedeki tüm modüllerin bağlantı yapılarını çevirin', 'admin')
-        ]);
     }
 
     private function bootGates(): void

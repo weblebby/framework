@@ -9,14 +9,14 @@
                     <input type="hidden" name="token" value="{{ request()->route('token') }}">
                     <input type="hidden" name="email" value="{{ request('email') }}">
                     <div class="space-y-3">
-                        <h3 class="text-xl">@t('Yeni parolanızı girin', 'admin')</h3>
+                        <h3 class="text-xl">@t('Yeni parolanızı girin', 'panel')</h3>
                         <x-feadmin::form.group name="password">
-                            <x-feadmin::form.input type="password" :placeholder="t('Yeni parolanız', 'admin')" />
+                            <x-feadmin::form.input type="password" :placeholder="t('Yeni parolanız', 'panel')" />
                         </x-feadmin::form.group>
                         <x-feadmin::form.group name="password_confirmation">
-                            <x-feadmin::form.input type="password" :placeholder="t('Parolanızı onaylayın', 'admin')" />
+                            <x-feadmin::form.input type="password" :placeholder="t('Parolanızı onaylayın', 'panel')" />
                         </x-feadmin::form.group>
-                        <x-feadmin::button type="submit">@t('Parolamı sıfırla', 'admin')</x-feadmin::button>
+                        <x-feadmin::button type="submit">@t('Parolamı sıfırla', 'panel')</x-feadmin::button>
                     </div>
                 </x-feadmin::form>
             </x-feadmin::card>

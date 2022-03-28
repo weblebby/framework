@@ -8,6 +8,6 @@
             type="submit"
             variant="outline-light"
             size="sm"
-        >@t('Oturumu kapat', 'admin')</x-feadmin::button>
+        >@t('Oturumu kapat', 'panel')</x-feadmin::button>
     </x-feadmin::form>
 </div>

@@ -8,17 +8,17 @@
                         :href="route('admin::roles.create')"
                         icon="plus"
                         size="sm"
-                    >@t('Yeni rol', 'admin')</x-feadmin::button>
+                    >@t('Yeni rol', 'panel')</x-feadmin::button>
                 @endcan
             </x-slot>
-            <x-feadmin::page.title>@t('Kullanıcı rolleri', 'admin')</x-feadmin::page.title>
-            <x-feadmin::page.subtitle>@t('Rolleri yönetin', 'admin')</x-feadmin::page.subtitle>
+            <x-feadmin::page.title>@t('Kullanıcı rolleri', 'panel')</x-feadmin::page.title>
+            <x-feadmin::page.subtitle>@t('Rolleri yönetin', 'panel')</x-feadmin::page.subtitle>
         </x-feadmin::page.head>
         <div class="space-y-3">
             <x-feadmin::table>
                 <x-feadmin::table.head>
-                    <x-feadmin::table.th>@t('Rol', 'admin')</x-feadmin::table.th>
-                    <x-feadmin::table.th>@t('Oluşturulma tarihi', 'admin')</x-feadmin::table.th>
+                    <x-feadmin::table.th>@t('Rol', 'panel')</x-feadmin::table.th>
+                    <x-feadmin::table.th>@t('Oluşturulma tarihi', 'panel')</x-feadmin::table.th>
                     <x-feadmin::table.th />
                 </x-feadmin::table.head>
                 <x-feadmin::table.body>
@@ -41,7 +41,7 @@
                                                 variant="red"
                                                 data-modal-open="#modal-delete-role"
                                                 :data-action="route('admin::roles.destroy', $role)"
-                                            >@t('Sil', 'admin')</x-feadmin::button>
+                                            >@t('Sil', 'panel')</x-feadmin::button>
                                         @endcan
                                     </div>
                                 @endif
@@ -56,7 +56,7 @@
     @can('role:delete')
         <x-feadmin::modal.destroy
             id="modal-delete-role"
-            :title="t('Rolü sil', 'admin')"
+            :title="t('Rolü sil', 'panel')"
         />
     @endcan
 </x-feadmin::layouts.panel>

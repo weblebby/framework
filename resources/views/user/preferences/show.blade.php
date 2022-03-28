@@ -1,8 +1,8 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page>
         <div>
-            <x-feadmin::page.title>@t('Ayarlar', 'admin')</x-feadmin::page.title>
-            <x-feadmin::page.subtitle>@t('Sitenizin tüm ayarlarını buradan yönetin', 'admin')</x-feadmin::page.subtitle>
+            <x-feadmin::page.title>@t('Ayarlar', 'panel')</x-feadmin::page.title>
+            <x-feadmin::page.subtitle>@t('Sitenizin tüm ayarlarını buradan yönetin', 'panel')</x-feadmin::page.subtitle>
         </div>
         <div>
             <div class="grid grid-cols-5 gap-3">
@@ -24,7 +24,7 @@
                                 @foreach (Feadmin::panel()->preferences($namespace)->fields($selectedBag) as $field)
                                     <x-feadmin::form.field :field="$field" />
                                 @endforeach
-                                <x-feadmin::button type="submit">@t('Kaydet', 'admin')</x-feadmin::button>
+                                <x-feadmin::button type="submit">@t('Kaydet', 'panel')</x-feadmin::button>
                             </div>
                         </x-feadmin::form>
                     </x-feadmin::card>

@@ -31,7 +31,7 @@
             @break
         @case('select')
             <x-feadmin::form.select :default="$default">
-                <option value="" selected disabled>{{ t('Bir öğe seçin', 'admin') }}</option>
+                <option value="" selected disabled>{{ t('Bir öğe seçin', 'panel') }}</option>
                 @foreach ($field['options'] as $value => $label)
                     <option value="{{ $value }}">{{ $label }}</option>
                 @endforeach

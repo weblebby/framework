@@ -18,6 +18,6 @@ class TranslationController extends Controller
             ['value' => $request->value]
         );
 
-        return response()->json(['message' => t('Çeviri kaydedildi', 'admin')]);
+        return response()->json(['message' => t('Çeviri kaydedildi', 'panel')]);
     }
 }

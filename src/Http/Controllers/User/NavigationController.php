@@ -19,7 +19,7 @@ class NavigationController extends Controller
     {
         $this->authorize('navigation:read');
 
-        seo()->title(t('Menüler', 'admin'));
+        seo()->title(t('Menüler', 'panel'));
 
         $firstNavigation = Navigation::first();
 
@@ -39,7 +39,7 @@ class NavigationController extends Controller
 
         return redirect()
             ->route('admin::navigations.show', $navigation)
-            ->with('message', t('Menü başarıyla oluşturuldu.', 'admin'));
+            ->with('message', t('Menü başarıyla oluşturuldu.', 'panel'));
     }
 
     public function show(Navigation $navigation, NavigationService $navigationService): View
@@ -66,7 +66,7 @@ class NavigationController extends Controller
     {
         $navigation->update($request->validated());
 
-        return back()->with('message', t('Menü başarıyla güncellendi.', 'admin'));
+        return back()->with('message', t('Menü başarıyla güncellendi.', 'panel'));
     }
 
     public function destroy(Navigation $navigation)
@@ -77,7 +77,7 @@ class NavigationController extends Controller
 
         return redirect()
             ->route('admin::navigations.index')
-            ->with('message', t('Menü silindi', 'admin'));
+            ->with('message', t('Menü silindi', 'panel'));
     }
 
     public function sort(SortNavigationRequest $request): JsonResponse
@@ -102,7 +102,7 @@ class NavigationController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => t('Menü sıralaması kaydedildi', 'admin')
+            'message' => t('Menü sıralaması kaydedildi', 'panel')
         ]);
     }
 }
