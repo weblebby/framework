@@ -45,11 +45,11 @@ const Navigation = {
         const smart = document.querySelector('[data-smart-item]')
 
         if (is_smart_menu.checked) {
-            manuel.classList.add('hidden')
-            smart.classList.remove('hidden')
+            manuel.classList.add('fd-hidden')
+            smart.classList.remove('fd-hidden')
         } else {
-            manuel.classList.remove('hidden')
-            smart.classList.add('hidden')
+            manuel.classList.remove('fd-hidden')
+            smart.classList.add('fd-hidden')
         }
     },
 
@@ -57,8 +57,8 @@ const Navigation = {
         const link = document.querySelector('[data-form-group="link"]')
 
         linkable.value === ''
-            ? link.classList.remove('hidden')
-            : link.classList.add('hidden')
+            ? link.classList.remove('fd-hidden')
+            : link.classList.add('fd-hidden')
     },
 }
 

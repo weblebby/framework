@@ -8,7 +8,7 @@ class Features
 {
     public static function enabled(string $feature, string $panel): bool
     {
-        $features = Feadmin::panels($panel)->features();
+        $features = Feadmin::find($panel)->features();
 
         return in_array($feature, $features);
     }

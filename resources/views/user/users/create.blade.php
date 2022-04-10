@@ -1,17 +1,13 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page class="lg:w-2/3 fd-mx-auto">
-        <x-feadmin::page.head :back="route('admin::users.index')">
+        <x-feadmin::page.head :back="panel_route('users.index')">
             <x-feadmin::page.title>@t('Kullanıcı oluşturun', 'panel')</x-feadmin::page.title>
             <x-feadmin::page.subtitle>@t('Yeni bir kullanıcı oluşturun', 'panel')</x-feadmin::page.subtitle>
         </x-feadmin::page.head>
-        <x-feadmin::form class="fd-space-y-3" :action="route('admin::users.store')">
+        <x-feadmin::form class="fd-space-y-3" :action="panel_route('users.store')">
             <x-feadmin::card class="fd-space-y-3" padding>
-                <x-feadmin::form.group name="first_name">
-                    <x-feadmin::form.label>@t('Ad', 'panel')</x-feadmin::form.label>
-                    <x-feadmin::form.input autofocus />
-                </x-feadmin::form.group>
-                <x-feadmin::form.group name="last_name">
-                    <x-feadmin::form.label>@t('Soyad', 'panel')</x-feadmin::form.label>
+                <x-feadmin::form.group name="name">
+                    <x-feadmin::form.label>@t('İsim', 'panel')</x-feadmin::form.label>
                     <x-feadmin::form.input autofocus />
                 </x-feadmin::form.group>
                 <x-feadmin::form.group name="email">

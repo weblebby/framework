@@ -33,7 +33,7 @@ document.querySelectorAll('[data-form-image]').forEach(element => {
 
             imgElem = document.createElement('img')
             imgElem.src = reader.result
-            imgElem.classList.add('w-full', 'h-full', 'object-cover')
+            imgElem.classList.add('fd-w-full', 'fd-h-full', 'fd-object-cover')
 
             element.querySelector('[data-image-wrapper]').appendChild(imgElem)
         }

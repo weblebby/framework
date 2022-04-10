@@ -5,7 +5,7 @@
                 @can('user:create')
                     <x-feadmin::button
                         as="a"
-                        :href="route('admin::users.create')"
+                        :href="panel_route('users.create')"
                         icon="plus"
                         size="sm"
                     >@t('Yeni kullanıcı', 'panel')</x-feadmin::button>
@@ -13,7 +13,7 @@
                 @can('role:read')
                     <x-feadmin::button
                         as="a"
-                        :href="route('admin::roles.index')"
+                        :href="panel_route('roles.index')"
                         variant="sky"
                         size="sm"
                     >@t('Roller', 'panel')</x-feadmin::button>
@@ -34,9 +34,9 @@
                         <tr>
                             <x-feadmin::table.td class="fd-font-medium fd-text-lg">
                                 @can('user:update')
-                                    <a href="{{ route('admin::users.edit', $user) }}">{{ $user->full_name }}</a>
+                                    <a href="{{ panel_route('users.edit', $user) }}">{{ $user->name }}</a>
                                 @else
-                                    <span>{{ $user->full_name }}</span>
+                                    <span>{{ $user->name }}</span>
                                 @endcan
                             </x-feadmin::table.td>
                             <x-feadmin::table.td>{{ Localization::date($user->created_at) }}</x-feadmin::table.td>
@@ -47,7 +47,7 @@
                                             size="sm"
                                             variant="red"
                                             data-modal-open="#modal-delete-user"
-                                            :data-action="route('admin::users.destroy', $user)"
+                                            :data-action="panel_route('users.destroy', $user)"
                                         >@t('Sil', 'panel')</x-feadmin::button>
                                     @endcan
                                 </div>

@@ -1,10 +1,10 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
-        <x-feadmin::page.head :back="route('admin::roles.index')">
+        <x-feadmin::page.head :back="panel_route('roles.index')">
             <x-feadmin::page.title>@t('Rol oluşturun', 'panel')</x-feadmin::page.title>
             <x-feadmin::page.subtitle>@t('Yeni bir kullanıcı rolü oluşturun', 'panel')</x-feadmin::page.subtitle>
         </x-feadmin::page.head>
-        <x-feadmin::form class="fd-space-y-3" :action="route('admin::roles.store')">
+        <x-feadmin::form class="fd-space-y-3" :action="panel_route('roles.store')">
             <x-feadmin::card class="fd-space-y-3" padding>
                 <x-feadmin::form.group name="name">
                     <x-feadmin::form.label>@t('Rol adı', 'panel')</x-feadmin::form.label>
@@ -12,7 +12,7 @@
                 </x-feadmin::form.group>
             </x-feadmin::card>
             <x-feadmin::card class="fd-space-y-5" padding>
-                @foreach (Feadmin::panel()->permissions()->get() as $key => $group)
+                @foreach (panel()->permission()->get() as $key => $group)
                     <div>
                         <h3 class="fd-text-lg fd-font-medium fd-leading-none">{{ $group['title'] }}</h3>
                         @if ($group['description'] ?? null)

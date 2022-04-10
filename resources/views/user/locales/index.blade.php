@@ -24,7 +24,7 @@
                             @foreach ($availableLocales as $locale)
                                 <x-feadmin::link-card.item
                                     class="fd-justify-between"
-                                    href="{{ route('admin::locales.show', $locale->id) }}"
+                                    href="{{ panel_route('locales.show', $locale->id) }}"
                                     :active="$locale->id === ($selectedLocale->id ?? null)">
                                     {{ Localization::display($locale->code) }}
                                     @if ($locale->is_default)
@@ -50,7 +50,7 @@
                             @foreach (Localization::groups() as $key => $group)
                                 <x-feadmin::button
                                     as="a"
-                                    :href="route('admin::locales.show', [$selectedLocale->id, 'group' => $key])"
+                                    :href="panel_route('locales.show', [$selectedLocale->id, 'group' => $key])"
                                     :variant="$key === request('group') ? 'primary' : 'light'"
                                     upper
                                 >{{ $group['title'] }}</x-feadmin::button>
@@ -64,7 +64,7 @@
                                     >@t('Dili sil', 'panel')</x-feadmin::button>
                                 @endcan
                                 @can('locale:translate')
-                                    <x-feadmin::form :action="route('admin::locales.sync')">
+                                    <x-feadmin::form :action="panel_route('locales.sync')">
                                         <x-feadmin::button
                                             type="submit"
                                             variant="light"
@@ -132,7 +132,7 @@
     @can('locale:create')
         <x-feadmin::drawer id="drawer-create-locale">
             <x-feadmin::drawer.header :title="t('Yeni dil', 'panel')" />
-            <x-feadmin::form class="space-y-3" :action="route('admin::locales.store')">
+            <x-feadmin::form class="fd-space-y-3" :action="panel_route('locales.store')">
                 <x-feadmin::form.group name="code">
                     <x-feadmin::form.label>@t('Dil', 'panel')</x-feadmin::form.label>
                     <x-feadmin::form.select data-drawer-focus>
@@ -153,7 +153,7 @@
         @if ($selectedLocale ?? null)
             <x-feadmin::modal.destroy
                 id="modal-delete-locale"
-                :action="route('admin::locales.destroy', $selectedLocale->id)"
+                :action="panel_route('locales.destroy', $selectedLocale->id)"
                 :title="t(':locale dilini siliyorsunuz', 'admin', ['locale' => $localeName])"
                 :subtitle="t('Bu dili ve ilişkili tüm çevirileri silmek istediğinize emin misiniz?', 'panel')"
             />

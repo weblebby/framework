@@ -1,16 +1,12 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
-        <x-feadmin::page.head :back="route('admin::users.index')">
+        <x-feadmin::page.head :back="panel_route('users.index')">
             <x-feadmin::page.title>{{ $user->name }}</x-feadmin::page.title>
         </x-feadmin::page.head>
-        <x-feadmin::form class="fd-space-y-3" :bind="$user" :action="route('admin::users.update', $user)" method="PUT">
+        <x-feadmin::form class="fd-space-y-3" :bind="$user" :action="panel_route('users.update', $user)" method="PUT">
             <x-feadmin::card class="fd-space-y-3" padding>
-                <x-feadmin::form.group name="first_name">
-                    <x-feadmin::form.label>@t('Ad', 'panel')</x-feadmin::form.label>
-                    <x-feadmin::form.input autofocus />
-                </x-feadmin::form.group>
-                <x-feadmin::form.group name="last_name">
-                    <x-feadmin::form.label>@t('Soyad', 'panel')</x-feadmin::form.label>
+                <x-feadmin::form.group name="name">
+                    <x-feadmin::form.label>@t('İsim', 'panel')</x-feadmin::form.label>
                     <x-feadmin::form.input autofocus />
                 </x-feadmin::form.group>
                 <x-feadmin::form.group name="email">

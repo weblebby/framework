@@ -1,11 +1,11 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
-        <x-feadmin::page.head :back="route('admin::users.index')">
+        <x-feadmin::page.head :back="panel_route('users.index')">
             <x-slot name="actions">
                 @can('role:create')
                     <x-feadmin::button
                         as="a"
-                        :href="route('admin::roles.create')"
+                        :href="panel_route('roles.create')"
                         icon="plus"
                         size="sm"
                     >@t('Yeni rol', 'panel')</x-feadmin::button>
@@ -26,7 +26,7 @@
                         <tr>
                             <x-feadmin::table.td class="fd-font-medium fd-text-lg">
                                 @can('role:update')
-                                    <a href="{{ route('admin::roles.edit', $role) }}">{{ $role->name }}</a>
+                                    <a href="{{ panel_route('roles.edit', $role) }}">{{ $role->name }}</a>
                                 @else
                                     <span>{{ $role->name }}</span>
                                 @endcan
@@ -40,7 +40,7 @@
                                                 size="sm"
                                                 variant="red"
                                                 data-modal-open="#modal-delete-role"
-                                                :data-action="route('admin::roles.destroy', $role)"
+                                                :data-action="panel_route('roles.destroy', $role)"
                                             >@t('Sil', 'panel')</x-feadmin::button>
                                         @endcan
                                     </div>

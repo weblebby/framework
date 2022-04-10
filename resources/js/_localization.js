@@ -15,13 +15,17 @@ document.querySelectorAll('[data-translation-input]').forEach(input => {
                 return
             }
 
-            input.classList.add('ring', 'ring-green-500', 'ring-offset-2')
+            input.classList.add(
+                'fd-ring',
+                'fd-ring-green-500',
+                'fd-ring-offset-2'
+            )
 
             setTimeout(() => {
                 input.classList.remove(
-                    'ring',
-                    'ring-green-500',
-                    'ring-offset-2'
+                    'fd-ring',
+                    'fd-ring-green-500',
+                    'fd-ring-offset-2'
                 )
             }, 1000)
         })

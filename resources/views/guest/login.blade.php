@@ -25,7 +25,7 @@
                     </div>
                 </x-feadmin::form>
             </x-feadmin::card>
-            <a href="{{ route('home') }}" class="fd-block fd-text-zinc-600">{{ preference('core::general__site_name') }}</a>
+            <a href="{{ route('home') }}" class="fd-block fd-text-zinc-600">{{ preference('general->site_name') }}</a>
         </div>
     </main>
 </x-feadmin::layouts.master>

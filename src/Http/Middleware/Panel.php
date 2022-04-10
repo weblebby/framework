@@ -26,6 +26,11 @@ class Panel
             'description' => t('Paneldeki metinleri çevirin.', 'panel'),
         ]);
 
+        config([
+            'app.name' => $siteName = preference('general->site_name'),
+            'seo.app.name' => $siteName,
+        ]);
+
         return $next($request);
     }
 }

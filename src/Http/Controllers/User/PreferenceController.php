@@ -14,18 +14,16 @@ class PreferenceController extends Controller
 
     public function index(): RedirectResponse
     {
-        return redirect(
-            Feadmin::panel()->route(
-                'preferences.show',
-                key(Feadmin::panel()->preferences($this->namespace)->get())
-            )
+        return to_panel_route(
+            'preferences.show',
+            key(panel()->preference($this->namespace)->get())
         );
     }
 
     public function show(string $bag): View
     {
-        $findedBag = Feadmin::panel()
-            ->preferences($this->namespace)
+        $findedBag = panel()
+            ->preference($this->namespace)
             ->get()[$bag] ?? null;
 
         if (is_null($findedBag)) {
@@ -42,8 +40,8 @@ class PreferenceController extends Controller
 
     public function update(Request $request, string $bag, string $namespace = null): RedirectResponse
     {
-        $fields = Feadmin::panel()
-            ->preferences($namespace ?: $this->namespace)
+        $fields = panel()
+            ->preference($namespace ?: $this->namespace)
             ->fields($bag);
 
         $validated = $request->validate(

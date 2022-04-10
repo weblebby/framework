@@ -35,7 +35,7 @@ class UpdateRoleRequest extends FormRequest
             'permissions' => ['required', 'array'],
             'permissions.*' => [
                 'required', 'string', 'max:191',
-                Rule::in(Feadmin::panel()->permissions()->keys()),
+                Rule::in(panel()->permission()->keys()),
             ],
         ];
     }

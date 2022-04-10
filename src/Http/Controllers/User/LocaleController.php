@@ -21,7 +21,7 @@ class LocaleController extends Controller
         seo()->title(t('Diller', 'panel'));
 
         if (($defaultLocaleId = Localization::getDefaultLocaleId()) !== -1) {
-            return redirect()->route('admin::locales.show', $defaultLocaleId);
+            return to_panel_route('locales.show', $defaultLocaleId);
         }
 
         return view('feadmin::user.locales.index', [
@@ -36,8 +36,8 @@ class LocaleController extends Controller
 
         $groups = Localization::groups();
 
-        if (!is_string($request->group)) {
-            return redirect()->route('admin::locales.show', [
+        if ($groups->isNotEmpty() && !is_string($request->group)) {
+            return to_panel_route('locales.show', [
                 $locale->id,
                 'group' => $groups->keys()->first()
             ]);
@@ -85,8 +85,7 @@ class LocaleController extends Controller
                 ->update(['is_default' => false]);
         }
 
-        return redirect()
-            ->route('admin::locales.show', $locale)
+        return to_panel_route('locales.show', $locale)
             ->with('message', t('Dil başarıyla eklendi', 'panel'));
     }
 
@@ -102,8 +101,7 @@ class LocaleController extends Controller
                 ->update(['is_default' => true]);
         }
 
-        return redirect()
-            ->route('admin::locales.index')
+        return to_panel_route('locales.index')
             ->with('message', t('Dil başarıyla silindi', 'panel'));
     }
 

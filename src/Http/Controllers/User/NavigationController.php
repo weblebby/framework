@@ -24,7 +24,7 @@ class NavigationController extends Controller
         $firstNavigation = Navigation::first();
 
         if ($firstNavigation) {
-            return redirect()->route('admin::navigations.show', $firstNavigation);
+            return to_panel_route('navigations.show', $firstNavigation);
         }
 
         return view('feadmin::user.navigations.index', [
@@ -37,8 +37,7 @@ class NavigationController extends Controller
     {
         $navigation = Navigation::create($request->validated());
 
-        return redirect()
-            ->route('admin::navigations.show', $navigation)
+        return to_panel_route('navigations.show', $navigation)
             ->with('message', t('Menü başarıyla oluşturuldu.', 'panel'));
     }
 
@@ -75,8 +74,7 @@ class NavigationController extends Controller
 
         $navigation->delete();
 
-        return redirect()
-            ->route('admin::navigations.index')
+        return to_panel_route('navigations.index')
             ->with('message', t('Menü silindi', 'panel'));
     }
 

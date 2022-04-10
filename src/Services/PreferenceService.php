@@ -2,23 +2,24 @@
 
 namespace Feadmin\Services;
 
-use Feadmin\Hooks\PreferenceHook;
-use Feadmin\Models\Preference;
+use Feadmin\Hooks\Preference;
+use Feadmin\Models\Preference as PreferenceModel;
+use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
 class PreferenceService
 {
-    private $preferences;
+    private Collection $preferences;
 
-    private $hook;
+    private Preference $hook;
 
     public function __construct()
     {
-        $this->hook = new PreferenceHook();
-        $this->preferences = Preference::withTranslation()->get();
+        $this->hook = new Preference();
+        $this->preferences = PreferenceModel::withTranslation()->get();
     }
 
-    public function hook(): PreferenceHook
+    public function hook(): Preference
     {
         return $this->hook;
     }
@@ -48,7 +49,7 @@ class PreferenceService
             $valueless = $finded && $field['type'] === 'image';
 
             if (is_null($finded) && filled($value)) {
-                $saved[] = Preference::create(array_filter([
+                $saved[] = PreferenceModel::create(array_filter([
                     'namespace' => $namespace,
                     'bag' => $bag,
                     'key' => $key,
@@ -79,8 +80,12 @@ class PreferenceService
 
     private function find(string $rawKey): array
     {
+        if (!str_contains($rawKey, '::')) {
+            $rawKey = "default::{$rawKey}";
+        }
+
         [$namespace, $bagAndKey] = explode('::', $rawKey);
-        [$bag, $key] = explode('__', $bagAndKey, 2);
+        [$bag, $key] = explode('->', $bagAndKey, 2);
 
         $findedPreference = $this->preferences
             ->where('namespace', $namespace)

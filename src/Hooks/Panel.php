@@ -2,15 +2,17 @@
 
 namespace Feadmin\Hooks;
 
-class PanelHook
+use Illuminate\Http\RedirectResponse;
+
+class Panel
 {
     private string $name;
 
-    private MenuHook $menuHook;
+    private Menu $menu;
 
-    private PreferenceGroupHook $preferenceHook;
+    private PreferenceBag $preference;
 
-    private PermissionHook $permissionHook;
+    private Permission $permission;
 
     private array $features = [];
 
@@ -25,36 +27,37 @@ class PanelHook
     public function __construct(string $name)
     {
         $this->name = $name;
-        $this->menuHook = new MenuHook();
-        $this->preferenceHook = new PreferenceGroupHook();
-        $this->permissionHook = new PermissionHook();
+
+        $this->menu = new Menu();
+        $this->preference = new PreferenceBag();
+        $this->permission = new Permission();
     }
 
-    public function menus(string $location = null): MenuHook
+    public function menu(string $location = null): Menu
     {
-        if (filled($location)) {
-            $this->menuHook->location($location);
+        if (is_null($location)) {
+            return $this->menu;
         }
 
-        return $this->menuHook;
+        return $this->menu->location($location);
     }
 
-    public function preferences(string $namespace = null): PreferenceGroupHook
+    public function preference(string $namespace = null): PreferenceBag
     {
-        if (filled($namespace)) {
-            $this->preferenceHook->namespace($namespace);
+        if (is_null($namespace)) {
+            return $this->preference;
         }
 
-        return $this->preferenceHook;
+        return $this->preference->namespace($namespace);
     }
 
-    public function permissions(string $group = null): PermissionHook
+    public function permission(string $group = null): Permission
     {
-        if (filled($group)) {
-            $this->permissionHook->group($group);
+        if (is_null($group)) {
+            return $this->permission;
         }
 
-        return $this->permissionHook;
+        return $this->permission->group($group);
     }
 
     public function name(): string
@@ -65,6 +68,11 @@ class PanelHook
     public function route($name, $parameters = [], $absolute = true): string
     {
         return route($this->as() . $name, $parameters, $absolute);
+    }
+
+    public function toRoute($route, $parameters = [], $status = 302, $headers = []): RedirectResponse
+    {
+        return redirect()->route($this->as() . $route, $parameters, $status, $headers);
     }
 
     public function features(array $features = null): self|array

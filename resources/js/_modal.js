@@ -1,7 +1,7 @@
 const Modal = {
     open(modal, detail = {}) {
         modal.style.removeProperty('display')
-        document.body.classList.add('overflow-hidden')
+        document.body.classList.add('fd-overflow-hidden')
 
         if (detail.related?.dataset?.action) {
             this.setFormAction(modal, detail.related)
@@ -16,7 +16,7 @@ const Modal = {
 
     close(modal, detail = {}) {
         modal.style.setProperty('display', 'none')
-        document.body.classList.remove('overflow-hidden')
+        document.body.classList.remove('fd-overflow-hidden')
 
         modal.dispatchEvent(
             new CustomEvent('modal.close', {

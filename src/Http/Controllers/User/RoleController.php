@@ -42,8 +42,7 @@ class RoleController extends Controller
             $role->givePermissionTo($permission);
         }
 
-        return redirect()
-            ->route('admin::roles.index')
+        return to_panel_route('roles.index')
             ->with('message', t('Rol oluşturuldu', 'panel'));
     }
 
@@ -77,8 +76,7 @@ class RoleController extends Controller
 
         $role->delete();
 
-        return redirect()
-            ->route('admin::roles.index')
+        return to_panel_route('roles.index')
             ->with('message', t('Rol silindi', 'panel'));
     }
 }

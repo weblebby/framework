@@ -2,7 +2,7 @@
 
 namespace Feadmin;
 
-use Feadmin\Hooks\PanelHook;
+use Feadmin\Hooks\Panel;
 use Illuminate\Support\Facades\Route;
 
 class Feadmin
@@ -11,25 +11,32 @@ class Feadmin
 
     private string $currentPanel;
 
-    public function panel(string $panel = null): string|PanelHook
+    public function create(string $panel): Panel
     {
-        if (filled($panel)) {
-            $this->currentPanel = $panel;
-        }
-
-        return $this->panels[$this->currentPanel];
+        return $this->panels[$panel] = new Panel($panel);
     }
 
-    public function panels(string $panel = null): PanelHook|array
+    public function find(string $panel): Panel
     {
-        if (is_null($panel)) {
-            return $this->panels;
-        }
-
-        return $this->panels[$panel] ??= new PanelHook($panel);
+        return $this->panels[$panel];
     }
 
-    public function usePanelRoutes()
+    public function panels(): array
+    {
+        return $this->panels;
+    }
+
+    public function getCurrentPanel(): Panel
+    {
+        return $this->find($this->currentPanel);
+    }
+
+    public function setCurrentPanel(string $panel): void
+    {
+        $this->currentPanel = $panel;
+    }
+
+    public function usePanelRoutes(): void
     {
         foreach ($this->panels() as $panel) {
             $route = Route::middleware($panel->middleware());

@@ -3,6 +3,7 @@
     'type' => null,
     'dismissible' => false,
     'subtitle',
+    'icon',
 ])
 
 @php
@@ -20,11 +21,16 @@
 @endphp
 
 <div {{ $attributes
-    ->class('fd-rounded fd-font-medium')
+    ->class('fd-flex fd-items-center fd-gap-3 fd-rounded fd-font-medium')
     ->class($colorClasses)
     ->class($typeClasses) }}>
-    <div>{{ $slot }}</div>
-    @if ($subtitle ?? false && $subtitle->isNotEmpty())
-        <div class="fd-text-sm fd-font-normal">{{ $subtitle }}</div>
+    @if ($icon ?? null)
+        <x-dynamic-component component="feadmin::icons.{{ $icon }}" class="fd-w-5 fd-h-5" />
     @endif
+    <div>
+        <div>{{ $slot }}</div>
+        @if ($subtitle ?? false && $subtitle->isNotEmpty())
+            <div class="fd-text-sm fd-font-normal">{{ $subtitle }}</div>
+        @endif
+    </div>
 </div>

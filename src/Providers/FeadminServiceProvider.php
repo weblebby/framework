@@ -2,6 +2,8 @@
 
 namespace Feadmin\Providers;
 
+use Feadmin\Console\Commands\InstallFeadmin;
+use Feadmin\Facades\Extension;
 use Feadmin\Facades\Localization;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
@@ -18,6 +20,7 @@ class FeadminServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->register(EventServiceProvider::class);
+        $this->app->register(FortifyServiceProvider::class);
     }
 
     /**
@@ -29,13 +32,14 @@ class FeadminServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->bootPublishes();
-
-            return;
+            $this->bootCommands();
+        } else {
+            $this->bootViews();
+            $this->bootLocalization();
+            $this->bootGates();
         }
 
-        $this->bootViews();
-        $this->bootLocalization();
-        $this->bootGates();
+        Extension::boot();
     }
 
     private function bootViews(): void
@@ -84,5 +88,16 @@ class FeadminServiceProvider extends ServiceProvider
         $this->publishes([
             dirname(__DIR__) . '/../database/migrations' => database_path('migrations'),
         ], ['feadmin-migrations', 'migrations']);
+
+        $this->publishes([
+            dirname(__DIR__) . '/../config/feadmin.php' => config_path('feadmin.php'),
+        ], ['feadmin-config', 'config']);
+    }
+
+    public function bootCommands(): void
+    {
+        $this->commands([
+            InstallFeadmin::class,
+        ]);
     }
 }

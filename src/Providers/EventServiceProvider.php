@@ -3,6 +3,8 @@
 namespace Feadmin\Providers;
 
 use Feadmin\Listeners\DeleteOriginalMedia;
+use App\Models\User;
+use Feadmin\Observers\UserObserver;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Spatie\MediaLibrary\Conversions\Events\ConversionHasBeenCompleted;
 
@@ -17,6 +19,15 @@ class EventServiceProvider extends ServiceProvider
         ConversionHasBeenCompleted::class => [
             DeleteOriginalMedia::class,
         ],
+    ];
+
+    /**
+     * The model observers for your application.
+     *
+     * @var array
+     */
+    protected $observers = [
+        User::class => [UserObserver::class],
     ];
 
     /**

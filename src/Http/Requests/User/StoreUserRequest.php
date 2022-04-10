@@ -26,8 +26,7 @@ class StoreUserRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'first_name' => ['required', 'string', 'max:191'],
-            'last_name' => ['required', 'string', 'max:191'],
+            'name' => ['required', 'string', 'max:191'],
             'email' => ['required', 'string', 'email', 'max:191'],
         ];
 

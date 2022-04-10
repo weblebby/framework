@@ -50,8 +50,7 @@ class UserController extends Controller
          */
         info($password);
 
-        return redirect()
-            ->route('admin::users.index')
+        return to_panel_route('users.index')
             ->with('success', t('Kullanıcı oluşturuldu', 'panel'));
     }
 
@@ -71,8 +70,7 @@ class UserController extends Controller
         $user->update($request->validated());
         $user->syncRoles($request->role);
 
-        return redirect()
-            ->route('admin::users.index')
+        return to_panel_route('users.index')
             ->with('message', t('Kullanıcı güncellendi', 'panel'));
     }
 
@@ -82,8 +80,7 @@ class UserController extends Controller
 
         $user->delete();
 
-        return redirect()
-            ->route('admin::users.index')
+        return to_panel_route('users.index')
             ->with('message', t('Kullanıcı silindi', 'panel'));
     }
 }

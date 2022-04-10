@@ -18,7 +18,7 @@ class ExtensionPreferenceController extends Controller
             abort(404);
         }
 
-        return redirect()->route('admin::extensions.preferences.show', [$namespace, key($preferences)]);
+        return to_panel_route('extensions.preferences.show', [$namespace, key($preferences)]);
     }
 
     public function show(string $id, string $bag): View

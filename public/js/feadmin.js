@@ -143,7 +143,7 @@ document.querySelectorAll('[data-form-image]').forEach(function (element) {
 
       imgElem = document.createElement('img');
       imgElem.src = reader.result;
-      imgElem.classList.add('w-full', 'h-full', 'object-cover');
+      imgElem.classList.add('fd-w-full', 'fd-h-full', 'fd-object-cover');
       element.querySelector('[data-image-wrapper]').appendChild(imgElem);
     };
   });
@@ -177,9 +177,9 @@ document.querySelectorAll('[data-translation-input]').forEach(function (input) {
         return;
       }
 
-      input.classList.add('ring', 'ring-green-500', 'ring-offset-2');
+      input.classList.add('fd-ring', 'fd-ring-green-500', 'fd-ring-offset-2');
       setTimeout(function () {
-        input.classList.remove('ring', 'ring-green-500', 'ring-offset-2');
+        input.classList.remove('fd-ring', 'fd-ring-green-500', 'fd-ring-offset-2');
       }, 1000);
     });
   });
@@ -199,7 +199,7 @@ var Modal = {
 
     var detail = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     modal.style.removeProperty('display');
-    document.body.classList.add('overflow-hidden');
+    document.body.classList.add('fd-overflow-hidden');
 
     if ((_detail$related = detail.related) !== null && _detail$related !== void 0 && (_detail$related$datas = _detail$related.dataset) !== null && _detail$related$datas !== void 0 && _detail$related$datas.action) {
       this.setFormAction(modal, detail.related);
@@ -212,7 +212,7 @@ var Modal = {
   close: function close(modal) {
     var detail = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     modal.style.setProperty('display', 'none');
-    document.body.classList.remove('overflow-hidden');
+    document.body.classList.remove('fd-overflow-hidden');
     modal.dispatchEvent(new CustomEvent('modal.close', {
       detail: detail
     }));

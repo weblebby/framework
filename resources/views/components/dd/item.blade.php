@@ -16,7 +16,7 @@
                         icon="x"
                         variant="red"
                         data-modal-open="#modal-delete-item"
-                        :data-action="route('admin::navigations.items.destroy', [$item->navigation_id, $item->id])"
+                        :data-action="panel_route('navigations.items.destroy', [$item->navigation_id, $item->id])"
                     />
                 @endif
             </div>

@@ -33,7 +33,7 @@ class LocalizationService
     {
         $this->groups = collect();
 
-        $this->allLocales = collect(config('laravellocalization.allLocales'))
+        $this->allLocales = collect(config('feadmin.all_locales'))
             ->map(function ($locale, $code) {
                 $locale['code'] = $code;
 
@@ -115,6 +115,11 @@ class LocalizationService
         return $this->getCurrentLocale()->id;
     }
 
+    public function getLocale(string $code): object
+    {
+        return $this->getAvailableLocales()->firstWhere('code', $code);
+    }
+
     public function getAvailableLocales(): Collection
     {
         return $this->availableLocales;
@@ -123,11 +128,6 @@ class LocalizationService
     public function getAllLocales(): Collection
     {
         return $this->allLocales;
-    }
-
-    public function getLocale(string $code): object
-    {
-        return $this->getAvailableLocales()->firstWhere('code', $code);
     }
 
     public function getRemainingLocales(): Collection
@@ -174,16 +174,6 @@ class LocalizationService
         return $this->groups;
     }
 
-    private function setDefaultLocale(): void
-    {
-        $this->defaultLocale = $this->getAvailableLocales()
-            ->firstWhere('is_default', true) ?? (object) [
-                'id' => -1,
-                'code' => 'tr',
-                'is_default' => 1,
-            ];
-    }
-
     public function setCurrentLocale(string $locale): void
     {
         app()->setLocale($locale);
@@ -195,6 +185,16 @@ class LocalizationService
         ]);
 
         $this->currentLocale = $preferredLocale ?? $this->defaultLocale;
+    }
+
+    private function setDefaultLocale(): void
+    {
+        $this->defaultLocale = $this->getAvailableLocales()
+            ->firstWhere('is_default', true) ?? (object) [
+                'id' => -1,
+                'code' => 'tr',
+                'is_default' => 1,
+            ];
     }
 
     private function getPreferredLocale(array $priorities): ?object

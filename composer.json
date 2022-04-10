@@ -36,6 +36,7 @@
             "aliases": {
                 "Feadmin": "Feadmin\\Facades\\Feadmin",
                 "Localization": "Feadmin\\Facades\\Localization",
+                "Extension": "Feadmin\\Facades\\Extension",
                 "FormComponent": "Feadmin\\Facades\\FormComponent"
             }
         }

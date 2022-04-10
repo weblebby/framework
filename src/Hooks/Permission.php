@@ -2,7 +2,7 @@
 
 namespace Feadmin\Hooks;
 
-class PermissionHook
+class Permission
 {
     private string $lastGroup;
 

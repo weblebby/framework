@@ -38,7 +38,7 @@
             <div class="fd-grid fd-grid-cols-9 fd-gap-3">
                 @if ($selectedNavigation ?? null)
                     @can('navigation:update')
-                        <x-feadmin::form class="fd-col-span-3" :action="route('admin::navigations.update', $selectedNavigation)" method="PUT">
+                        <x-feadmin::form class="fd-col-span-3" :action="panel_route('navigations.update', $selectedNavigation)" method="PUT">
                             <x-feadmin::card class="fd-space-y-3" padding>
                                 <x-feadmin::form.group name="title">
                                     <x-feadmin::form.label>@t('Başlık', 'panel')</x-feadmin::form.label>
@@ -87,7 +87,7 @@
                         <x-feadmin::link-card>
                             @foreach ($navigations as $navigation)
                                 <x-feadmin::link-card.item
-                                    :href="route('admin::navigations.show', $navigation)"
+                                    :href="panel_route('navigations.show', $navigation)"
                                     :active="$navigation->id === ($selectedNavigation->id ?? null)"
                                 >{{ $navigation->title }}</x-feadmin::link-card.item>
                             @endforeach
@@ -110,10 +110,10 @@
         <x-feadmin::drawer id="drawer-create-menu-item">
             <x-feadmin::drawer.header :title="t('Yeni öğe ekle', 'panel')" />
             <x-feadmin::form
-                :action="route('admin::navigations.items.store', $selectedNavigation)"
+                :action="panel_route('navigations.items.store', $selectedNavigation)"
                 bag="item"
                 class="fd-space-y-3"
-                :data-edit-action="route('admin::navigations.items.update', [$selectedNavigation, ':id'])"
+                :data-edit-action="panel_route('navigations.items.update', [$selectedNavigation, ':id'])"
             >
                 <input type="hidden" name="parent_id" value={{ old('parent_id') }}>
                 <x-feadmin::form.group name="title">
@@ -175,12 +175,12 @@
         <x-feadmin::modal.destroy
             id="modal-delete-navigation"
             :title="t('Menüyü sil', 'panel')"
-            :action="route('admin::navigations.destroy', $selectedNavigation)"
+            :action="panel_route('navigations.destroy', $selectedNavigation)"
         />
     @endif
     <x-feadmin::drawer id="drawer-create-navigation">
         <x-feadmin::drawer.header :title="t('Yeni menü', 'panel')" />
-        <x-feadmin::form class="fd-space-y-3" :action="route('admin::navigations.store')">
+        <x-feadmin::form class="fd-space-y-3" :action="panel_route('navigations.store')">
             <x-feadmin::form.group name="title">
                 <x-feadmin::form.label>@t('Başlık', 'panel')</x-feadmin::form.label>
                 <x-feadmin::form.input

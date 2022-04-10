@@ -5,13 +5,13 @@ namespace Feadmin\Hooks;
 use Feadmin\Facades\Preference;
 use Illuminate\Support\Collection;
 
-class PreferenceGroupHook
+class PreferenceBag
 {
     protected string $lastNamespace;
 
     protected array $namespaces = [];
 
-    public function namespace(string $id)
+    public function namespace(string $id): self
     {
         $this->lastNamespace = $id;
         $this->namespaces[$this->lastNamespace] ??= [];
@@ -19,19 +19,20 @@ class PreferenceGroupHook
         return $this;
     }
 
-    public function group(string $id, string $title, float $position = null): self
+    public function bag(string $id, string $title, float $position = null): self
     {
         $this->namespaces[$this->lastNamespace][$id] = [
             'title' => $title,
             'position' => is_null($position)
                 ? (count($this->namespaces[$this->lastNamespace] ?? []) * 10)
                 : $position,
+            'permission' => "preference:{$id}.{$this->lastNamespace}",
         ];
 
         return $this;
     }
 
-    public function field(string $group, string $key): ?array
+    public function field(string $bag, string $key): ?array
     {
         $preferences = $this->get();
 
@@ -39,32 +40,39 @@ class PreferenceGroupHook
             return null;
         }
 
-        $group = $preferences[$group] ?? null;
+        $bag = $preferences[$bag] ?? null;
 
-        if (is_null($group)) {
+        if (is_null($bag)) {
             return null;
         }
 
-        return head(array_filter($group['fields'], function ($field) use ($key) {
+        return head(array_filter($bag['fields'], function ($field) use ($key) {
             return $field['key'] === $key;
         }));
     }
 
-    public function fields(string $group): Collection
+    public function fields(string $bag): Collection
     {
-        return collect($this->get()[$group]['fields'] ?? [])
+        return collect($this->get()[$bag]['fields'] ?? [])
             ->sortBy('position')
             ->values();
     }
 
     public function getAll(): array
     {
-        return $this->namespaces;
+        return collect($this->namespaces)
+            ->map(function ($preferences) {
+                return array_filter(
+                    $preferences,
+                    fn ($item) => auth()->check() && auth()->user()->can($item['permission'])
+                );
+            })
+            ->toArray();
     }
 
     public function get(): array
     {
-        return collect($this->namespaces[$this->lastNamespace])
+        return collect($this->getAll()[$this->lastNamespace])
             ->sortBy('position')
             ->map(function ($preference, $namespace) {
                 $rest = Preference::hook()->namespaces($this->lastNamespace)[$namespace] ?? null;

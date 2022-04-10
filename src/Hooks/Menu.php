@@ -5,7 +5,7 @@ namespace Feadmin\Hooks;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
-class MenuHook
+class Menu
 {
     private string $lastLocation;
 

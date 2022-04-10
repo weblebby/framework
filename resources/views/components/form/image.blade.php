@@ -2,7 +2,7 @@
 @props(['name', 'image'])
 
 <label class="fd-rounded-lg fd-overflow-hidden fd-block fd-cursor-pointer fd-relative" data-form-image>
-    <input type="file" name="{{ $name }}" class="hidden" />
+    <input type="file" name="{{ $name }}" class="fd-hidden" />
     <div class="fd-h-60" data-image-wrapper>
         @if ($image ?? null)
             <img class="fd-w-full fd-h-full fd-object-cover" src="{{ $image }}">

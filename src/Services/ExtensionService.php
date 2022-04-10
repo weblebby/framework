@@ -12,50 +12,23 @@ class ExtensionService
 {
     private Collection $extensions;
 
-    public function registerAllExtensions(): void
+    public function boot(): void
     {
-        $extensions = File::directories(app_path('Extensions'));
+        $extensions = File::directories(base_path('extensions'));
 
         $this->extensions = collect($extensions)->map(function ($extension) {
             return $this->getExtension($extension);
         });
     }
 
-    public function get(): Collection
+    public function enabled(): Collection
     {
         return $this->extensions->where('is_enabled', true);
     }
 
-    public function all(): Collection
+    public function get(): Collection
     {
         return $this->extensions;
-    }
-
-    public function has(): bool
-    {
-        return $this->extensions->where('id', 'form')->isNotEmpty();
-    }
-
-    private function getExtension(string $directory): Extension
-    {
-        $name = basename($directory);
-        $namespace = $this->getNamespace($name);
-
-        $extension = new $namespace($name);
-
-        $extension->register();
-
-        if ($extension->is_enabled) {
-            $extension->booting();
-            $this->registerViews($extension);
-        }
-
-        return $extension;
-    }
-
-    private function getNamespace(string $directory): string
-    {
-        return "App\\Extensions\\{$directory}\\{$directory}Extension";
     }
 
     public function registerRoutes(Extension $extension): void
@@ -75,6 +48,29 @@ class ExtensionService
                 ->name("{$extension->id}::admin.")
                 ->group($extension->path('Routes/admin.php'));
         }
+    }
+
+    private function getExtension(string $directory): Extension
+    {
+        $name = basename($directory);
+        $namespace = $this->getNamespace($name);
+
+        $extension = new $namespace($name);
+
+        $extension->register();
+
+        if ($extension->is_enabled) {
+            $extension->booting();
+
+            $this->registerViews($extension);
+        }
+
+        return $extension;
+    }
+
+    private function getNamespace(string $directory): string
+    {
+        return "Extensions\\{$directory}\\{$directory}Extension";
     }
 
     private function registerViews(Extension $extension): void

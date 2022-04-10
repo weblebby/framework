@@ -1,6 +1,6 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
-        <x-feadmin::page.head :back="route('admin::roles.index')">
+        <x-feadmin::page.head :back="panel_route('roles.index')">
             <x-feadmin::page.title>{{ $role->name }}</x-feadmin::page.title>
         </x-feadmin::page.head>
         @if ($role->is_default)
@@ -11,7 +11,7 @@
                 @endif
             </x-feadmin::alert>
         @else
-            <x-feadmin::form class="fd-space-y-3" :bind="$role" :action="route('admin::roles.update', $role)" method="PUT">
+            <x-feadmin::form class="fd-space-y-3" :bind="$role" :action="panel_route('roles.update', $role)" method="PUT">
                 <x-feadmin::card class="fd-space-y-3" padding>
                     <x-feadmin::form.group name="name">
                         <x-feadmin::form.label>@t('Rol adı', 'panel')</x-feadmin::form.label>
@@ -19,7 +19,7 @@
                     </x-feadmin::form.group>
                 </x-feadmin::card>
                 <x-feadmin::card class="fd-space-y-5" padding>
-                    @foreach (Feadmin::panel()->permissions()->get() as $key => $group)
+                    @foreach (panel()->permission()->get() as $key => $group)
                         <div>
                             <h3 class="fd-text-lg fd-font-medium fd-leading-none">{{ $group['title'] }}</h3>
                             @if ($group['description'] ?? null)
