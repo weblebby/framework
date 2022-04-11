@@ -2,6 +2,7 @@
 
 namespace Feadmin;
 
+use Feadmin\Facades\Extension;
 use Feadmin\Hooks\Panel;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,25 @@ class Feadmin
                 require __DIR__ . '/../routes/feadmin.php';
             });
         }
+    }
+
+    public function useExtensionRoutes(): void
+    {
+        Extension::get()->each(function ($extension) {
+            $extension->routes();
+        });
+    }
+
+    public function useWebRoutes(): void
+    {
+        Route::middleware('web')->group(__DIR__ . '/../routes/web.php');
+    }
+
+    public function useRoutes(): void
+    {
+        $this->usePanelRoutes();
+        $this->useExtensionRoutes();
+        $this->useWebRoutes();
     }
 
     public function version(): string

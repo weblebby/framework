@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Feadmin\Http\Requests\User\StoreNavigationItemRequest;
 use Feadmin\Models\Navigation;
 use Feadmin\Models\NavigationItem;
-use Core\Enums\NavigationTypeEnum;
+use Feadmin\Enums\NavigationTypeEnum;
 use Illuminate\Http\RedirectResponse;
 
 class NavigationItemController extends Controller

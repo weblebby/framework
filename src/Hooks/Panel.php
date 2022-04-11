@@ -28,9 +28,9 @@ class Panel
     {
         $this->name = $name;
 
-        $this->menu = new Menu();
-        $this->preference = new PreferenceBag();
-        $this->permission = new Permission();
+        $this->menu = new Menu($this);
+        $this->preference = new PreferenceBag($this);
+        $this->permission = new Permission($this);
     }
 
     public function menu(string $location = null): Menu

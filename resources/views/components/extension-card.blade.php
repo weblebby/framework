@@ -10,7 +10,7 @@
             @can('extension:update')
                 <x-feadmin::button icon="check" variant="green" size="sm">@t('Etkin', 'panel')</x-feadmin::button>
             @endcan
-            @if (PreferenceManager::namespaces($extension->id))
+            @if (panel()->preference($extension->id)->get())
                 <x-feadmin::button as="a" :href="panel_route('extensions.preferences.index', $extension->id)" icon="gear-fill" />
             @endif
         @else

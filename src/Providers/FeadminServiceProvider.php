@@ -39,7 +39,7 @@ class FeadminServiceProvider extends ServiceProvider
             $this->bootGates();
         }
 
-        Extension::boot();
+        Extension::start();
     }
 
     private function bootViews(): void

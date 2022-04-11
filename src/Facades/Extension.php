@@ -5,7 +5,7 @@ namespace Feadmin\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static void boot()
+ * @method static void start()
  * @method static \Illuminate\Support\Collection enabled()
  * @method static \Illuminate\Support\Collection get()
  * 

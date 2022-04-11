@@ -2,10 +2,10 @@
 
 namespace Feadmin\Http\Requests\User;
 
-use Core\Enums\NavigationTypeEnum;
-use Core\Facades\NavigationLinkableManager;
+use Feadmin\Enums\NavigationTypeEnum;
+use Feadmin\Facades\NavigationLinkable;
 use Feadmin\Models\NavigationItem;
-use Core\Services\NavigationService;
+use Feadmin\Services\NavigationService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -82,7 +82,7 @@ class StoreNavigationItemRequest extends FormRequest
     protected function prepareForLinkable(): void
     {
         $json = json_decode($this->linkable);
-        $linkable = NavigationLinkableManager::linkables()->firstWhere('id', $json->linkable_type);
+        $linkable = NavigationLinkable::linkables()->firstWhere('id', $json->linkable_type);
 
         $this->merge([
             'type' => NavigationTypeEnum::LINKABLE,
@@ -117,7 +117,7 @@ class StoreNavigationItemRequest extends FormRequest
             ->smartMenuItems()
             ->pluck('id');
 
-        $models = NavigationLinkableManager::linkables()->pluck('model');
+        $models = NavigationLinkable::linkables()->pluck('model');
         $model = $models->filter(fn ($model) => $model === $this->linkable_type)->first();
 
         return [

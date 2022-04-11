@@ -7,9 +7,32 @@ use Illuminate\Support\Collection;
 
 class PreferenceBag
 {
+    private Panel $panel;
+
     protected string $lastNamespace;
 
     protected array $namespaces = [];
+
+    private bool $authorization = true;
+
+    public function __construct(Panel $panel)
+    {
+        $this->panel = $panel;
+    }
+
+    public function checkAuthorization(): self
+    {
+        $this->authorization = true;
+
+        return $this;
+    }
+
+    public function ignoreAuthorization(): self
+    {
+        $this->authorization = false;
+
+        return $this;
+    }
 
     public function namespace(string $id): self
     {
@@ -26,7 +49,7 @@ class PreferenceBag
             'position' => is_null($position)
                 ? (count($this->namespaces[$this->lastNamespace] ?? []) * 10)
                 : $position,
-            'permission' => "preference:{$id}.{$this->lastNamespace}",
+            'permission' => "preference:{$this->lastNamespace}.{$id}",
         ];
 
         return $this;
@@ -60,6 +83,10 @@ class PreferenceBag
 
     public function getAll(): array
     {
+        if (!$this->authorization) {
+            return $this->namespaces;
+        }
+
         return collect($this->namespaces)
             ->map(function ($preferences) {
                 return array_filter(
@@ -105,7 +132,7 @@ class PreferenceBag
         return collect($this->getAll())
             ->map(fn ($preferences, $namespace) => $map($preferences, $namespace))
             ->collapse()
-            ->sortByDesc(fn ($_, $key) => str_starts_with($key, 'core.'));
+            ->sortByDesc(fn ($_, $key) => str_starts_with($key, 'default.'));
     }
 
     public function toDottedAll(): Collection

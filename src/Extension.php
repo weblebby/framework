@@ -11,8 +11,6 @@ abstract class Extension implements Arrayable
 {
     protected array $attributes = [];
 
-    protected array $routes = [];
-
     public function __construct(string $name)
     {
         $this->id = Str::kebab($name);
@@ -58,14 +56,14 @@ abstract class Extension implements Arrayable
         return "extensions/{$this->name}/{$append}";
     }
 
+    public function asset(string $asset): string
+    {
+        return route('ext-asset', [$this->id, $asset]);
+    }
+
     public function namespace(string $append = ''): string
     {
         return "Extensions\\{$this->name}\\{$append}";
-    }
-
-    public function routes(): array
-    {
-        return $this->routes;
     }
 
     public function title(string $singular, string $plural): self
@@ -113,6 +111,11 @@ abstract class Extension implements Arrayable
     public function toArray(): array
     {
         return $this->attributes;
+    }
+
+    public function routes(): void
+    {
+        //
     }
 
     public function register(): void

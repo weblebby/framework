@@ -37,7 +37,8 @@
                 "Feadmin": "Feadmin\\Facades\\Feadmin",
                 "Localization": "Feadmin\\Facades\\Localization",
                 "Extension": "Feadmin\\Facades\\Extension",
-                "FormComponent": "Feadmin\\Facades\\FormComponent"
+                "FormComponent": "Feadmin\\Facades\\FormComponent",
+                "NavigationLinkable": "Feadmin\\Facades\\NavigationLinkable"
             }
         }
     }

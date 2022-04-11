@@ -3,6 +3,7 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Feadmin\Facades\Extension;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -21,11 +22,7 @@ class ExtensionController extends Controller
     {
         $this->authorize('extension:update');
 
-        extensions()
-            ->all()
-            ->where('id', $id)
-            ->firstOrFail()
-            ->enable();
+        Extension::get()->firstOrFail('id', $id)->enable();
 
         return back()->with('message', t('Eklenti aktifleştirildi', 'panel'));
     }
@@ -34,11 +31,7 @@ class ExtensionController extends Controller
     {
         $this->authorize('extension:update');
 
-        extensions()
-            ->all()
-            ->where('id', $id)
-            ->firstOrFail()
-            ->disable();
+        Extension::get()->firstOrFail('id', $id)->disable();
 
         return back()->with('message', t('Eklenti devre dışı bırakıldı', 'panel'));;
     }

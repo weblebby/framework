@@ -36,24 +36,39 @@ class Preference
         return $this;
     }
 
-    public function bag(string $id, string $title = null, float $position = null): self|array
+    public function bag(string $bag): self
     {
-        $this->lastBag = $id;
-
-        if (is_null($title)) {
-            return $this;
-        }
-
-        $this->namespaces[$this->lastNamespace][$this->lastBag] = [
-            'title' => $title,
-            'fields' => [],
-            'position' => is_null($position)
-                ? (count($this->namespaces[$this->lastNamespace] ?? []) * 10)
-                : $position,
-        ];
+        $this->lastBag = $bag;
+        $this->namespaces[$this->lastNamespace][$this->lastBag] ??= [];
 
         return $this;
     }
+
+    public function create(string $namespace, string $bag): self
+    {
+        $this->namespace($namespace)->bag($bag);
+
+        return $this;
+    }
+
+    // public function bag(string $id, string $title = null, float $position = null): self|array
+    // {
+    //     $this->lastBag = $id;
+
+    //     if (is_null($title)) {
+    //         return $this;
+    //     }
+
+    //     $this->namespaces[$this->lastNamespace][$this->lastBag] = [
+    //         'title' => $title,
+    //         'fields' => [],
+    //         'position' => is_null($position)
+    //             ? (count($this->namespaces[$this->lastNamespace] ?? []) * 10)
+    //             : $position,
+    //     ];
+
+    //     return $this;
+    // }
 
     public function namespaces(string $namespace = null): ?array
     {

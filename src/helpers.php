@@ -43,3 +43,10 @@ function to_panel_route($route, $parameters = [], $status = 302, $headers = []):
 {
     return panel()->toRoute($route, $parameters, $status, $headers);
 }
+
+function ext_asset(string $raw): string
+{
+    [$extension, $asset] = explode('::', $raw);
+
+    return route('ext-asset', [$extension, $asset]);
+}

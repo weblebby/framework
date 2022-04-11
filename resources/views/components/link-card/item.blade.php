@@ -7,7 +7,7 @@
 
 <div class="fd-relative fd-group">
     <{{ $as }} {{ $attributes
-        ->class('fd-py-2 fd-px-4 fd-flex fd-items-center fd-gap-2')
+        ->class('fd-w-full fd-py-2 fd-px-4 fd-flex fd-items-center fd-gap-2')
         ->class($active ? 'fd-bg-zinc-100 fd-text-zinc-700 fd-font-medium' : 'hover:fd-bg-zinc-100 fd-transition-colors')
         ->class($as !== 'div' ? 'fd-cursor-pointer' : '') }}
     >

@@ -5,7 +5,7 @@ namespace Feadmin\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \Feadmin\Hooks\Preference namespace(string $namespace)
+ * @method static \Feadmin\Hooks\Preference hook()
  * @method static mixed get(string $rawKey, mixed $default = null)
  * @method static array set(array $data)
  * 

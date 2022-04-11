@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Facade;
  * @method static void setCurrentPanel(string $panel)
  * @method static \Feadmin\Hooks\Panel getCurrentPanel()
  * @method static void usePanelRoutes()
+ * @method static void useExtensionRoutes()
+ * @method static void useWebRoutes()
+ * @method static void useRoutes()
  * @method static string version()
  * 
  * @see \Feadmin\Feadmin

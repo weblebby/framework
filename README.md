@@ -37,7 +37,24 @@ $this->routes(function () {
 
 'web' grubu içerisine \Feadmin\Http\Middleware\Panel::class middleware ını ekleyin.
 
-6. Eğer eklentileri kullanmak isterseniz.
+6. Yetikler
+
+Varsayılan yetkilerin yönetimini panele eklemek isterseniz yeni bir middleware oluşturup bu kodu yazın. İstediğiniz kısımları "false" yaparak listeden kaldırabilirsiniz.
+
+Önemli: Bu middleware in Panel middleware inden sonra gelmesine dikkat edin.
+
+````
+panel()->permission()->defaults(
+    preferences: true,
+    locales: true,
+    users: true,
+    roles: true,
+    extensions: true,
+    navigations: true,
+);
+```
+
+7. Eğer eklentileri kullanmak isterseniz.
 
 ```
 {

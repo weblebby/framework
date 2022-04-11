@@ -1,5 +1,5 @@
 <x-feadmin::layouts.panel>
-    <x-slot name="scripts">
+    <x-slot:scripts>
         <script src="{{ mix('js/navigation.js', 'vendor/feadmin') }}"></script>
         <script>
             @if ($errors->item->any())
@@ -12,11 +12,11 @@
                 })
             @endif
         </script>
-    </x-slot>
+    </x-slot:scripts>
     <x-feadmin::page>
         @if ($selectedNavigation ?? null)
             <x-feadmin::page.head>
-                <x-slot name="actions">
+                <x-slot:actions>
                     @can('navigation:delete')
                         <x-feadmin::button
                             size="sm"
@@ -25,7 +25,7 @@
                             data-modal-open="#modal-delete-navigation"
                         >@t('Sil', 'panel')</x-feadmin::button>
                     @endcan
-                </x-slot>
+                </x-slot:actions>
                 <x-feadmin::page.title>{{ $selectedNavigation->title }}</x-feadmin::page.title>
             </x-feadmin::page.head>
         @else
@@ -144,7 +144,7 @@
                         <x-feadmin::form.select>
                             <x-feadmin::form.option value="">@t('Manuel bağlantı', 'panel')</x-feadmin::form.option>
                             <x-feadmin::form.option value="homepage">@t('Ana sayfa', 'panel')</x-feadmin::form.option>
-                            @foreach (NavigationLinkableManager::linkables() as $linkable)
+                            @foreach (NavigationLinkable::linkables() as $linkable)
                                 <optgroup label="{{ $linkable['title'] }}">
                                     @foreach ($linkable['links'] as $link)
                                         <x-feadmin::form.option value="{{ json_encode(['linkable_id' => $link->id, 'linkable_type' => $linkable['id']]) }}">{{ $link->title }}</x-feadmin::form.option>

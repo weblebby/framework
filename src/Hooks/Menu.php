@@ -7,11 +7,18 @@ use Illuminate\Support\Collection;
 
 class Menu
 {
+    private Panel $panel;
+
     private string $lastLocation;
 
     private string $lastCategory;
 
     private array $menus = [];
+
+    public function __construct(Panel $panel)
+    {
+        $this->panel = $panel;
+    }
 
     public function location(string $location): self
     {
@@ -48,7 +55,7 @@ class Menu
     {
         return collect($this->menus[$this->lastLocation])
             ->map(function ($location) {
-                $location['items'] = collect($location['items'])
+                $location['items'] = collect($location['items'] ?? [])
                     ->filter(fn ($item) => $this->userCanDisplay($item))
                     ->sortBy('position')
                     ->values();

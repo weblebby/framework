@@ -5,14 +5,13 @@ namespace Feadmin\Services;
 use Feadmin\Extension;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 
 class ExtensionService
 {
     private Collection $extensions;
 
-    public function boot(): void
+    public function start(): void
     {
         $extensions = File::directories(base_path('extensions'));
 
@@ -29,25 +28,6 @@ class ExtensionService
     public function get(): Collection
     {
         return $this->extensions;
-    }
-
-    public function registerRoutes(Extension $extension): void
-    {
-        if (in_array('web', $extension->routes())) {
-            Route::middleware('web')
-                ->name("{$extension->id}::")
-                ->group($extension->path('Routes/web.php'));
-        }
-
-        /**
-         * TODO: Middleware for admin routes
-         */
-        if (in_array('admin', $extension->routes())) {
-            Route::middleware(['web', 'auth'])
-                ->prefix('admin')
-                ->name("{$extension->id}::admin.")
-                ->group($extension->path('Routes/admin.php'));
-        }
     }
 
     private function getExtension(string $directory): Extension
