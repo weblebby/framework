@@ -3,12 +3,15 @@
 namespace Feadmin;
 
 use Feadmin\Facades\Feadmin;
+use Feadmin\Hooks\Panel;
 
 class Features
 {
-    public static function enabled(string $feature, string $panel): bool
+    public static function enabled(string $feature, Panel|string $panel): bool
     {
-        $features = Feadmin::find($panel)->features();
+        $features = $panel instanceof Panel
+            ? $panel->features()
+            : Feadmin::find($panel)->features();
 
         return in_array($feature, $features);
     }
