@@ -12935,7 +12935,7 @@ var Navigation = {
     var manuel = document.querySelector('[data-manuel-item]');
     var smart = document.querySelector('[data-smart-item]');
 
-    if (is_smart_menu.checked) {
+    if (item_is_smart_menu.checked) {
       manuel.classList.add('fd-hidden');
       smart.classList.remove('fd-hidden');
     } else {
@@ -12945,7 +12945,7 @@ var Navigation = {
   },
   handleLinkable: function handleLinkable() {
     var link = document.querySelector('[data-form-group="link"]');
-    linkable.value === '' ? link.classList.remove('fd-hidden') : link.classList.add('fd-hidden');
+    item_linkable.value === '' ? link.classList.remove('fd-hidden') : link.classList.add('fd-hidden');
   }
 };
 drawer.addEventListener('drawer.open', function (_ref) {
@@ -12984,14 +12984,14 @@ drawer.addEventListener('drawer.open', function (_ref) {
     }
 
     if ((item === null || item === void 0 ? void 0 : item.type) === 1) {
-      linkable.value = 'homepage';
+      item_linkable.value = 'homepage';
     } else if ((item === null || item === void 0 ? void 0 : item.type) === 2) {
-      linkable.value = JSON.stringify({
+      item_linkable.value = JSON.stringify({
         linkable_id: item === null || item === void 0 ? void 0 : item.linkable_id,
         linkable_type: item === null || item === void 0 ? void 0 : item.linkable_type
       });
     } else {
-      linkable.value = '';
+      item_linkable.value = '';
     }
   }
 
@@ -13001,8 +13001,8 @@ drawer.addEventListener('drawer.open', function (_ref) {
 drawer.addEventListener('drawer.hidden', function () {
   return parentIdInput.value = '';
 });
-is_smart_menu.addEventListener('change', Navigation.handleIsSmartMenu);
-linkable.addEventListener('change', Navigation.handleLinkable);
+item_is_smart_menu.addEventListener('change', Navigation.handleIsSmartMenu);
+item_linkable.addEventListener('change', Navigation.handleLinkable);
 dd.querySelectorAll('[data-toggle="edit"]').forEach(function (button) {
   button.addEventListener('click', function () {
     var item = JSON.parse(button.dataset.item);

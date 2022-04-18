@@ -2,6 +2,7 @@
 
 namespace Feadmin\Hooks;
 
+use Feadmin\Items\PreferenceItem;
 use Illuminate\Support\Collection;
 
 class Preference
@@ -10,23 +11,7 @@ class Preference
 
     protected string $lastBag;
 
-    // protected bool $checkAbilities = true;
-
     protected array $namespaces = [];
-
-    // public function checkAbilities(): self
-    // {
-    //     $this->checkAbilities = true;
-
-    //     return $this;
-    // }
-
-    // public function ignoreAbilities(): self
-    // {
-    //     $this->checkAbilities = false;
-
-    //     return $this;
-    // }
 
     public function namespace(string $namespace): self
     {
@@ -46,44 +31,11 @@ class Preference
 
     public function create(string $namespace, string $bag): self
     {
-        $this->namespace($namespace)->bag($bag);
-
-        return $this;
+        return $this->namespace($namespace)->bag($bag);
     }
-
-    // public function bag(string $id, string $title = null, float $position = null): self|array
-    // {
-    //     $this->lastBag = $id;
-
-    //     if (is_null($title)) {
-    //         return $this;
-    //     }
-
-    //     $this->namespaces[$this->lastNamespace][$this->lastBag] = [
-    //         'title' => $title,
-    //         'fields' => [],
-    //         'position' => is_null($position)
-    //             ? (count($this->namespaces[$this->lastNamespace] ?? []) * 10)
-    //             : $position,
-    //     ];
-
-    //     return $this;
-    // }
 
     public function namespaces(string $namespace = null): ?array
     {
-        // if ($this->checkAbilities) {
-        //     $namespaces = collect($this->namespaces)
-        //         ->map(function ($preferences, $namespace) {
-        //             return array_filter($preferences, function ($preference, $key) use ($namespace) {
-        //                 return auth()->check() && auth()->user()->can("preference:{$namespace}.{$key}");
-        //             }, ARRAY_FILTER_USE_BOTH);
-        //         })
-        //         ->toArray();
-        // } else {
-        //     $namespaces = $this->namespaces;
-        // }
-
         $namespaces = $this->namespaces;
 
         if (is_null($namespace)) {
@@ -93,8 +45,12 @@ class Preference
         return $namespaces[$namespace] ?? null;
     }
 
-    public function add(array $field): self
+    public function add(PreferenceItem|array $field): self
     {
+        if ($field instanceof PreferenceItem) {
+            $field = $field->get();
+        }
+
         $this->namespaces = [
             ...$this->namespaces,
             $this->lastNamespace => [
@@ -125,9 +81,9 @@ class Preference
         return $this;
     }
 
-    public function field(string $bag, string $key): ?array
+    public function field(string $namespace, string $bag, string $key): array|bool|null
     {
-        $preferences = $this->namespaces($this->lastNamespace);
+        $preferences = $this->namespaces($namespace);
 
         if (is_null($preferences)) {
             return null;
@@ -144,9 +100,9 @@ class Preference
         }));
     }
 
-    public function fields(string $bag): Collection
+    public function fields(string $namespace, string $bag): Collection
     {
-        return collect($this->namespaces($this->lastNamespace)[$bag]['fields'])
+        return collect($this->namespaces($namespace)[$bag]['fields'])
             ->sortBy('position')
             ->values();
     }

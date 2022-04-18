@@ -9,7 +9,19 @@
                 :badge="$item['badge'] ?? null"
                 :href="$item['url']"
                 :active="$item['is_active']"
-            >{{ $item['title'] }}</x-feadmin::nav.item>
+            >
+            @if ($item['children'])
+                <x-slot:children>
+                    @foreach ($item['children'] as $child)
+                        <x-feadmin::nav.sub-item
+                            :href="$child['url']"
+                            :active="$child['is_active']"
+                        >{{ $child['title'] }}</x-feadmin::nav.sub-item>
+                    @endforeach
+                </x-slot:children>
+            @endif
+            {{ $item['title'] }}
+        </x-feadmin::nav.item>
         @endforeach
     </x-feadmin::nav>
 @endforeach

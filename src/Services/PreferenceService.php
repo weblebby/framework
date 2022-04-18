@@ -28,7 +28,8 @@ class PreferenceService
     {
         [$finded, $namespace, $bag, $key] = $this->find($rawKey);
 
-        $field = $this->hook()->namespace($namespace)->field($bag, $key);
+
+        $field = $this->hook()->field($namespace, $bag, $key);
         $value = $finded->value ?? ($field['default'] ?? $default);
 
         return match ($field['type'] ?? null) {
@@ -45,7 +46,7 @@ class PreferenceService
         foreach ($data as $rawKey => $value) {
             [$finded, $namespace, $bag, $key] = $this->find($rawKey);
 
-            $field = $this->hook()->namespace($namespace)->field($bag, $key);
+            $field = $this->hook()->field($namespace, $bag, $key);
             $valueless = $finded && $field['type'] === 'image';
 
             if (is_null($finded) && filled($value)) {

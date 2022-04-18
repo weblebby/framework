@@ -13,7 +13,12 @@
     {{ $slot }}
     <script>
         window.Feadmin = {
-            Translations: @json(Localization::getTranslationsForClient())
+            Translation: {
+                routes: {
+                    update: @json(panel_route('translations.store'))
+                },
+                list: @json(Localization::getTranslations())
+            }
         }
     </script>
     <script src="{{ mix('js/feadmin.js', 'vendor/feadmin') }}"></script>

@@ -20,9 +20,7 @@ class LocalizationService
 
     private object $currentLocale;
 
-    private object $translations;
-
-    private Collection $groups;
+    private array $translations = [];
 
     public function __construct()
     {
@@ -31,8 +29,6 @@ class LocalizationService
 
     public function load(): void
     {
-        $this->groups = collect();
-
         $this->allLocales = collect(config('feadmin.all_locales'))
             ->map(function ($locale, $code) {
                 $locale['code'] = $code;
@@ -41,63 +37,20 @@ class LocalizationService
             });
 
         $this->availableLocales = DB::table('locales')->get();
-        $this->translations = DB::table('locale_translations')->get();
 
         $this->setDefaultLocale();
         $this->setCurrentLocale(app()->getLocale());
-    }
-
-    public function get(
-        string $key,
-        string $group = 'default',
-        array $replace = [],
-        string $code = null
-    ): string|Collection {
-        $locale = $code ? $this->getLocale($code) : $this->getCurrentLocale();
-
-        $translation = $this->translations
-            ->where('group', $group)
-            ->where('key', $key)
-            ->where('locale_id', $locale->id)
-            ->first();
-
-        if (is_null($translation) && $locale->code !== 'tr') {
-            $translation = $this->translations
-                ->where('group', $group)
-                ->where('key', $key)
-                ->where('locale_id', $this->getDefaultLocaleId())
-                ->first();
-        }
-
-        $translated = $translation->value ?? $key;
-
-        foreach ($replace as $key => $value) {
-            $translated = str_replace(":{$key}", e($value), $translated);
-        }
-
-        return $translated;
-    }
-
-    public function getTranslations(): Collection
-    {
-        return $this->translations;
-    }
-
-    public function getTranslationsForClient(): Collection
-    {
-        return $this->getTranslations()
-            ->where('locale_id', $this->getCurrentLocaleId())
-            ->map(fn ($translation) => [
-                'group' => $translation->group,
-                'key' => $translation->key,
-                'value' => $translation->value,
-            ])
-            ->values();
+        $this->setTranslations();
     }
 
     public function getDefaultLocale(): object
     {
         return $this->defaultLocale;
+    }
+
+    public function getDefaultLocaleCode(): string
+    {
+        return $this->getDefaultLocale()->code;
     }
 
     public function getDefaultLocaleId(): int
@@ -108,6 +61,11 @@ class LocalizationService
     public function getCurrentLocale(): object
     {
         return $this->currentLocale;
+    }
+
+    public function getCurrentLocaleCode(): string
+    {
+        return $this->getCurrentLocale()->code;
     }
 
     public function getCurrentLocaleId(): int
@@ -148,6 +106,11 @@ class LocalizationService
         );
     }
 
+    public function getTranslations(): array
+    {
+        return $this->translations;
+    }
+
     public function display(string $code): string
     {
         return Locale::getDisplayName($code, $this->currentLocale->code);
@@ -164,16 +127,6 @@ class LocalizationService
         return datefmt_format($formatter, $date->getTimestamp());
     }
 
-    public function group(string $group, array $data): void
-    {
-        $this->groups[$group] = $data;
-    }
-
-    public function groups(): Collection
-    {
-        return $this->groups;
-    }
-
     public function setCurrentLocale(string $locale): void
     {
         app()->setLocale($locale);
@@ -185,6 +138,13 @@ class LocalizationService
         ]);
 
         $this->currentLocale = $preferredLocale ?? $this->defaultLocale;
+    }
+
+    private function setTranslations(): void
+    {
+        $translations = trans('*', locale: $this->getDefaultLocaleCode());
+
+        $this->translations = $translations === '*' ? [] : $translations;
     }
 
     private function setDefaultLocale(): void

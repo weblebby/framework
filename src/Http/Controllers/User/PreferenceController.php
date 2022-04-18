@@ -3,7 +3,7 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\Feadmin;
+use Feadmin\Facades\Preference;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -38,11 +38,9 @@ class PreferenceController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $bag, string $namespace = null): RedirectResponse
+    public function update(Request $request, string $namespace, string $bag): RedirectResponse
     {
-        $fields = panel()
-            ->preference($namespace ?: $this->namespace)
-            ->fields($bag);
+        $fields = Preference::hook()->fields($namespace, $bag);
 
         $validated = $request->validate(
             $fields->pluck('rules', 'name')->toArray()

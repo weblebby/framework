@@ -2,7 +2,7 @@ import api from './api'
 
 document.querySelectorAll('[data-translation-input]').forEach(input => {
     input.addEventListener('change', ({ target }) => {
-        api('/admin/translations', {
+        api(window.Feadmin.Translation.routes.update, {
             method: 'POST',
             body: JSON.stringify({
                 key: target.dataset.key,

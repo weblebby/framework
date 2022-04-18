@@ -8,15 +8,29 @@ class PreferenceItem
 
     private string $type;
 
-    private string $label;
+    private ?string $label = null;
+
+    private ?string $hint = null;
 
     private ?string $default = null;
 
     private array $rules = [];
 
+    private array $options = [];
+
     public static function text(string $key): static
     {
         return (new static($key))->type('text');
+    }
+
+    public static function tel(string $key): static
+    {
+        return (new static($key))->type('tel');
+    }
+
+    public static function number(string $key): static
+    {
+        return (new static($key))->type('number');
     }
 
     public static function textarea(string $key): static
@@ -68,7 +82,14 @@ class PreferenceItem
         return $this;
     }
 
-    public function default(string $default): self
+    public function hint(string $hint): self
+    {
+        $this->hint = $hint;
+
+        return $this;
+    }
+
+    public function default(?string $default): self
     {
         $this->default = $default;
 
@@ -82,14 +103,23 @@ class PreferenceItem
         return $this;
     }
 
+    public function options(array $options): self
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
     public function get(): array
     {
         return [
             'key' => $this->key,
             'type' => $this->type,
             'label' => $this->label,
+            'hint' => $this->hint,
             'default' => $this->default,
             'rules' => $this->rules,
+            'options' => $this->options,
         ];
     }
 }

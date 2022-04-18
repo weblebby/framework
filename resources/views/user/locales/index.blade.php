@@ -47,22 +47,7 @@
                 <div class="fd-col-span-4">
                     @if ($selectedLocale ?? null)
                         <div class="fd-flex fd-items-center fd-gap-2 fd-mb-3">
-                            @foreach (Localization::groups() as $key => $group)
-                                <x-feadmin::button
-                                    as="a"
-                                    :href="panel_route('locales.show', [$selectedLocale->id, 'group' => $key])"
-                                    :variant="$key === request('group') ? 'primary' : 'light'"
-                                    upper
-                                >{{ $group['title'] }}</x-feadmin::button>
-                            @endforeach
-                            <div class="fd-flex fd-gap-3 fd-ml-auto">
-                                @can('locale:delete')
-                                    <x-feadmin::button
-                                        data-modal-open="#modal-delete-locale"
-                                        variant="red"
-                                        upper
-                                    >@t('Dili sil', 'panel')</x-feadmin::button>
-                                @endcan
+                            <div class="fd-flex fd-gap-3">
                                 @can('locale:translate')
                                     <x-feadmin::form :action="panel_route('locales.sync')">
                                         <x-feadmin::button
@@ -73,51 +58,49 @@
                                         >@t('Çevirileri senkronize et', 'panel')</x-feadmin::button>
                                     </x-feadmin::form>
                                 @endcan
+                                @can('locale:delete')
+                                    <x-feadmin::button
+                                        data-modal-open="#modal-delete-locale"
+                                        variant="red"
+                                        upper
+                                    >@t('Dili sil', 'panel')</x-feadmin::button>
+                                @endcan
                             </div>
                         </div>
-                        @if ($selectedGroup ?? null)
-                            <x-feadmin::card class="fd-divide-y">
-                                <div class="fd-py-2 fd-px-4 fd-text-zinc-500">{{ $selectedGroup['description'] }}</div>
-                                <div class="fd-py-4 fd-space-y-3">
-                                    @foreach ($translations as $translation)
-                                        <div class="fd-grid fd-grid-cols-2 fd-divide-x">
-                                            <div class="fd-px-4">
-                                                <div class="fd-relative">
-                                                    <x-feadmin::form.input
-                                                        :default="$translation->value"
-                                                        readonly
-                                                    />
-                                                    <div class="fd-absolute fd-right-4 fd-top-1/2 -fd-translate-y-1/2">
-                                                        <x-feadmin::badge>{{ Localization::getDefaultLocale()->code }}</x-feadmin::badge>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="fd-px-4">
-                                                <div class="fd-relative">
-                                                    <x-feadmin::form.input
-                                                        :default="t($translation->key, $translation->group, [], $selectedLocale->code)"
-                                                        :data-key="$translation->key"
-                                                        :data-group="$translation->group"
-                                                        :data-code="$selectedLocale->code"
-                                                        data-translation-input
-                                                        tabindex="1"
-                                                        :readonly="auth()->user()->cannot('locale:translate')"
-                                                    />
-                                                    <div class="fd-absolute fd-right-4 fd-top-1/2 -fd-translate-y-1/2">
-                                                        <x-feadmin::badge>{{ $selectedLocale->code }}</x-feadmin::badge>
-                                                    </div>
+                        <x-feadmin::card class="fd-divide-y">
+                            <div class="fd-py-4 fd-space-y-3">
+                                @foreach (Localization::getTranslations() as $key => $value)
+                                    <div class="fd-grid fd-grid-cols-2 fd-divide-x">
+                                        <div class="fd-px-4">
+                                            <div class="fd-relative">
+                                                <x-feadmin::form.input
+                                                    :default="__($key, locale: Localization::getDefaultLocaleCode())"
+                                                    readonly
+                                                />
+                                                <div class="fd-absolute fd-right-4 fd-top-1/2 -fd-translate-y-1/2">
+                                                    <x-feadmin::badge>{{ Localization::getDefaultLocaleCode() }}</x-feadmin::badge>
                                                 </div>
                                             </div>
                                         </div>
-                                    @endforeach
-                                </div>
-                            </x-feadmin::card>
-                        @else
-                            <x-feadmin::empty
-                                :title="t('Grup seçin', 'panel')"
-                                :content="t('Yönetmek istediğiniz çeviri grubunu seçin', 'panel')"
-                            />
-                        @endif
+                                        <div class="fd-px-4">
+                                            <div class="fd-relative">
+                                                <x-feadmin::form.input
+                                                    :default="__($key, locale: $selectedLocale->code)"
+                                                    :data-key="$key"
+                                                    :data-code="$selectedLocale->code"
+                                                    data-translation-input
+                                                    tabindex="1"
+                                                    :readonly="auth()->user()->cannot('locale:translate')"
+                                                />
+                                                <div class="fd-absolute fd-right-4 fd-top-1/2 -fd-translate-y-1/2">
+                                                    <x-feadmin::badge>{{ $selectedLocale->code }}</x-feadmin::badge>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </x-feadmin::card>
                     @else
                         <x-feadmin::empty
                             icon="translate"

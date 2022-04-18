@@ -2,21 +2,15 @@
 
 namespace Feadmin\Http\Controllers\User;
 
-use Core\Facades\Localization;
 use App\Http\Controllers\Controller;
 use Feadmin\Http\Requests\User\StoreTranslationRequest;
-use Illuminate\Support\Facades\DB;
+use Feadmin\Services\TranslationFinderService;
 
 class TranslationController extends Controller
 {
-    public function store(StoreTranslationRequest $request)
+    public function store(StoreTranslationRequest $request, TranslationFinderService $service)
     {
-        $localeId = Localization::getLocale($request->code)->id;
-
-        DB::table('locale_translations')->updateOrInsert(
-            ['locale_id' => $localeId, 'group' => $request->group, 'key' => $request->key],
-            ['value' => $request->value]
-        );
+        $service->updateTranslation($request->code, $request->key, $request->value);
 
         return response()->json(['message' => t('Çeviri kaydedildi', 'panel')]);
     }

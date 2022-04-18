@@ -1,7 +1,6 @@
 <?php
 
 use Feadmin\Facades\Feadmin;
-use Feadmin\Facades\Localization;
 use Feadmin\Facades\Preference;
 use Feadmin\Hooks\Panel;
 use Illuminate\Http\RedirectResponse;
@@ -13,7 +12,7 @@ function t(
     array $replace = [],
     string $code = null,
 ): string|Collection {
-    return Localization::get($key, $group, $replace, $code);
+    return __($key, $replace, $code);
 }
 
 function panel(string $panel = null): Panel

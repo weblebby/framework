@@ -2,6 +2,7 @@
 
 namespace Feadmin\Hooks;
 
+use Feadmin\Items\MenuItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -39,14 +40,27 @@ class Menu
         return $this;
     }
 
-    public function add(array $item): self
+    public function add(MenuItem|array $item): self
     {
+        if ($item instanceof MenuItem) {
+            $item = $item->get();
+        }
+
         $items = $this->menus[$this->lastLocation][$this->lastCategory]['items'] ?? [];
 
         $this->menus[$this->lastLocation][$this->lastCategory]['items'][] = [
             'position' => count($items) * 10,
             ...$item,
         ];
+
+        return $this;
+    }
+
+    public function addMany(array $items): self
+    {
+        foreach ($items as $item) {
+            $this->add($item);
+        }
 
         return $this;
     }

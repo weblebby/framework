@@ -48,6 +48,6 @@ class ExtensionPreferenceController extends Controller
 
     public function update(Request $request, string $id, string $bag): RedirectResponse
     {
-        return (new PreferenceController())->update($request, $bag, $id);
+        return (new PreferenceController())->update($request, $id, $bag);
     }
 }

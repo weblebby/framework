@@ -11,9 +11,23 @@ class ExtensionService
 {
     private Collection $extensions;
 
+    public function __construct()
+    {
+        $this->extensions = collect();
+    }
+
+    public function works(): bool
+    {
+        return file_exists($this->path());
+    }
+
     public function start(): void
     {
-        $extensions = File::directories(base_path('extensions'));
+        if (!$this->works()) {
+            return;
+        }
+
+        $extensions = File::directories($this->path());
 
         $this->extensions = collect($extensions)->map(function ($extension) {
             return $this->getExtension($extension);
@@ -28,6 +42,11 @@ class ExtensionService
     public function get(): Collection
     {
         return $this->extensions;
+    }
+
+    public function path(): string
+    {
+        return base_path('extensions');
     }
 
     private function getExtension(string $directory): Extension

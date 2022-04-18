@@ -13,7 +13,6 @@ const mix = require('laravel-mix')
 
 mix.js('resources/js/feadmin.js', 'js')
     .js('resources/js/navigation.js', 'js')
-    .js('resources/js/extensions/form.js', 'extensions/form')
     .postCss('resources/css/feadmin.css', 'css', [require('tailwindcss')])
     .setResourceRoot('vendor/feadmin/')
     .setPublicPath('public/')

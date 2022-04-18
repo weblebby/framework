@@ -44,7 +44,7 @@ const Navigation = {
         const manuel = document.querySelector('[data-manuel-item]')
         const smart = document.querySelector('[data-smart-item]')
 
-        if (is_smart_menu.checked) {
+        if (item_is_smart_menu.checked) {
             manuel.classList.add('fd-hidden')
             smart.classList.remove('fd-hidden')
         } else {
@@ -56,7 +56,7 @@ const Navigation = {
     handleLinkable: () => {
         const link = document.querySelector('[data-form-group="link"]')
 
-        linkable.value === ''
+        item_linkable.value === ''
             ? link.classList.remove('fd-hidden')
             : link.classList.add('fd-hidden')
     },
@@ -102,14 +102,14 @@ drawer.addEventListener(
             }
 
             if (item?.type === 1) {
-                linkable.value = 'homepage'
+                item_linkable.value = 'homepage'
             } else if (item?.type === 2) {
-                linkable.value = JSON.stringify({
+                item_linkable.value = JSON.stringify({
                     linkable_id: item?.linkable_id,
                     linkable_type: item?.linkable_type,
                 })
             } else {
-                linkable.value = ''
+                item_linkable.value = ''
             }
         }
 
@@ -119,8 +119,8 @@ drawer.addEventListener(
 )
 drawer.addEventListener('drawer.hidden', () => (parentIdInput.value = ''))
 
-is_smart_menu.addEventListener('change', Navigation.handleIsSmartMenu)
-linkable.addEventListener('change', Navigation.handleLinkable)
+item_is_smart_menu.addEventListener('change', Navigation.handleIsSmartMenu)
+item_linkable.addEventListener('change', Navigation.handleLinkable)
 
 dd.querySelectorAll('[data-toggle="edit"]').forEach(button => {
     button.addEventListener('click', () => {

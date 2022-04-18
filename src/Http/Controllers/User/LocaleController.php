@@ -30,34 +30,16 @@ class LocaleController extends Controller
         ]);
     }
 
-    public function show(Request $request, Locale $locale): View|RedirectResponse
+    public function show(Locale $locale): View|RedirectResponse
     {
         $this->authorize('locale:read');
 
-        $groups = Localization::groups();
-
-        if ($groups->isNotEmpty() && !is_string($request->group)) {
-            return to_panel_route('locales.show', [
-                $locale->id,
-                'group' => $groups->keys()->first()
-            ]);
-        }
-
         seo()->title(Localization::display($locale->code));
-
-        $translations = Localization::getTranslations()
-            ->where('group', $request->group)
-            ->sortByDesc(function ($translation) {
-                return $translation->locale_id === Localization::getDefaultLocaleId();
-            })
-            ->unique('key');
 
         return view('feadmin::user.locales.index', [
             'availableLocales' => Localization::getAvailableLocales(),
             'remainingLocales' => Localization::getRemainingLocales(),
-            'selectedGroup' => $groups->get($request->group) ?? null,
             'selectedLocale' => $locale,
-            'translations' => $translations,
         ]);
     }
 
@@ -76,7 +58,7 @@ class LocaleController extends Controller
 
         if ($firstLocale ?? false) {
             Localization::load();
-            $translationFinderService->scan();
+            $translationFinderService->syncLocale($locale->code);
         }
 
         if ($request->has('is_default')) {
@@ -109,7 +91,7 @@ class LocaleController extends Controller
     {
         $this->authorize('locale:translate');
 
-        $service->scan();
+        $service->syncAllLocales();
 
         return back()
             ->with('message', t('Çeviriler senkronize edildi', 'panel'));

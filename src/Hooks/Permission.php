@@ -62,12 +62,12 @@ class Permission
     }
 
     public function defaults(
-        bool $preferences = false,
-        bool $locales = false,
-        bool $users = false,
-        bool $roles = false,
-        bool $extensions = false,
-        bool $navigations = false,
+        bool $preferences = true,
+        bool $locales = true,
+        bool $users = true,
+        bool $roles = true,
+        bool $extensions = true,
+        bool $navigations = true,
     ): void {
         if ($locales) {
             $this->group('locale')

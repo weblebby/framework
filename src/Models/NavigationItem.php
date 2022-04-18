@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Core\Enums\NavigationTypeEnum;
-use Core\Facades\NavigationLinkableManager;
+use Feadmin\Enums\NavigationTypeEnum;
+use Feadmin\Facades\NavigationLinkable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class NavigationItem extends Model
@@ -93,7 +93,7 @@ class NavigationItem extends Model
         ]);
 
         if ($this->linkable_type) {
-            $findLinkable = NavigationLinkableManager::linkables()
+            $findLinkable = NavigationLinkable::linkables()
                 ->firstWhere('model', $this->linkable_type);
 
             if ($findLinkable) {

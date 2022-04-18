@@ -164,7 +164,7 @@ __webpack_require__.r(__webpack_exports__);
 document.querySelectorAll('[data-translation-input]').forEach(function (input) {
   input.addEventListener('change', function (_ref) {
     var target = _ref.target;
-    (0,_api__WEBPACK_IMPORTED_MODULE_0__["default"])('/admin/translations', {
+    (0,_api__WEBPACK_IMPORTED_MODULE_0__["default"])(window.Feadmin.Translation.routes.update, {
       method: 'POST',
       body: JSON.stringify({
         key: target.dataset.key,

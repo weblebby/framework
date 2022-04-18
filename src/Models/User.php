@@ -23,12 +23,12 @@ class User extends Authenticatable implements HasMedia
 
     protected function firstName(): Attribute
     {
-        return Attribute::get(fn () => explode(' ', $this->name)[0]);
+        return Attribute::get(fn ($value) => $value ?? explode(' ', $this->name)[0]);
     }
 
     protected function lastName(): Attribute
     {
-        return Attribute::get(fn () => last(explode(' ', $this->name)));
+        return Attribute::get(fn ($value) => $value ?? last(explode(' ', $this->name)));
     }
 
     protected function shortName(): Attribute

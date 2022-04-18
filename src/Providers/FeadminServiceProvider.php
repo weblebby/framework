@@ -45,6 +45,10 @@ class FeadminServiceProvider extends ServiceProvider
     private function bootViews(): void
     {
         $this->loadViewsFrom(dirname(__DIR__) . '/../resources/views', 'feadmin');
+
+        Blade::directive('feinject', function ($expression) {
+            return "<?php echo \Feadmin\Facades\Injection::render($expression); ?>";
+        });
     }
 
     private function bootLocalization(): void

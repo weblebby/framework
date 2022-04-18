@@ -5,6 +5,7 @@ namespace Feadmin\Services;
 use Feadmin\Facades\Localization;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\Finder;
 
 class TranslationFinderService
@@ -15,48 +16,81 @@ class TranslationFinderService
     ];
 
     private array $functions = [
-        '@t',
         't',
     ];
 
     private string $functionPattern = '/\b[[FUNCTIONS]]\(\s*[\'|"](.+)[\'|"],\s*[\'|"](.+)[\'|"]/Um';
 
-    public function scan(): void
+    public function scan(): Collection
     {
-        $current = $this->getTranslations();
-        $prev = Localization::getTranslations();
+        $scanned = $this->getScannedTranslations();
+        $current = collect(Localization::getTranslations());
+        $unusedKeys = $this->getUnusedTranslationKeys($scanned, $current);
 
-        $unusedTranslationIds = $this
-            ->getUnusedTranslations($current, $prev)
-            ->pluck('id')
-            ->toArray();
-
-        DB::table('locale_translations')->delete($unusedTranslationIds);
-
-        $current->each(function ($translation) {
-            $this->saveToDatabase(...$translation);
-        });
+        return $current
+            ->merge($scanned)
+            ->reject(fn ($key) => in_array($key, $unusedKeys));
     }
 
-    private function getUnusedTranslations(Collection $current, Collection $prev): Collection
+    public function syncLocale(string $locale, Collection $translations = null): bool
     {
-        $unusedTranslations = collect();
+        if (is_null($translations)) {
+            $translations = $this->scan();
+        }
 
-        foreach ($prev as $translation) {
-            $isEmpty = $current
-                ->where('key', $translation->key)
-                ->where('group', $translation->group)
-                ->isEmpty();
+        return $this->putLocaleFile(
+            $locale,
+            $translations
+                ->map(fn ($_, $key) => __($key, locale: $locale))
+                ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
+    }
 
-            if ($isEmpty) {
-                $unusedTranslations[] = $translation;
+    public function syncAllLocales(): bool
+    {
+        $translations = $this->scan();
+
+        foreach (Localization::getAvailableLocales() as $locale) {
+            $this->syncLocale($locale->code, $translations);
+        }
+
+        return true;
+    }
+
+    public function updateTranslation(string $locale, string $key, string $value): bool
+    {
+        $path = lang_path("{$locale}.json");
+
+        if (!File::exists($path)) {
+            return false;
+        }
+
+        $json = json_decode(File::get($path), true);
+
+        if (!is_array($json)) {
+            return false;
+        }
+
+        $json[$key] = $value;
+
+        return $this->putLocaleFile(
+            $locale,
+            json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
+    }
+
+    private function getUnusedTranslationKeys(Collection $scanned, Collection $current): array
+    {
+        foreach ($current as $key) {
+            if (!$scanned->contains($key)) {
+                $keys[] = $key;
             }
         }
 
-        return $unusedTranslations;
+        return $keys ?? [];
     }
 
-    private function getTranslations(): Collection
+    private function getScannedTranslations(): Collection
     {
         $files = $this->getFiles();
         $functionPattern = $this->getFunctionPattern();
@@ -71,10 +105,8 @@ class TranslationFinderService
             }
 
             for ($i = 0; $i < count($matches[1]); $i++) {
-                $translations[] = [
-                    stripslashes($matches[1][$i]),
-                    $matches[2][$i],
-                ];
+                $key = stripslashes($matches[1][$i]);
+                $translations[$key] = $key;
             }
         }
 
@@ -111,25 +143,13 @@ class TranslationFinderService
         return str_replace('[FUNCTIONS]', implode('|', $this->functions), $this->functionPattern);
     }
 
-    private function saveToDatabase(string $key, string $group): bool
+    private function putLocaleFile(string $locale, string $content = '{}'): bool
     {
-        $defaultLocaleId = Localization::getDefaultLocaleId();
+        return File::put(lang_path("{$locale}.json"), $content, true);
+    }
 
-        $exists = DB::table('locale_translations')
-            ->where('locale_id', $defaultLocaleId)
-            ->where('key', $key)
-            ->where('group', $group)
-            ->exists();
-
-        if ($exists) {
-            return false;
-        }
-
-        return DB::table('locale_translations')->insert([
-            'locale_id' => $defaultLocaleId,
-            'group' => $group,
-            'key' => $key,
-            'value' => $key,
-        ]);
+    private function deleteLocaleFile(string $locale): bool
+    {
+        return File::delete(lang_path("{$locale}.json"));
     }
 }

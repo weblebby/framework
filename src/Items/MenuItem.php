@@ -14,7 +14,9 @@ class MenuItem
 
     private ?string $badge = null;
 
-    private ?string $can = null;
+    private string|array|null $can = null;
+
+    private array $children = [];
 
     public static function create(string $title): static
     {
@@ -54,9 +56,16 @@ class MenuItem
         return $this;
     }
 
-    public function can(string $can): self
+    public function can(string|array $can): self
     {
         $this->can = $can;
+
+        return $this;
+    }
+
+    public function children(array $items): self
+    {
+        $this->children = $items;
 
         return $this;
     }
@@ -70,6 +79,9 @@ class MenuItem
             'icon' => $this->icon,
             'badge' => $this->badge,
             'can' => $this->can,
+            'children' => array_map(function ($child) {
+                return $child instanceof static ? $child->get() : $child;
+            }, $this->children),
         ];
     }
 }

@@ -61,7 +61,7 @@ class StoreNavigationItemRequest extends FormRequest
     protected function prepareForSmart(): void
     {
         $this->merge([
-            'type' => NavigationTypeEnum::SMART,
+            'type' => NavigationTypeEnum::SMART->value,
             'link' => null,
             'linkable_type' => null,
             'linkable_id' => null,
@@ -71,7 +71,7 @@ class StoreNavigationItemRequest extends FormRequest
     protected function prepareForCustomLink(): void
     {
         $this->merge([
-            'type' => NavigationTypeEnum::LINK,
+            'type' => NavigationTypeEnum::LINK->value,
             'linkable_type' => null,
             'linkable_id' => null,
             'smart_type' => null,
@@ -85,7 +85,7 @@ class StoreNavigationItemRequest extends FormRequest
         $linkable = NavigationLinkable::linkables()->firstWhere('id', $json->linkable_type);
 
         $this->merge([
-            'type' => NavigationTypeEnum::LINKABLE,
+            'type' => NavigationTypeEnum::LINKABLE->value,
             'linkable_type' => $linkable['model'],
             'linkable_id' => $json->linkable_id,
             'smart_type' => null,
@@ -97,7 +97,7 @@ class StoreNavigationItemRequest extends FormRequest
     protected function prepareForHomepage(): void
     {
         $this->merge([
-            'type' => NavigationTypeEnum::HOMEPAGE,
+            'type' => NavigationTypeEnum::HOMEPAGE->value,
             'linkable_type' => null,
             'linkable_id' => null,
             'smart_type' => null,
@@ -127,20 +127,20 @@ class StoreNavigationItemRequest extends FormRequest
             'linkable_type' => ['nullable', 'string', 'max:191', Rule::in($models)],
             'linkable_id' => [
                 'nullable',
-                Rule::requiredIf($this->type === NavigationTypeEnum::LINKABLE),
+                Rule::requiredIf($this->type === NavigationTypeEnum::LINKABLE->value),
                 Rule::exists($model, 'id')
             ],
             'link' => [
                 'nullable', 'max:191', 'nullable',
-                Rule::requiredIf($this->type === NavigationTypeEnum::LINK)
+                Rule::requiredIf($this->type === NavigationTypeEnum::LINK->value)
             ],
             'smart_type' => [
                 'nullable', 'string', 'max:191',
-                Rule::requiredIf($this->type === NavigationTypeEnum::SMART), Rule::in($smartMenuItemKeys)
+                Rule::requiredIf($this->type === NavigationTypeEnum::SMART->value), Rule::in($smartMenuItemKeys)
             ],
             'smart_limit' => [
                 'nullable', 'numeric', 'max:10',
-                Rule::requiredIf($this->type === NavigationTypeEnum::SMART)
+                Rule::requiredIf($this->type === NavigationTypeEnum::SMART->value)
             ],
             'is_active' => ['nullable', 'boolean'],
             'open_in_new_tab' => ['nullable', 'boolean'],

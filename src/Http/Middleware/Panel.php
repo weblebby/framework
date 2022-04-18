@@ -23,11 +23,6 @@ class Panel
             $request->user()?->locale?->code ?? Localization::getCurrentLocale()->code
         );
 
-        Localization::group('panel', [
-            'title' => t('Panel', 'panel'),
-            'description' => t('Paneldeki metinleri çevirin.', 'panel'),
-        ]);
-
         config([
             'app.name' => $siteName = preference('general->site_name'),
             'seo.app.name' => $siteName,

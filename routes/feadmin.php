@@ -65,8 +65,8 @@ if (Features::enabled(Features::preferences(), $panel->name())) {
         ->controller(User\PreferenceController::class)
         ->group(function () {
             Route::get('', 'index')->name('index');
-            Route::get('{tab}', 'show')->name('show');
-            Route::put('{tab}', 'update')->name('update');
+            Route::get('{bag}', 'show')->name('show');
+            Route::put('{namespace}/{bag}', 'update')->name('update');
         });
 }
 
