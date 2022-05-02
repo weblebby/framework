@@ -53,9 +53,9 @@ class FeadminServiceProvider extends ServiceProvider
 
     private function bootLocalization(): void
     {
-        Blade::directive('t', function ($expression) {
+        /*Blade::directive('t', function ($expression) {
             return "<?php echo t({$expression}) ?>";
-        });
+        });*/
 
         $allLocales = Localization::getAllLocales();
         $availableLocaleCodes = Localization::getAvailableLocales()->pluck('code')->toArray();

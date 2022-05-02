@@ -70,6 +70,6 @@ class PreferenceController extends Controller
 
         preference($validated);
 
-        return back()->with('message', t('Ayarlar kaydedildi', 'panel'));
+        return back()->with('message', __('Ayarlar kaydedildi'));
     }
 }

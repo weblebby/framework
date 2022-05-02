@@ -8,7 +8,7 @@
                         :href="panel_route('users.create')"
                         icon="plus"
                         size="sm"
-                    >@t('Yeni kullanıcı', 'panel')</x-feadmin::button>
+                    >@lang('Yeni kullanıcı')</x-feadmin::button>
                 @endcan
                 @can('role:read')
                     <x-feadmin::button
@@ -16,17 +16,17 @@
                         :href="panel_route('roles.index')"
                         variant="sky"
                         size="sm"
-                    >@t('Roller', 'panel')</x-feadmin::button>
+                    >@lang('Roller')</x-feadmin::button>
                 @endcan
             </x-slot>
-            <x-feadmin::page.title>@t('Kullanıcılar', 'panel')</x-feadmin::page.title>
-            <x-feadmin::page.subtitle>@t('Kullanıcıları yönetin', 'panel')</x-feadmin::page.subtitle>
+            <x-feadmin::page.title>@lang('Kullanıcılar')</x-feadmin::page.title>
+            <x-feadmin::page.subtitle>@lang('Kullanıcıları yönetin')</x-feadmin::page.subtitle>
         </x-feadmin::page.head>
         <div class="fd-space-y-3">
             <x-feadmin::table>
                 <x-feadmin::table.head>
-                    <x-feadmin::table.th>@t('İsim', 'panel')</x-feadmin::table.th>
-                    <x-feadmin::table.th>@t('Oluşturulma tarihi', 'panel')</x-feadmin::table.th>
+                    <x-feadmin::table.th>@lang('İsim')</x-feadmin::table.th>
+                    <x-feadmin::table.th>@lang('Oluşturulma tarihi')</x-feadmin::table.th>
                     <x-feadmin::table.th />
                 </x-feadmin::table.head>
                 <x-feadmin::table.body>
@@ -48,7 +48,7 @@
                                             variant="red"
                                             data-modal-open="#modal-delete-user"
                                             :data-action="panel_route('users.destroy', $user)"
-                                        >@t('Sil', 'panel')</x-feadmin::button>
+                                        >@lang('Sil')</x-feadmin::button>
                                     @endcan
                                 </div>
                             </x-feadmin::table.td>
@@ -62,7 +62,7 @@
     @can('user:delete')
         <x-feadmin::modal.destroy
             id="modal-delete-user"
-            :title="t('Kullanıcyı sil', 'panel')"
+            :title="__('Kullanıcyı sil')"
         />
     @endcan
 </x-feadmin::layouts.panel>

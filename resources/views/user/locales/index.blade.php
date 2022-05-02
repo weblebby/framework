@@ -10,10 +10,10 @@
         <div>
             @if ($selectedLocale ?? null)
                 <x-feadmin::page.title>{{ $localeName = Localization::display($selectedLocale->code) }}</x-feadmin::page.title>
-                <x-feadmin::page.subtitle>@t('Çevirileri düzenleyin', 'panel')</x-feadmin::page.subtitle>
+                <x-feadmin::page.subtitle>@lang('Çevirileri düzenleyin')</x-feadmin::page.subtitle>
             @else
-                <x-feadmin::page.title>@t('Diller', 'panel')</x-feadmin::page.title>
-                <x-feadmin::page.subtitle>@t('Sitenizin dillerini yönetin', 'panel')</x-feadmin::page.subtitle>
+                <x-feadmin::page.title>@lang('Diller')</x-feadmin::page.title>
+                <x-feadmin::page.subtitle>@lang('Sitenizin dillerini yönetin')</x-feadmin::page.subtitle>
             @endif
         </div>
         <div>
@@ -28,7 +28,7 @@
                                     :active="$locale->id === ($selectedLocale->id ?? null)">
                                     {{ Localization::display($locale->code) }}
                                     @if ($locale->is_default)
-                                        <x-feadmin::badge>@t('Varsayılan', 'panel')</x-feadmin::badge>
+                                        <x-feadmin::badge>@lang('Varsayılan')</x-feadmin::badge>
                                     @endif
                                 </x-feadmin::link-card.item>
                             @endforeach
@@ -40,7 +40,7 @@
                                 as="button"
                                 icon="plus"
                                 data-drawer="#drawer-create-locale"
-                            >@t('Yeni dil', 'panel')</x-feadmin::link-card.item>
+                            >@lang('Yeni dil')</x-feadmin::link-card.item>
                         </x-feadmin::link-card>
                     @endcan
                 </div>
@@ -55,7 +55,7 @@
                                             variant="light"
                                             icon="arrow-clockwise"
                                             upper
-                                        >@t('Çevirileri senkronize et', 'panel')</x-feadmin::button>
+                                        >@lang('Çevirileri senkronize et')</x-feadmin::button>
                                     </x-feadmin::form>
                                 @endcan
                                 @can('locale:delete')
@@ -63,7 +63,7 @@
                                         data-modal-open="#modal-delete-locale"
                                         variant="red"
                                         upper
-                                    >@t('Dili sil', 'panel')</x-feadmin::button>
+                                    >@lang('Dili sil')</x-feadmin::button>
                                 @endcan
                             </div>
                         </div>
@@ -104,8 +104,8 @@
                     @else
                         <x-feadmin::empty
                             icon="translate"
-                            :title="t('Dil seçin', 'panel')"
-                            :content="t('Yönetmek istediğiniz dili seçin', 'panel')"
+                            :title="__('Dil seçin')"
+                            :content="__('Yönetmek istediğiniz dili seçin')"
                         />
                     @endif
                 </div>
@@ -114,21 +114,21 @@
     </x-feadmin::page>
     @can('locale:create')
         <x-feadmin::drawer id="drawer-create-locale">
-            <x-feadmin::drawer.header :title="t('Yeni dil', 'panel')" />
+            <x-feadmin::drawer.header :title="__('Yeni dil')" />
             <x-feadmin::form class="fd-space-y-3" :action="panel_route('locales.store')">
                 <x-feadmin::form.group name="code">
-                    <x-feadmin::form.label>@t('Dil', 'panel')</x-feadmin::form.label>
+                    <x-feadmin::form.label>@lang('Dil')</x-feadmin::form.label>
                     <x-feadmin::form.select data-drawer-focus>
-                        <option selected disabled>@t('Dil seçin', 'panel')</option>
+                        <option selected disabled>@lang('Dil seçin')</option>
                         @foreach ($remainingLocales as $code => $locale)
                             <x-feadmin::form.option value="{{ $code }}">{{ $locale }}</x-feadmin::form.option>
                         @endforeach
                     </x-feadmin::form.select>
                 </x-feadmin::form.group>
                 <x-feadmin::form.group name="is_default">
-                    <x-feadmin::form.checkbox :label="t('Varsayılan dil', 'panel')" />
+                    <x-feadmin::form.checkbox :label="__('Varsayılan dil')" />
                 </x-feadmin::form.group>
-                <x-feadmin::button type="submit">@t('Oluştur', 'panel')</x-feadmin::button>
+                <x-feadmin::button type="submit">@lang('Oluştur')</x-feadmin::button>
             </x-feadmin::form>
         </x-feadmin::drawer>
     @endcan
@@ -137,8 +137,8 @@
             <x-feadmin::modal.destroy
                 id="modal-delete-locale"
                 :action="panel_route('locales.destroy', $selectedLocale->id)"
-                :title="t(':locale dilini siliyorsunuz', 'admin', ['locale' => $localeName])"
-                :subtitle="t('Bu dili ve ilişkili tüm çevirileri silmek istediğinize emin misiniz?', 'panel')"
+                :title="__(':locale dilini siliyorsunuz', ['locale' => $localeName])"
+                :subtitle="__('Bu dili ve ilişkili tüm çevirileri silmek istediğinize emin misiniz?')"
             />
         @endif
     @endcan

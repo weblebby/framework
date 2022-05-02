@@ -10,6 +10,6 @@
     </div>
     <div class="fd-absolute fd-inset-0 fd-text-white fd-bg-black/40 fd-flex fd-flex-col fd-gap-3 fd-items-center fd-justify-center">
         <x-feadmin::icons.upload class="fd-w-8 fd-h-8" />
-        <span class="fd-font-medium">{{ isset($image) ? t('Görseli değiştir', 'panel') : t('Görsel yükle', 'panel') }}</span>
+        <span class="fd-font-medium">{{ isset($image) ? __('Görseli değiştir', 'panel') }}</span>
     </div>
 </label>

@@ -12,6 +12,6 @@ class TranslationController extends Controller
     {
         $service->updateTranslation($request->code, $request->key, $request->value);
 
-        return response()->json(['message' => t('Çeviri kaydedildi', 'panel')]);
+        return response()->json(['message' => __('Çeviri kaydedildi')]);
     }
 }

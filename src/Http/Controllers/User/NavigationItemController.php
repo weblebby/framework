@@ -29,7 +29,7 @@ class NavigationItemController extends Controller
 
         $item->save();
 
-        return back()->with('success', t(':item başarıyla oluşturuldu.', 'admin', ['item' => $item->title]));
+        return back()->with('success', __(':item başarıyla oluşturuldu.', ['item' => $item->title]));
     }
 
     public function update(
@@ -50,7 +50,7 @@ class NavigationItemController extends Controller
 
         $item->save();
 
-        return back()->with('success', t(':item başarıyla güncellendi', 'admin', ['item' => $item->title]));
+        return back()->with('success', __(':item başarıyla güncellendi', ['item' => $item->title]));
     }
 
     public function destroy(Navigation $navigation, NavigationItem $item): RedirectResponse
@@ -63,10 +63,7 @@ class NavigationItemController extends Controller
 
         $item->delete();
 
-        return back()->with('message', t(
-            ':item başarıyla silindi',
-            'admin',
-            ['item' => $item->title]
-        ));
+        return back()
+            ->with('message', __(':item başarıyla silindi', ['item' => $item->title]));
     }
 }

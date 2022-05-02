@@ -18,7 +18,7 @@ class RoleController extends Controller
 
         $roles = Role::paginate();
 
-        seo()->title(t('Kullanıcı rolleri', 'panel'));
+        seo()->title(__('Kullanıcı rolleri'));
 
         return view('feadmin::user.roles.index', compact('roles'));
     }
@@ -27,7 +27,7 @@ class RoleController extends Controller
     {
         $this->authorize('role:create');
 
-        seo()->title(t('Kullanıcı rolü oluştur', 'panel'));
+        seo()->title(__('Kullanıcı rolü oluştur'));
 
         return view('feadmin::user.roles.create');
     }
@@ -43,7 +43,7 @@ class RoleController extends Controller
         }
 
         return to_panel_route('roles.index')
-            ->with('message', t('Rol oluşturuldu', 'panel'));
+            ->with('message', __('Rol oluşturuldu'));
     }
 
     public function edit(Role $role): View
@@ -63,7 +63,7 @@ class RoleController extends Controller
 
         $role->syncPermissions($request->permissions);
 
-        return back()->with('message', t('Rol güncellendi', 'panel'));
+        return back()->with('message', __('Rol güncellendi'));
     }
 
     public function destroy(Role $role): RedirectResponse
@@ -77,6 +77,6 @@ class RoleController extends Controller
         $role->delete();
 
         return to_panel_route('roles.index')
-            ->with('message', t('Rol silindi', 'panel'));
+            ->with('message', __('Rol silindi'));
     }
 }

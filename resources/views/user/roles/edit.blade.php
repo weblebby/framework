@@ -5,17 +5,17 @@
         </x-feadmin::page.head>
         @if ($role->is_default)
             <x-feadmin::alert>
-                <div>@t('Bu rol düzenlenemez.', 'panel')</div>
+                <div>@lang('Bu rol düzenlenemez.')</div>
                 @if ($role->name === 'Super Admin')
-                    <div class="fd-font-normal">@t('Super Admin rolüne sahip kişiler, tüm yetkilere sahiptirler.', 'panel')</div>
+                    <div class="fd-font-normal">@lang('Super Admin rolüne sahip kişiler, tüm yetkilere sahiptirler.')</div>
                 @endif
             </x-feadmin::alert>
         @else
             <x-feadmin::form class="fd-space-y-3" :bind="$role" :action="panel_route('roles.update', $role)" method="PUT">
                 <x-feadmin::card class="fd-space-y-3" padding>
                     <x-feadmin::form.group name="name">
-                        <x-feadmin::form.label>@t('Rol adı', 'panel')</x-feadmin::form.label>
-                        <x-feadmin::form.input :placeholder="t('örn: Editör', 'panel')" autofocus />
+                        <x-feadmin::form.label>@lang('Rol adı')</x-feadmin::form.label>
+                        <x-feadmin::form.input :placeholder="__('örn: Editör')" autofocus />
                     </x-feadmin::form.group>
                 </x-feadmin::card>
                 <x-feadmin::card class="fd-space-y-5" padding>
@@ -39,7 +39,7 @@
                         </div>
                     @endforeach
                 </x-feadmin::card>
-                <x-feadmin::button type="submit">@t('Kaydet', 'panel')</x-feadmin::button>
+                <x-feadmin::button type="submit">@lang('Kaydet')</x-feadmin::button>
                 <x-feadmin::form.sticky-submit />
             </x-feadmin::form>
         @endif

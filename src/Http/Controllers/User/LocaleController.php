@@ -18,7 +18,7 @@ class LocaleController extends Controller
     {
         $this->authorize('locale:read');
 
-        seo()->title(t('Diller', 'panel'));
+        seo()->title(__('Diller'));
 
         if (($defaultLocaleId = Localization::getDefaultLocaleId()) !== -1) {
             return to_panel_route('locales.show', $defaultLocaleId);
@@ -68,7 +68,7 @@ class LocaleController extends Controller
         }
 
         return to_panel_route('locales.show', $locale)
-            ->with('message', t('Dil başarıyla eklendi', 'panel'));
+            ->with('message', __('Dil başarıyla eklendi'));
     }
 
     public function destroy(Locale $locale): RedirectResponse
@@ -84,7 +84,7 @@ class LocaleController extends Controller
         }
 
         return to_panel_route('locales.index')
-            ->with('message', t('Dil başarıyla silindi', 'panel'));
+            ->with('message', __('Dil başarıyla silindi'));
     }
 
     public function sync(TranslationFinderService $service): RedirectResponse
@@ -94,6 +94,6 @@ class LocaleController extends Controller
         $service->syncAllLocales();
 
         return back()
-            ->with('message', t('Çeviriler senkronize edildi', 'panel'));
+            ->with('message', __('Çeviriler senkronize edildi'));
     }
 }

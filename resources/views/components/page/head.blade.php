@@ -10,7 +10,7 @@
                     variant="outline-light"
                     icon="chevron-left"
                     size="sm"
-                >@t('Geri dön', 'panel')</x-feadmin::button>
+                >@lang('Geri dön')</x-feadmin::button>
             @endif
             {{ $actions ?? null }}
         </div>

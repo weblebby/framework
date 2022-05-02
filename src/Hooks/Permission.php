@@ -71,31 +71,31 @@ class Permission
     ): void {
         if ($locales) {
             $this->group('locale')
-                ->title(t('Diller', 'admin'))
+                ->title(__('Diller'))
                 ->permissions([
-                    'create' => t('Dil oluşturabilir', 'admin'),
-                    'read' => t('Dilleri görüntüleyebilir', 'admin'),
-                    'update' => t('Dilleri düzenleyebilir', 'admin'),
-                    'delete' => t('Dilleri silebilir', 'admin'),
-                    'translate' => t('Çevirileri düzenleyebilir', 'admin'),
+                    'create' => __('Dil oluşturabilir'),
+                    'read' => __('Dilleri görüntüleyebilir'),
+                    'update' => __('Dilleri düzenleyebilir'),
+                    'delete' => __('Dilleri silebilir'),
+                    'translate' => __('Çevirileri düzenleyebilir'),
                 ]);
         }
 
         if ($users) {
             $this->group('user')
-                ->title(t('Kullanıcılar', 'admin'))
+                ->title(__('Kullanıcılar'))
                 ->permissions([
-                    'create' => t('Kullanıcı oluşturabilir', 'admin'),
-                    'read' => t('Kullanıcıları görüntüleyebilir', 'admin'),
-                    'update' => t('Kullanıcıları düzenleyebilir', 'admin'),
-                    'delete' => t('Kullanıcıları silebilir', 'admin'),
+                    'create' => __('Kullanıcı oluşturabilir'),
+                    'read' => __('Kullanıcıları görüntüleyebilir'),
+                    'update' => __('Kullanıcıları düzenleyebilir'),
+                    'delete' => __('Kullanıcıları silebilir'),
                 ]);
         }
 
         if ($preferences) {
             $this->group('preference')
-                ->title(t('Tercihler', 'admin'))
-                ->description(t('Hangi ayarları düzenleyebileceğini seçin', 'admin'))
+                ->title(__('Tercihler'))
+                ->description(__('Hangi ayarları düzenleyebileceğini seçin'))
                 ->permissions(
                     $this->panel
                         ->preference()
@@ -109,33 +109,33 @@ class Permission
 
         if ($roles) {
             $this->group('role')
-                ->title(t('Kullanıcı rolleri', 'admin'))
+                ->title(__('Kullanıcı rolleri'))
                 ->permissions([
-                    'create' => t('Kullanıcı rolü oluşturabilir', 'admin'),
-                    'read' => t('Kullanıcı rollerini görüntüleyebilir', 'admin'),
-                    'update' => t('Kullanıcı rollerini düzenleyebilir', 'admin'),
-                    'delete' => t('Kullanıcı rollerini silebilir', 'admin'),
+                    'create' => __('Kullanıcı rolü oluşturabilir'),
+                    'read' => __('Kullanıcı rollerini görüntüleyebilir'),
+                    'update' => __('Kullanıcı rollerini düzenleyebilir'),
+                    'delete' => __('Kullanıcı rollerini silebilir'),
                 ]);
         }
 
         if ($extensions) {
             $this->group('extension')
-                ->title(t('Eklentiler', 'admin'))
+                ->title(__('Eklentiler'))
                 ->permissions([
-                    'read' => t('Eklentileri görüntüleyebilir', 'admin'),
-                    'update' => t('Eklentileri düzenleyebilir', 'admin'),
-                    'delete' => t('Eklentileri silebilir', 'admin'),
+                    'read' => __('Eklentileri görüntüleyebilir'),
+                    'update' => __('Eklentileri düzenleyebilir'),
+                    'delete' => __('Eklentileri silebilir'),
                 ]);
         }
 
         if ($navigations) {
             $this->group('navigation')
-                ->title(t('Navigasyonlar', 'admin'))
+                ->title(__('Navigasyonlar'))
                 ->permissions([
-                    'create' => t('Navigasyon oluşturabilir', 'admin'),
-                    'read' => t('Navigasyonları görüntüleyebilir', 'admin'),
-                    'update' => t('Navigasyonları düzenleyebilir', 'admin'),
-                    'delete' => t('Navigasyonları silebilir', 'admin'),
+                    'create' => __('Navigasyon oluşturabilir'),
+                    'read' => __('Navigasyonları görüntüleyebilir'),
+                    'update' => __('Navigasyonları düzenleyebilir'),
+                    'delete' => __('Navigasyonları silebilir'),
                 ]);
         }
     }

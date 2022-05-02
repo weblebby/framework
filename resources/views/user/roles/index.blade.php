@@ -8,17 +8,17 @@
                         :href="panel_route('roles.create')"
                         icon="plus"
                         size="sm"
-                    >@t('Yeni rol', 'panel')</x-feadmin::button>
+                    >@lang('Yeni rol')</x-feadmin::button>
                 @endcan
             </x-slot>
-            <x-feadmin::page.title>@t('Kullanıcı rolleri', 'panel')</x-feadmin::page.title>
-            <x-feadmin::page.subtitle>@t('Rolleri yönetin', 'panel')</x-feadmin::page.subtitle>
+            <x-feadmin::page.title>@lang('Kullanıcı rolleri')</x-feadmin::page.title>
+            <x-feadmin::page.subtitle>@lang('Rolleri yönetin')</x-feadmin::page.subtitle>
         </x-feadmin::page.head>
         <div class="fd-space-y-3">
             <x-feadmin::table>
                 <x-feadmin::table.head>
-                    <x-feadmin::table.th>@t('Rol', 'panel')</x-feadmin::table.th>
-                    <x-feadmin::table.th>@t('Oluşturulma tarihi', 'panel')</x-feadmin::table.th>
+                    <x-feadmin::table.th>@lang('Rol')</x-feadmin::table.th>
+                    <x-feadmin::table.th>@lang('Oluşturulma tarihi')</x-feadmin::table.th>
                     <x-feadmin::table.th />
                 </x-feadmin::table.head>
                 <x-feadmin::table.body>
@@ -41,7 +41,7 @@
                                                 variant="red"
                                                 data-modal-open="#modal-delete-role"
                                                 :data-action="panel_route('roles.destroy', $role)"
-                                            >@t('Sil', 'panel')</x-feadmin::button>
+                                            >@lang('Sil')</x-feadmin::button>
                                         @endcan
                                     </div>
                                 @endif
@@ -56,7 +56,7 @@
     @can('role:delete')
         <x-feadmin::modal.destroy
             id="modal-delete-role"
-            :title="t('Rolü sil', 'panel')"
+            :title="__('Rolü sil')"
         />
     @endcan
 </x-feadmin::layouts.panel>

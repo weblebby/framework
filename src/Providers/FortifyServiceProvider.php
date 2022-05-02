@@ -37,19 +37,19 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         Fortify::loginView(function () {
-            seo()->title(t('Oturum açın', 'panel'));
+            seo()->title(__('Oturum açın'));
 
             return view('feadmin::guest.login');
         });
 
         Fortify::resetPasswordView(function () {
-            seo()->title(t('Parolamı sıfırla', 'panel'));
+            seo()->title(__('Parolamı sıfırla'));
 
             return view('feadmin::guest.passwords.reset');
         });
 
         Fortify::requestPasswordResetLinkView(function () {
-            seo()->title(t('Parolamı unuttum', 'panel'));
+            seo()->title(__('Parolamı unuttum'));
 
             return view('feadmin::guest.passwords.email');
         });

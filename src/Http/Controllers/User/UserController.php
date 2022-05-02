@@ -21,7 +21,7 @@ class UserController extends Controller
 
         $users = User::paginate();
 
-        seo()->title(t('Kullanıcılar', 'panel'));
+        seo()->title(__('Kullanıcılar'));
 
         return view('feadmin::user.users.index', compact('users'));
     }
@@ -32,7 +32,7 @@ class UserController extends Controller
 
         $roles = $roleService->getAssignableRolesFor($request->user());
 
-        seo()->title(t('Kullanıcı oluştur', 'panel'));
+        seo()->title(__('Kullanıcı oluştur'));
 
         return view('feadmin::user.users.create', compact('roles'));
     }
@@ -51,7 +51,7 @@ class UserController extends Controller
         info($password);
 
         return to_panel_route('users.index')
-            ->with('success', t('Kullanıcı oluşturuldu', 'panel'));
+            ->with('success', __('Kullanıcı oluşturuldu'));
     }
 
     public function edit(Request $request, RoleService $roleService, User $user): View
@@ -71,7 +71,7 @@ class UserController extends Controller
         $user->syncRoles($request->role);
 
         return to_panel_route('users.index')
-            ->with('message', t('Kullanıcı güncellendi', 'panel'));
+            ->with('message', __('Kullanıcı güncellendi'));
     }
 
     public function destroy(User $user): RedirectResponse
@@ -81,6 +81,6 @@ class UserController extends Controller
         $user->delete();
 
         return to_panel_route('users.index')
-            ->with('message', t('Kullanıcı silindi', 'panel'));
+            ->with('message', __('Kullanıcı silindi'));
     }
 }

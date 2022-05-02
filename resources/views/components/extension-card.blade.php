@@ -8,14 +8,14 @@
     <x-feadmin::form :action="panel_route('extensions.' . ($extension->is_enabled ? 'disable' : 'enable'), $extension->id)" method="PUT" class="fd-flex fd-items-center fd-justify-between fd-gap-2 fd-mt-3">
         @if ($extension->is_enabled)
             @can('extension:update')
-                <x-feadmin::button icon="check" variant="green" size="sm">@t('Etkin', 'panel')</x-feadmin::button>
+                <x-feadmin::button icon="check" variant="green" size="sm">@lang('Etkin')</x-feadmin::button>
             @endcan
             @if (panel()->preference($extension->id)->get())
                 <x-feadmin::button as="a" :href="panel_route('extensions.preferences.index', $extension->id)" icon="gear-fill" />
             @endif
         @else
             @can('extension:update')
-                <x-feadmin::button size="sm">@t('Etkinleştir', 'panel')</x-feadmin::button>
+                <x-feadmin::button size="sm">@lang('Etkinleştir')</x-feadmin::button>
             @endcan
         @endif
     </x-feadmin::form>

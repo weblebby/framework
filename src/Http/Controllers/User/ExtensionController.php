@@ -13,7 +13,7 @@ class ExtensionController extends Controller
     {
         $this->authorize('extension:read');
 
-        seo()->title(t('Yüklü Eklentiler', 'panel'));
+        seo()->title(__('Yüklü Eklentiler'));
 
         return view('feadmin::user.extensions.index');
     }
@@ -24,7 +24,7 @@ class ExtensionController extends Controller
 
         Extension::get()->firstOrFail('id', $id)->enable();
 
-        return back()->with('message', t('Eklenti aktifleştirildi', 'panel'));
+        return back()->with('message', __('Eklenti aktifleştirildi'));
     }
 
     public function disable(string $id): RedirectResponse
@@ -33,6 +33,6 @@ class ExtensionController extends Controller
 
         Extension::get()->firstOrFail('id', $id)->disable();
 
-        return back()->with('message', t('Eklenti devre dışı bırakıldı', 'panel'));;
+        return back()->with('message', __('Eklenti devre dışı bırakıldı'));;
     }
 }
