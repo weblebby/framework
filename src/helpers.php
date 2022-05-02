@@ -4,16 +4,6 @@ use Feadmin\Facades\Feadmin;
 use Feadmin\Facades\Preference;
 use Feadmin\Hooks\Panel;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Collection;
-
-// function t(
-//     string $key = null,
-//     string $group,
-//     array $replace = [],
-//     string $code = null,
-// ): string|Collection {
-//     return __($key, $replace, $code);
-// }
 
 function panel(string $panel = null): Panel
 {
