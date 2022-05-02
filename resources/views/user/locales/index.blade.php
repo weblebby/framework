@@ -2,7 +2,7 @@
     <x-slot name="scripts">
         @if ($errors->any())
             <script>
-                Drawer.open(document.getElementById('drawer-create-locale'))
+                Feadmin.Drawer.open(document.getElementById('drawer-create-locale'))
             </script>
         @endif
     </x-slot>

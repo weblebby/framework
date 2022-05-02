@@ -11,7 +11,7 @@
     }
 
     .drawer {
-        @apply fd-min-w-[20rem] fd-bg-white;
+        @apply fd-min-w-[20rem] fd-max-w-[25rem] fd-bg-white;
     }
 
     .toastr {
@@ -72,4 +72,28 @@
 
 #page .ck-editor__editable {
     min-height: 600px;
+}
+
+.loading {
+    @apply fd-relative;
+}
+.loading::before {
+    @apply fd-content-[''] fd-block fd-absolute fd-inset-0 fd-bg-white/60 -fd-m-2;
+}
+.loading::after {
+    @apply fd-content-[''] fd-absolute fd-w-16 fd-h-16 fd-rounded-full;
+
+    top: calc(50% - 32px);
+    left: calc(50% - 32px);
+    border: 6px solid #000;
+    border-color: #000 transparent #000 transparent;
+    animation: spin 1.2s linear infinite;
+}
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

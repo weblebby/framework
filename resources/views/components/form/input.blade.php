@@ -19,7 +19,7 @@
     <input {{ $attributes
         ->merge([
             'type' => $type,
-            'value' => isset($name) ? old($dottedName, $default) : $default,
+            'value' => FormComponent::value(isset($name) ? old($dottedName, $default) : $default),
             'id' => $id ?? false,
             'name' => $name ?? false,
         ])

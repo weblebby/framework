@@ -3,12 +3,12 @@
         <script src="{{ mix('js/navigation.js', 'vendor/feadmin') }}"></script>
         <script>
             @if ($errors->item->any())
-                Drawer.open(document.getElementById('drawer-create-menu-item'), { isError: true })
+                Feadmin.Drawer.open(document.getElementById('drawer-create-menu-item'), { isError: true })
             @endif
 
             @if ($selectedNavigation ?? null)
                 document.addEventListener('DOMContentLoaded', () => {
-                    Navigation.init({{ $selectedNavigation->id }})
+                    Feadmin.Navigation.init({{ $selectedNavigation->id }})
                 })
             @endif
         </script>

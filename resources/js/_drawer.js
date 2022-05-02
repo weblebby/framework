@@ -3,8 +3,8 @@ const Drawer = {
         setTimeout(() => element.classList.toggle('drawer--open'), 100)
         Drawer.overlay(element)
 
-        const focus = element.querySelector('[data-drawer-focus]')
-        focus?.focus()
+        const focusable = element.querySelector('[data-drawer-focus]')
+        focusable?.focus()
 
         element.dispatchEvent(
             new CustomEvent('drawer.open', {
@@ -20,14 +20,24 @@ const Drawer = {
         overlay.classList.remove('drawer__overlay--fade-in')
 
         element.dispatchEvent(
-            new CustomEvent('drawer.hidden', {
+            new CustomEvent('drawer.hide', {
                 detail,
             })
         )
 
         setTimeout(() => {
             overlay.remove()
+
+            element.dispatchEvent(
+                new CustomEvent('drawer.hidden', {
+                    detail,
+                })
+            )
         }, 300)
+    },
+
+    closeCurrent: () => {
+        Drawer.close(document.querySelector('.drawer--open'))
     },
 
     overlay: element => {
@@ -45,18 +55,20 @@ const Drawer = {
     },
 }
 
-document.querySelectorAll('[data-drawer]').forEach(button => {
-    button.addEventListener('click', e => {
+document.addEventListener('click', e => {
+    const openTrigger = e.target.closest('[data-drawer]')
+
+    if (openTrigger) {
         e.preventDefault()
 
-        const drawer = document.querySelector(button.dataset.drawer)
+        const drawer = document.querySelector(openTrigger.dataset.drawer)
 
         if (drawer.classList.contains('drawer--open')) {
-            Drawer.close(drawer, { related: button })
+            Drawer.close(drawer, { related: openTrigger })
         } else {
-            Drawer.open(drawer, { related: button })
+            Drawer.open(drawer, { related: openTrigger })
         }
-    })
+    }
 })
 
 document.querySelectorAll('[data-drawer-close]').forEach(button => {
@@ -66,4 +78,4 @@ document.querySelectorAll('[data-drawer-close]').forEach(button => {
     })
 })
 
-window.Drawer = Drawer
+window.Feadmin.Drawer = Drawer

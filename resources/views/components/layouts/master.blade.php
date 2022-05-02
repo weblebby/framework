@@ -27,7 +27,7 @@
     @if (session()->has('message'))
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                Toastr.add('{{ session()->get('message') }}')
+                Feadmin.Toastr.add('{{ session()->get('message') }}')
             })
         </script>
     @endif

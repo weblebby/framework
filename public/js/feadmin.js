@@ -46,8 +46,8 @@ var Drawer = {
       return element.classList.toggle('drawer--open');
     }, 100);
     Drawer.overlay(element);
-    var focus = element.querySelector('[data-drawer-focus]');
-    focus === null || focus === void 0 ? void 0 : focus.focus();
+    var focusable = element.querySelector('[data-drawer-focus]');
+    focusable === null || focusable === void 0 ? void 0 : focusable.focus();
     element.dispatchEvent(new CustomEvent('drawer.open', {
       detail: detail
     }));
@@ -57,12 +57,18 @@ var Drawer = {
     element.classList.toggle('drawer--open');
     var overlay = document.querySelector('.drawer__overlay');
     overlay.classList.remove('drawer__overlay--fade-in');
-    element.dispatchEvent(new CustomEvent('drawer.hidden', {
+    element.dispatchEvent(new CustomEvent('drawer.hide', {
       detail: detail
     }));
     setTimeout(function () {
       overlay.remove();
+      element.dispatchEvent(new CustomEvent('drawer.hidden', {
+        detail: detail
+      }));
     }, 300);
+  },
+  closeCurrent: function closeCurrent() {
+    Drawer.close(document.querySelector('.drawer--open'));
   },
   overlay: function overlay(element) {
     var overlay = document.createElement('div');
@@ -78,21 +84,23 @@ var Drawer = {
     });
   }
 };
-document.querySelectorAll('[data-drawer]').forEach(function (button) {
-  button.addEventListener('click', function (e) {
+document.addEventListener('click', function (e) {
+  var openTrigger = e.target.closest('[data-drawer]');
+
+  if (openTrigger) {
     e.preventDefault();
-    var drawer = document.querySelector(button.dataset.drawer);
+    var drawer = document.querySelector(openTrigger.dataset.drawer);
 
     if (drawer.classList.contains('drawer--open')) {
       Drawer.close(drawer, {
-        related: button
+        related: openTrigger
       });
     } else {
       Drawer.open(drawer, {
-        related: button
+        related: openTrigger
       });
     }
-  });
+  }
 });
 document.querySelectorAll('[data-drawer-close]').forEach(function (button) {
   button.addEventListener('click', function (e) {
@@ -102,7 +110,7 @@ document.querySelectorAll('[data-drawer-close]').forEach(function (button) {
     });
   });
 });
-window.Drawer = Drawer;
+window.Feadmin.Drawer = Drawer;
 
 /***/ }),
 
@@ -222,16 +230,18 @@ var Modal = {
     form.action = related.dataset.action;
   }
 };
-var openTriggers = document.querySelectorAll('[data-modal-open]');
 var closeTriggers = document.querySelectorAll('[data-modal-close]');
 var overlay = document.querySelector('[data-modal]');
-openTriggers.forEach(function (trigger) {
-  var modal = document.querySelector(trigger.dataset.modalOpen);
-  trigger.addEventListener('click', function () {
-    return Modal.open(modal, {
-      related: trigger
+document.addEventListener('click', function (e) {
+  var openTrigger = e.target.closest('[data-modal-open]');
+
+  if (openTrigger) {
+    e.preventDefault();
+    Modal.open(document.querySelector(openTrigger.dataset.modalOpen), {
+      related: openTrigger
     });
-  });
+    return;
+  }
 });
 closeTriggers.forEach(function (trigger) {
   var modal = trigger.closest('[data-modal]');
@@ -264,6 +274,8 @@ __webpack_require__.r(__webpack_exports__);
 var Toastr = {
   toastr: null,
   init: function init() {
+    var _this = this;
+
     this.toastr = document.createElement('div');
     this.toastr.classList.add('toastr');
     document.body.append(this.toastr);
@@ -271,12 +283,12 @@ var Toastr = {
       var target = e.target;
 
       if (target.classList.contains('toastr__item')) {
-        Toastr.remove(target);
+        _this.remove(target);
       }
     });
   },
   add: function add(message) {
-    var _this = this;
+    var _this2 = this;
 
     var toastrItem = document.createElement('div');
     toastrItem.classList.add('toastr__item');
@@ -286,7 +298,7 @@ var Toastr = {
       toastrItem.classList.add('toastr__item--born');
     }, 10);
     setTimeout(function () {
-      _this.remove(toastrItem);
+      _this2.remove(toastrItem);
     }, 3000);
   },
   remove: function remove(toastrItem) {
@@ -299,7 +311,7 @@ var Toastr = {
 document.addEventListener('DOMContentLoaded', function () {
   return Toastr.init();
 });
-window.Toastr = Toastr;
+window.Feadmin.Toastr = Toastr;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Toastr);
 
 /***/ }),

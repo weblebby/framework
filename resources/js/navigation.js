@@ -23,7 +23,7 @@ const Navigation = {
                 const data = await response.json()
 
                 if (data.success === true) {
-                    window.Toastr.add(data.message)
+                    Feadmin.Toastr.add(data.message)
                 }
             },
             handleClass: 'navigation-item',
@@ -117,7 +117,7 @@ drawer.addEventListener(
         Navigation.handleLinkable()
     }
 )
-drawer.addEventListener('drawer.hidden', () => (parentIdInput.value = ''))
+drawer.addEventListener('drawer.hide', () => (parentIdInput.value = ''))
 
 item_is_smart_menu.addEventListener('change', Navigation.handleIsSmartMenu)
 item_linkable.addEventListener('change', Navigation.handleLinkable)
@@ -125,11 +125,11 @@ item_linkable.addEventListener('change', Navigation.handleLinkable)
 dd.querySelectorAll('[data-toggle="edit"]').forEach(button => {
     button.addEventListener('click', () => {
         const item = JSON.parse(button.dataset.item)
-        window.Drawer.open(drawer, {
+        Feadmin.Drawer.open(drawer, {
             item,
             isEdit: true,
         })
     })
 })
 
-window.Navigation = Navigation
+window.Feadmin.Navigation = Navigation

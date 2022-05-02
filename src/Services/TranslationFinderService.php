@@ -4,7 +4,6 @@ namespace Feadmin\Services;
 
 use Feadmin\Facades\Localization;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Symfony\Component\Finder\Finder;
 

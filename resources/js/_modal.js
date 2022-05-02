@@ -31,16 +31,21 @@ const Modal = {
     },
 }
 
-const openTriggers = document.querySelectorAll('[data-modal-open]')
 const closeTriggers = document.querySelectorAll('[data-modal-close]')
 const overlay = document.querySelector('[data-modal]')
 
-openTriggers.forEach(trigger => {
-    const modal = document.querySelector(trigger.dataset.modalOpen)
+document.addEventListener('click', e => {
+    const openTrigger = e.target.closest('[data-modal-open]')
 
-    trigger.addEventListener('click', () =>
-        Modal.open(modal, { related: trigger })
-    )
+    if (openTrigger) {
+        e.preventDefault()
+
+        Modal.open(document.querySelector(openTrigger.dataset.modalOpen), {
+            related: openTrigger,
+        })
+
+        return
+    }
 })
 
 closeTriggers.forEach(trigger => {

@@ -2,6 +2,7 @@
 
 namespace Feadmin\Services;
 
+use App\Support\Moneyable;
 use Illuminate\Support\Arr;
 
 class FormComponentService
@@ -32,5 +33,20 @@ class FormComponentService
         return session()->hasOldInput()
             ? in_array($attributes->get('value'), Arr::wrap(old($name)))
             : (bool) $default;
+    }
+
+    public function selected(string $name, mixed $default, $attributes): bool
+    {
+        return !is_null($old = old($name, $default))
+            && (string) $old === (string) $attributes->get('value');
+    }
+
+    public function value(mixed $value): ?string
+    {
+        if ($value instanceof Moneyable) {
+            return $value->format();
+        }
+
+        return $value;
     }
 }

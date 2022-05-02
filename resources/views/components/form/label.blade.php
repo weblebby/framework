@@ -1,3 +1,3 @@
-@aware(['name'])
+@aware(['name', 'bag' => 'default'])
 
-<label for="{{ $name }}" {{ $attributes }}>{{ $slot }}</label>
+<label for="{{ FormComponent::id($name, $bag) }}" {{ $attributes }}>{{ $slot }}</label>

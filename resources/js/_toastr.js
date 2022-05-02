@@ -11,7 +11,7 @@ const Toastr = {
             const target = e.target
 
             if (target.classList.contains('toastr__item')) {
-                Toastr.remove(target)
+                this.remove(target)
             }
         })
     },
@@ -40,6 +40,6 @@ const Toastr = {
 
 document.addEventListener('DOMContentLoaded', () => Toastr.init())
 
-window.Toastr = Toastr
+window.Feadmin.Toastr = Toastr
 
 export default Toastr

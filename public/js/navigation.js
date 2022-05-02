@@ -12909,7 +12909,7 @@ var Navigation = {
                   data = _context.sent;
 
                   if (data.success === true) {
-                    window.Toastr.add(data.message);
+                    Feadmin.Toastr.add(data.message);
                   }
 
                 case 7:
@@ -12998,7 +12998,7 @@ drawer.addEventListener('drawer.open', function (_ref) {
   Navigation.handleIsSmartMenu();
   Navigation.handleLinkable();
 });
-drawer.addEventListener('drawer.hidden', function () {
+drawer.addEventListener('drawer.hide', function () {
   return parentIdInput.value = '';
 });
 item_is_smart_menu.addEventListener('change', Navigation.handleIsSmartMenu);
@@ -13006,13 +13006,13 @@ item_linkable.addEventListener('change', Navigation.handleLinkable);
 dd.querySelectorAll('[data-toggle="edit"]').forEach(function (button) {
   button.addEventListener('click', function () {
     var item = JSON.parse(button.dataset.item);
-    window.Drawer.open(drawer, {
+    Feadmin.Drawer.open(drawer, {
       item: item,
       isEdit: true
     });
   });
 });
-window.Navigation = Navigation;
+window.Feadmin.Navigation = Navigation;
 })();
 
 /******/ })()

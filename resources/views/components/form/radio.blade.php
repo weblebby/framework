@@ -1,5 +1,5 @@
-@aware(['name', 'bind', 'bag' => 'default'])
-@props(['label', 'default' => $bind->$name ?? null])
+@aware(['name', 'bind', 'label', 'bag' => 'default'])
+@aware(['default' => $bind->$name ?? null])
 
 @php($id = FormComponent::id($name, $bag))
 @php($dottedName = FormComponent::dottedName($name))
@@ -11,7 +11,7 @@
         {{ $attributes
             ->merge([
                 'type' => 'radio',
-                'checked' => FormComponent::checked($dottedName, $default, $attributes),
+                'checked' => FormComponent::selected($dottedName, $default, $attributes),
             ])
             ->class('fd-w-6
                     fd-h-6
