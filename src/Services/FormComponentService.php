@@ -3,7 +3,9 @@
 namespace Feadmin\Services;
 
 use App\Support\Moneyable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use UnitEnum;
 
 class FormComponentService
 {
@@ -37,6 +39,14 @@ class FormComponentService
 
     public function selected(string $name, mixed $default, $attributes): bool
     {
+        if ($default instanceof Model) {
+            $default = $default->getKey();
+        }
+
+        if ($default instanceof UnitEnum) {
+            $default = $default->value;
+        }
+
         return !is_null($old = old($name, $default))
             && (string) $old === (string) $attributes->get('value');
     }

@@ -38,7 +38,7 @@ class InstallFeadmin extends Command
         $this->call('migrate');
 
         $localeCode = $this->ask('Enter locale (en, tr, ar, ru)', app()->getLocale());
-        $locale = Locale::create(['code' => $localeCode, 'is_default' => true]);
+        Locale::create(['code' => $localeCode, 'is_default' => true]);
 
         $this->info("Locale [{$localeCode}] created.");
 

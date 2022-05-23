@@ -3,8 +3,8 @@
 namespace Feadmin\Http\Middleware;
 
 use Closure;
-use Feadmin\Extension;
-use Feadmin\Facades\Extension as ExtensionService;
+use Feadmin\Extension as ExtensionItem;
+use Feadmin\Facades\Extension;
 use Feadmin\Facades\Localization;
 use Illuminate\Http\Request;
 
@@ -28,7 +28,7 @@ class Panel
             'seo.app.name' => $siteName,
         ]);
 
-        ExtensionService::enabled()->each(fn (Extension $extension) => $extension->booted());
+        Extension::enabled()->each(fn (ExtensionItem $extension) => $extension->booted());
 
         return $next($request);
     }

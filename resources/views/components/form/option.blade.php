@@ -1,4 +1,5 @@
-@aware(['name', 'default' => null])
+@aware(['name', 'bind', 'default' => null])
+@aware(['default' => $bind->$name ?? null])
 
 <option {{ $attributes
     ->merge(['selected' => FormComponent::selected(

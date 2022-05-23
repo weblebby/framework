@@ -14,14 +14,13 @@ trait Translatable
     {
         $query->with([
             'translations' => function (Relation $query) {
+                $column = $this->getTranslationsTable() . '.' . $this->getLocaleKey();
+
                 if ($this->useFallback()) {
-                    return $query->whereIn(
-                        $this->getTranslationsTable() . '.' . $this->getLocaleKey(),
-                        $this->getLocalesHelper()->all()
-                    );
+                    return $query->whereIn($column, $this->getLocalesHelper()->all());
                 }
 
-                return $query->where($this->getTranslationsTable() . '.' . $this->getLocaleKey(), $this->locale());
+                return $query->where($column, $this->locale());
             },
         ]);
     }

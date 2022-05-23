@@ -5,7 +5,7 @@
                 <x-feadmin::alert color="green">{{ session('status') }}</x-feadmin::alert>
             @endif
             <x-feadmin::card padding>
-                <x-feadmin::form :action="route('login')">
+                <x-feadmin::form :action="route('login')" bag="login">
                     <div class="fd-space-y-3">
                         <h3 class="fd-text-xl">@lang('Oturum açın')</h3>
                         <x-feadmin::form.group name="email">

@@ -10,16 +10,18 @@ class Feadmin
 {
     private array $panels = [];
 
-    private string $currentPanel;
+    private ?string $currentPanel = null;
+
+    private ?string $extensionPanel = null;
 
     public function create(string $panel): Panel
     {
         return $this->panels[$panel] = new Panel($panel);
     }
 
-    public function find(string $panel): Panel
+    public function find(?string $panel): ?Panel
     {
-        return $this->panels[$panel];
+        return $this->panels[$panel] ?? null;
     }
 
     public function panels(): array
@@ -27,7 +29,7 @@ class Feadmin
         return $this->panels;
     }
 
-    public function getCurrentPanel(): Panel
+    public function getCurrentPanel(): ?Panel
     {
         return $this->find($this->currentPanel);
     }
@@ -35,6 +37,16 @@ class Feadmin
     public function setCurrentPanel(string $panel): void
     {
         $this->currentPanel = $panel;
+    }
+
+    public function getExtensionPanel(): ?Panel
+    {
+        return $this->find($this->extensionPanel);
+    }
+
+    public function setExtensionPanel(string $panel): void
+    {
+        $this->extensionPanel = $panel;
     }
 
     public function usePanelRoutes(): void

@@ -74,6 +74,6 @@ class ExtensionService
 
     private function registerViews(Extension $extension): void
     {
-        View::addNamespace($extension->id, $extension->path('Resources/views'));
+        View::addNamespace("ext-{$extension->id}", $extension->path('Resources/views'));
     }
 }

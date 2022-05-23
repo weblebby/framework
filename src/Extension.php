@@ -46,6 +46,18 @@ abstract class Extension implements Arrayable
         return $put;
     }
 
+    public function migrate(string $method = null): void
+    {
+        if ($method) {
+            $method = ":{$method}";
+        }
+
+        Artisan::call(
+            'migrate' . $method,
+            ['--path' => $this->originalPath('Database/Migrations')]
+        );
+    }
+
     public function path(string $append = ''): string
     {
         return base_path($this->originalPath($append));
@@ -151,12 +163,5 @@ abstract class Extension implements Arrayable
     public function disabled(): void
     {
         //
-    }
-
-    protected function migrate(string $method = null): void
-    {
-        $method = $method === 'down' ? ":rollback" : '';
-
-        Artisan::call("migrate{$method}", ['--path' => $this->originalPath('Database/Migrations')]);
     }
 }

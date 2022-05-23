@@ -3,6 +3,7 @@
 namespace Feadmin\Providers;
 
 use Feadmin\Console\Commands\InstallFeadmin;
+use Feadmin\Console\Commands\MigrateExtension;
 use Feadmin\Facades\Extension;
 use Feadmin\Facades\Localization;
 use Illuminate\Support\Facades\Blade;
@@ -64,6 +65,7 @@ class FeadminServiceProvider extends ServiceProvider
         config([
             'translatable.locales' => $availableLocaleCodes,
             'translatable.use_fallback' => true,
+            'translatable.fallback_locale' => null,
             'laravellocalization.supportedLocales' => $supportedLocales,
         ]);
     }
@@ -98,6 +100,7 @@ class FeadminServiceProvider extends ServiceProvider
     {
         $this->commands([
             InstallFeadmin::class,
+            MigrateExtension::class,
         ]);
     }
 }

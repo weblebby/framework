@@ -7,8 +7,12 @@ use Feadmin\Hooks\Panel;
 
 class Features
 {
-    public static function enabled(string $feature, Panel|string $panel): bool
+    public static function enabled(string $feature, Panel|string|null $panel): bool
     {
+        if (is_null($panel)) {
+            return false;
+        }
+
         $features = $panel instanceof Panel
             ? $panel->features()
             : Feadmin::find($panel)->features();

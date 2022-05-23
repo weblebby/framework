@@ -10,10 +10,6 @@
         @apply fd-flex fd-w-full fd-h-full fd-bg-zinc-200;
     }
 
-    .drawer {
-        @apply fd-min-w-[20rem] fd-max-w-[25rem] fd-bg-white;
-    }
-
     .toastr {
         @apply fd-flex fd-flex-col fd-gap-2 fd-fixed fd-top-0 fd-left-1/2 -fd-translate-x-1/2 fd-z-50 fd-mt-4;
     }
@@ -29,8 +25,9 @@
     }
 
     .drawer {
-        @apply fd-bg-zinc-100 fd-min-w-full lg:fd-min-w-[30rem] fd-fixed fd-z-40 fd-right-0 fd-inset-y-0 fd-p-4 fd-translate-x-full
-            fd-transition-transform fd-duration-300 fd-ease-in-out fd-space-y-4;
+        @apply fd-bg-zinc-100 fd-min-w-full fd-max-w-[25rem] lg:fd-min-w-[30rem]
+            fd-fixed fd-z-40 fd-right-0 fd-inset-y-0 fd-p-4
+            fd-translate-x-full fd-transition-transform fd-duration-300 fd-ease-in-out fd-space-y-4;
     }
 
     .drawer--half {

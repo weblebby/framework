@@ -34,7 +34,8 @@ class LocalizationService
                 $locale['code'] = $code;
 
                 return $locale;
-            });
+            })
+            ->sortBy('name');
 
         $this->availableLocales = DB::table('locales')->get();
 

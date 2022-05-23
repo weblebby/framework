@@ -5,7 +5,7 @@ use Feadmin\Facades\Preference;
 use Feadmin\Hooks\Panel;
 use Illuminate\Http\RedirectResponse;
 
-function panel(string $panel = null): Panel
+function panel(string $panel = null): ?Panel
 {
     if (is_null($panel)) {
         return Feadmin::getCurrentPanel();
