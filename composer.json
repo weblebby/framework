@@ -1,6 +1,6 @@
 {
-    "name": "feadmin/framework",
-    "description": "Easy admin panel.",
+    "name": "feadbox/feadmin",
+    "description": "Laravel admin panel.",
     "type": "library",
     "license": "MIT",
     "autoload": {
