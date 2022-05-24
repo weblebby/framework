@@ -1,13 +1,13 @@
 @props(['header'])
 
-<x-feadmin::card>
+<x-feadmin::card class="fd-overflow-hidden">
     @if ($header ?? null)
         <div {{ $header->attributes->class('fd-p-4 fd-border-b') }}>
             {{ $header }}
         </div>
     @endif
     <x-feadmin::overflow>
-        <table {{ $attributes->class('fd-min-w-full fd-divide-y fd-divide-zinc-200 fd-overflow-hidden fd-rounded') }}>
+        <table {{ $attributes->class('fd-w-full fd-divide-y fd-divide-zinc-200') }}>
             {{ $slot }}
         </table>
     </x-feadmin::overflow>

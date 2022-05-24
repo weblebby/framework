@@ -7,16 +7,16 @@
 @layer base {
     html,
     body {
-        @apply fd-flex fd-w-full fd-h-full fd-bg-zinc-200;
+        @apply fd-w-full fd-h-full fd-bg-zinc-200;
     }
 
     .toastr {
-        @apply fd-flex fd-flex-col fd-gap-2 fd-fixed fd-top-0 fd-left-1/2 -fd-translate-x-1/2 fd-z-50 fd-mt-4;
+        @apply fd-w-2/3 md:fd-w-auto fd-flex fd-flex-col fd-gap-2 fd-fixed fd-top-0 fd-left-1/2 -fd-translate-x-1/2 fd-z-50 fd-mt-4;
     }
 
     .toastr__item {
         @apply fd-py-2 fd-px-4 fd-rounded fd-shadow-lg fd-max-w-md 
-            fd-bg-white/30 fd-backdrop-blur-sm fd-border fd-border-zinc-50/40
+            fd-bg-white/70 fd-backdrop-blur-sm fd-border fd-border-zinc-50/40
             fd-cursor-pointer fd-transition-all fd-duration-300 fd-ease-in-out fd-opacity-0 -fd-mt-10;
     }
 

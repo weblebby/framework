@@ -55,7 +55,7 @@ abstract class Extension implements Arrayable
         Artisan::call(
             'migrate' . $method,
             [
-                '--path' => $this->originalPath('Database/Migrations'),
+                '--path' => $this->originalPath('Database/migrations'),
                 '--force' => true,
             ]
         );
