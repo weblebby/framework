@@ -23,7 +23,7 @@ class Paginator
         int $page = null,
         array $options = []
     ): LengthAwarePaginator {
-        $page ??= PaginationPaginator::resolveCurrentPage(1);
+        $page ??= PaginationPaginator::resolveCurrentPage('page', 1);
 
         if (!isset($options['path'])) {
             $options['path'] = PaginationPaginator::resolveCurrentPath();
