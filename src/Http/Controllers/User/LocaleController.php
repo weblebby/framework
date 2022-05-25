@@ -4,6 +4,7 @@ namespace Feadmin\Http\Controllers\User;
 
 use Feadmin\Facades\Localization;
 use App\Http\Controllers\Controller;
+use Feadmin\Support\Paginator;
 use Feadmin\Http\Requests\User\StoreLocaleRequest;
 use Feadmin\Models\Locale;
 use Feadmin\Services\TranslationFinderService;
@@ -35,9 +36,12 @@ class LocaleController extends Controller
 
         seo()->title(Localization::display($locale->code));
 
+        $translations = Paginator::fromArray(Localization::getTranslations(), 50);
+
         return view('feadmin::user.locales.index', [
             'availableLocales' => Localization::getAvailableLocales(),
             'remainingLocales' => Localization::getRemainingLocales(),
+            'translations' => $translations,
             'selectedLocale' => $locale,
         ]);
     }

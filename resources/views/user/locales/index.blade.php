@@ -69,7 +69,7 @@
                         </div>
                         <x-feadmin::card class="fd-divide-y">
                             <div class="fd-py-4 fd-space-y-3">
-                                @foreach (Localization::getTranslations() as $key => $value)
+                                @foreach ($translations as $key => $value)
                                     <div class="fd-grid fd-grid-cols-2 fd-divide-x">
                                         <div class="fd-px-4">
                                             <div class="fd-relative">
@@ -101,6 +101,9 @@
                                 @endforeach
                             </div>
                         </x-feadmin::card>
+                        <x-feadmin::overflow class="fd-mt-3">
+                            {{ $translations->links() }}
+                        </x-feadmin::overflow>
                     @else
                         <x-feadmin::empty
                             icon="translate"

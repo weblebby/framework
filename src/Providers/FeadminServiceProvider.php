@@ -6,6 +6,7 @@ use Feadmin\Console\Commands\InstallFeadmin;
 use Feadmin\Console\Commands\MigrateExtension;
 use Feadmin\Facades\Extension;
 use Feadmin\Facades\Localization;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -45,6 +46,9 @@ class FeadminServiceProvider extends ServiceProvider
 
     private function bootViews(): void
     {
+        Paginator::defaultView('feadmin::vendor.pagination.tailwind');
+        Paginator::defaultSimpleView('feadmin::vendor.pagination.simple-tailwind');
+
         $this->loadViewsFrom(dirname(__DIR__) . '/../resources/views', 'feadmin');
 
         Blade::directive('feinject', function ($expression) {
