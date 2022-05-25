@@ -30,13 +30,6 @@ class FormComponentService
         return $id;
     }
 
-    public function checked(string $name, mixed $default, $attributes): bool
-    {
-        return session()->hasOldInput()
-            ? in_array($attributes->get('value'), Arr::wrap(old($name)))
-            : (bool) $default;
-    }
-
     public function selected(string $name, mixed $default, $attributes): bool
     {
         if ($default instanceof Model) {
@@ -48,7 +41,7 @@ class FormComponentService
         }
 
         return !is_null($old = old($name, $default))
-            && (string) $old === (string) $attributes->get('value');
+            && in_array((string) $attributes->get('value'), Arr::wrap($old));
     }
 
     public function value(mixed $value): ?string

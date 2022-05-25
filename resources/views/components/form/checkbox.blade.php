@@ -12,7 +12,7 @@
             ->merge([
                 'type' => 'checkbox',
                 'value' => '1',
-                'checked' => FormComponent::checked($dottedName, $default, $attributes),
+                'checked' => FormComponent::selected($dottedName, $default, $attributes),
             ])
             ->class('fd-w-6
                     fd-h-6
