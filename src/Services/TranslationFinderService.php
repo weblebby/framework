@@ -15,10 +15,12 @@ class TranslationFinderService
     ];
 
     private array $functions = [
-        't',
+        '@lang',
+        'trans',
+        '__',
     ];
 
-    private string $functionPattern = '/\b[[FUNCTIONS]]\(\s*[\'|"](.+)[\'|"],\s*[\'|"](.+)[\'|"]/Um';
+    private string $functionPattern = '/([FUNCTIONS])\(\s*([\'"])(?P<string>(?:(?![^\\\]\2).)+.)\2\s*[\),]/u';
 
     public function scan(): Collection
     {
@@ -103,8 +105,8 @@ class TranslationFinderService
                 continue;
             }
 
-            for ($i = 0; $i < count($matches[1]); $i++) {
-                $key = stripslashes($matches[1][$i]);
+            for ($i = 0; $i < count($matches['string']); $i++) {
+                $key = stripslashes($matches['string'][$i]);
                 $translations[$key] = $key;
             }
         }
