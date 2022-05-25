@@ -101,9 +101,9 @@
                                 @endforeach
                             </div>
                         </x-feadmin::card>
-                        <x-feadmin::overflow class="fd-mt-3">
-                            {{ $translations->links() }}
-                        </x-feadmin::overflow>
+                        <div class="fd-mt-3">
+                            <x-feadmin::overflow>{{ $translations->links() }}</x-feadmin::overflow>
+                        </div>
                     @else
                         <x-feadmin::empty
                             icon="translate"
