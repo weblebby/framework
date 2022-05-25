@@ -51,8 +51,6 @@ class TranslationFinderService
     {
         $translations = $this->scan();
 
-        dd($translations);
-
         foreach (Localization::getAvailableLocales() as $locale) {
             $this->syncLocale($locale->code, $translations);
         }
