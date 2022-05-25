@@ -1,5 +1,5 @@
 <x-feadmin::layouts.master>
-    <main class="fd-flex-1 fd-flex fd-items-center fd-justify-center">
+    <main class="fd-h-full fd-flex fd-items-center fd-justify-center">
         <div class="fd-w-1/4 fd-space-y-3">
             @if (session('status'))
                 <x-feadmin::alert color="green">{{ session('status') }}</x-feadmin::alert>
