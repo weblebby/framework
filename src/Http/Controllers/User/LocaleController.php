@@ -1,99 +1,158 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Feadmin\Services;
 
 use Feadmin\Facades\Localization;
-use App\Http\Controllers\Controller;
-use Feadmin\Http\Requests\User\StoreLocaleRequest;
-use Feadmin\Models\Locale;
-use Feadmin\Services\TranslationFinderService;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\File;
+use Symfony\Component\Finder\Finder;
 
-class LocaleController extends Controller
+class TranslationFinderService
 {
-    public function index()
+    private array $filePatterns = [
+        '*.php',
+        '*.js',
+    ];
+
+    private array $functions = [
+        '@lang',
+        'trans',
+        '__',
+    ];
+
+    private string $functionPattern = '/([FUNCTIONS])\(\s*([\'"])(?P<string>(?:(?![^\\\]\2).)+.)\2\s*[\),]/u';
+
+    public function scan(): Collection
     {
-        $this->authorize('locale:read');
+        $scanned = $this->getScannedTranslations();
+        $current = collect(Localization::getTranslations());
+        $unusedKeys = $this->getUnusedTranslationKeys($scanned, $current);
 
-        seo()->title(__('Diller'));
-
-        if (($defaultLocaleId = Localization::getDefaultLocaleId()) !== -1) {
-            return to_panel_route('locales.show', $defaultLocaleId);
-        }
-
-        return view('feadmin::user.locales.index', [
-            'availableLocales' => Localization::getAvailableLocales(),
-            'remainingLocales' => Localization::getRemainingLocales(),
-        ]);
+        return $current
+            ->merge($scanned)
+            ->reject(fn ($key) => in_array($key, $unusedKeys));
     }
 
-    public function show(Locale $locale): View|RedirectResponse
+    public function syncLocale(string $locale, Collection $translations = null): bool
     {
-        $this->authorize('locale:read');
+        if (is_null($translations)) {
+            $translations = $this->scan();
+        }
 
-        seo()->title(Localization::display($locale->code));
-
-        return view('feadmin::user.locales.index', [
-            'availableLocales' => Localization::getAvailableLocales(),
-            'remainingLocales' => Localization::getRemainingLocales(),
-            'selectedLocale' => $locale,
-        ]);
+        return $this->putLocaleFile(
+            $locale,
+            $translations
+                ->map(fn ($_, $key) => __($key, locale: $locale))
+                ->toJson(JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
     }
 
-    public function store(
-        StoreLocaleRequest $request,
-        TranslationFinderService $translationFinderService
-    ): RedirectResponse {
-        $validated = $request->validated();
+    public function syncAllLocales(): bool
+    {
+        $translations = $this->scan();
 
-        if (Locale::count() === 0) {
-            $validated['is_default'] = true;
-            $firstLocale = true;
+        dd($translations);
+
+        foreach (Localization::getAvailableLocales() as $locale) {
+            $this->syncLocale($locale->code, $translations);
         }
 
-        $locale = Locale::create($validated);
-
-        if ($firstLocale ?? false) {
-            Localization::load();
-            $translationFinderService->syncLocale($locale->code);
-        }
-
-        if ($request->has('is_default')) {
-            DB::table('locales')
-                ->where('id', Localization::getDefaultLocaleId())
-                ->update(['is_default' => false]);
-        }
-
-        return to_panel_route('locales.show', $locale)
-            ->with('message', __('Dil başarıyla eklendi'));
+        return true;
     }
 
-    public function destroy(Locale $locale): RedirectResponse
+    public function updateTranslation(string $locale, string $key, string $value): bool
     {
-        $this->authorize('locale:delete');
+        $path = lang_path("{$locale}.json");
 
-        $locale->delete();
-
-        if ($locale->is_default) {
-            DB::table('locales')
-                ->where('id', DB::table('locales')->min('id'))
-                ->update(['is_default' => true]);
+        if (!File::exists($path)) {
+            return false;
         }
 
-        return to_panel_route('locales.index')
-            ->with('message', __('Dil başarıyla silindi'));
+        $json = json_decode(File::get($path), true);
+
+        if (!is_array($json)) {
+            return false;
+        }
+
+        $json[$key] = $value;
+
+        return $this->putLocaleFile(
+            $locale,
+            json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
     }
 
-    public function sync(TranslationFinderService $service): RedirectResponse
+    private function getUnusedTranslationKeys(Collection $scanned, Collection $current): array
     {
-        $this->authorize('locale:translate');
+        foreach ($current as $key) {
+            if (!$scanned->contains($key)) {
+                $keys[] = $key;
+            }
+        }
 
-        $service->syncAllLocales();
+        return $keys ?? [];
+    }
 
-        return back()
-            ->with('message', __('Çeviriler senkronize edildi'));
+    private function getScannedTranslations(): Collection
+    {
+        $files = $this->getFiles();
+        $functionPattern = $this->getFunctionPattern();
+
+        $translations = collect();
+
+        foreach ($files as $file) {
+            preg_match_all($functionPattern, $file->getContents(), $matches);
+
+            if (count($matches[1]) <= 0) {
+                continue;
+            }
+
+            for ($i = 0; $i < count($matches['string']); $i++) {
+                $key = stripslashes($matches['string'][$i]);
+                $translations[$key] = $key;
+            }
+        }
+
+        return $translations;
+    }
+
+    private function getDirectories(): array
+    {
+        return [
+            app_path(),
+            resource_path(),
+            base_path('routes'),
+            dirname(__DIR__),
+            dirname(__DIR__) . '/../resources',
+            dirname(__DIR__) . '/../routes',
+        ];
+    }
+
+    private function getFiles(): Finder
+    {
+        $finder = (new Finder())
+            ->followLinks()
+            ->in($this->getDirectories());
+
+        foreach ($this->filePatterns as $pattern) {
+            $finder->name($pattern);
+        }
+
+        return $finder->files();
+    }
+
+    private function getFunctionPattern(): string
+    {
+        return str_replace('[FUNCTIONS]', implode('|', $this->functions), $this->functionPattern);
+    }
+
+    private function putLocaleFile(string $locale, string $content = '{}'): bool
+    {
+        return File::put(lang_path("{$locale}.json"), $content, true);
+    }
+
+    private function deleteLocaleFile(string $locale): bool
+    {
+        return File::delete(lang_path("{$locale}.json"));
     }
 }
