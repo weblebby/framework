@@ -10,7 +10,6 @@ use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
-use Mcamara\LaravelLocalization\Exceptions\SupportedLocalesNotDefined;
 
 class FeadminServiceProvider extends ServiceProvider
 {
@@ -58,19 +57,10 @@ class FeadminServiceProvider extends ServiceProvider
 
     private function bootLocalization(): void
     {
-        $allLocales = Localization::getAllLocales();
-        $availableLocaleCodes = Localization::getAvailableLocales()->pluck('code')->toArray();
-        $supportedLocales = $allLocales->whereIn('code', $availableLocaleCodes)->toArray();
-
-        if (count($supportedLocales) <= 0) {
-            throw new SupportedLocalesNotDefined('No supported locales found.');
-        }
-
         config([
-            'translatable.locales' => $availableLocaleCodes,
+            'translatable.locales' => Localization::getAvailableLocales()->pluck('code')->toArray(),
             'translatable.use_fallback' => true,
             'translatable.fallback_locale' => null,
-            'laravellocalization.supportedLocales' => $supportedLocales,
         ]);
     }
 

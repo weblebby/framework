@@ -40,7 +40,6 @@ class LocalizationService
         $this->availableLocales = DB::table('locales')->get();
 
         $this->setDefaultLocale();
-        $this->setCurrentLocale(app()->getLocale());
         $this->setTranslations();
     }
 
@@ -128,37 +127,12 @@ class LocalizationService
         return datefmt_format($formatter, $date->getTimestamp());
     }
 
-    public function setCurrentLocale(string $locale): void
+    public function setCurrentLocale(object $locale): void
     {
-        app()->setLocale($locale);
-
-        $preferredLocale = $this->getPreferredLocale([
-            ['code' => $locale],
-            ['is_default' => true],
-            [],
-        ]);
-
-        $this->currentLocale = $preferredLocale ?? $this->defaultLocale;
+        $this->currentLocale = $locale;
     }
 
-    private function setTranslations(): void
-    {
-        $translations = trans('*', locale: $this->getDefaultLocaleCode());
-
-        $this->translations = $translations === '*' ? [] : $translations;
-    }
-
-    private function setDefaultLocale(): void
-    {
-        $this->defaultLocale = $this->getAvailableLocales()
-            ->firstWhere('is_default', true) ?? (object) [
-                'id' => -1,
-                'code' => 'tr',
-                'is_default' => 1,
-            ];
-    }
-
-    private function getPreferredLocale(array $priorities): ?object
+    public function getPreferredLocale(array $priorities): ?object
     {
         foreach ($priorities as $conditions) {
             $locale = $this->getAvailableLocales();
@@ -173,5 +147,24 @@ class LocalizationService
         }
 
         return null;
+    }
+
+    private function setTranslations(): void
+    {
+        $translations = trans('*', locale: $this->getDefaultLocaleCode());
+
+        $this->translations = $translations === '*' ? [] : $translations;
+    }
+
+    private function setDefaultLocale(): void
+    {
+        $this->defaultLocale = $this->getAvailableLocales()->firstWhere('is_default', true)
+            ?? (object) [
+                'id' => -1,
+                'code' => app()->getLocale(),
+                'is_default' => 1,
+            ];
+
+        $this->currentLocale = $this->defaultLocale;
     }
 }

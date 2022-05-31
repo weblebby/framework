@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Illuminate\Support\Collection getRemainingLocales()
  * @method static string display(string $code)
  * @method static string date(\Carbon\Carbon $date)
- * @method static void setCurrentLocale(string $locale)
+ * @method static void setCurrentLocale(object $locale)
  */
 class Localization extends Facade
 {

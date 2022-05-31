@@ -19,9 +19,7 @@ class Panel
      */
     public function handle(Request $request, Closure $next)
     {
-        Localization::setCurrentLocale(
-            $request->user()?->locale?->code ?? Localization::getCurrentLocale()->code
-        );
+        app()->setLocale($request->user()?->locale?->code ?? Localization::getCurrentLocale()->code);
 
         config([
             'app.name' => $siteName = preference('general->site_name'),

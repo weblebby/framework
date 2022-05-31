@@ -4,7 +4,9 @@ namespace Feadmin\Providers;
 
 use Feadmin\Listeners\DeleteOriginalMedia;
 use App\Models\User;
+use Feadmin\Listeners\SetLocale;
 use Feadmin\Observers\UserObserver;
+use Illuminate\Foundation\Events\LocaleUpdated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Spatie\MediaLibrary\Conversions\Events\ConversionHasBeenCompleted;
 
@@ -18,6 +20,9 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         ConversionHasBeenCompleted::class => [
             DeleteOriginalMedia::class,
+        ],
+        LocaleUpdated::class => [
+            SetLocale::class,
         ],
     ];
 
