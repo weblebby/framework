@@ -29,7 +29,13 @@ class MigrateExtension extends Command
      */
     public function handle()
     {
-        Extension::enabled()->each(fn (ExtensionItem $e) => $e->migrate());
+        Extension::enabled()->each(function (ExtensionItem $extension) {
+            $this->alert("Migrate for {$extension->name} Extension");
+
+            $this->call('migrate', [
+                '--path' => $extension->originalPath('Database/migrations'),
+            ]);
+        });
 
         $this->info('Extensions migrated.');
     }

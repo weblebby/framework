@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('locales', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 2);
+            $table->string('code');
             $table->boolean('is_default')->default(false);
         });
     }

@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static object getCurrentLocale()
  * @method static string getCurrentLocaleCode()
  * @method static int getCurrentLocaleId()
- * @method static \Illuminate\Support\Collection getAvailableLocales()
+ * @method static \Illuminate\Support\Collection getSupportedLocales()
  * @method static \Illuminate\Support\Collection getAllLocales()
  * @method static object getLocale(string $code)
  * @method static array getTranslations()

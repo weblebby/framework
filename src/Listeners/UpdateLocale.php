@@ -7,7 +7,7 @@ use Feadmin\Services\LocalizationService;
 use Illuminate\Foundation\Events\LocaleUpdated;
 use Locale;
 
-class SetLocale
+class UpdateLocale
 {
     public function handle(LocaleUpdated $event)
     {

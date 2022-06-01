@@ -16,18 +16,24 @@ class FormComponentService
 
     public function dottedName(?string $name): string
     {
-        return str_replace(['[]', ']', '['], ['', '', '.'], $name);
+        if ($name) {
+            return str_replace(['[]', ']', '['], ['', '', '.'], $name);
+        }
+
+        return '';
     }
 
     public function id(?string $id, string $bag = null): string
     {
-        $id = str_replace('[]', '', $id);
+        if ($id) {
+            $id = str_replace('[]', '', $id);
+        }
 
         if ($bag !== 'default' && !is_null($bag)) {
             $id = "{$bag}_{$id}";
         }
 
-        return $id;
+        return $id ?? '';
     }
 
     public function selected(string $name, mixed $default, $attributes): bool

@@ -3,7 +3,6 @@
 namespace Feadmin;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -44,21 +43,6 @@ abstract class Extension implements Arrayable
         $this->disabled();
 
         return $put;
-    }
-
-    public function migrate(string $method = null): void
-    {
-        if ($method) {
-            $method = ":{$method}";
-        }
-
-        Artisan::call(
-            'migrate' . $method,
-            [
-                '--path' => $this->originalPath('Database/migrations'),
-                '--force' => true,
-            ]
-        );
     }
 
     public function path(string $append = ''): string

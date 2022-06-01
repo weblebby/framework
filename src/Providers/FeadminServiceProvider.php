@@ -22,6 +22,16 @@ class FeadminServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(FortifyServiceProvider::class);
+
+        foreach ([
+            \Feadmin\Services\ExtensionService::class,
+            \Feadmin\Services\InjectionService::class,
+            \Feadmin\Services\LocalizationService::class,
+            \Feadmin\Services\NavigationLinkableService::class,
+            \Feadmin\Services\PreferenceService::class,
+        ] as $class) {
+            $this->app->singleton($class, $class);
+        }
     }
 
     /**
@@ -58,7 +68,7 @@ class FeadminServiceProvider extends ServiceProvider
     private function bootLocalization(): void
     {
         config([
-            'translatable.locales' => Localization::getAvailableLocales()->pluck('code')->toArray(),
+            'translatable.locales' => Localization::getSupportedLocales()->pluck('code')->toArray(),
             'translatable.use_fallback' => true,
             'translatable.fallback_locale' => null,
         ]);
@@ -84,10 +94,6 @@ class FeadminServiceProvider extends ServiceProvider
         $this->publishes([
             dirname(__DIR__) . '/../database/migrations' => database_path('migrations'),
         ], ['feadmin-migrations', 'migrations']);
-
-        $this->publishes([
-            dirname(__DIR__) . '/../config/feadmin.php' => config_path('feadmin.php'),
-        ], ['feadmin-config', 'config']);
     }
 
     public function bootCommands(): void

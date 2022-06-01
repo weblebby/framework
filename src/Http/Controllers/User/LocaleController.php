@@ -25,7 +25,7 @@ class LocaleController extends Controller
         }
 
         return view('feadmin::user.locales.index', [
-            'availableLocales' => Localization::getAvailableLocales(),
+            'availableLocales' => Localization::getSupportedLocales(),
             'remainingLocales' => Localization::getRemainingLocales(),
         ]);
     }
@@ -39,7 +39,7 @@ class LocaleController extends Controller
         $translations = Paginator::fromArray(Localization::getTranslations(), 50);
 
         return view('feadmin::user.locales.index', [
-            'availableLocales' => Localization::getAvailableLocales(),
+            'availableLocales' => Localization::getSupportedLocales(),
             'remainingLocales' => Localization::getRemainingLocales(),
             'translations' => $translations,
             'selectedLocale' => $locale,

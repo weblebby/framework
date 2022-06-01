@@ -5,14 +5,14 @@ namespace Feadmin\Services;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use IntlDateFormatter;
 use Locale;
-use ResourceBundle;
+use NumberFormatter;
+use Symfony\Component\Intl\Locales;
 
 class LocalizationService
 {
-    private Collection $availableLocales;
+    private Collection $supportedLocales;
 
     private Collection $allLocales;
 
@@ -29,18 +29,10 @@ class LocalizationService
 
     public function load(): void
     {
-        $this->allLocales = collect(config('feadmin.all_locales'))
-            ->map(function ($locale, $code) {
-                $locale['code'] = $code;
-
-                return $locale;
-            })
-            ->sortBy('name');
-
-        $this->availableLocales = DB::table('locales')->get();
-
+        $this->loadAllLocales();
+        $this->loadSupportedLocales();
         $this->setDefaultLocale();
-        $this->setTranslations();
+        $this->loadTranslations();
     }
 
     public function getDefaultLocale(): object
@@ -75,12 +67,12 @@ class LocalizationService
 
     public function getLocale(string $code): object
     {
-        return $this->getAvailableLocales()->firstWhere('code', $code);
+        return $this->getSupportedLocales()->firstWhere('code', $code);
     }
 
-    public function getAvailableLocales(): Collection
+    public function getSupportedLocales(): Collection
     {
-        return $this->availableLocales;
+        return $this->supportedLocales;
     }
 
     public function getAllLocales(): Collection
@@ -92,23 +84,25 @@ class LocalizationService
     {
         $locales = collect();
 
-        foreach (ResourceBundle::getLocales('') as $locale) {
-            if (
-                Str::length($locale, 'UTF-8') === 2
-                && $this->getAvailableLocales()->where('code', $locale)->isEmpty()
-            ) {
-                $locales[$locale] = $this->display($locale);
+        foreach ($this->allLocales as $locale) {
+            if ($this->getSupportedLocales()->where('code', $locale['code'])->isEmpty()) {
+                $locales[$locale['code']] = $this->display($locale['code']);
             }
         }
 
-        return $locales->sortByDesc(
-            fn ($_, $code) => in_array($code, [$this->currentLocale->code, 'tr', 'en', 'ar'])
-        );
+        return $locales;
     }
 
     public function getTranslations(): array
     {
         return $this->translations;
+    }
+
+    public function currency(string $code): string
+    {
+        $formatter = new NumberFormatter($code, NumberFormatter::CURRENCY);
+
+        return $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
     }
 
     public function display(string $code): string
@@ -135,7 +129,7 @@ class LocalizationService
     public function getPreferredLocale(array $priorities): ?object
     {
         foreach ($priorities as $conditions) {
-            $locale = $this->getAvailableLocales();
+            $locale = $this->getSupportedLocales();
 
             foreach ($conditions as $key => $value) {
                 $locale = $locale->where($key, $value);
@@ -149,22 +143,39 @@ class LocalizationService
         return null;
     }
 
-    private function setTranslations(): void
-    {
-        $translations = trans('*', locale: $this->getDefaultLocaleCode());
-
-        $this->translations = $translations === '*' ? [] : $translations;
-    }
-
     private function setDefaultLocale(): void
     {
-        $this->defaultLocale = $this->getAvailableLocales()->firstWhere('is_default', true)
-            ?? (object) [
+        $this->defaultLocale = $this->getSupportedLocales()
+            ->firstWhere('is_default', true) ?? (object) [
                 'id' => -1,
                 'code' => app()->getLocale(),
                 'is_default' => 1,
             ];
 
         $this->currentLocale = $this->defaultLocale;
+    }
+
+    private function loadAllLocales(): void
+    {
+        $this->allLocales = collect(Locales::getNames())
+            ->map(function ($locale, $code) {
+                return [
+                    'code' => str_replace('_', '-', $code),
+                    'name' => $locale,
+                ];
+            })
+            ->values();
+    }
+
+    private function loadSupportedLocales(): void
+    {
+        $this->supportedLocales = DB::table('locales')->get();
+    }
+
+    private function loadTranslations(): void
+    {
+        $translations = trans('*', locale: $this->getDefaultLocaleCode());
+
+        $this->translations = $translations === '*' ? [] : $translations;
     }
 }

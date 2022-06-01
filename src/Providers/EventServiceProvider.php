@@ -4,7 +4,7 @@ namespace Feadmin\Providers;
 
 use Feadmin\Listeners\DeleteOriginalMedia;
 use App\Models\User;
-use Feadmin\Listeners\SetLocale;
+use Feadmin\Listeners\UpdateLocale;
 use Feadmin\Observers\UserObserver;
 use Illuminate\Foundation\Events\LocaleUpdated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,7 +22,7 @@ class EventServiceProvider extends ServiceProvider
             DeleteOriginalMedia::class,
         ],
         LocaleUpdated::class => [
-            SetLocale::class,
+            UpdateLocale::class,
         ],
     ];
 

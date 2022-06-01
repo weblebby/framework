@@ -15,7 +15,11 @@ return new class extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignIdFor(Locale::class)->after('id')->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Locale::class)
+                ->nullable()
+                ->after('id')
+                ->constrained()
+                ->nullOnDelete();
         });
     }
 
