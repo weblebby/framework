@@ -9,21 +9,21 @@ use UnitEnum;
 
 class FormComponentService
 {
-    public function name(?string $name): string
+    public function name(?string $name): ?string
     {
         return $name;
     }
 
-    public function dottedName(?string $name): string
+    public function dottedName(?string $name): ?string
     {
         if ($name) {
             return str_replace(['[]', ']', '['], ['', '', '.'], $name);
         }
 
-        return '';
+        return null;
     }
 
-    public function id(?string $id, string $bag = null): string
+    public function id(?string $id, string $bag = null): ?string
     {
         if ($id) {
             $id = str_replace('[]', '', $id);
@@ -33,10 +33,10 @@ class FormComponentService
             $id = "{$bag}_{$id}";
         }
 
-        return $id ?? '';
+        return $id ?? null;
     }
 
-    public function selected(string $name, mixed $default, $attributes): bool
+    public function selected(?string $name, mixed $default, $attributes): bool
     {
         if ($default instanceof Model) {
             $default = $default->getKey();
@@ -46,8 +46,12 @@ class FormComponentService
             $default = $default->value;
         }
 
-        return !is_null($old = old($name, $default))
-            && in_array((string) $attributes->get('value'), Arr::wrap($old));
+        $value = filled($name) ? old($name, $default) : $default;
+
+        return filled($value) && in_array(
+            (string) $attributes->get('value'),
+            Arr::wrap($value)
+        );
     }
 
     public function value(mixed $value): ?string
