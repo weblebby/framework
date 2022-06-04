@@ -28,7 +28,7 @@ trait Translatable
 
     public function resolveRouteBinding($value, $field = null): ?Model
     {
-        if ($this->isTranslationAttribute($field)) {
+        if (is_string($field) && $this->isTranslationAttribute($field)) {
             $locales = [
                 $locale = app()->getLocale(),
                 $this->getFallbackLocale($locale),
