@@ -17,6 +17,7 @@ class TranslationFinderService
     private array $functions = [
         '@lang',
         'trans',
+        'trans_choice',
         '__',
     ];
 
