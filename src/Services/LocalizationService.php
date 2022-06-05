@@ -143,6 +143,18 @@ class LocalizationService
         return null;
     }
 
+    public function loadAllLocales(): void
+    {
+        $this->allLocales = collect(Locales::getNames())
+            ->map(function ($locale, $code) {
+                return [
+                    'code' => str_replace('_', '-', $code),
+                    'name' => $locale,
+                ];
+            })
+            ->values();
+    }
+
     private function setDefaultLocale(): void
     {
         $this->defaultLocale = $this->getSupportedLocales()
@@ -153,18 +165,6 @@ class LocalizationService
             ];
 
         $this->currentLocale = $this->defaultLocale;
-    }
-
-    private function loadAllLocales(): void
-    {
-        $this->allLocales = collect(Locales::getNames())
-            ->map(function ($locale, $code) {
-                return [
-                    'code' => str_replace('_', '-', $code),
-                    'name' => $locale,
-                ];
-            })
-            ->values();
     }
 
     private function loadSupportedLocales(): void

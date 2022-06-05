@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static void load()
+ * @method static void loadAllLocales()
  * @method static object getDefaultLocale()
  * @method static string getDefaultLocaleCode()
  * @method static int getDefaultLocaleId()

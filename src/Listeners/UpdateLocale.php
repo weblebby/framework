@@ -25,7 +25,8 @@ class UpdateLocale
             return;
         }
 
-        Localization::setCurrentLocale($preferredLocale);
         Locale::setDefault($preferredLocale->code);
+        Localization::setCurrentLocale($preferredLocale);
+        Localization::loadAllLocales();
     }
 }
