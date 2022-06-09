@@ -22,7 +22,7 @@
             focus:fd-ring
             focus:fd-ring-sky-200
             focus:fd-ring-opacity-50')
-        ->class($errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}
+        ->class($dottedName && $errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}
 >
     {{ $slot }}
 </select>

@@ -35,7 +35,7 @@
             read-only:fd-opacity-70
             read-only:fd-bg-zinc-200
             fd-transition')
-        ->class($errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}>
+        ->class($dottedName && $errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}>
     @if ($suffix)
         <x-feadmin::form.prefix class="-fd-ml-[1px] fd-rounded-r">{{ $suffix }}</x-feadmin::form.prefix>
     @endif
