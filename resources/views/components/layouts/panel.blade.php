@@ -1,6 +1,6 @@
-<x-feadmin::layouts.master>
-    <x-slot name="styles">{{ $styles ?? '' }}</x-slot>
-    <x-slot name="scripts">{{ $scripts ?? '' }}</x-slot>
+<x-feadmin::layouts.master {{ $attributes }}>
+    <x-slot:styles>{{ $styles ?? '' }}</x-slot:styles>
+    <x-slot:scripts>{{ $scripts ?? '' }}</x-slot:scripts>
     <main class="fd-flex fd-flex-1">
         <section class="fd-fixed fd-inset-y-0 fd-z-30 fd-hidden md:fd-flex fd-flex-col fd-w-60 fd-h-full fd-gap-8 fd-bg-zinc-200 fd-border-r fd-border-zinc-300">
             <div class="fd-flex fd-flex-col">
