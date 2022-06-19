@@ -1,4 +1,4 @@
-@props(['bind', 'method' => 'POST'])
+@props(['bind', 'bag' => 'default', 'method' => 'POST'])
 
 @php($method = Str::upper($method))
 
