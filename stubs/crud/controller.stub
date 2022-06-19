@@ -1,0 +1,124 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ namespacedStoreRequest }};
+use {{ namespacedUpdateRequest }};
+use {{ rootNamespace }}Http\Controllers\Controller;
+use Symfony\Component\HttpFoundation\Response;
+use Illuminate\View\View;
+use Illuminate\Auth\Access\AuthorizationException;
+
+class {{ class }} extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return View
+     * @throws AuthorizationException
+     */
+    public function index(): View
+    {
+        $this->authorize('{{ policy }}:read');
+
+        ${{ modelPluralVariable }} = {{ model }}::query()
+            ->select('id', 'created_at')
+            ->paginate();
+
+        return view('{{ panel }}.{{ view }}.index', compact('{{ modelPluralVariable }}'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return View
+     * @throws AuthorizationException
+     */
+    public function create(): View
+    {
+        $this->authorize('{{ policy }}:create');
+
+        return view('{{ panel }}.{{ view }}.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  {{ storeRequest }}  $request
+     * @return Response
+     * @throws AuthorizationException
+     */
+    public function store({{ storeRequest }} $request): Response
+    {
+        $this->authorize('{{ policy }}:create');
+
+        ${{ modelVariable }} = {{ model }}::create($request->safe()->all());
+
+        return redirect()->route('{{ panel }}::{{ route }}.index')
+            ->with('message', '{{ model }} created successfully');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return View
+     * @throws AuthorizationException
+     */
+    public function show({{ model }} ${{ modelVariable }}): View
+    {
+        $this->authorize('{{ policy }}:read');
+
+        return view('{{ panel }}.{{ view }}.show', compact('{{ modelVariable }}'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return View
+     * @throws AuthorizationException
+     */
+    public function edit({{ model }} ${{ modelVariable }}): View
+    {
+        $this->authorize('{{ policy }}:update');
+
+        return view('{{ panel }}.{{ view }}.edit', compact('{{ modelVariable }}'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  {{ updateRequest }}  $request
+     * @param  int  $id
+     * @return Response
+     * @throws AuthorizationException
+     */
+    public function update({{ updateRequest }} $request, {{ model }} ${{ modelVariable }}): Response
+    {
+        $this->authorize('{{ policy }}:update');
+
+        ${{ modelVariable }}->update($request->safe()->all());
+
+        return redirect()->route('{{ panel }}::{{ route }}.index')
+            ->with('message', '{{ model }} updated successfully');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     * @throws AuthorizationException
+     */
+    public function destroy({{ model }} ${{ modelVariable }}): Response
+    {
+        $this->authorize('{{ policy }}:delete');
+
+        ${{ modelVariable }}->delete();
+
+        return redirect()->route('{{ panel }}::{{ route }}.index')
+            ->with('message', '{{ model }} deleted successfully');
+    }
+}

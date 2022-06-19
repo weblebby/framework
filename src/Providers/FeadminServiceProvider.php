@@ -3,6 +3,7 @@
 namespace Feadmin\Providers;
 
 use Feadmin\Console\Commands\InstallFeadmin;
+use Feadmin\Console\Commands\MakeCrud;
 use Feadmin\Console\Commands\MigrateExtension;
 use Feadmin\Facades\Extension;
 use Feadmin\Facades\Localization;
@@ -101,6 +102,7 @@ class FeadminServiceProvider extends ServiceProvider
         $this->commands([
             InstallFeadmin::class,
             MigrateExtension::class,
+            MakeCrud::class,
         ]);
     }
 }

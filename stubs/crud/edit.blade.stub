@@ -1,0 +1,13 @@
+<x-feadmin::layouts.panel>
+    <x-feadmin::page class="lg:w-2/3 fd-mx-auto">
+        <x-feadmin::page.head :back="route('{{ panel }}::{{ view }}.index')">
+            <x-feadmin::page.title>@lang('Güncelle: {{ modelSpace }}')</x-feadmin::page.title>
+            <x-feadmin::page.subtitle>{{ ${{ modelVariable }}->name }}</x-feadmin::page.subtitle>
+        </x-feadmin::page.head>
+        <x-feadmin::form class="fd-space-y-3" :action="route('{{ panel }}::{{ route }}.update', ${{ modelVariable }})" method="PUT">
+            <x-feadmin::card class="fd-space-y-3" padding></x-feadmin::card>
+            <x-feadmin::button type="submit">@lang('Kaydet')</x-feadmin::button>
+            <x-feadmin::form.sticky-submit />
+        </x-feadmin::form>
+    </x-feadmin::page>
+</x-feadmin::layouts.panel>

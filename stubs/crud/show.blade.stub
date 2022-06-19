@@ -1,0 +1,8 @@
+<x-feadmin::layouts.panel>
+    <x-feadmin::page class="lg:w-2/3 fd-mx-auto">
+        <x-feadmin::page.head :back="route('{{ panel }}::{{ view }}.index')">
+            <x-feadmin::page.title>{{ ${{ modelVariable }}->name }}</x-feadmin::page.title>
+        </x-feadmin::page.head>
+        <x-feadmin::card class="fd-space-y-3" padding></x-feadmin::card>
+    </x-feadmin::page>
+</x-feadmin::layouts.panel>

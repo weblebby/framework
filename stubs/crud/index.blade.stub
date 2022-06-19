@@ -1,0 +1,62 @@
+<x-feadmin::layouts.panel>
+    <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
+        <x-feadmin::page.head>
+            <x-slot:actions>
+                @can('{{ policy }}:create')
+                    <x-feadmin::button
+                        as="a"
+                        :href="route('{{ panel }}::{{ route }}.create')"
+                        icon="plus"
+                        size="sm"
+                    >@lang('Create {{ modelSpace }}')</x-feadmin::button>
+                @endcan
+            </x-slot>
+            <x-feadmin::page.title>@lang('{{ modelPluralSpace }}')</x-feadmin::page.title>
+            <x-feadmin::page.subtitle>@lang('Yönet: {{ modelSpace }}')</x-feadmin::page.subtitle>
+        </x-feadmin::page.head>
+        <div class="fd-space-y-3">
+            <x-feadmin::table>
+                <x-feadmin::table.head>
+                    <x-feadmin::table.th>@lang('ID')</x-feadmin::table.th>
+                    <x-feadmin::table.th>@lang('Oluşturulma tarihi')</x-feadmin::table.th>
+                    <x-feadmin::table.th />
+                </x-feadmin::table.head>
+                <x-feadmin::table.body>
+                    @foreach (${{ modelPluralVariable }} as ${{ modelVariable }})
+                        <tr>
+                            <x-feadmin::table.td class="fd-font-medium fd-text-lg">
+                                @can('{{ policy }}:update')
+                                    <a href="{{ route('{{ panel }}::{{ route }}.edit', ${{ modelVariable }}) }}">
+                                        {{ ${{ modelVariable }}->id }}
+                                    </a>
+                                @else
+                                    <span>{{ ${{ modelVariable }}->id }}</span>
+                                @endcan
+                            </x-feadmin::table.td>
+                            <x-feadmin::table.td>{{ Localization::date(${{ modelVariable }}->created_at) }}</x-feadmin::table.td>
+                            <x-feadmin::table.td>
+                                <div class="fd-ml-auto">
+                                    @can('{{ policy }}:delete')
+                                        <x-feadmin::button
+                                            size="sm"
+                                            variant="red"
+                                            data-modal-open="#modal-delete-{{ modelVariable }}"
+                                            :data-action="route('{{ panel }}::{{ route }}.destroy', ${{ modelVariable }})"
+                                        >@lang('Sil')</x-feadmin::button>
+                                    @endcan
+                                </div>
+                            </x-feadmin::table.td>
+                        </tr>
+                    @endforeach
+                </x-feadmin::table.body>
+            </x-feadmin::table>
+            {{ ${{ modelPluralVariable }}->links() }}
+        </div>
+    </x-feadmin::page>
+    @can('{{ policy }}:delete')
+        <x-feadmin::modal.destroy
+            id="modal-delete-{{ modelVariable }}"
+            :title="__('Sil: {{ modelSpace }}')"
+        />
+    @endcan
+</x-feadmin::layouts.panel>
