@@ -5,7 +5,6 @@ namespace Feadmin\Eloquent\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Locale;
 
 trait Translatable
 {
@@ -26,30 +25,41 @@ trait Translatable
         ]);
     }
 
-    public function resolveRouteBinding($value, $field = null): ?Model
+    public function resolveRouteBinding($value, $field = null)
     {
-        if (is_string($field) && $this->isTranslationAttribute($field)) {
-            $locales = [
-                $locale = app()->getLocale(),
-                $this->getFallbackLocale($locale),
-                ...array_filter(
-                    $this->getLocalesHelper()->all(),
-                    fn ($value) =>
-                    str_starts_with($value, Locale::getPrimaryLanguage($locale))
-                        && $value !== $locale,
-                )
-            ];
+        $model = parent::resolveRouteBinding($value, $field);
 
-            foreach ($locales as $locale) {
-                if ($finded = $this->whereTranslation($field, $value, $locale)->first()) {
-                    return $finded;
-                }
+        if ($model && is_string($field) && $this->isTranslationAttribute($field)) {
+            $firstBindingKey = head(array_keys(request()->route()->bindingFields()));
+
+            if ($route = $this->translatedRoute($model, $value, $field, $firstBindingKey)) {
+                abort(redirect()->to($route));
             }
-
-            abort(404);
         }
 
-        return parent::resolveRouteBinding($value, $field);
+        return $model;
+    }
+
+    public function resolveChildRouteBinding($childType, $value, $field)
+    {
+        $model = parent::resolveChildRouteBinding($childType, $value, $field);
+
+        if ($model && is_string($field) && $this->isTranslationAttribute($field)) {
+            if ($route = $this->translatedRoute($model, $value, $field, $childType)) {
+                abort(redirect()->to($route));
+            }
+        }
+
+        return $model;
+    }
+
+    public function resolveRouteBindingQuery($query, $value, $field = null)
+    {
+        if (is_string($field) && $this->isTranslationAttribute($field)) {
+            return $query->whereTranslation($field, $value);
+        }
+
+        return parent::resolveRouteBindingQuery($query, $value, $field);
     }
 
     public function getTranslation(?string $locale = null, bool $withFallback = null): ?Model
@@ -94,5 +104,18 @@ trait Translatable
         }
 
         return null;
+    }
+
+    public function translatedRoute($model, string $value, string $field, string $key): ?string
+    {
+        if ($model->$field === $value) {
+            return null;
+        }
+
+        return route(request()->route()->getName(), [
+            ...request()->route()->parameters(),
+            ...request()->query(),
+            $key => $model->$field,
+        ]);
     }
 }
