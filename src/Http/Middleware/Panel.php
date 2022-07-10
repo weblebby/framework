@@ -7,6 +7,7 @@ use Feadmin\Extension as ExtensionItem;
 use Feadmin\Facades\Extension;
 use Feadmin\Facades\Localization;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
 
 class Panel
 {
@@ -27,6 +28,9 @@ class Panel
         ]);
 
         Extension::enabled()->each(fn (ExtensionItem $extension) => $extension->booted());
+
+        Paginator::defaultView('feadmin::vendor.pagination.tailwind');
+        Paginator::defaultSimpleView('feadmin::vendor.pagination.simple-tailwind');
 
         return $next($request);
     }
