@@ -47,7 +47,7 @@ class PreferenceService
             [$finded, $namespace, $bag, $key] = $this->find($rawKey);
 
             $field = $this->hook()->field($namespace, $bag, $key);
-            $valueless = $finded && $field['type'] === 'image';
+            $valueless = $finded && ($field['type'] ?? null) === 'image';
 
             if (is_null($finded) && filled($value)) {
                 $saved[] = PreferenceModel::create(array_filter([
