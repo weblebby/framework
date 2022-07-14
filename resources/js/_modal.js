@@ -7,6 +7,8 @@ const Modal = {
             this.setFormAction(modal, detail.related)
         }
 
+        modal.querySelector('[data-modal-autofocus]')?.focus()
+
         modal.dispatchEvent(
             new CustomEvent('modal.open', {
                 detail,
