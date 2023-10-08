@@ -7,8 +7,7 @@ use Illuminate\Support\Facades\Route;
 /**
  * Dashboard
  */
-Route::redirect('/', '/dashboard');
-Route::get('/dashboard', [User\DashboardController::class, 'index'])->name('dashboard');
+Route::get('/', [User\DashboardController::class, 'index'])->name('dashboard');
 
 /**
  * Navigations
