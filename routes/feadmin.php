@@ -1,8 +1,11 @@
 <?php
 
 use Feadmin\Features;
+use Feadmin\Hooks\Panel;
 use Feadmin\Http\Controllers\User;
 use Illuminate\Support\Facades\Route;
+
+/** @var Panel $panel */
 
 /**
  * Dashboard
