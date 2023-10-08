@@ -12,9 +12,11 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements HasMedia
+abstract class User extends Authenticatable implements HasMedia
 {
     use HasFactory, HasRoles, Notifiable, InteractsWithMedia;
+
+    abstract public function authorizedPanels(): array|bool;
 
     public function locale(): BelongsTo
     {

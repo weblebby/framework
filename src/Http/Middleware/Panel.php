@@ -20,6 +20,12 @@ class Panel
      */
     public function handle(Request $request, Closure $next)
     {
+        $authorizedPanels = $request->user()->authorizedPanels();
+
+        if ($authorizedPanels === false || (is_array($authorizedPanels) && !in_array(panel()->name(), $authorizedPanels))) {
+            abort(403);
+        }
+
         app()->setLocale($request->user()?->locale?->code ?? Localization::getCurrentLocale()->code);
 
         config([
