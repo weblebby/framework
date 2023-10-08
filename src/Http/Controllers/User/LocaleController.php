@@ -9,6 +9,7 @@ use Feadmin\Http\Requests\User\StoreLocaleRequest;
 use Feadmin\Models\Locale;
 use Feadmin\Services\TranslationFinderService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -30,13 +31,21 @@ class LocaleController extends Controller
         ]);
     }
 
-    public function show(Locale $locale): View|RedirectResponse
+    public function show(Request $request, Locale $locale): View|RedirectResponse
     {
         $this->authorize('locale:read');
 
         seo()->title(Localization::display($locale->code));
 
-        $translations = Paginator::fromArray(Localization::getTranslations(), 50);
+        $translations = Localization::getTranslations();
+
+        if ($request->has('search')) {
+            $translations = collect($translations)
+                ->filter(fn ($value, $key) => str_contains($key, $request->get('search')) || str_contains($value, $request->get('search')))
+                ->toArray();
+        }
+
+        $translations = Paginator::fromArray($translations, 50);
 
         return view('feadmin::user.locales.index', [
             'availableLocales' => Localization::getSupportedLocales(),

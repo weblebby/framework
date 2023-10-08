@@ -23,9 +23,9 @@
                         <x-feadmin::link-card>
                             @foreach ($availableLocales as $locale)
                                 <x-feadmin::link-card.item
-                                    class="fd-justify-between"
-                                    href="{{ panel_route('locales.show', $locale->id) }}"
-                                    :active="$locale->id === ($selectedLocale->id ?? null)">
+                                        class="fd-justify-between"
+                                        href="{{ panel_route('locales.show', $locale->id) }}"
+                                        :active="$locale->id === ($selectedLocale->id ?? null)">
                                     {{ Localization::display($locale->code) }}
                                     @if ($locale->is_default)
                                         <x-feadmin::badge>@lang('Varsayılan')</x-feadmin::badge>
@@ -37,9 +37,9 @@
                     @can('locale:create')
                         <x-feadmin::link-card>
                             <x-feadmin::link-card.item
-                                as="button"
-                                icon="plus"
-                                data-drawer="#drawer-create-locale"
+                                    as="button"
+                                    icon="plus"
+                                    data-drawer="#drawer-create-locale"
                             >@lang('Yeni dil')</x-feadmin::link-card.item>
                         </x-feadmin::link-card>
                     @endcan
@@ -51,31 +51,38 @@
                                 @can('locale:translate')
                                     <x-feadmin::form :action="panel_route('locales.sync')">
                                         <x-feadmin::button
-                                            type="submit"
-                                            variant="light"
-                                            icon="arrow-clockwise"
-                                            upper
+                                                type="submit"
+                                                variant="light"
+                                                icon="arrow-clockwise"
+                                                upper
                                         >@lang('Çevirileri senkronize et')</x-feadmin::button>
                                     </x-feadmin::form>
                                 @endcan
                                 @can('locale:delete')
                                     <x-feadmin::button
-                                        data-modal-open="#modal-delete-locale"
-                                        variant="red"
-                                        upper
+                                            data-modal-open="#modal-delete-locale"
+                                            variant="red"
+                                            upper
                                     >@lang('Dili sil')</x-feadmin::button>
                                 @endcan
                             </div>
                         </div>
+                        <form class="fd-mb-3">
+                            <x-feadmin::form.input
+                                    name="search"
+                                    :placeholder="__('Çevirilerde ara')"
+                                    :default="request('search')"
+                            />
+                        </form>
                         <x-feadmin::card class="fd-divide-y">
                             <div class="fd-py-4 fd-space-y-3">
-                                @foreach ($translations as $key => $value)
+                                @forelse ($translations as $key => $value)
                                     <div class="fd-grid fd-grid-cols-2 fd-divide-x">
                                         <div class="fd-px-4">
                                             <div class="fd-relative">
                                                 <x-feadmin::form.input
-                                                    :default="__($key, locale: Localization::getDefaultLocaleCode())"
-                                                    readonly
+                                                        :default="__($key, locale: Localization::getDefaultLocaleCode())"
+                                                        readonly
                                                 />
                                                 <div class="fd-absolute fd-right-4 fd-top-1/2 -fd-translate-y-1/2">
                                                     <x-feadmin::badge>{{ Localization::getDefaultLocaleCode() }}</x-feadmin::badge>
@@ -85,12 +92,12 @@
                                         <div class="fd-px-4">
                                             <div class="fd-relative">
                                                 <x-feadmin::form.input
-                                                    :default="__($key, locale: $selectedLocale->code)"
-                                                    :data-key="$key"
-                                                    :data-code="$selectedLocale->code"
-                                                    data-translation-input
-                                                    tabindex="1"
-                                                    :readonly="auth()->user()->cannot('locale:translate')"
+                                                        :default="__($key, locale: $selectedLocale->code)"
+                                                        :data-key="$key"
+                                                        :data-code="$selectedLocale->code"
+                                                        data-translation-input
+                                                        tabindex="1"
+                                                        :readonly="auth()->user()->cannot('locale:translate')"
                                                 />
                                                 <div class="fd-absolute fd-right-4 fd-top-1/2 -fd-translate-y-1/2">
                                                     <x-feadmin::badge>{{ $selectedLocale->code }}</x-feadmin::badge>
@@ -98,7 +105,15 @@
                                             </div>
                                         </div>
                                     </div>
-                                @endforeach
+                                @empty
+                                    <div class="fd-px-4">
+                                        @if (request()->filled('search'))
+                                            <p class="fd-text-zinc-600">@lang('Arama sonuçlarıyla eşleşen bir sonuç yok.')</p>
+                                        @else
+                                            <p class="fd-text-zinc-600">@lang('Çeviriler senkronize edilmemiş, yukarıdaki butona tıklayıp senkronizasyon işlemini başlatabilirsiniz.')</p>
+                                        @endif
+                                    </div>
+                                @endforelse
                             </div>
                         </x-feadmin::card>
                         <div class="fd-mt-3">
@@ -106,9 +121,9 @@
                         </div>
                     @else
                         <x-feadmin::empty
-                            icon="translate"
-                            :title="__('Dil seçin')"
-                            :content="__('Yönetmek istediğiniz dili seçin')"
+                                icon="translate"
+                                :title="__('Dil seçin')"
+                                :content="__('Yönetmek istediğiniz dili seçin')"
                         />
                     @endif
                 </div>
@@ -138,10 +153,10 @@
     @can('locale:delete')
         @if ($selectedLocale ?? null)
             <x-feadmin::modal.destroy
-                id="modal-delete-locale"
-                :action="panel_route('locales.destroy', $selectedLocale->id)"
-                :title="__(':locale dilini siliyorsunuz', ['locale' => $localeName])"
-                :subtitle="__('Bu dili ve ilişkili tüm çevirileri silmek istediğinize emin misiniz?')"
+                    id="modal-delete-locale"
+                    :action="panel_route('locales.destroy', $selectedLocale->id)"
+                    :title="__(':locale dilini siliyorsunuz', ['locale' => $localeName])"
+                    :subtitle="__('Bu dili ve ilişkili tüm çevirileri silmek istediğinize emin misiniz?')"
             />
         @endif
     @endcan

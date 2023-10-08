@@ -147,6 +147,10 @@ class TranslationFinderService
 
     private function putLocaleFile(string $locale, string $content = '{}'): bool
     {
+        if (!File::exists($langPath = lang_path())) {
+            File::makeDirectory($langPath, 0755, true);
+        }
+
         return File::put(lang_path("{$locale}.json"), $content, true);
     }
 
