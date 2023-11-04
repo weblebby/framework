@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static PanelItem create(string $panel)
  * @method static PanelItem find(string $panel)
+ * @method static PanelItem findOrFail(string $panel)
  * @method static array get()
  * @method static PanelItem getCurrentPanel()
  * @method static void setCurrentPanel(string $panel)

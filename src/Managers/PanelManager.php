@@ -33,6 +33,11 @@ class PanelManager
         return $this->panels[$panel] ?? null;
     }
 
+    public function findOrFail(string $panel): PanelItem
+    {
+        return $this->find($panel) ?? abort(404);
+    }
+
     public function get(): array
     {
         return $this->panels;

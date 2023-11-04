@@ -3,16 +3,17 @@
 namespace Feadmin\Support;
 
 use Feadmin\Facades\Panel;
+use Feadmin\Items\PanelItem;
 
 class Features
 {
-    public static function enabled(string $feature, Panel|string|null $panel): bool
+    public static function enabled(string $feature, PanelItem|string|null $panel): bool
     {
         if (is_null($panel)) {
             return false;
         }
 
-        $features = $panel instanceof Panel
+        $features = $panel instanceof PanelItem
             ? $panel->features()
             : Panel::find($panel)->features();
 
