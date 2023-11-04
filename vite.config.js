@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/js/feadmin.js',
                 'resources/js/navigation.js',
             ],
+            buildDirectory: '/../public',
             refresh: true,
         }),
     ],

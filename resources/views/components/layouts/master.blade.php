@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite('resources/css/app.css', 'vendor/feadbox/feadmin')
+    @vite('resources/css/app.css', 'vendor/feadmin')
     @seo
     {{ $styles ?? '' }}
 </head>
@@ -29,7 +29,7 @@
     baseUrl: @json(panel_route('dashboard')),
   };
 </script>
-@vite('resources/js/app.js', 'vendor/feadbox/feadmin')
+@vite('resources/js/app.js', 'vendor/feadmin')
 @if (session()->has('message'))
     <script>
       document.addEventListener("DOMContentLoaded", function() {
