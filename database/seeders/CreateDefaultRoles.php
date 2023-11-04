@@ -12,6 +12,10 @@ class CreateDefaultRoles extends Seeder
      */
     public function run(): void
     {
+        if (Role::query()->count() > 0) {
+            return;
+        }
+
         Role::create(['name' => 'Super Admin']);
     }
 }

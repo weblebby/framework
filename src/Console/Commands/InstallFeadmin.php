@@ -2,11 +2,13 @@
 
 namespace Feadmin\Console\Commands;
 
+use Database\Seeders\CreateDefaultRoles;
 use Feadmin\Models\Locale;
 use Feadmin\Models\Role;
 use App\Models\User;
 use Feadmin\Providers\FeadminServiceProvider;
 use Illuminate\Console\Command;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class InstallFeadmin extends Command
@@ -32,6 +34,7 @@ class InstallFeadmin extends Command
     {
         $this->publishVendor();
         $this->migrate();
+        $this->callSeeders();
         $this->createLocales();
         $this->createAdmin();
 
@@ -50,6 +53,21 @@ class InstallFeadmin extends Command
     private function migrate(): void
     {
         $this->call('migrate');
+    }
+
+    private function callSeeders(): void
+    {
+        $this->info('Seeding default data...');
+        
+        $seeders = [
+            CreateDefaultRoles::class,
+        ];
+
+        foreach ($seeders as $seeder) {
+            $this->call('db:seed', [
+                '--class' => $seeder,
+            ]);
+        }
     }
 
     private function createLocales(): void
