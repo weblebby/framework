@@ -3,10 +3,9 @@
 namespace Feadmin\Providers;
 
 use Feadmin\Console\Commands\InstallFeadmin;
-use Feadmin\Console\Commands\MakeCrud;
 use Feadmin\Console\Commands\MigrateExtension;
-use Feadmin\Facades\Extension;
 use Feadmin\Facades\Localization;
+use Feadmin\Models\User;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -51,8 +50,6 @@ class FeadminServiceProvider extends ServiceProvider
             $this->bootLocalization();
             $this->bootGates();
         }
-
-        Extension::start();
     }
 
     private function bootViews(): void
@@ -75,7 +72,7 @@ class FeadminServiceProvider extends ServiceProvider
 
     private function bootGates(): void
     {
-        Gate::before(function ($user) {
+        Gate::before(function (User $user) {
             return $user->hasRole('Super Admin') ? true : null;
         });
     }
@@ -100,7 +97,6 @@ class FeadminServiceProvider extends ServiceProvider
         $this->commands([
             InstallFeadmin::class,
             MigrateExtension::class,
-            MakeCrud::class,
         ]);
     }
 }
