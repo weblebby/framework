@@ -58,7 +58,10 @@ class InstallFeadmin extends Command
         $localeCodes = array_map('trim', explode(',', $localeCodes));
 
         foreach ($localeCodes as $localeCode) {
-            Locale::query()->create(['code' => $localeCode, 'is_default' => true]);
+            Locale::query()->create([
+                'code' => $localeCode,
+                'is_default' => $localeCode === $localeCodes[0]
+            ]);
         }
 
         $this->info(sprintf('Locales [%s] created.', implode(', ', $localeCodes)));
