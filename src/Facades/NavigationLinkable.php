@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static self add(array $data)
+ * @method static NavigationLinkableManager add(array $data)
  * @method static Collection linkables()
  *
  * @see NavigationLinkableManager

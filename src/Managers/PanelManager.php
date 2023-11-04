@@ -2,6 +2,7 @@
 
 namespace Feadmin\Managers;
 
+use Exception;
 use Feadmin\Facades\Extension;
 use Feadmin\Items\ExtensionItem;
 use Feadmin\Items\PanelItem;
@@ -15,8 +16,15 @@ class PanelManager
 
     private ?string $extensionPanel = null;
 
+    /**
+     * @throws Exception
+     */
     public function create(string $panel): PanelItem
     {
+        if (isset($this->panels[$panel])) {
+            throw new Exception(sprintf('Panel [%s] already exists.', $panel));
+        }
+
         return $this->panels[$panel] = new PanelItem($panel);
     }
 
