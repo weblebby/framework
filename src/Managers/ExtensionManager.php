@@ -34,7 +34,7 @@ class ExtensionManager
      */
     public function get(): Collection
     {
-        return $this->extensions->where('isActive', true);
+        return $this->extensions->where('is_active', true);
     }
 
     /**

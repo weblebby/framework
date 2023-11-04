@@ -3,9 +3,13 @@
 namespace Feadmin\Items;
 
 use Feadmin\Concerns\ExtensionObserver;
+use Feadmin\Enums\ExtensionCategoryEnum;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Facades\Artisan;
+use JsonSerializable;
 
-class ExtensionItem
+class ExtensionItem implements Arrayable, JsonSerializable, Jsonable
 {
     protected string $name;
 
@@ -15,7 +19,7 @@ class ExtensionItem
 
     protected string $description;
 
-    protected string $category;
+    protected ExtensionCategoryEnum $category;
 
     protected string $path;
 
@@ -49,7 +53,7 @@ class ExtensionItem
         return $this;
     }
 
-    public function setCategory(string $category): self
+    public function setCategory(ExtensionCategoryEnum $category): self
     {
         $this->category = $category;
 
@@ -77,6 +81,27 @@ class ExtensionItem
         return $this;
     }
 
+    public function setActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    public function activate(): self
+    {
+        $this->isActive = true;
+
+        return $this;
+    }
+
+    public function deactivate(): self
+    {
+        $this->isActive = false;
+
+        return $this;
+    }
+
     public function name(): string
     {
         return $this->name;
@@ -97,7 +122,7 @@ class ExtensionItem
         return $this->description;
     }
 
-    public function category(): string
+    public function category(): ExtensionCategoryEnum
     {
         return $this->category;
     }
@@ -127,20 +152,6 @@ class ExtensionItem
         return null;
     }
 
-    public function activate(): self
-    {
-        $this->isActive = true;
-
-        return $this;
-    }
-
-    public function deactivate(): self
-    {
-        $this->isActive = false;
-
-        return $this;
-    }
-
     public function isActive(): bool
     {
         return $this->isActive;
@@ -148,8 +159,40 @@ class ExtensionItem
 
     protected function migrate(string $method): void
     {
-        $method = $method === 'down' ? ":rollback" : '';
+        $method = match ($method) {
+            'down' => ':rollback',
+            default => '',
+        };
 
-        Artisan::call("migrate{$method}", ['--path' => $this->path('database/migrations')]);
+        Artisan::call("migrate{$method}", [
+            '--path' => $this->path('database/migrations'),
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'singular_title' => $this->singularTitle,
+            'plural_title' => $this->pluralTitle,
+            'description' => $this->description,
+            'category' => $this->category->value,
+            'path' => $this->path,
+            'routes' => $this->routes,
+            'is_active' => $this->isActive,
+        ];
+    }
+
+    public function toJson($options = 0): bool|string
+    {
+        return json_encode($this->toArray(), $options);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 }

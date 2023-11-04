@@ -2,7 +2,9 @@
 
 namespace Feadmin\Services;
 
+use Feadmin\Enums\ExtensionCategoryEnum;
 use Feadmin\Facades\Extension;
+use Feadmin\Items\ExtensionItem;
 use Feadmin\Models\Navigation;
 use Illuminate\Support\Collection;
 
@@ -16,8 +18,11 @@ class NavigationService
         return Navigation::query()->select('id', 'title')->get();
     }
 
+    /**
+     * @return Collection<int, ExtensionItem>
+     */
     public function smartMenuItems(): Collection
     {
-        return Extension::enabled()->where('category', 'content');
+        return Extension::get()->where('category', ExtensionCategoryEnum::CONTENT);
     }
 }
