@@ -3,7 +3,6 @@
 namespace Feadmin\Support;
 
 use Feadmin\Facades\Panel;
-use Feadmin\Items\PanelItem;
 
 class Features
 {

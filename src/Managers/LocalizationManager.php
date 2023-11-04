@@ -104,27 +104,9 @@ class LocalizationManager
         return $locales;
     }
 
-    public function currencyCode(string $code): string
-    {
-        $formatter = new NumberFormatter($code, NumberFormatter::CURRENCY);
-
-        return $formatter->getTextAttribute(NumberFormatter::CURRENCY_CODE);
-    }
-
     public function display(string $code): string
     {
         return Locale::getDisplayName($code, $this->currentLocale->code);
-    }
-
-    public function date(Carbon $date): string
-    {
-        $formatter = new IntlDateFormatter(
-            $this->currentLocale->code,
-            IntlDateFormatter::SHORT,
-            IntlDateFormatter::NONE
-        );
-
-        return datefmt_format($formatter, $date->getTimestamp());
     }
 
     public function setCurrentLocale(object $locale): void

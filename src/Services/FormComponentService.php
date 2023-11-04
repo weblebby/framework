@@ -2,10 +2,10 @@
 
 namespace Feadmin\Services;
 
-use App\Support\Moneyable;
+use Feadmin\Enums\UnitEnum;
+use Feadmin\Support\Moneyable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use UnitEnum;
 
 class FormComponentService
 {
@@ -49,9 +49,9 @@ class FormComponentService
         $value = filled($name) ? old($name, $default) : $default;
 
         return filled($value) && in_array(
-            (string) $attributes->get('value'),
-            Arr::wrap($value)
-        );
+                (string)$attributes->get('value'),
+                Arr::wrap($value)
+            );
     }
 
     public function value(mixed $value): ?string

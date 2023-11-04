@@ -33,7 +33,7 @@
                                     <span>{{ ${{ modelVariable }}->id }}</span>
                                 @endcan
                             </x-feadmin::table.td>
-                            <x-feadmin::table.td>{{ Localization::date(${{ modelVariable }}->created_at) }}</x-feadmin::table.td>
+                            <x-feadmin::table.td>{{ Date::short(${{ modelVariable }}->created_at) }}</x-feadmin::table.td>
                             <x-feadmin::table.td>
                                 <div class="fd-ml-auto">
                                     @can('{{ policy }}:delete')
