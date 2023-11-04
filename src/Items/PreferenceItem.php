@@ -2,11 +2,13 @@
 
 namespace Feadmin\Items;
 
+use Feadmin\Enums\FieldTypeEnum;
+
 class PreferenceItem
 {
     private string $key;
 
-    private string $type;
+    private FieldTypeEnum $type;
 
     private ?string $label = null;
 
@@ -20,47 +22,47 @@ class PreferenceItem
 
     public static function text(string $key): static
     {
-        return (new static($key))->type('text');
+        return (new static($key))->type(FieldTypeEnum::TEXT);
     }
 
     public static function tel(string $key): static
     {
-        return (new static($key))->type('tel');
+        return (new static($key))->type(FieldTypeEnum::TEL);
     }
 
     public static function number(string $key): static
     {
-        return (new static($key))->type('number');
+        return (new static($key))->type(FieldTypeEnum::NUMBER);
     }
 
     public static function textarea(string $key): static
     {
-        return (new static($key))->type('textarea');
+        return (new static($key))->type(FieldTypeEnum::TEXT_AREA);
     }
 
     public static function image(string $key): static
     {
-        return (new static($key))->type('image');
+        return (new static($key))->type(FieldTypeEnum::IMAGE);
     }
 
-    public static function richtext(string $key): static
+    public static function richText(string $key): static
     {
-        return (new static($key))->type('richtext');
+        return (new static($key))->type(FieldTypeEnum::RICH_TEXT);
     }
 
     public static function select(string $key): static
     {
-        return (new static($key))->type('select');
+        return (new static($key))->type(FieldTypeEnum::SELECT);
     }
 
     public static function checkbox(string $key): static
     {
-        return (new static($key))->type('checkbox');
+        return (new static($key))->type(FieldTypeEnum::CHECKBOX);
     }
 
     public static function radio(string $key): static
     {
-        return (new static($key))->type('radio');
+        return (new static($key))->type(FieldTypeEnum::RADIO);
     }
 
     public function __construct(string $key)
@@ -68,7 +70,7 @@ class PreferenceItem
         $this->key = $key;
     }
 
-    public function type(string $type): self
+    public function type(FieldTypeEnum $type): self
     {
         $this->type = $type;
 
@@ -110,7 +112,7 @@ class PreferenceItem
         return $this;
     }
 
-    public function get(): array
+    public function toArray(): array
     {
         return [
             'key' => $this->key,

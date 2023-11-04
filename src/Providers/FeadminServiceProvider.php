@@ -18,19 +18,21 @@ class FeadminServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(FortifyServiceProvider::class);
 
-        foreach ([
-            \Feadmin\Services\ExtensionService::class,
-            \Feadmin\Services\InjectionService::class,
-            \Feadmin\Services\LocalizationService::class,
-            \Feadmin\Services\NavigationLinkableService::class,
-            \Feadmin\Services\PreferenceService::class,
-        ] as $class) {
-            $this->app->singleton($class, $class);
+        $singletons = [
+            \Feadmin\Managers\ExtensionManager::class,
+            \Feadmin\Managers\InjectionManager::class,
+            \Feadmin\Managers\LocalizationManager::class,
+            \Feadmin\Managers\NavigationLinkableManager::class,
+            \Feadmin\Managers\PreferenceManager::class,
+        ];
+
+        foreach ($singletons as $singleton) {
+            $this->app->singleton($singleton);
         }
     }
 
@@ -39,7 +41,7 @@ class FeadminServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         if ($this->app->runningInConsole()) {
             $this->bootPublishes();

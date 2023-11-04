@@ -18,21 +18,21 @@ class ExtensionController extends Controller
         return view('feadmin::user.extensions.index');
     }
 
-    public function enable(string $id): RedirectResponse
+    public function enable(string $name): RedirectResponse
     {
         $this->authorize('extension:update');
 
-        Extension::get()->firstOrFail('id', $id)->enable();
+        Extension::findByNameOrFail($name)->activate();
 
         return back()->with('message', __('Eklenti aktifleştirildi'));
     }
 
-    public function disable(string $id): RedirectResponse
+    public function disable(string $name): RedirectResponse
     {
         $this->authorize('extension:update');
 
-        Extension::get()->firstOrFail('id', $id)->disable();
+        Extension::findByNameOrFail($name)->deactivate();
 
-        return back()->with('message', __('Eklenti devre dışı bırakıldı'));;
+        return back()->with('message', __('Eklenti devre dışı bırakıldı'));
     }
 }

@@ -1,17 +1,17 @@
 <?php
 
-use Feadmin\Facades\Feadmin;
+use Feadmin\Facades\Panel;
 use Feadmin\Facades\Preference;
-use Feadmin\Hooks\Panel;
+use Feadmin\Items\PanelItem;
 use Illuminate\Http\RedirectResponse;
 
-function panel(string $panel = null): ?Panel
+function panel(string $panel = null): ?PanelItem
 {
     if (is_null($panel)) {
-        return Feadmin::getCurrentPanel();
+        return Panel::getCurrentPanel();
     }
 
-    return Feadmin::find($panel);
+    return Panel::find($panel);
 }
 
 function preference(string|array $rawKey, mixed $default = null): mixed

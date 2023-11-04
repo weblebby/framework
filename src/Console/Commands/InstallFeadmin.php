@@ -5,6 +5,7 @@ namespace Feadmin\Console\Commands;
 use Feadmin\Models\Locale;
 use Feadmin\Models\Role;
 use App\Models\User;
+use Feadmin\Providers\FeadminServiceProvider;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 
@@ -26,39 +27,57 @@ class InstallFeadmin extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
+    {
+        $this->publishVendor();
+        $this->migrate();
+        $this->createLocales();
+        $this->createAdmin();
+
+        $this->info('PanelItem installed successfully.');
+
+        return static::SUCCESS;
+    }
+
+    private function publishVendor(): void
     {
         $this->call('vendor:publish', [
-            '--provider' => \Feadmin\Providers\FeadminServiceProvider::class,
+            '--provider' => FeadminServiceProvider::class,
         ]);
+    }
 
+    private function migrate(): void
+    {
         $this->call('migrate');
+    }
 
-        $localeCode = $this->ask('Enter locale (en, tr, ar, ru)', app()->getLocale());
-        Locale::create(['code' => $localeCode, 'is_default' => true]);
+    private function createLocales(): void
+    {
+        $localeCodes = $this->ask('Enter locales (en, tr, ar, ru)', app()->getLocale());
+        $localeCodes = array_map('trim', explode(',', $localeCodes));
 
-        $this->info("Locale [{$localeCode}] created.");
+        foreach ($localeCodes as $localeCode) {
+            Locale::query()->create(['code' => $localeCode, 'is_default' => true]);
+        }
 
+        $this->info(sprintf('Locales [%s] created.', implode(', ', $localeCodes)));
+    }
+
+    private function createAdmin(): void
+    {
+        $name = $this->ask('Enter admin name', 'Admin');
         $email = $this->ask('Enter admin email', 'admin@gmail.com');
-        $password = $this->secret('Enter admin password');
+        $password = $this->secret('Enter admin password', 'password');
 
-        $role = Role::create(['name' => 'Super Admin']);
-
-        $this->info("Role [{$role->name}] created.");
-
-        $admin = User::create([
-            'name' => 'Admin',
+        $admin = User::query()->create([
+            'name' => $name,
             'email' => $email,
             'password' => Hash::make($password),
         ]);
 
-        $admin->assignRole($role);
+        $admin->assignRole(Role::findByName('Super Admin'));
 
         $this->info("Admin created.");
-
-        $this->info('Feadmin installed successfully.');
     }
 }

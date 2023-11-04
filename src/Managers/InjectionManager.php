@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Services;
+namespace Feadmin\Managers;
 
 use Closure;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 
-class InjectionService
+class InjectionManager
 {
     protected array $injections = [];
 

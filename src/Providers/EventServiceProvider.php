@@ -2,13 +2,11 @@
 
 namespace Feadmin\Providers;
 
-use Feadmin\Listeners\DeleteOriginalMedia;
 use App\Models\User;
 use Feadmin\Listeners\UpdateLocale;
 use Feadmin\Observers\UserObserver;
 use Illuminate\Foundation\Events\LocaleUpdated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Spatie\MediaLibrary\Conversions\Events\ConversionHasBeenCompleted;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -28,7 +26,7 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $observers = [
+    protected array $observers = [
         User::class => [UserObserver::class],
     ];
 

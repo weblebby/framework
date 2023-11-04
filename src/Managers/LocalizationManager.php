@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Services;
+namespace Feadmin\Managers;
 
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -10,7 +10,7 @@ use Locale;
 use NumberFormatter;
 use Symfony\Component\Intl\Locales;
 
-class LocalizationService
+class LocalizationManager
 {
     private Collection $supportedLocales;
 
@@ -80,6 +80,17 @@ class LocalizationService
         return $this->allLocales;
     }
 
+    public function getTranslations(string $search = null): array
+    {
+        if (filled($search)) {
+            return collect($this->translations)
+                ->filter(fn($value, $key) => str_contains($key, $search) || str_contains($value, $search))
+                ->toArray();
+        }
+
+        return $this->translations;
+    }
+
     public function getRemainingLocales(): Collection
     {
         $locales = collect();
@@ -93,12 +104,7 @@ class LocalizationService
         return $locales;
     }
 
-    public function getTranslations(): array
-    {
-        return $this->translations;
-    }
-
-    public function currency(string $code): string
+    public function currencyCode(string $code): string
     {
         $formatter = new NumberFormatter($code, NumberFormatter::CURRENCY);
 
@@ -158,11 +164,11 @@ class LocalizationService
     private function setDefaultLocale(): void
     {
         $this->defaultLocale = $this->getSupportedLocales()
-            ->firstWhere('is_default', true) ?? (object) [
-                'id' => -1,
-                'code' => app()->getLocale(),
-                'is_default' => 1,
-            ];
+            ->firstWhere('is_default', true) ?? (object)[
+            'id' => -1,
+            'code' => app()->getLocale(),
+            'is_default' => 1,
+        ];
 
         $this->currentLocale = $this->defaultLocale;
     }

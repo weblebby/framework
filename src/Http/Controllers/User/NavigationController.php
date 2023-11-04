@@ -21,7 +21,7 @@ class NavigationController extends Controller
 
         seo()->title(__('Menüler'));
 
-        $firstNavigation = Navigation::first();
+        $firstNavigation = Navigation::query()->first();
 
         if ($firstNavigation) {
             return to_panel_route('navigations.show', $firstNavigation);
@@ -35,7 +35,7 @@ class NavigationController extends Controller
 
     public function store(StoreNavigationRequest $request): RedirectResponse
     {
-        $navigation = Navigation::create($request->validated());
+        $navigation = Navigation::query()->create($request->validated());
 
         return to_panel_route('navigations.show', $navigation)
             ->with('message', __('Menü başarıyla oluşturuldu.'));

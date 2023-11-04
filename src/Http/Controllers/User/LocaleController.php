@@ -37,14 +37,7 @@ class LocaleController extends Controller
 
         seo()->title(Localization::display($locale->code));
 
-        $translations = Localization::getTranslations();
-
-        if ($request->has('search')) {
-            $translations = collect($translations)
-                ->filter(fn ($value, $key) => str_contains($key, $request->get('search')) || str_contains($value, $request->get('search')))
-                ->toArray();
-        }
-
+        $translations = Localization::getTranslations($request->input('search'));
         $translations = Paginator::fromArray($translations, 50);
 
         return view('feadmin::user.locales.index', [
@@ -56,27 +49,28 @@ class LocaleController extends Controller
     }
 
     public function store(
-        StoreLocaleRequest $request,
+        StoreLocaleRequest       $request,
         TranslationFinderService $translationFinderService
-    ): RedirectResponse {
+    ): RedirectResponse
+    {
         $validated = $request->validated();
 
-        if (Locale::count() === 0) {
+        if (Locale::query()->count() === 0) {
             $validated['is_default'] = true;
             $firstLocale = true;
         }
 
-        $locale = Locale::create($validated);
-
-        if ($firstLocale ?? false) {
-            Localization::load();
-            $translationFinderService->syncLocale($locale->code);
-        }
+        $locale = Locale::query()->create($validated);
 
         if ($request->has('is_default')) {
             DB::table('locales')
                 ->where('id', Localization::getDefaultLocaleId())
                 ->update(['is_default' => false]);
+        }
+
+        if ($firstLocale ?? false) {
+            Localization::load();
+            $translationFinderService->syncLocale($locale->code);
         }
 
         return to_panel_route('locales.show', $locale)
@@ -105,7 +99,6 @@ class LocaleController extends Controller
 
         $service->syncAllLocales();
 
-        return back()
-            ->with('message', __('Çeviriler senkronize edildi'));
+        return back()->with('message', __('Çeviriler senkronize edildi'));
     }
 }

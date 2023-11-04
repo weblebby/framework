@@ -34,12 +34,11 @@ class NavigationItemController extends Controller
 
     public function update(
         StoreNavigationItemRequest $request,
-        Navigation $navigation,
-        NavigationItem $item
-    ): RedirectResponse {
-        if ($navigation->id !== $item->navigation_id) {
-            abort(404);
-        }
+        Navigation                 $navigation,
+        NavigationItem             $item
+    ): RedirectResponse
+    {
+        abort_if($item->id !== $request->parent_id, 404);
 
         $item->fill($request->validated());
         $item->type = $request->type;
@@ -56,14 +55,10 @@ class NavigationItemController extends Controller
     public function destroy(Navigation $navigation, NavigationItem $item): RedirectResponse
     {
         $this->authorize('navigation:update');
-
-        if ($navigation->id !== $item->navigation_id) {
-            abort(404);
-        }
+        abort_if($navigation->id !== $item->navigation_id, 404);
 
         $item->delete();
 
-        return back()
-            ->with('message', __(':item başarıyla silindi', ['item' => $item->title]));
+        return back()->with('message', __(':item başarıyla silindi', ['item' => $item->title]));
     }
 }

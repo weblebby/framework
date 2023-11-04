@@ -2,18 +2,20 @@
 
 namespace Feadmin\Facades;
 
+use Feadmin\Managers\NavigationLinkableManager;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static self add(array $data)
- * @method static \Illuminate\Support\Collection linkables()
- * 
- * @see \Feadmin\Services\NavigationLinkableService
+ * @method static Collection linkables()
+ *
+ * @see NavigationLinkableManager
  */
 class NavigationLinkable extends Facade
 {
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
-        return \Feadmin\Services\NavigationLinkableService::class;
+        return NavigationLinkableManager::class;
     }
 }

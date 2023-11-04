@@ -16,7 +16,7 @@ class RoleController extends Controller
     {
         $this->authorize('role:read');
 
-        $roles = Role::paginate();
+        $roles = Role::query()->paginate();
 
         seo()->title(__('Kullanıcı rolleri'));
 
@@ -34,6 +34,7 @@ class RoleController extends Controller
 
     public function store(StoreRoleRequest $request, RoleService $roleService): RedirectResponse
     {
+        /** @var Role $role */
         $role = Role::create(['name' => $request->name]);
 
         $roleService->createMissingPermissions($request->permissions);
@@ -42,8 +43,7 @@ class RoleController extends Controller
             $role->givePermissionTo($permission);
         }
 
-        return to_panel_route('roles.index')
-            ->with('message', __('Rol oluşturuldu'));
+        return to_panel_route('roles.index')->with('message', __('Rol oluşturuldu'));
     }
 
     public function edit(Role $role): View
@@ -69,14 +69,10 @@ class RoleController extends Controller
     public function destroy(Role $role): RedirectResponse
     {
         $this->authorize('role:delete');
-
-        if ($role->is_default) {
-            abort(403);
-        }
+        abort_if($role->is_default, 403);
 
         $role->delete();
 
-        return to_panel_route('roles.index')
-            ->with('message', __('Rol silindi'));
+        return to_panel_route('roles.index')->with('message', __('Rol silindi'));
     }
 }

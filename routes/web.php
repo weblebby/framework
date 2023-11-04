@@ -4,7 +4,7 @@ use Feadmin\Http\Controllers\ExtensionController;
 use Illuminate\Support\Facades\Route;
 
 /**
- * Extension Asset
+ * ExtensionItem Asset
  */
 Route::get('ext-asset/{extension}/{asset}', [ExtensionController::class, 'asset'])
     ->where('asset', '.*')

@@ -4,24 +4,20 @@ namespace Feadmin\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Feadmin\Facades\Extension;
+use Illuminate\Http\Testing\MimeType;
 use Illuminate\Support\Facades\File;
 
 class ExtensionController extends Controller
 {
-    public function asset(string $id, string $asset)
+    public function asset(string $name, string $asset)
     {
-        $extension = Extension::enabled()->firstOrFail('id', $id);
+        $extension = Extension::findByNameOrFail($name);
+        $assetPath = $path = $extension->path("public/{$asset}");
 
-        if (!file_exists($path = $extension->path("Public/{$asset}"))) {
-            abort(404);
-        }
+        abort_if(!file_exists($assetPath), 404);
 
         return response()->file($path, [
-            'Content-Type' => match (File::extension($path)) {
-                'css' => 'text/css',
-                'js' => 'application/javascript',
-                default => mime_content_type($path),
-            },
+            'Content-Type' => MimeType::get(File::extension($path)),
         ]);
     }
 }

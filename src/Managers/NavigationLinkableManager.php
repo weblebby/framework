@@ -1,10 +1,11 @@
 <?php
 
-namespace Feadmin\Services;
+namespace Feadmin\Managers;
 
+use Feadmin\Items\NavigationLinkableItem;
 use Illuminate\Support\Collection;
 
-class NavigationLinkableService
+class NavigationLinkableManager
 {
     protected Collection $linkables;
 
@@ -13,14 +14,13 @@ class NavigationLinkableService
         $this->linkables = collect();
     }
 
-    public function add(array $data): self
+    public function add(NavigationLinkableItem $item): self
     {
-        $this->linkables[] = [
-            'position' => is_null($data['position'] ?? null)
-                ? count($this->linkables) * 10
-                : $data['position'],
-            ...$data,
-        ];
+        if (is_null($item->position())) {
+            $item->setPosition(count($this->linkables) * 10);
+        }
+
+        $this->linkables[] = $item;
 
         return $this;
     }

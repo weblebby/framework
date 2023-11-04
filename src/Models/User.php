@@ -18,6 +18,21 @@ abstract class User extends Authenticatable implements HasMedia
 
     abstract public function authorizedPanels(): array|bool;
 
+    public function canAccessPanel(string $panel): bool
+    {
+        $authorizedPanels = $this->authorizedPanels();
+
+        if (is_bool($authorizedPanels)) {
+            return $authorizedPanels;
+        }
+
+        if (is_array($authorizedPanels)) {
+            return in_array($panel, $authorizedPanels);
+        }
+
+        return false;
+    }
+
     public function locale(): BelongsTo
     {
         return $this->belongsTo(Locale::class);
@@ -52,7 +67,7 @@ abstract class User extends Authenticatable implements HasMedia
 
             if (count($words) > 1) {
                 return collect($words)
-                    ->map(fn ($word) => Str::upper(mb_substr($word, 0, 1)))
+                    ->map(fn($word) => Str::upper(mb_substr($word, 0, 1)))
                     ->implode('');
             }
 

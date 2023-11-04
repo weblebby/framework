@@ -5,14 +5,12 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CreateDefaultLocale extends Seeder
+class CreateDefaultLocales extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run()
+    public function run(): void
     {
         DB::table('locales')->insert([
             'code' => 'tr',

@@ -18,17 +18,16 @@ class RoleService
             ->pluck('name')
             ->toArray();
 
-        $unexistingPermissions = array_diff($permissions, $existingPermissions);
+        $missingPermissions = array_diff($permissions, $existingPermissions);
 
-        DB::table($table)
-            ->insert(
-                array_map(fn ($permission) => [
-                    'name' => $permission,
-                    'guard_name' => 'web',
-                    'created_at' => $now = now(),
-                    'updated_at' => $now,
-                ], $unexistingPermissions)
-            );
+        DB::table($table)->insert(
+            array_map(fn($permission) => [
+                'name' => $permission,
+                'guard_name' => 'web',
+                'created_at' => $now = now(),
+                'updated_at' => $now,
+            ], $missingPermissions)
+        );
     }
 
     public function getAssignableRolesFor(User $user): Collection

@@ -2,20 +2,20 @@
 
 namespace Feadmin\Hooks;
 
-class Permission
+use Feadmin\Items\PanelItem;
+
+class PermissionHook
 {
-    private Panel $panel;
+    protected string $lastGroup;
 
-    private string $lastGroup;
+    protected array $permissions = [];
 
-    private array $permissions = [];
-
-    public function __construct(Panel $panel)
+    public function __construct(protected PanelItem $panel)
     {
-        $this->panel = $panel;
+        //
     }
 
-    public function group(string $group): self
+    public function withGroup(string $group): self
     {
         $this->lastGroup = $group;
         $this->permissions[$this->lastGroup] ??= [];
@@ -23,21 +23,21 @@ class Permission
         return $this;
     }
 
-    public function title(string $title): self
+    public function withTitle(string $title): self
     {
         $this->permissions[$this->lastGroup]['title'] = $title;
 
         return $this;
     }
 
-    public function description(string $description): self
+    public function withDescription(string $description): self
     {
         $this->permissions[$this->lastGroup]['description'] = $description;
 
         return $this;
     }
 
-    public function permissions(array $permissions): self
+    public function withPermissions(array $permissions): self
     {
         $this->permissions[$this->lastGroup]['permissions'] = $permissions;
 
@@ -54,7 +54,7 @@ class Permission
         return collect($this->get())
             ->map(function ($group, $groupKey) {
                 return collect($group['permissions'])
-                    ->map(fn ($_, $permKey) => "{$groupKey}:{$permKey}")
+                    ->map(fn($_, $permKey) => "{$groupKey}:{$permKey}")
                     ->values();
             })
             ->collapse()
@@ -68,11 +68,13 @@ class Permission
         bool $roles = true,
         bool $extensions = true,
         bool $navigations = true,
-    ): void {
+    ): void
+    {
         if ($locales) {
-            $this->group('locale')
-                ->title(__('Diller'))
-                ->permissions([
+            $this
+                ->withGroup('locale')
+                ->withTitle(__('Diller'))
+                ->withPermissions([
                     'create' => __('Dil oluşturabilir'),
                     'read' => __('Dilleri görüntüleyebilir'),
                     'update' => __('Dilleri düzenleyebilir'),
@@ -82,9 +84,10 @@ class Permission
         }
 
         if ($users) {
-            $this->group('user')
-                ->title(__('Kullanıcılar'))
-                ->permissions([
+            $this
+                ->withGroup('user')
+                ->withTitle(__('Kullanıcılar'))
+                ->withPermissions([
                     'create' => __('Kullanıcı oluşturabilir'),
                     'read' => __('Kullanıcıları görüntüleyebilir'),
                     'update' => __('Kullanıcıları düzenleyebilir'),
@@ -93,24 +96,26 @@ class Permission
         }
 
         if ($preferences) {
-            $this->group('preference')
-                ->title(__('Tercihler'))
-                ->description(__('Hangi ayarları düzenleyebileceğini seçin'))
-                ->permissions(
+            $this
+                ->withGroup('preference')
+                ->withTitle(__('Tercihler'))
+                ->withDescription(__('Hangi ayarları düzenleyebileceğini seçin'))
+                ->withPermissions(
                     $this->panel
                         ->preference()
                         ->ignoreAuthorization()
-                        ->toDottedAll()
+                        ->toDotted(all: true)
                         ->toArray()
                 );
 
-            $this->panel->preference()->checkAuthorization();
+            $this->panel->preference()->withAuthorization();
         }
 
         if ($roles) {
-            $this->group('role')
-                ->title(__('Kullanıcı rolleri'))
-                ->permissions([
+            $this
+                ->withGroup('role')
+                ->withTitle(__('Kullanıcı rolleri'))
+                ->withPermissions([
                     'create' => __('Kullanıcı rolü oluşturabilir'),
                     'read' => __('Kullanıcı rollerini görüntüleyebilir'),
                     'update' => __('Kullanıcı rollerini düzenleyebilir'),
@@ -119,9 +124,10 @@ class Permission
         }
 
         if ($extensions) {
-            $this->group('extension')
-                ->title(__('Eklentiler'))
-                ->permissions([
+            $this
+                ->withGroup('extension')
+                ->withTitle(__('Eklentiler'))
+                ->withPermissions([
                     'read' => __('Eklentileri görüntüleyebilir'),
                     'update' => __('Eklentileri düzenleyebilir'),
                     'delete' => __('Eklentileri silebilir'),
@@ -129,9 +135,10 @@ class Permission
         }
 
         if ($navigations) {
-            $this->group('navigation')
-                ->title(__('Navigasyonlar'))
-                ->permissions([
+            $this
+                ->withGroup('navigation')
+                ->withTitle(__('Navigasyonlar'))
+                ->withPermissions([
                     'create' => __('Navigasyon oluşturabilir'),
                     'read' => __('Navigasyonları görüntüleyebilir'),
                     'update' => __('Navigasyonları düzenleyebilir'),

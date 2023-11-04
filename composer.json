@@ -1,51 +1,54 @@
 {
-    "name": "feadbox/feadmin",
-    "description": "Laravel admin panel.",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Feadmin\\": "src/"
-        },
-        "files": [
-            "src/helpers.php"
-        ]
+  "name": "feadbox/feadmin",
+  "description": "Laravel admin panel.",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Feadmin\\": "src/"
     },
-    "authors": [
-        {
-            "name": "Davut Kember",
-            "email": "davutkmbr@gmail.com"
-        }
-    ],
-    "require": {
-        "laravel/fortify": "^1.10",
-        "illuminate/support": "^10.0",
-        "illuminate/database": "^10.0",
-        "illuminate/pagination": "^10.26",
-        "illuminate/contracts": "^10.26",
-        "illuminate/notifications": "^10.26",
-        "illuminate/config": "^10.26",
-        "illuminate/container": "^10.26",
-        "astrotomic/laravel-translatable": "^11.10",
-        "spatie/laravel-medialibrary": "^10.0",
-        "spatie/laravel-permission": "^5.5",
-        "spatie/laravel-sluggable": "^3.3",
-        "feadbox/laravel-seo": "^2.0",
-        "symfony/intl": "^6.1",
-        "illuminate/auth": "^10.26"
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Feadmin\\Providers\\FeadminServiceProvider"
-            ],
-            "aliases": {
-                "Feadmin": "Feadmin\\Facades\\Feadmin",
-                "Localization": "Feadmin\\Facades\\Localization",
-                "Extension": "Feadmin\\Facades\\Extension",
-                "FormComponent": "Feadmin\\Facades\\FormComponent",
-                "NavigationLinkable": "Feadmin\\Facades\\NavigationLinkable"
-            }
-        }
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "Davut Kember",
+      "email": "davutkmbr@gmail.com"
     }
+  ],
+  "require": {
+    "ext-fileinfo": "*",
+    "laravel/fortify": "^1.10",
+    "illuminate/support": "^v10.30.1",
+    "illuminate/database": "^v10.30.1",
+    "illuminate/pagination": "^v10.30.1",
+    "illuminate/contracts": "^v10.30.1",
+    "illuminate/validation": "^v10.30.1",
+    "illuminate/notifications": "^v10.30.1",
+    "illuminate/http": "^v10.30.1",
+    "illuminate/config": "^10.26",
+    "illuminate/container": "^v10.30.1",
+    "illuminate/auth": "^v10.30.1",
+    "astrotomic/laravel-translatable": "^11.10",
+    "spatie/laravel-medialibrary": "^10.0",
+    "spatie/laravel-permission": "^5.5",
+    "spatie/laravel-sluggable": "^3.3",
+    "feadbox/laravel-seo": "^2.0",
+    "symfony/intl": "^6.1"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Feadmin\\Providers\\FeadminServiceProvider"
+      ],
+      "aliases": {
+        "Feadmin": "Panel",
+        "Localization": "Feadmin\\Facades\\Localization",
+        "Extension": "Feadmin\\Facades\\Extension",
+        "FormComponent": "Feadmin\\Facades\\FormComponent",
+        "NavigationLinkable": "Feadmin\\Facades\\NavigationLinkable"
+      }
+    }
+  }
 }

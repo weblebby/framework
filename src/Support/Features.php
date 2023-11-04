@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin;
+namespace Feadmin\Support;
 
-use Feadmin\Facades\Feadmin;
-use Feadmin\Hooks\Panel;
+use Feadmin\Facades\Panel;
+use Feadmin\Items\PanelItem;
 
 class Features
 {
@@ -15,7 +15,7 @@ class Features
 
         $features = $panel instanceof Panel
             ? $panel->features()
-            : Feadmin::find($panel)->features();
+            : Panel::find($panel)->features();
 
         return in_array($feature, $features);
     }

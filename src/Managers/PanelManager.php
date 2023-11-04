@@ -1,12 +1,13 @@
 <?php
 
-namespace Feadmin;
+namespace Feadmin\Managers;
 
 use Feadmin\Facades\Extension;
-use Feadmin\Hooks\Panel;
+use Feadmin\Items\ExtensionItem;
+use Feadmin\Items\PanelItem;
 use Illuminate\Support\Facades\Route;
 
-class Feadmin
+class PanelManager
 {
     private array $panels = [];
 
@@ -14,22 +15,22 @@ class Feadmin
 
     private ?string $extensionPanel = null;
 
-    public function create(string $panel): Panel
+    public function create(string $panel): PanelItem
     {
-        return $this->panels[$panel] = new Panel($panel);
+        return $this->panels[$panel] = new PanelItem($panel);
     }
 
-    public function find(?string $panel): ?Panel
+    public function find(?string $panel): ?PanelItem
     {
         return $this->panels[$panel] ?? null;
     }
 
-    public function panels(): array
+    public function get(): array
     {
         return $this->panels;
     }
 
-    public function getCurrentPanel(): ?Panel
+    public function getCurrentPanel(): ?PanelItem
     {
         return $this->find($this->currentPanel);
     }
@@ -39,7 +40,7 @@ class Feadmin
         $this->currentPanel = $panel;
     }
 
-    public function getExtensionPanel(): ?Panel
+    public function getExtensionPanel(): ?PanelItem
     {
         return $this->find($this->extensionPanel);
     }
@@ -51,7 +52,7 @@ class Feadmin
 
     public function usePanelRoutes(): void
     {
-        foreach ($this->panels() as $panel) {
+        foreach ($this->get() as $panel) {
             $route = Route::middleware($panel->middleware());
 
             if ($panel->prefix()) {
@@ -67,21 +68,21 @@ class Feadmin
             }
 
             $route->group(function () use ($panel) {
-                require __DIR__ . '/../routes/feadmin.php';
+                require __DIR__ . '/../../routes/panel.php';
             });
         }
     }
 
     public function useExtensionRoutes(): void
     {
-        Extension::get()->each(function ($extension) {
+        Extension::get()->each(function (ExtensionItem $extension) {
             $extension->routes();
         });
     }
 
     public function useWebRoutes(): void
     {
-        Route::middleware('web')->group(__DIR__ . '/../routes/web.php');
+        Route::middleware('web')->group(__DIR__ . '/../../routes/web.php');
     }
 
     public function useRoutes(): void

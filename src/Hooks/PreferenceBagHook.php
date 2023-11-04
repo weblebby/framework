@@ -5,22 +5,15 @@ namespace Feadmin\Hooks;
 use Feadmin\Facades\Preference;
 use Illuminate\Support\Collection;
 
-class PreferenceBag
+class PreferenceBagHook
 {
-    private Panel $panel;
-
-    protected string $lastNamespace;
+    protected string $currentNamespace;
 
     protected array $namespaces = [];
 
     private bool $authorization = true;
 
-    public function __construct(Panel $panel)
-    {
-        $this->panel = $panel;
-    }
-
-    public function checkAuthorization(): self
+    public function withAuthorization(): self
     {
         $this->authorization = true;
 
@@ -34,22 +27,22 @@ class PreferenceBag
         return $this;
     }
 
-    public function namespace(string $id): self
+    public function withNamespace(string $namespace): self
     {
-        $this->lastNamespace = $id;
-        $this->namespaces[$this->lastNamespace] ??= [];
+        $this->currentNamespace = $namespace;
+        $this->namespaces[$this->currentNamespace] ??= [];
 
         return $this;
     }
 
-    public function bag(string $id, string $title, float $position = null): self
+    public function withBag(string $bag, string $title, float $position = null): self
     {
-        $this->namespaces[$this->lastNamespace][$id] = [
+        $this->namespaces[$this->currentNamespace][$bag] = [
             'title' => $title,
             'position' => is_null($position)
-                ? (count($this->namespaces[$this->lastNamespace] ?? []) * 10)
+                ? (count($this->namespaces[$this->currentNamespace] ?? []) * 10)
                 : $position,
-            'permission' => "preference:{$this->lastNamespace}.{$id}",
+            'permission' => "preference:{$this->currentNamespace}.{$bag}",
         ];
 
         return $this;
@@ -58,20 +51,13 @@ class PreferenceBag
     public function field(string $bag, string $key): ?array
     {
         $preferences = $this->get();
-
-        if (is_null($preferences)) {
-            return null;
-        }
-
         $bag = $preferences[$bag] ?? null;
 
         if (is_null($bag)) {
             return null;
         }
 
-        return head(array_filter($bag['fields'], function ($field) use ($key) {
-            return $field['key'] === $key;
-        }));
+        return head(array_filter($bag['fields'], fn($field) => $field['key'] === $key));
     }
 
     public function fields(string $bag): Collection
@@ -91,7 +77,7 @@ class PreferenceBag
             ->map(function ($preferences) {
                 return array_filter(
                     $preferences,
-                    fn ($item) => auth()->check() && auth()->user()->can($item['permission'])
+                    fn($item) => auth()->check() && auth()->user()->can($item['permission'])
                 );
             })
             ->toArray();
@@ -99,19 +85,16 @@ class PreferenceBag
 
     public function get(): array
     {
-        return collect($this->getAll()[$this->lastNamespace])
+        return collect($this->getAll()[$this->currentNamespace])
             ->sortBy('position')
             ->map(function ($preference, $namespace) {
-                $rest = Preference::hook()->namespaces($this->lastNamespace)[$namespace] ?? null;
+                $rest = Preference::namespaces($this->currentNamespace)[$namespace] ?? null;
 
                 if (is_null($rest)) {
-                    return false;
+                    return null;
                 }
 
-                return [
-                    ...$preference,
-                    ...$rest,
-                ];
+                return [...$preference, ...$rest];
             })
             ->filter()
             ->toArray();
@@ -121,27 +104,22 @@ class PreferenceBag
     {
         $map = function ($preferences, $namespace) {
             return collect($preferences)->mapWithKeys(
-                fn ($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
+                fn($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
             );
         };
 
-        if ($all !== true) {
-            return $map($this->get(), $this->lastNamespace);
+        if ($all === false) {
+            return $map($this->get(), $this->currentNamespace);
         }
 
         return collect($this->getAll())
-            ->map(fn ($preferences, $namespace) => $map($preferences, $namespace))
+            ->map(fn($preferences, $namespace) => $map($preferences, $namespace))
             ->collapse()
-            ->sortByDesc(fn ($_, $key) => str_starts_with($key, 'default.'));
-    }
-
-    public function toDottedAll(): Collection
-    {
-        return $this->toDotted(true);
+            ->sortByDesc(fn($_, $key) => str_starts_with($key, 'default.'));
     }
 
     public function toPermissions(): Collection
     {
-        return $this->toDotted()->keys()->map(fn ($bag) => "preference:{$bag}");
+        return $this->toDotted()->keys()->map(fn($bag) => "preference:{$bag}");
     }
 }

@@ -15,29 +15,19 @@ class ExtensionPreferenceController extends Controller
     {
         $preferences = panel()->preference($namespace)->get();
 
-        if (is_null($preferences)) {
-            abort(404);
-        }
-
         return to_panel_route('extensions.preferences.show', [$namespace, key($preferences)]);
     }
 
-    public function show(string $id, string $bag): View
+    public function show(string $name, string $bag): View
     {
-        $extension = Extension::get()->firstWhere('id', $id);
+        $extension = Extension::findByNameOrFail($name);
 
-        if (is_null($extension)) {
-            abort(404);
-        }
+        $preferences = panel()->preference($extension->name())->get();
+        $foundBag = $preferences[$bag] ?? null;
 
-        $preferences = panel()->preference($extension->id)->get();
-        $findedBag = $preferences[$bag] ?? null;
+        abort_if(is_null($foundBag), 404);
 
-        if (is_null($findedBag)) {
-            abort(404);
-        }
-
-        seo()->title("{$extension->plural_title}: {$findedBag['title']}");
+        seo()->title("{$extension->pluralTitle()}: {$foundBag['title']}");
 
         return view('feadmin::user.extensions.preferences.show', [
             'extension' => $extension,
@@ -46,8 +36,8 @@ class ExtensionPreferenceController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $id, string $bag): RedirectResponse
+    public function update(Request $request, string $namespace, string $bag): RedirectResponse
     {
-        return (new PreferenceController())->update($request, $id, $bag);
+        return (new PreferenceController())->update($request, $namespace, $bag);
     }
 }

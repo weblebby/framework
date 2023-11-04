@@ -1,63 +1,66 @@
 <?php
 
-namespace Feadmin\Hooks;
+namespace Feadmin\Items;
 
+use Feadmin\Hooks\MenuHook;
+use Feadmin\Hooks\PermissionHook;
+use Feadmin\Hooks\PreferenceBagHook;
 use Illuminate\Http\RedirectResponse;
 
-class Panel
+class PanelItem
 {
-    private string $name;
+    protected string $name;
 
-    private Menu $menu;
+    protected MenuHook $menu;
 
-    private PreferenceBag $preference;
+    protected PreferenceBagHook $preference;
 
-    private Permission $permission;
+    protected PermissionHook $permission;
 
-    private array $features = [];
+    protected array $features = [];
 
-    private ?string $prefix = null;
+    protected ?string $prefix = null;
 
-    private ?string $as = null;
+    protected ?string $as = null;
 
-    private ?string $domain = null;
+    protected ?string $domain = null;
 
-    private string|array|null $middleware = null;
+    protected string|array|null $middleware = null;
 
     public function __construct(string $name)
     {
         $this->name = $name;
 
-        $this->menu = new Menu($this);
-        $this->preference = new PreferenceBag($this);
-        $this->permission = new Permission($this);
+        $this->menu = new MenuHook();
+        $this->preference = new PreferenceBagHook();
+        $this->permission = new PermissionHook($this);
     }
 
-    public function menu(string $location = null): Menu
+    public function menu(string $bag = null): MenuHook
     {
-        if (is_null($location)) {
+        if (is_null($bag)) {
             return $this->menu;
         }
 
-        return $this->menu->location($location);
+        return $this->menu->withBag($bag);
     }
 
-    public function preference(string $namespace = null): PreferenceBag
+    public function preference(string $namespace = null): PreferenceBagHook
     {
         if (is_null($namespace)) {
             return $this->preference;
         }
 
-        return $this->preference->namespace($namespace);
+        return $this->preference->withNamespace($namespace);
     }
 
-    public function permission(string $group = null): Permission
+    public function permission(string $group = null): PermissionHook
     {
         if (is_null($group)) {
             return $this->permission;
         }
 
-        return $this->permission->group($group);
+        return $this->permission->withGroup($group);
     }
 
     public function name(): string
@@ -72,7 +75,7 @@ class Panel
 
     public function toRoute($route, $parameters = [], $status = 302, $headers = []): RedirectResponse
     {
-        return redirect()->route($this->as() . $route, $parameters, $status, $headers);
+        return to_route($this->as() . $route, $parameters, $status, $headers);
     }
 
     public function features(array $features = null): self|array

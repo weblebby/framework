@@ -2,8 +2,8 @@
 
 namespace Feadmin\Console\Commands;
 
-use Feadmin\Extension as ExtensionItem;
 use Feadmin\Facades\Extension;
+use Feadmin\Items\ExtensionItem as ExtensionItem;
 use Illuminate\Console\Command;
 
 class MigrateExtension extends Command
@@ -24,19 +24,19 @@ class MigrateExtension extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
-    public function handle()
+    public function handle(): int
     {
-        Extension::enabled()->each(function (ExtensionItem $extension) {
-            $this->alert("Migrate for {$extension->name} Extension");
+        Extension::get()->each(function (ExtensionItem $extension) {
+            $this->alert("Migrate for {$extension->name()} extension.");
 
             $this->call('migrate', [
-                '--path' => $extension->originalPath('Database/migrations'),
+                '--path' => $extension->path('database/migrations'),
             ]);
         });
 
         $this->info('Extensions migrated.');
+
+        return static::SUCCESS;
     }
 }

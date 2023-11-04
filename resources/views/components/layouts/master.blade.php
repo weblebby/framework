@@ -10,27 +10,27 @@
     {{ $styles ?? '' }}
 </head>
 <body>
-    {{ $slot }}
-    <script>
-        window.Feadmin = {
-            @if (\Feadmin\Features::enabled(\Feadmin\Features::translations(), panel()))
-            Translation: {
-                routes: {
-                    update: @json(panel_route('translations.store'))
-                },
-                list: @json(Localization::getTranslations())
-            }
-            @endif
+{{ $slot }}
+<script>
+    window.Feadmin = {
+        @if (\Feadmin\Support\Features::enabled(\Feadmin\Support\Features::translations(), panel()))
+        Translation: {
+            routes: {
+                update: @json(panel_route('translations.store'))
+            },
+            list: @json(Localization::getTranslations())
         }
+        @endif
+    }
+</script>
+<script src="{{ mix('js/feadmin.js', 'vendor/feadmin') }}"></script>
+@if (session()->has('message'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Feadmin.Toastr.add('{{ session()->get('message') }}')
+        })
     </script>
-    <script src="{{ mix('js/feadmin.js', 'vendor/feadmin') }}"></script>
-    @if (session()->has('message'))
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                Feadmin.Toastr.add('{{ session()->get('message') }}')
-            })
-        </script>
-    @endif
-    {{ $scripts ?? '' }}
+@endif
+{{ $scripts ?? '' }}
 </body>
 </html>

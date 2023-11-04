@@ -6,7 +6,7 @@ use Spatie\MediaLibrary\Conversions\Events\ConversionHasBeenCompleted;
 
 class DeleteOriginalMedia
 {
-    public function handle(ConversionHasBeenCompleted $event)
+    public function handle(ConversionHasBeenCompleted $event): void
     {
         $conversions = $event->media->getMediaConversionNames();
         $currentConversion = $event->conversion->getName();

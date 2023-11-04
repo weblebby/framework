@@ -3,37 +3,32 @@
 namespace Feadmin\Http\Middleware;
 
 use Closure;
-use Feadmin\Extension as ExtensionItem;
-use Feadmin\Facades\Extension;
 use Feadmin\Facades\Localization;
+use Feadmin\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Symfony\Component\HttpFoundation\Response;
 
 class Panel
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @param \Closure(Request): (Response) $next
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        $authorizedPanels = $request->user()->authorizedPanels();
+        /** @var User $user */
+        $user = $request->user();
+        abort_if(!$user->canAccessPanel(panel()->name()), 403);
 
-        if ($authorizedPanels === false || (is_array($authorizedPanels) && !in_array(panel()->name(), $authorizedPanels))) {
-            abort(403);
-        }
-
-        app()->setLocale($request->user()?->locale?->code ?? Localization::getCurrentLocale()->code);
+        $preferredLocale = $user?->locale?->code ?? Localization::getCurrentLocale()->code;
+        app()->setLocale($preferredLocale);
 
         config([
             'app.name' => $siteName = preference('general->site_name'),
             'seo.app.name' => $siteName,
         ]);
-
-        Extension::enabled()->each(fn (ExtensionItem $extension) => $extension->booted());
 
         Paginator::defaultView('feadmin::vendor.pagination.tailwind');
         Paginator::defaultSimpleView('feadmin::vendor.pagination.simple-tailwind');

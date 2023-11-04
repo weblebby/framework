@@ -3,7 +3,7 @@
 namespace Feadmin\Http\Requests\User;
 
 use Core\Facades\PermissionManager;
-use Feadmin\Facades\Feadmin;
+use Feadmin\Facades\Panel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;

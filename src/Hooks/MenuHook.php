@@ -6,34 +6,27 @@ use Feadmin\Items\MenuItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
-class Menu
+class MenuHook
 {
-    private Panel $panel;
+    protected string $currentBag;
 
-    private string $lastLocation;
+    protected string $currentCategory;
 
-    private string $lastCategory;
+    protected array $menus = [];
 
-    private array $menus = [];
-
-    public function __construct(Panel $panel)
+    public function withBag(string $bag): self
     {
-        $this->panel = $panel;
-    }
-
-    public function location(string $location): self
-    {
-        $this->lastLocation = $location;
-        $this->menus[$this->lastLocation] ??= [];
+        $this->currentBag = $bag;
+        $this->menus[$this->currentBag] ??= [];
 
         return $this;
     }
 
-    public function category(string $category, string $title = null): self
+    public function withCategory(string $category, string $title = null): self
     {
-        $this->lastCategory = $category;
+        $this->currentCategory = $category;
 
-        $this->menus[$this->lastLocation][$this->lastCategory] ??= [
+        $this->menus[$this->currentBag][$this->currentCategory] ??= [
             'title' => $title,
         ];
 
@@ -43,12 +36,12 @@ class Menu
     public function add(MenuItem|array $item): self
     {
         if ($item instanceof MenuItem) {
-            $item = $item->get();
+            $item = $item->toArray();
         }
 
-        $items = $this->menus[$this->lastLocation][$this->lastCategory]['items'] ?? [];
+        $items = $this->menus[$this->currentBag][$this->currentCategory]['items'] ?? [];
 
-        $this->menus[$this->lastLocation][$this->lastCategory]['items'][] = [
+        $this->menus[$this->currentBag][$this->currentCategory]['items'][] = [
             'position' => count($items) * 10,
             ...$item,
         ];
@@ -67,22 +60,20 @@ class Menu
 
     public function get(): Collection
     {
-        return collect($this->menus[$this->lastLocation])
-            ->map(function ($location) {
-                $location['items'] = collect($location['items'] ?? [])
-                    ->filter(fn ($item) => $this->userCanDisplay($item))
+        return collect($this->menus[$this->currentBag])
+            ->map(function ($bag) {
+                $bag['items'] = collect($bag['items'] ?? [])
+                    ->filter(fn($item) => $this->canDisplay($item))
                     ->sortBy('position')
                     ->values();
 
-                return $location;
+                return $bag;
             })
-            ->filter(function ($location) {
-                return $location['items']->count() > 0;
-            })
+            ->filter(fn($bag) => $bag['items']->count() > 0)
             ->sortBy('position');
     }
 
-    private function userCanDisplay(array $item): bool
+    private function canDisplay(array $item): bool
     {
         if (isset($item['can'])) {
             if (auth()->user()->hasRole('Super Admin')) {

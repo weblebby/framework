@@ -4,19 +4,19 @@ namespace Feadmin\Items;
 
 class MenuItem
 {
-    private string $title;
+    protected string $title;
 
-    private string $url;
+    protected string $url;
 
-    private bool $isActive = false;
+    protected bool $isActive = false;
 
-    private ?string $icon = null;
+    protected ?string $icon = null;
 
-    private ?string $badge = null;
+    protected ?string $badge = null;
 
-    private string|array|null $can = null;
+    protected string|array|null $can = null;
 
-    private array $children = [];
+    protected array $children = [];
 
     public static function create(string $title): static
     {
@@ -28,49 +28,56 @@ class MenuItem
         $this->title = $title;
     }
 
-    public function icon($icon): self
+    public function withIcon($icon): self
     {
         $this->icon = $icon;
 
         return $this;
     }
 
-    public function badge($badge): self
+    public function withBadge($badge): self
     {
         $this->badge = $badge;
 
         return $this;
     }
 
-    public function url(string $url): self
+    public function withUrl(string $url): self
     {
         $this->url = $url;
 
         return $this;
     }
 
-    public function isActive(bool $isActive): self
-    {
-        $this->isActive = $isActive;
-
-        return $this;
-    }
-
-    public function can(string|array $can): self
+    public function withAbility(string|array $can): self
     {
         $this->can = $can;
 
         return $this;
     }
 
-    public function children(array $items): self
+    public function withChildren(array $items): self
     {
         $this->children = $items;
 
         return $this;
     }
 
-    public function get(): array
+    public function activate(): self
+    {
+        $this->isActive = true;
+
+        return $this;
+    }
+
+    public function deactivate(): self
+    {
+        $this->isActive = false;
+
+        return $this;
+    }
+
+    public function toArray(): array
     {
         return [
             'title' => $this->title,
@@ -79,9 +86,10 @@ class MenuItem
             'icon' => $this->icon,
             'badge' => $this->badge,
             'can' => $this->can,
-            'children' => array_map(function ($child) {
-                return $child instanceof static ? $child->get() : $child;
-            }, $this->children),
+            'children' => array_map(
+                fn($child) => $child instanceof static ? $child->toArray() : $child,
+                $this->children,
+            ),
         ];
     }
 }

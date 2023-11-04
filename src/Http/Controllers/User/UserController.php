@@ -19,7 +19,7 @@ class UserController extends Controller
     {
         $this->authorize('user:read');
 
-        $users = User::paginate();
+        $users = User::query()->paginate();
 
         seo()->title(__('Kullanıcılar'));
 
@@ -39,7 +39,8 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): RedirectResponse
     {
-        $user = User::create($request->validated() + [
+        $user = User::query()->create([
+            ...$request->validated(),
             'password' => Hash::make($password = Str::random(8)),
         ]);
 
@@ -50,8 +51,7 @@ class UserController extends Controller
          */
         info($password);
 
-        return to_panel_route('users.index')
-            ->with('success', __('Kullanıcı oluşturuldu'));
+        return to_panel_route('users.index')->with('success', __('Kullanıcı oluşturuldu'));
     }
 
     public function edit(Request $request, RoleService $roleService, User $user): View

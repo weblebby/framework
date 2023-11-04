@@ -8,9 +8,12 @@ use Illuminate\Support\Collection;
 
 class NavigationService
 {
+    /**
+     * @return Collection<int, Navigation>
+     */
     public function getForListing(): Collection
     {
-        return Navigation::select('id', 'title')->get();
+        return Navigation::query()->select('id', 'title')->get();
     }
 
     public function smartMenuItems(): Collection

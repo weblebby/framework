@@ -2,18 +2,20 @@
 
 namespace Feadmin\Facades;
 
+use Feadmin\Managers\InjectionManager;
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\HtmlString;
 
 /**
  * @method static void add(string $name, callable $callable)
- * @method static \Illuminate\Support\HtmlString render(string $name)
- * 
- * @see \Feadmin\Services\InjectionService
+ * @method static HtmlString render(string $name)
+ *
+ * @see InjectionManager
  */
 class Injection extends Facade
 {
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
-        return \Feadmin\Services\InjectionService::class;
+        return InjectionManager::class;
     }
 }

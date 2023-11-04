@@ -10,7 +10,7 @@ trait Translatable
 {
     use \Astrotomic\Translatable\Translatable;
 
-    public function scopeWithTranslation(Builder $query)
+    public function scopeWithTranslation(Builder $query): void
     {
         $query->with([
             'translations' => function (Relation $query) {
@@ -25,7 +25,7 @@ trait Translatable
         ]);
     }
 
-    public function resolveRouteBinding($value, $field = null)
+    public function resolveRouteBinding($value, $field = null): ?Model
     {
         $model = parent::resolveRouteBinding($value, $field);
 
@@ -40,7 +40,7 @@ trait Translatable
         return $model;
     }
 
-    public function resolveChildRouteBinding($childType, $value, $field)
+    public function resolveChildRouteBinding($childType, $value, $field): ?Model
     {
         $model = parent::resolveChildRouteBinding($childType, $value, $field);
 
@@ -89,7 +89,7 @@ trait Translatable
 
         if ($withFallback && $configFallbackLocale === null) {
             $configuredLocales = collect($this->getLocalesHelper()->all())
-                ->sortByDesc(fn ($value) => str_starts_with($value, $locale))
+                ->sortByDesc(fn($value) => str_starts_with($value, $locale))
                 ->toArray();
 
             foreach ($configuredLocales as $configuredLocale) {
@@ -111,7 +111,7 @@ trait Translatable
         if ($model->$field === $value) {
             return null;
         }
-
+        
         return route(request()->route()->getName(), [
             ...request()->route()->parameters(),
             ...request()->query(),

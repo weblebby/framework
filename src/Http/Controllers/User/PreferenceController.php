@@ -10,37 +10,32 @@ use Illuminate\View\View;
 
 class PreferenceController extends Controller
 {
-    private $namespace = 'default';
+    const NAMESPACE = 'default';
 
     public function index(): RedirectResponse
     {
         return to_panel_route(
             'preferences.show',
-            key(panel()->preference($this->namespace)->get())
+            key(panel()->preference(self::NAMESPACE)->get())
         );
     }
 
     public function show(string $bag): View
     {
-        $findedBag = panel()
-            ->preference($this->namespace)
-            ->get()[$bag] ?? null;
+        $foundBag = panel()->preference(self::NAMESPACE)->get()[$bag] ?? null;
+        abort_if(is_null($foundBag), 404);
 
-        if (is_null($findedBag)) {
-            abort(404);
-        }
-
-        seo()->title($findedBag['title']);
+        seo()->title($foundBag['title']);
 
         return view('feadmin::user.preferences.show', [
             'selectedBag' => $bag,
-            'namespace' => $this->namespace,
+            'namespace' => self::NAMESPACE,
         ]);
     }
 
     public function update(Request $request, string $namespace, string $bag): RedirectResponse
     {
-        $fields = Preference::hook()->fields($namespace, $bag);
+        $fields = Preference::fields($namespace, $bag);
 
         $validated = $request->validate(
             $fields->pluck('rules', 'name')->toArray()
@@ -55,7 +50,7 @@ class PreferenceController extends Controller
                 continue;
             }
 
-            if ($field['type'] === 'image') {
+            if ($field['type']->isUploadable()) {
                 $uploadables[$field['name']] = $value;
             }
         }

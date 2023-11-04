@@ -3,15 +3,15 @@
 namespace Feadmin\Listeners;
 
 use Feadmin\Facades\Localization;
-use Feadmin\Services\LocalizationService;
+use Feadmin\Managers\LocalizationManager;
 use Illuminate\Foundation\Events\LocaleUpdated;
 use Locale;
 
 class UpdateLocale
 {
-    public function handle(LocaleUpdated $event)
+    public function handle(LocaleUpdated $event): void
     {
-        $localization = resolve(LocalizationService::class);
+        $localization = resolve(LocalizationManager::class);
 
         $preferredLocale = $localization->getPreferredLocale([
             ['code' => $event->locale],
