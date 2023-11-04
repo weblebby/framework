@@ -2,7 +2,7 @@
 
 namespace Feadmin\Observers;
 
-use Feadmin\Models\User;
+use App\Models\User;
 use Feadmin\Facades\Localization;
 
 class UserObserver
