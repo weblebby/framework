@@ -2,6 +2,7 @@
 
 namespace Feadmin\Items;
 
+use ArrayAccess;
 use Feadmin\Concerns\ExtensionObserver;
 use Feadmin\Enums\ExtensionCategoryEnum;
 use Illuminate\Contracts\Support\Arrayable;
@@ -9,7 +10,7 @@ use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Facades\Artisan;
 use JsonSerializable;
 
-class ExtensionItem implements Arrayable, JsonSerializable, Jsonable
+class ExtensionItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {
     protected string $name;
 
@@ -186,13 +187,33 @@ class ExtensionItem implements Arrayable, JsonSerializable, Jsonable
         ];
     }
 
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
+    }
+
     public function toJson($options = 0): bool|string
     {
         return json_encode($this->toArray(), $options);
     }
 
-    public function jsonSerialize(): array
+    public function offsetExists(mixed $offset): bool
     {
-        return $this->toArray();
+        return isset($this->toArray()[$offset]);
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->toArray()[$offset];
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        //
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        //
     }
 }

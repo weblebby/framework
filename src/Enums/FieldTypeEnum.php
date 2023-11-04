@@ -14,6 +14,14 @@ enum FieldTypeEnum: string
     case RICH_TEXT = 'rich_text';
     case IMAGE = 'image';
 
+    public static function labelFree(): array
+    {
+        return [
+            self::CHECKBOX,
+            self::RADIO,
+        ];
+    }
+
     public static function uploadables(): array
     {
         return [
@@ -26,6 +34,11 @@ enum FieldTypeEnum: string
         return [
             self::RICH_TEXT,
         ];
+    }
+
+    public function isLabelFree(): bool
+    {
+        return in_array($this->value, self::labelFree());
     }
 
     public function isUploadable(): bool
