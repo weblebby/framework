@@ -5,7 +5,7 @@
 2. AppServiceProvider içine şunu yazın.
 
 ```php
-Feadmin::create('admin')
+Panel::create('admin')
     ->prefix('admin')
     ->as('admin::')
     ->middleware(['web', 'auth'])
@@ -23,7 +23,7 @@ Feadmin::create('admin')
 
 ```php
 $this->routes(function () {
-    Feadmin::usePanelRoutes();
+    Panel::useRoutes();
 
     // ...
 });
@@ -39,7 +39,8 @@ $this->routes(function () {
 
 6. Yetikler
 
-Varsayılan yetkilerin yönetimini panele eklemek isterseniz yeni bir middleware oluşturup bu kodu yazın. İstediğiniz kısımları "false" yaparak listeden kaldırabilirsiniz.
+Varsayılan yetkilerin yönetimini panele eklemek isterseniz yeni bir middleware oluşturup bu kodu yazın. İstediğiniz
+kısımları "false" yaparak listeden kaldırabilirsiniz.
 
 Önemli: Bu middleware in Panel middleware inden sonra gelmesine dikkat edin.
 
@@ -53,17 +54,3 @@ panel()->permission()->defaults(
     navigations: true,
 );
 ```
-
-7. Eğer eklentileri kullanmak isterseniz.
-
-```
-{
-  "autoload": {
-    "psr-4": {
-      "App\\": "app/",
-      "Extensions\\": "extensions/"
-    }
-  }
-}
-```
-Sonrasında ```composer dump-autoload``` yazmayı unutmayın.
