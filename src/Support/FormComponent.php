@@ -1,20 +1,19 @@
 <?php
 
-namespace Feadmin\Services;
+namespace Feadmin\Support;
 
 use Feadmin\Enums\UnitEnum;
-use Feadmin\Support\Moneyable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
-class FormComponentService
+class FormComponent
 {
-    public function name(?string $name): ?string
+    public static function name(?string $name): ?string
     {
         return $name;
     }
 
-    public function dottedName(?string $name): ?string
+    public static function dottedName(?string $name): ?string
     {
         if ($name) {
             return str_replace(['[]', ']', '['], ['', '', '.'], $name);
@@ -23,7 +22,7 @@ class FormComponentService
         return null;
     }
 
-    public function id(?string $id, string $bag = null): ?string
+    public static function id(?string $id, string $bag = null): ?string
     {
         if ($id) {
             $id = str_replace('[]', '', $id);
@@ -36,7 +35,7 @@ class FormComponentService
         return $id ?? null;
     }
 
-    public function selected(?string $name, mixed $default, $attributes): bool
+    public static function selected(?string $name, mixed $default, $attributes): bool
     {
         if ($default instanceof Model) {
             $default = $default->getKey();
@@ -54,7 +53,7 @@ class FormComponentService
             );
     }
 
-    public function value(mixed $value): ?string
+    public static function value(mixed $value): ?string
     {
         if ($value instanceof Moneyable) {
             return $value->format();

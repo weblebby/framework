@@ -51,7 +51,7 @@
         "NavigationLinkable": "Feadmin\\Facades\\NavigationLinkable",
         "Panel": "Feadmin\\Facades\\Panel",
         "Preference": "Feadmin\\Facades\\Preference",
-        "FormComponent": "Feadmin\\Services\\FormComponentService",
+        "FormComponent": "Feadmin\\Support\\FormComponent",
         "Date": "Feadmin\\Support\\Date"
       }
     }
