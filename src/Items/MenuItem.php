@@ -63,6 +63,13 @@ class MenuItem
         return $this;
     }
 
+    public function withActive(bool $isActive): self
+    {
+        $this->isActive = $isActive;
+
+        return $this;
+    }
+
     public function activate(): self
     {
         $this->isActive = true;
