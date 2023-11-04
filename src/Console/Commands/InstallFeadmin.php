@@ -2,13 +2,12 @@
 
 namespace Feadmin\Console\Commands;
 
-use Database\Seeders\CreateDefaultRoles;
+use Feadmin\Database\Seeders\CreateDefaultRoles;
 use Feadmin\Models\Locale;
 use Feadmin\Models\Role;
 use App\Models\User;
 use Feadmin\Providers\FeadminServiceProvider;
 use Illuminate\Console\Command;
-use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class InstallFeadmin extends Command
@@ -58,7 +57,7 @@ class InstallFeadmin extends Command
     private function callSeeders(): void
     {
         $this->info('Seeding default data...');
-        
+
         $seeders = [
             CreateDefaultRoles::class,
         ];
