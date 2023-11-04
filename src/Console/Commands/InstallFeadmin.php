@@ -37,7 +37,7 @@ class InstallFeadmin extends Command
         $this->createLocales();
         $this->createAdmin();
 
-        $this->info('PanelItem installed successfully.');
+        $this->info('Feadmin installed successfully.');
 
         return static::SUCCESS;
     }

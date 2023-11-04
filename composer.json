@@ -44,11 +44,13 @@
         "Feadmin\\Providers\\FeadminServiceProvider"
       ],
       "aliases": {
-        "Feadmin": "Panel",
-        "Localization": "Feadmin\\Facades\\Localization",
         "Extension": "Feadmin\\Facades\\Extension",
-        "FormComponent": "Feadmin\\Facades\\FormComponent",
-        "NavigationLinkable": "Feadmin\\Facades\\NavigationLinkable"
+        "Injection": "Feadmin\\Facades\\Injection",
+        "Localization": "Feadmin\\Facades\\Localization",
+        "NavigationLinkable": "Feadmin\\Facades\\NavigationLinkable",
+        "Panel": "Feadmin\\Facades\\Panel",
+        "Preference": "Feadmin\\Facades\\Preference",
+        "FormComponent": "Feadmin\\Services\\FormComponent"
       }
     }
   }
