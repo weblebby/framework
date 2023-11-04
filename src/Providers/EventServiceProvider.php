@@ -15,17 +15,18 @@ class EventServiceProvider extends ServiceProvider
      *
      * @var array<class-string, array<int, class-string>>
      */
-    protected array $listen = [
+    protected $listen = [
         LocaleUpdated::class => [
             UpdateLocale::class,
         ],
     ];
 
     /**
-     * Register any events for your application.
+     * The model observers for your application.
+     *
+     * @var array
      */
-    public function boot(): void
-    {
-        User::observe(UserObserver::class);
-    }
+    protected $observers = [
+        User::class => [UserObserver::class],
+    ];
 }
