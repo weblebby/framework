@@ -1,4 +1,4 @@
-import api from './api'
+import api from './_api.js'
 
 window.$ = window.jQuery = require('jquery')
 require('nestable2')
@@ -13,7 +13,7 @@ const Navigation = {
     init: id => {
         $(dd).nestable({
             callback: async () => {
-                const response = await api(`/admin/navigations/${id}/sort`, {
+                const response = await api(`/navigations/${id}/sort`, {
                     method: 'POST',
                     body: JSON.stringify({
                         items: $('.dd').nestable('toArray'),
@@ -84,7 +84,7 @@ drawer.addEventListener(
         const link = drawer.querySelector('input[name="link"]')
         const isActive = drawer.querySelector('input[name="is_active"]')
         const openInNewTab = drawer.querySelector(
-            'input[name="open_in_new_tab"]'
+            'input[name="open_in_new_tab"]',
         )
         const linkable = drawer.querySelector('select[name="linkable"]')
 
@@ -115,7 +115,7 @@ drawer.addEventListener(
 
         Navigation.handleIsSmartMenu()
         Navigation.handleLinkable()
-    }
+    },
 )
 drawer.addEventListener('drawer.hide', () => (parentIdInput.value = ''))
 
@@ -125,6 +125,7 @@ item_linkable.addEventListener('change', Navigation.handleLinkable)
 dd.querySelectorAll('[data-toggle="edit"]').forEach(button => {
     button.addEventListener('click', () => {
         const item = JSON.parse(button.dataset.item)
+
         Feadmin.Drawer.open(drawer, {
             item,
             isEdit: true,

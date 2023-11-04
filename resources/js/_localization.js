@@ -1,4 +1,4 @@
-import api from './api'
+import api from './_api.js'
 
 document.querySelectorAll('[data-translation-input]').forEach(input => {
     input.addEventListener('change', ({ target }) => {
@@ -18,14 +18,14 @@ document.querySelectorAll('[data-translation-input]').forEach(input => {
             input.classList.add(
                 'fd-ring',
                 'fd-ring-green-500',
-                'fd-ring-offset-2'
+                'fd-ring-offset-2',
             )
 
             setTimeout(() => {
                 input.classList.remove(
                     'fd-ring',
                     'fd-ring-green-500',
-                    'fd-ring-offset-2'
+                    'fd-ring-offset-2',
                 )
             }, 1000)
         })

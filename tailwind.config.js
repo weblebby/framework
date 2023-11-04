@@ -1,16 +1,12 @@
-const extensions = ['.blade.php', '.js']
-const paths = ['./src', './resources']
-const content = []
-
-for (let i = 0; i < paths.length; i++) {
-    for (let j = 0; j < extensions.length; j++) {
-        content.push(`${paths[i]}/**/*${extensions[j]}`)
-    }
-}
-
+/** @type {import("tailwindcss").Config} */
 module.exports = {
-    content,
     prefix: 'fd-',
+    content: [
+        './resources/**/*.blade.php',
+        './resources/**/*.js',
+        './src/**/*.blade.php',
+        './src/**/*.js',
+    ],
     theme: {
         extend: {},
     },

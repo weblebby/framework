@@ -1,11 +1,13 @@
-export default function api(url, options = {}) {
+export default function api(path, options = {}) {
     options.headers = options.headers || {}
 
     options.headers['Content-Type'] = 'application/json'
     options.headers['Accept'] = 'application/json'
     options.headers['X-CSRF-TOKEN'] = document.querySelector(
-        'meta[name="csrf-token"]'
+        'meta[name="csrf-token"]',
     ).content
 
-    return fetch(url, options)
+    path = path.replace(/\/$/, '')
+
+    return fetch(`${window.Feadmin.API.baseUrl}/${path}`, options)
 }

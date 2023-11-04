@@ -1,4 +1,4 @@
-@import './nestable.css';
+@import './_nestable.css';
 
 @tailwind base;
 @tailwind components;
@@ -15,9 +15,9 @@
     }
 
     .toastr__item {
-        @apply fd-py-2 fd-px-4 fd-rounded fd-shadow-lg fd-max-w-md 
-            fd-bg-white/70 fd-backdrop-blur-sm fd-border fd-border-zinc-50/40
-            fd-cursor-pointer fd-transition-all fd-duration-300 fd-ease-in-out fd-opacity-0 -fd-mt-10;
+        @apply fd-py-2 fd-px-4 fd-rounded fd-shadow-lg fd-max-w-md
+        fd-bg-white/70 fd-backdrop-blur-sm fd-border fd-border-zinc-50/40
+        fd-cursor-pointer fd-transition-all fd-duration-300 fd-ease-in-out fd-opacity-0 -fd-mt-10;
     }
 
     .toastr__item--born {
@@ -26,8 +26,8 @@
 
     .drawer {
         @apply fd-bg-zinc-100 fd-min-w-full fd-max-w-[25rem] lg:fd-min-w-[30rem]
-            fd-fixed fd-z-40 fd-right-0 fd-inset-y-0 fd-p-4
-            fd-translate-x-full fd-transition-transform fd-duration-300 fd-ease-in-out fd-space-y-4;
+        fd-fixed fd-z-40 fd-right-0 fd-inset-y-0 fd-p-4
+        fd-translate-x-full fd-transition-transform fd-duration-300 fd-ease-in-out fd-space-y-4;
     }
 
     .drawer--half {
@@ -74,9 +74,11 @@
 .loading {
     @apply fd-relative;
 }
+
 .loading::before {
     @apply fd-content-[''] fd-block fd-absolute fd-inset-0 fd-bg-white/60 -fd-m-2;
 }
+
 .loading::after {
     @apply fd-content-[''] fd-absolute fd-w-16 fd-h-16 fd-rounded-full;
 
@@ -86,6 +88,7 @@
     border-color: #000 transparent #000 transparent;
     animation: spin 1.2s linear infinite;
 }
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

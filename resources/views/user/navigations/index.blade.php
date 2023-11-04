@@ -1,15 +1,15 @@
 <x-feadmin::layouts.panel>
     <x-slot:scripts>
-        <script src="{{ mix('js/navigation.js', 'vendor/feadmin') }}"></script>
+        @vite('resources/js/navigation.js', 'vendor/feadbox/feadmin')
         <script>
             @if ($errors->item->any())
-                Feadmin.Drawer.open(document.getElementById('drawer-create-menu-item'), { isError: true })
+            Feadmin.Drawer.open(document.getElementById("drawer-create-menu-item"), { isError: true });
             @endif
 
             @if ($selectedNavigation ?? null)
-                document.addEventListener('DOMContentLoaded', () => {
-                    Feadmin.Navigation.init({{ $selectedNavigation->id }})
-                })
+            document.addEventListener("DOMContentLoaded", () => {
+              Feadmin.Navigation.init({{ $selectedNavigation->id }});
+            });
             @endif
         </script>
     </x-slot:scripts>
@@ -19,10 +19,10 @@
                 <x-slot:actions>
                     @can('navigation:delete')
                         <x-feadmin::button
-                            size="sm"
-                            variant="red"
-                            icon="x"
-                            data-modal-open="#modal-delete-navigation"
+                                size="sm"
+                                variant="red"
+                                icon="x"
+                                data-modal-open="#modal-delete-navigation"
                         >@lang('Sil')</x-feadmin::button>
                     @endcan
                 </x-slot:actions>
@@ -38,20 +38,21 @@
             <div class="fd-grid fd-grid-cols-9 fd-gap-3">
                 @if ($selectedNavigation ?? null)
                     @can('navigation:update')
-                        <x-feadmin::form class="fd-col-span-3" :action="panel_route('navigations.update', $selectedNavigation)" method="PUT">
+                        <x-feadmin::form class="fd-col-span-3"
+                                         :action="panel_route('navigations.update', $selectedNavigation)" method="PUT">
                             <x-feadmin::card class="fd-space-y-3" padding>
                                 <x-feadmin::form.group name="title">
                                     <x-feadmin::form.label>@lang('Başlık')</x-feadmin::form.label>
                                     <x-feadmin::form.input
-                                        :placeholder="__('örn. Ana menü')"
-                                        :default="$selectedNavigation->title"
+                                            :placeholder="__('örn. Ana menü')"
+                                            :default="$selectedNavigation->title"
                                     />
                                 </x-feadmin::form.group>
                                 <x-feadmin::form.group name="handle">
                                     <x-feadmin::form.label>@lang('Tanımlayıcı')</x-feadmin::form.label>
                                     <x-feadmin::form.input
-                                        :placeholder="__('örn. ana-menu')"
-                                        :default="$selectedNavigation->handle"
+                                            :placeholder="__('örn. ana-menu')"
+                                            :default="$selectedNavigation->handle"
                                     />
                                 </x-feadmin::form.group>
                                 <x-feadmin::button type="submit" size="sm">@lang('Kaydet')</x-feadmin::button>
@@ -63,8 +64,8 @@
                             <div class="fd-max-h-[30rem] fd-overflow-auto">
                                 <div class="dd">
                                     <x-feadmin::dd.tree
-                                        :items="$selectedNavigation->items"
-                                        :readonly="auth()->user()->cannot('navigation:update')"
+                                            :items="$selectedNavigation->items"
+                                            :readonly="auth()->user()->cannot('navigation:update')"
                                     />
                                 </div>
                             </div>
@@ -76,9 +77,9 @@
                 @else
                     <div class="fd-col-span-7">
                         <x-feadmin::empty
-                            icon="plus"
-                            :title="__('Menü oluşturun veya seçin')"
-                            :content="__('Öğeleri yönetmek için bir menü seçin')"
+                                icon="plus"
+                                :title="__('Menü oluşturun veya seçin')"
+                                :content="__('Öğeleri yönetmek için bir menü seçin')"
                         />
                     </div>
                 @endif
@@ -87,8 +88,8 @@
                         <x-feadmin::link-card>
                             @foreach ($navigations as $navigation)
                                 <x-feadmin::link-card.item
-                                    :href="panel_route('navigations.show', $navigation)"
-                                    :active="$navigation->id === ($selectedNavigation->id ?? null)"
+                                        :href="panel_route('navigations.show', $navigation)"
+                                        :active="$navigation->id === ($selectedNavigation->id ?? null)"
                                 >{{ $navigation->title }}</x-feadmin::link-card.item>
                             @endforeach
                         </x-feadmin::link-card>
@@ -96,9 +97,9 @@
                     @can('navigation:create')
                         <x-feadmin::link-card>
                             <x-feadmin::link-card.item
-                                as="button"
-                                icon="plus"
-                                data-drawer="#drawer-create-navigation"
+                                    as="button"
+                                    icon="plus"
+                                    data-drawer="#drawer-create-navigation"
                             >@lang('Yeni menü')</x-feadmin::link-card.item>
                         </x-feadmin::link-card>
                     @endcan
@@ -110,10 +111,10 @@
         <x-feadmin::drawer id="drawer-create-menu-item">
             <x-feadmin::drawer.header :title="__('Yeni öğe ekle')" />
             <x-feadmin::form
-                :action="panel_route('navigations.items.store', $selectedNavigation)"
-                bag="item"
-                class="fd-space-y-3"
-                :data-edit-action="panel_route('navigations.items.update', [$selectedNavigation, ':id'])"
+                    :action="panel_route('navigations.items.store', $selectedNavigation)"
+                    bag="item"
+                    class="fd-space-y-3"
+                    :data-edit-action="panel_route('navigations.items.update', [$selectedNavigation, ':id'])"
             >
                 <input type="hidden" name="parent_id" value={{ old('parent_id') }}>
                 <x-feadmin::form.group name="title">
@@ -127,9 +128,11 @@
                     <x-feadmin::form.group name="smart_type">
                         <x-feadmin::form.label>@lang('Otomatik menü')</x-feadmin::form.label>
                         <x-feadmin::form.select>
-                            <x-feadmin::form.option value="" selected disabled>@lang('Menü seçiniz')</x-feadmin::form.option>
+                            <x-feadmin::form.option value="" selected
+                                                    disabled>@lang('Menü seçiniz')</x-feadmin::form.option>
                             @foreach ($smartMenuItems as $item)
-                                <x-feadmin::form.option value="{{ $item->id }}">{{ $item->plural_title }}</x-feadmin::form.option>
+                                <x-feadmin::form.option
+                                        value="{{ $item->id }}">{{ $item->plural_title }}</x-feadmin::form.option>
                             @endforeach
                         </x-feadmin::form.select>
                     </x-feadmin::form.group>
@@ -147,7 +150,8 @@
                             @foreach (NavigationLinkable::linkables() as $linkable)
                                 <optgroup label="{{ $linkable['title'] }}">
                                     @foreach ($linkable['links'] as $link)
-                                        <x-feadmin::form.option value="{{ json_encode(['linkable_id' => $link->id, 'linkable_type' => $linkable['id']]) }}">{{ $link->title }}</x-feadmin::form.option>
+                                        <x-feadmin::form.option
+                                                value="{{ json_encode(['linkable_id' => $link->id, 'linkable_type' => $linkable['id']]) }}">{{ $link->title }}</x-feadmin::form.option>
                                     @endforeach
                                 </optgroup>
                             @endforeach
@@ -168,14 +172,14 @@
             </x-feadmin::form>
         </x-feadmin::drawer>
         <x-feadmin::modal.destroy
-            id="modal-delete-item"
-            :title="__('Menü öğesini sil')"
-            :subtitle="__('Bu ve (eğer varsa) altındaki öğeler kalıcı olarak silinecektir.')"
+                id="modal-delete-item"
+                :title="__('Menü öğesini sil')"
+                :subtitle="__('Bu ve (eğer varsa) altındaki öğeler kalıcı olarak silinecektir.')"
         />
         <x-feadmin::modal.destroy
-            id="modal-delete-navigation"
-            :title="__('Menüyü sil')"
-            :action="panel_route('navigations.destroy', $selectedNavigation)"
+                id="modal-delete-navigation"
+                :title="__('Menüyü sil')"
+                :action="panel_route('navigations.destroy', $selectedNavigation)"
         />
     @endif
     <x-feadmin::drawer id="drawer-create-navigation">
@@ -184,8 +188,8 @@
             <x-feadmin::form.group name="title">
                 <x-feadmin::form.label>@lang('Başlık')</x-feadmin::form.label>
                 <x-feadmin::form.input
-                    :placeholder="__('örn. Ana menü')"
-                    data-drawer-focus
+                        :placeholder="__('örn. Ana menü')"
+                        data-drawer-focus
                 />
             </x-feadmin::form.group>
             <x-feadmin::form.group name="handle">

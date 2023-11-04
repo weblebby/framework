@@ -5,30 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" href="{{ mix('css/feadmin.css', 'vendor/feadmin') }}">
+    @vite('resources/css/app.css', 'vendor/feadbox/feadmin')
     @seo
     {{ $styles ?? '' }}
 </head>
 <body>
 {{ $slot }}
 <script>
-    window.Feadmin = {
-        @if (\Feadmin\Support\Features::enabled(\Feadmin\Support\Features::translations(), panel()))
-        Translation: {
-            routes: {
-                update: @json(panel_route('translations.store'))
-            },
-            list: @json(Localization::getTranslations())
-        }
-        @endif
-    }
+  window.Feadmin = {};
 </script>
-<script src="{{ mix('js/feadmin.js', 'vendor/feadmin') }}"></script>
+@if (\Feadmin\Support\Features::enabled(\Feadmin\Support\Features::translations(), panel()))
+    <script>
+      window.Feadmin.Translation = {
+        routes: {
+          update: @json(panel_route('translations.store'))
+        },
+        list: @json(Localization::getTranslations())
+      };
+    </script>
+@endif
+<script>
+  Feadmin.API = {
+    baseUrl: @json(panel_route('dashboard')),
+  };
+</script>
+@vite('resources/js/app.js', 'vendor/feadbox/feadmin')
 @if (session()->has('message'))
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            Feadmin.Toastr.add('{{ session()->get('message') }}')
-        })
+      document.addEventListener("DOMContentLoaded", function() {
+        Feadmin.Toastr.add('{{ session()->get('message') }}');
+      });
     </script>
 @endif
 {{ $scripts ?? '' }}
