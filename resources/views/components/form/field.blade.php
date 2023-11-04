@@ -15,7 +15,7 @@
         @case(\Feadmin\Enums\FieldTypeEnum::TEXT)
         @case(\Feadmin\Enums\FieldTypeEnum::TEL)
         @case(\Feadmin\Enums\FieldTypeEnum::NUMBER)
-            <x-feadmin::form.input :type="$field['type']" :default="$default" autofocus/>
+            <x-feadmin::form.input :type="$field['type']->value" :default="$default" autofocus/>
             @break
         @case(\Feadmin\Enums\FieldTypeEnum::RICH_TEXT)
             <x-feadmin::form.textarea :default="$default" data-ckeditor/>
