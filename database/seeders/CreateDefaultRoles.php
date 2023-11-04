@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Feadmin\Database\Seeders;
 
 use Feadmin\Models\Role;
 use Illuminate\Database\Seeder;
