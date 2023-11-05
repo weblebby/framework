@@ -13,8 +13,6 @@ class NavigationItemController extends Controller
 {
     public function store(StoreNavigationItemRequest $request, Navigation $navigation): RedirectResponse
     {
-        $this->authorize('navigation:create');
-
         $item = new NavigationItem($request->validated());
         $item->navigation()->associate($navigation);
 
@@ -36,10 +34,11 @@ class NavigationItemController extends Controller
 
     public function update(
         StoreNavigationItemRequest $request,
+        Navigation                 $navigation,
         NavigationItem             $item
     ): RedirectResponse
     {
-        $this->authorize('navigation:update');
+        abort_if($navigation->id !== $item->navigation_id, 404);
 
         $item->fill($request->validated());
         $item->type = $request->type;
@@ -53,9 +52,10 @@ class NavigationItemController extends Controller
         return back()->with('success', __(':item başarıyla güncellendi', ['item' => $item->title]));
     }
 
-    public function destroy(NavigationItem $item): RedirectResponse
+    public function destroy(Navigation $navigation, NavigationItem $item): RedirectResponse
     {
-        $this->authorize('navigation:delete');
+        $this->authorize('navigation:update');
+        abort_if($navigation->id !== $item->navigation_id, 404);
 
         $item->delete();
 

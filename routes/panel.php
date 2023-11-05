@@ -20,8 +20,7 @@ if (Features::enabled(Features::navigations(), $panel->name())) {
         ->name('navigations.sort');
 
     Route::resource('navigations.items', User\NavigationItemController::class)
-        ->only('store', 'update', 'destroy')
-        ->shallow();
+        ->only('store', 'update', 'destroy');
 
     Route::resource('navigations', User\NavigationController::class)
         ->except(['create', 'edit']);
