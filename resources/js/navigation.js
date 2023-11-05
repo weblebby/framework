@@ -1,7 +1,7 @@
 import api from './_api.js'
 
-window.$ = window.jQuery = require('jquery')
-require('nestable2')
+import $ from 'jquery'
+import './_jquery.nestable.js'
 
 const drawer = document.getElementById('drawer-create-menu-item')
 const dd = document.querySelector('.dd')

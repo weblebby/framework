@@ -7,7 +7,7 @@ export default function api(path, options = {}) {
         'meta[name="csrf-token"]',
     ).content
 
-    path = path.replace(/\/$/, '')
+    path = path.replace(/^\/+/g, '')
 
     return fetch(`${window.Feadmin.API.baseUrl}/${path}`, options)
 }

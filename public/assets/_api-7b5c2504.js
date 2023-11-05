@@ -1,1 +1,0 @@
-function r(a,e={}){return e.headers=e.headers||{},e.headers["Content-Type"]="application/json",e.headers.Accept="application/json",e.headers["X-CSRF-TOKEN"]=document.querySelector('meta[name="csrf-token"]').content,a=a.replace(/\/$/,""),fetch(`${window.Feadmin.API.baseUrl}/${a}`,e)}export{r as a};

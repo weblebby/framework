@@ -1,6 +1,6 @@
 {
-  "__api-7b5c2504.js": {
-    "file": "assets/_api-7b5c2504.js"
+  "__api-37638648.js": {
+    "file": "assets/_api-37638648.js"
   },
   "resources/css/feadmin.css": {
     "file": "assets/feadmin-c489a891.css",
@@ -8,17 +8,17 @@
     "src": "resources/css/feadmin.css"
   },
   "resources/js/feadmin.js": {
-    "file": "assets/feadmin-8b94a627.js",
+    "file": "assets/feadmin-b71f6803.js",
     "imports": [
-      "__api-7b5c2504.js"
+      "__api-37638648.js"
     ],
     "isEntry": true,
     "src": "resources/js/feadmin.js"
   },
   "resources/js/navigation.js": {
-    "file": "assets/navigation-8f9fb5d6.js",
+    "file": "assets/navigation-f7e26c0a.js",
     "imports": [
-      "__api-7b5c2504.js"
+      "__api-37638648.js"
     ],
     "isEntry": true,
     "src": "resources/js/navigation.js"
