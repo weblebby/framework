@@ -68,6 +68,8 @@ class PermissionHook
         bool $roles = true,
         bool $extensions = true,
         bool $navigations = true,
+        bool $posts = true,
+        bool $pages = true,
     ): void
     {
         if ($locales) {
@@ -143,6 +145,32 @@ class PermissionHook
                     'read' => __('Navigasyonları görüntüleyebilir'),
                     'update' => __('Navigasyonları düzenleyebilir'),
                     'delete' => __('Navigasyonları silebilir'),
+                ]);
+        }
+
+        if ($posts) {
+            $this
+                ->withGroup('post')
+                ->withTitle(__('Yazılar'))
+                ->withPermissions([
+                    'create' => __('Yazı oluşturabilir'),
+                    'read' => __('Yazıları görüntüleyebilir'),
+                    'update' => __('Yazıları düzenleyebilir'),
+                    'delete' => __('Yazıları silebilir'),
+                    'publish' => __('Yazıları yayınlayabilir'),
+                ]);
+        }
+
+        if ($pages) {
+            $this
+                ->withGroup('page')
+                ->withTitle(__('Sayfalar'))
+                ->withPermissions([
+                    'create' => __('Sayfa oluşturabilir'),
+                    'read' => __('Sayfaları görüntüleyebilir'),
+                    'update' => __('Sayfaları düzenleyebilir'),
+                    'delete' => __('Sayfaları silebilir'),
+                    'publish' => __('Sayfaları yayınlayabilir'),
                 ]);
         }
     }

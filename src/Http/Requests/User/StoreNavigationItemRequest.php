@@ -20,24 +20,20 @@ class StoreNavigationItemRequest extends FormRequest
 
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return $this->user()->can('navigation:update');
     }
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
-    protected function prepareForValidation()
+    protected function prepareForValidation(): void
     {
         $this->merge([
-            'is_active' => $this->has('is_active') ? true : false,
-            'open_in_new_tab' => $this->has('open_in_new_tab') ? true : false,
+            'is_active' => $this->has('is_active'),
+            'open_in_new_tab' => $this->has('open_in_new_tab'),
         ]);
 
         if ($this->is_smart_menu === '1') {
@@ -108,17 +104,15 @@ class StoreNavigationItemRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $smartMenuItemKeys = resolve(NavigationService::class)
             ->smartMenuItems()
             ->pluck('id');
 
         $models = NavigationLinkable::linkables()->pluck('model');
-        $model = $models->filter(fn ($model) => $model === $this->linkable_type)->first();
+        $model = $models->filter(fn($model) => $model === $this->linkable_type)->first();
 
         return [
             'parent_id' => ['nullable', Rule::exists(NavigationItem::class, 'id')],

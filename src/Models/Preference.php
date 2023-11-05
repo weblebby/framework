@@ -2,7 +2,7 @@
 
 namespace Feadmin\Models;
 
-use Feadmin\Eloquent\Traits\Translatable;
+use Feadmin\Concerns\Eloquent\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;

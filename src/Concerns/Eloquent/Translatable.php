@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Eloquent\Traits;
+namespace Feadmin\Concerns\Eloquent;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -111,7 +111,7 @@ trait Translatable
         if ($model->$field === $value) {
             return null;
         }
-        
+
         return route(request()->route()->getName(), [
             ...request()->route()->parameters(),
             ...request()->query(),
