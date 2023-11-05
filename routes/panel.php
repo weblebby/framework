@@ -16,20 +16,15 @@ Route::get('/', [User\DashboardController::class, 'index'])->name('dashboard');
  * Navigations
  */
 if (Features::enabled(Features::navigations(), $panel->name())) {
-    Route::post(
-        'navigations/{navigation}/sort',
-        [User\NavigationController::class, 'sort']
-    )->name('navigations.sort');
+    Route::post('navigations/{navigation}/sort', [User\NavigationController::class, 'sort'])
+        ->name('navigations.sort');
 
-    Route::resource(
-        'navigations.items',
-        User\NavigationItemController::class
-    )->only('store', 'update', 'destroy');
+    Route::resource('navigations.items', User\NavigationItemController::class)
+        ->only('store', 'update', 'destroy')
+        ->shallow();
 
-    Route::resource(
-        'navigations',
-        User\NavigationController::class
-    )->except(['create', 'edit']);
+    Route::resource('navigations', User\NavigationController::class)
+        ->except(['create', 'edit']);
 }
 
 /**
