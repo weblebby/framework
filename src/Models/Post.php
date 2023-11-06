@@ -4,8 +4,11 @@ namespace Feadmin\Models;
 
 use Feadmin\Concerns\Eloquent\HasMetafields;
 use Feadmin\Concerns\Eloquent\HasOwner;
+use Feadmin\Concerns\Eloquent\HasPosition;
+use Feadmin\Concerns\Eloquent\HasTaxonomies;
 use Feadmin\Enums\HasOwnerEnum;
 use Feadmin\Enums\PostStatusEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +19,13 @@ use Spatie\Sluggable\SlugOptions;
 
 class Post extends Model implements HasMedia
 {
-    use HasFactory, HasMetafields, HasOwner, HasSlug, InteractsWithMedia;
+    use HasFactory,
+        HasMetafields,
+        HasTaxonomies,
+        HasOwner,
+        HasSlug,
+        HasPosition,
+        InteractsWithMedia;
 
     protected $fillable = [
         'title',
@@ -37,15 +46,28 @@ class Post extends Model implements HasMedia
         HasOwnerEnum::UPDATED_BY,
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope('type', function (Builder $builder) {
+            $builder->where('type', static::class);
+        });
+    }
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
             ->generateSlugsFrom('title')
-            ->doNotGenerateSlugsOnUpdate();
+            ->doNotGenerateSlugsOnUpdate()
+            ->saveSlugsTo('slug');
     }
 
     public function parent(): BelongsTo
     {
         return $this->belongsTo(static::class);
+    }
+
+    public function scopeTyped(Builder $query, string $type): Builder
+    {
+        return $query->where('type', $type);
     }
 }

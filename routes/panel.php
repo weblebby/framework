@@ -80,3 +80,10 @@ if (Features::enabled(Features::roles(), $panel->name())) {
 if (Features::enabled(Features::users(), $panel->name())) {
     Route::resource('users', User\UserController::class);
 }
+
+/**
+ * Posts
+ */
+if (Features::enabled(Features::posts(), $panel->name())) {
+    Route::resource('posts', User\PostController::class);
+}

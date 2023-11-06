@@ -21,6 +21,7 @@ class FeadminServiceProvider extends ServiceProvider
     {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(FortifyServiceProvider::class);
+        $this->app->register(PreferenceServiceProvider::class);
 
         $singletons = [
             \Feadmin\Managers\ExtensionManager::class,

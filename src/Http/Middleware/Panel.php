@@ -20,9 +20,9 @@ class Panel
     {
         /** @var User $user */
         $user = $request->user();
-        abort_if(!$user->canAccessPanel(panel()->name()), 403);
+        abort_if(is_null($user) || !$user->canAccessPanel(panel()->name()), 403);
 
-        $preferredLocale = $user?->locale?->code ?? Localization::getCurrentLocale()->code;
+        $preferredLocale = $user->locale?->code ?? Localization::getCurrentLocale()->code;
         app()->setLocale($preferredLocale);
 
         config([

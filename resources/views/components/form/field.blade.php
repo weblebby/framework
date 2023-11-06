@@ -12,22 +12,25 @@
         @endif
     </div>
     @switch ($field['type'])
+        @case(\Feadmin\Enums\FieldTypeEnum::PARAGRAPH)
+            <p class="fd-text-zinc-600">{{ $field['default'] }}</p>
+            @break
         @case(\Feadmin\Enums\FieldTypeEnum::TEXT)
         @case(\Feadmin\Enums\FieldTypeEnum::TEL)
         @case(\Feadmin\Enums\FieldTypeEnum::NUMBER)
-            <x-feadmin::form.input :type="$field['type']->value" :default="$default" autofocus/>
+            <x-feadmin::form.input :type="$field['type']->value" :default="$default" autofocus />
             @break
         @case(\Feadmin\Enums\FieldTypeEnum::RICH_TEXT)
-            <x-feadmin::form.textarea :default="$default" data-ckeditor/>
+            <x-feadmin::form.textarea :default="$default" data-ckeditor />
             @break
         @case(\Feadmin\Enums\FieldTypeEnum::IMAGE)
-            <x-feadmin::form.image :image="$default"/>
+            <x-feadmin::form.image :image="$default" />
             @break
         @case(\Feadmin\Enums\FieldTypeEnum::TEXT_AREA)
-            <x-feadmin::form.textarea :default="$default" rows="4" autofocus/>
+            <x-feadmin::form.textarea :default="$default" rows="4" autofocus />
             @break
         @case(\Feadmin\Enums\FieldTypeEnum::CHECKBOX)
-            <x-feadmin::form.checkbox :default="$default" :label="$field['label']"/>
+            <x-feadmin::form.checkbox :default="$default" :label="$field['label']" />
             @break
         @case(\Feadmin\Enums\FieldTypeEnum::SELECT)
             <x-feadmin::form.select :default="$default">

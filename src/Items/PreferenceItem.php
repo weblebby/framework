@@ -2,11 +2,12 @@
 
 namespace Feadmin\Items;
 
+use Exception;
 use Feadmin\Enums\FieldTypeEnum;
 
 class PreferenceItem
 {
-    private string $key;
+    private ?string $key;
 
     private FieldTypeEnum $type;
 
@@ -16,9 +17,18 @@ class PreferenceItem
 
     private ?string $default = null;
 
+    private bool $translatable = false;
+
     private array $rules = [];
 
     private array $options = [];
+
+    public static function paragraph(string $text): static
+    {
+        return (new static())
+            ->type(FieldTypeEnum::PARAGRAPH)
+            ->default($text);
+    }
 
     public static function text(string $key): static
     {
@@ -65,7 +75,7 @@ class PreferenceItem
         return (new static($key))->type(FieldTypeEnum::RADIO);
     }
 
-    public function __construct(string $key)
+    public function __construct(?string $key = null)
     {
         $this->key = $key;
     }
@@ -98,6 +108,20 @@ class PreferenceItem
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
+    public function translatable(bool $translatable = true): self
+    {
+        if (!$this->type->isTranslatable()) {
+            throw new Exception(sprintf('Field type [%s] is not translatable.', $this->type->name));
+        }
+
+        $this->translatable = $translatable;
+
+        return $this;
+    }
+
     public function rules(array $rules): self
     {
         $this->rules = $rules;
@@ -120,6 +144,7 @@ class PreferenceItem
             'label' => $this->label,
             'hint' => $this->hint,
             'default' => $this->default,
+            'translatable' => $this->translatable,
             'rules' => $this->rules,
             'options' => $this->options,
         ];

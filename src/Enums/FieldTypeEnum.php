@@ -4,6 +4,7 @@ namespace Feadmin\Enums;
 
 enum FieldTypeEnum: string
 {
+    case PARAGRAPH = 'paragraph';
     case TEXT = 'text';
     case TEL = 'tel';
     case NUMBER = 'number';
@@ -13,6 +14,24 @@ enum FieldTypeEnum: string
     case TEXT_AREA = 'text_area';
     case RICH_TEXT = 'rich_text';
     case IMAGE = 'image';
+
+    public static function translatables(): array
+    {
+        return [
+            self::TEXT,
+            self::TEL,
+            self::NUMBER,
+            self::TEXT_AREA,
+            self::RICH_TEXT,
+        ];
+    }
+
+    public static function informationals(): array
+    {
+        return [
+            self::PARAGRAPH,
+        ];
+    }
 
     public static function labelFree(): array
     {
@@ -36,18 +55,38 @@ enum FieldTypeEnum: string
         ];
     }
 
+    public function isInformational(): bool
+    {
+        return in_array($this, self::informationals());
+    }
+
+    public function isTranslatable(): bool
+    {
+        return in_array($this, self::translatables());
+    }
+
+    public function isEditable(): bool
+    {
+        return !$this->isInformational();
+    }
+
     public function isLabelFree(): bool
     {
-        return in_array($this->value, self::labelFree());
+        return in_array($this, self::labelFree());
     }
 
     public function isUploadable(): bool
     {
-        return in_array($this->value, self::uploadables());
+        return in_array($this, self::uploadables());
     }
 
     public function isHtmlable(): bool
     {
-        return in_array($this->value, self::htmlables());
+        return in_array($this, self::htmlables());
+    }
+
+    public function isValueless(): bool
+    {
+        return $this->isInformational() || $this->isUploadable();
     }
 }

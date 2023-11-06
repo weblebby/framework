@@ -49,4 +49,9 @@ class Features
     {
         return 'roles';
     }
+
+    public static function posts(): string
+    {
+        return 'posts';
+    }
 }

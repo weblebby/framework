@@ -14,8 +14,8 @@ class PostController extends Controller
     public function index(): View
     {
         $this->authorize('post:read');
-
-        $posts = Post::query()->type('post')->paginate();
+        
+        $posts = Post::query()->paginate();
 
         seo()->title(__('Yazılar'));
 
@@ -26,7 +26,7 @@ class PostController extends Controller
     {
         $this->authorize('post:create');
 
-        $posts = Post::query()->type('post')->paginate();
+        $posts = Post::query()->paginate();
 
         seo()->title(__('Yazı oluştur'));
 
@@ -44,7 +44,7 @@ class PostController extends Controller
     {
         $this->authorize('post:update');
 
-        $posts = Post::query()->type('post')->paginate();
+        $posts = Post::query()->paginate();
 
         seo()->title(__('Yazıyı [:post] düzenle', ['post' => $post->title]));
 

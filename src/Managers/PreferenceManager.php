@@ -95,8 +95,13 @@ class PreferenceManager
     {
         [$found, $namespace, $bag, $key] = $this->find($rawKey);
 
+        if (blank($key)) {
+            return $default;
+        }
+
         $field = $this->field($namespace, $bag, $key);
-        $value = $found->value ?? $field['default'] ?? $default;
+        $value = $field['translatable'] ? $found?->value : $found?->original_value;
+        $value = $value ?? $field['default'] ?? $default;
 
         /** @var ?FieldTypeEnum $type */
         $type = $field['type'] ?? null;
@@ -120,14 +125,16 @@ class PreferenceManager
             [$found, $namespace, $bag, $key] = $this->find($rawKey);
 
             $field = $this->field($namespace, $bag, $key);
-            $valueless = $found && ($field['type'] ?? null) === 'image';
+            $valueless = $found && ($field['type'] ?? null)?->isValueless();
+            $value = $valueless ? null : $value;
+            $valueKey = $field['translatable'] ? 'value' : 'original_value';
 
             if (is_null($found) && filled($value)) {
                 $saved[] = Preference::query()->create(array_filter([
                     'namespace' => $namespace,
                     'bag' => $bag,
                     'key' => $key,
-                    'value' => $valueless ? null : $value,
+                    $valueKey => $value,
                 ]));
 
                 continue;
@@ -144,7 +151,7 @@ class PreferenceManager
             }
 
             if ($found) {
-                $found->update(['value' => $value]);
+                $found->update([$valueKey => $value]);
                 $saved[] = $found;
             }
         }

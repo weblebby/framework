@@ -17,9 +17,11 @@ class Preference extends Model implements HasMedia
         'namespace',
         'bag',
         'key',
+        'value',
+        'original_value',
     ];
 
-    public $translatedAttributes = [
+    public array $translatedAttributes = [
         'value',
     ];
 

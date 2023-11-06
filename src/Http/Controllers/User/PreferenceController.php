@@ -35,10 +35,13 @@ class PreferenceController extends Controller
 
     public function update(Request $request, string $namespace, string $bag): RedirectResponse
     {
-        $fields = Preference::fields($namespace, $bag);
+        $fields = Preference::fields($namespace, $bag)
+            ->filter(fn($field) => $field['type']->isEditable())
+            ->values();
 
         $validated = $request->validate(
-            $fields->pluck('rules', 'name')->toArray()
+            $fields->pluck('rules', 'name')->toArray(),
+            attributes: $fields->pluck('label', 'name')->toArray()
         );
 
         $uploadables = [];
