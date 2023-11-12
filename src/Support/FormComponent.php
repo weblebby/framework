@@ -26,6 +26,7 @@ class FormComponent
     {
         if ($id) {
             $id = str_replace('[]', '', $id);
+            $id = str_replace(['[', ']'], ['_', ''], $id);
         }
 
         if ($bag !== 'default' && !is_null($bag)) {

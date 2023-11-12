@@ -1,13 +1,23 @@
 <?php
 
-namespace Feadmin\Items;
+namespace Feadmin\Items\Field;
 
+use ArrayAccess;
 use Exception;
+use Feadmin\Concerns\Fieldable;
+use Feadmin\Concerns\HasArray;
 use Feadmin\Enums\FieldTypeEnum;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use JsonSerializable;
 
-class PreferenceItem
+class FieldItem implements Fieldable, Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {
+    use HasArray;
+
     private ?string $key;
+
+    private ?string $name;
 
     private FieldTypeEnum $type;
 
@@ -22,6 +32,18 @@ class PreferenceItem
     private array $rules = [];
 
     private array $options = [];
+
+    private ?float $position = 0;
+
+    public static function repeated(string $key): RepeatedFieldItem
+    {
+        return new RepeatedFieldItem($key);
+    }
+
+    public static function grouped(string $key): GroupedFieldItem
+    {
+        return new GroupedFieldItem($key);
+    }
 
     public static function paragraph(string $text): static
     {
@@ -78,6 +100,14 @@ class PreferenceItem
     public function __construct(?string $key = null)
     {
         $this->key = $key;
+        $this->name = $key;
+    }
+
+    public function name(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function type(FieldTypeEnum $type): self
@@ -114,7 +144,7 @@ class PreferenceItem
     public function translatable(bool $translatable = true): self
     {
         if (!$this->type->isTranslatable()) {
-            throw new Exception(sprintf('Field type [%s] is not translatable.', $this->type->name));
+            throw new Exception(sprintf('Fieldable type [%s] is not translatable.', $this->type->name));
         }
 
         $this->translatable = $translatable;
@@ -136,10 +166,18 @@ class PreferenceItem
         return $this;
     }
 
+    public function position(float $position): self
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
     public function toArray(): array
     {
         return [
             'key' => $this->key,
+            'name' => $this->name,
             'type' => $this->type,
             'label' => $this->label,
             'hint' => $this->hint,
@@ -147,6 +185,7 @@ class PreferenceItem
             'translatable' => $this->translatable,
             'rules' => $this->rules,
             'options' => $this->options,
+            'position' => $this->position,
         ];
     }
 }

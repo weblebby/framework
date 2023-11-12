@@ -1,5 +1,5 @@
 {
-  "name": "feadbox/feadmin",
+  "name": "weblebby/framework",
   "description": "Laravel admin panel.",
   "type": "library",
   "license": "MIT",
@@ -19,6 +19,7 @@
     }
   ],
   "require": {
+    "php": "^8.1",
     "ext-fileinfo": "*",
     "ext-intl": "*",
     "laravel/fortify": "^1.10",

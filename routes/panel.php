@@ -85,5 +85,15 @@ if (Features::enabled(Features::users(), $panel->name())) {
  * Posts
  */
 if (Features::enabled(Features::posts(), $panel->name())) {
+    Route::resource('categories', User\CategoryController::class);
     Route::resource('posts', User\PostController::class);
+    Route::resource('pages', User\PageController::class);
+}
+
+/**
+ * Themes
+ */
+if (Features::enabled(Features::themes(), $panel->name())) {
+    Route::get('themes/{theme}/templates/{template}/post-fields', User\ThemeTemplatePostFieldController::class)
+        ->name('themes.templates.post-fields');
 }

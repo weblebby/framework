@@ -2,6 +2,7 @@
 
 namespace Feadmin\Hooks;
 
+use Feadmin\Concerns\Fieldable;
 use Feadmin\Facades\Preference;
 use Illuminate\Support\Collection;
 
@@ -50,14 +51,19 @@ class PreferenceBagHook
 
     public function field(string $bag, string $key): ?array
     {
-        $preferences = $this->get();
-        $bag = $preferences[$bag] ?? null;
+        $bag = $this->get()[$bag] ?? null;
 
         if (is_null($bag)) {
             return null;
         }
 
-        return head(array_filter($bag['fields'], fn($field) => $field['key'] === $key));
+        $field = head(array_filter($bag['fields'], fn($field) => $field['key'] === $key));
+
+        if ($field === false) {
+            return null;
+        }
+
+        return $field;
     }
 
     public function fields(string $bag): Collection
@@ -92,6 +98,16 @@ class PreferenceBagHook
 
                 if (is_null($rest)) {
                     return null;
+                }
+
+                if (isset($rest['fields'])) {
+                    $rest['fields'] = array_map(function (Fieldable $field) {
+                        if (isset($field['name']) && method_exists($field, 'default')) {
+                            $field->default(preference($field['name'], $field['default'] ?? null));
+                        }
+
+                        return $field;
+                    }, $rest['fields']);
                 }
 
                 return [...$preference, ...$rest];

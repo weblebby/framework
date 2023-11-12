@@ -2,8 +2,11 @@
 
 namespace Feadmin\Managers;
 
+use Feadmin\Concerns\Fieldable;
 use Feadmin\Enums\FieldTypeEnum;
-use Feadmin\Items\PreferenceItem;
+use Feadmin\Items\Field\FieldItem;
+use Feadmin\Items\Field\GroupedFieldItem;
+use Feadmin\Items\Field\RepeatedFieldItem;
 use Feadmin\Models\Preference;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
@@ -20,7 +23,14 @@ class PreferenceManager
 
     public function __construct()
     {
+        $this->loadPreferences();
+    }
+
+    public function loadPreferences(): self
+    {
         $this->preferences = Preference::query()->withTranslation()->get();
+
+        return $this;
     }
 
     public function create(string $namespace, string $bag): self
@@ -46,19 +56,17 @@ class PreferenceManager
 
     public function namespaces(string $namespace = null): ?array
     {
-        $namespaces = $this->namespaces;
-
-        if (is_null($namespace)) {
-            return $namespaces;
-        }
-
-        return $namespaces[$namespace] ?? null;
+        return is_null($namespace) ? $this->namespaces : $this->namespaces[$namespace] ?? null;
     }
 
-    public function add(PreferenceItem|array $field): self
+    public function add(FieldItem|RepeatedFieldItem|GroupedFieldItem $field): self
     {
-        if ($field instanceof PreferenceItem) {
-            $field = $field->toArray();
+        if ($field instanceof FieldItem || $field instanceof RepeatedFieldItem) {
+            $field->name("{$this->currentNamespace}::{$this->currentBag}->{$field['key']}");
+        }
+
+        if (!is_array($field)) {
+            $field->position(count($this->getCurrentFields()) * 10);
         }
 
         $this->namespaces = [
@@ -69,11 +77,7 @@ class PreferenceManager
                     ...$this->namespaces[$this->currentNamespace][$this->currentBag] ?? [],
                     'fields' => [
                         ...$this->namespaces[$this->currentNamespace][$this->currentBag]['fields'] ?? [],
-                        [
-                            'position' => count($this->namespaces[$this->currentNamespace][$this->currentBag]['fields'] ?? []) * 10,
-                            'name' => "{$this->currentNamespace}::{$this->currentBag}->{$field['key']}",
-                            ...$field
-                        ],
+                        $field,
                     ],
                 ]
             ]
@@ -100,6 +104,11 @@ class PreferenceManager
         }
 
         $field = $this->field($namespace, $bag, $key);
+
+        if (($field['type'] ?? null) === FieldTypeEnum::REPEATED) {
+            return $default;
+        }
+
         $value = $field['translatable'] ? $found?->value : $found?->original_value;
         $value = $value ?? $field['default'] ?? $default;
 
@@ -123,40 +132,78 @@ class PreferenceManager
 
         foreach ($data as $rawKey => $value) {
             [$found, $namespace, $bag, $key] = $this->find($rawKey);
-
             $field = $this->field($namespace, $bag, $key);
+
+            if ($field['type'] === FieldTypeEnum::REPEATED) {
+                $saved = array_merge($saved, $this->setRepeatedField($field, $value));
+                continue;
+            }
+
             $valueless = $found && ($field['type'] ?? null)?->isValueless();
             $value = $valueless ? null : $value;
+
             $valueKey = $field['translatable'] ? 'value' : 'original_value';
 
-            if (is_null($found) && filled($value)) {
-                $saved[] = Preference::query()->create(array_filter([
-                    'namespace' => $namespace,
-                    'bag' => $bag,
-                    'key' => $key,
-                    $valueKey => $value,
-                ]));
-
-                continue;
-            }
-
-            if ($valueless) {
-                $saved[] = $found;
-                continue;
-            }
-
-            if ($found && blank($value)) {
-                $found->delete();
-                continue;
-            }
-
-            if ($found) {
-                $found->update([$valueKey => $value]);
-                $saved[] = $found;
-            }
+            $saved[] = $this->setSingleField($found, $namespace, $bag, $key, $value, $valueKey, $valueless);
         }
 
         return $saved;
+    }
+
+    protected function setRepeatedField(Fieldable $field, $value): array
+    {
+        $saved = [];
+
+        foreach ($field['fields'] as $repeatedFieldKey => $repeatedField) {
+            $repeatedKey = sprintf(
+                '%s.%d.%s',
+                $field['name'],
+                $repeatedFieldKey,
+                $repeatedField['name']
+            );
+
+            $repeatedValue = $value[$repeatedFieldKey][$repeatedField['name']] ?? null;
+
+            $saved = array_merge($saved, $this->set([$repeatedKey => $repeatedValue]));
+        }
+
+        return $saved;
+    }
+
+    protected function setSingleField($found, string $namespace, string $bag, string $key, $value, string $valueKey, bool $valueless): ?Preference
+    {
+        if (is_null($found) && filled($value)) {
+            return $this->createNewPreference($namespace, $bag, $key, $value, $valueKey);
+        }
+
+        if ($valueless) {
+            return $found;
+        }
+
+        if ($found && blank($value)) {
+            $found->delete();
+            return null;
+        }
+
+        if ($found) {
+            $found->update([$valueKey => $value]);
+            return $found;
+        }
+
+        return null;
+    }
+
+    protected function createNewPreference(string $namespace, string $bag, string $key, $value, string $valueKey): Preference
+    {
+        /** @var Preference $preference */
+        $preference = Preference::query()->create(array_filter([
+            'namespace' => $namespace,
+            'bag' => $bag,
+            'key' => $key,
+            $valueKey => $value,
+        ]));
+
+        return $preference;
     }
 
     public function find(string $rawKey): array
@@ -177,7 +224,7 @@ class PreferenceManager
         return [$foundPreference, $namespace, $bag, $key];
     }
 
-    public function field(string $namespace, string $bag, string $key): array|bool|null
+    public function field(string $namespace, string $bag, string $key): ?Fieldable
     {
         $preferences = $this->namespaces($namespace);
 
@@ -191,7 +238,11 @@ class PreferenceManager
             return null;
         }
 
-        return head(array_filter($bag['fields'], fn($field) => $field['key'] === $key));
+        if (str_contains($key, '.')) {
+            return $this->getRepeatedField($bag, $key);
+        }
+
+        return $this->getField($bag, $key);
     }
 
     public function fields(string $namespace, string $bag): Collection
@@ -199,5 +250,78 @@ class PreferenceManager
         return collect($this->namespaces($namespace)[$bag]['fields'])
             ->sortBy('position')
             ->values();
+    }
+
+    public function fieldsForValidation(string $namespace, string $bag): array
+    {
+        $rules = [];
+        $attributes = [];
+
+        foreach ($this->fields($namespace, $bag) as $field) {
+            $this->processFieldForValidation($field, $rules, $attributes);
+        }
+
+        return compact('rules', 'attributes');
+    }
+
+    protected function getField(array $bag, string $key): ?Fieldable
+    {
+        $field = head(array_filter($bag['fields'], fn($field) => $field['key'] === $key));
+
+        if ($field === false) {
+            return null;
+        }
+
+        return $field;
+    }
+
+    protected function getRepeatedField(array $bag, string $key): ?Fieldable
+    {
+        [$repeatedKey, $fieldIndex, $fieldKey] = explode('.', $key);
+        $repeatedField = head(array_filter($bag['fields'], fn($field) => $field['key'] === $repeatedKey));
+
+        if ($repeatedField === false) {
+            return null;
+        }
+
+        $field = head(array_filter($repeatedField['fields'], fn($field) => $field['key'] === $fieldKey));
+
+        if ($field === false) {
+            return null;
+        }
+
+        $field->name(implode('.', [$repeatedField['name'], $fieldIndex, $fieldKey]));
+
+        return $field;
+    }
+
+    protected function processFieldForValidation(Fieldable $field, array &$rules, array &$attributes): void
+    {
+        if ($field['type'] === FieldTypeEnum::REPEATED) {
+            $this->processRepeatedFieldForValidation($field, $rules, $attributes);
+            return;
+        }
+
+        $attributes[$field['name']] = $field['label'];
+
+        if ($field['type']?->isEditable() && isset($field['rules'])) {
+            $rules[$field['name']] = $field['rules'];
+        }
+    }
+
+    protected function processRepeatedFieldForValidation(Fieldable $field, array &$rules, array &$attributes): void
+    {
+        foreach ($field['field_rules'] as $key => $rule) {
+            $rules[$key] = $rule;
+        }
+
+        foreach ($field['field_labels'] as $key => $label) {
+            $attributes[$key] = $label;
+        }
+    }
+
+    protected function getCurrentFields(): array
+    {
+        return $this->namespaces[$this->currentNamespace][$this->currentBag]['fields'] ?? [];
     }
 }

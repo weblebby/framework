@@ -39,9 +39,11 @@ class PreferenceController extends Controller
             ->filter(fn($field) => $field['type']->isEditable())
             ->values();
 
+        $fieldsForValidation = Preference::fieldsForValidation($namespace, $bag);
+
         $validated = $request->validate(
-            $fields->pluck('rules', 'name')->toArray(),
-            attributes: $fields->pluck('label', 'name')->toArray()
+            $fieldsForValidation['rules'],
+            attributes: $fieldsForValidation['attributes'],
         );
 
         $uploadables = [];
@@ -66,7 +68,8 @@ class PreferenceController extends Controller
             unset($validated[$key]);
         }
 
-        preference($validated);
+        $a = preference($validated);
+        dd($a);
 
         return back()->with('message', __('Ayarlar kaydedildi'));
     }

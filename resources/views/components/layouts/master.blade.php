@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite('resources/css/feadmin.css', 'vendor/feadmin')
+    @vite('resources/css/feadmin.css', 'feadmin')
     @seo
     {{ $styles ?? '' }}
+    @stack('styles')
 </head>
 <body>
 {{ $slot }}
@@ -29,7 +30,7 @@
     baseUrl: @json(panel_route('dashboard')),
   };
 </script>
-@vite('resources/js/feadmin.js', 'vendor/feadmin')
+@vite('resources/js/feadmin.js', 'feadmin')
 @if (session()->has('message'))
     <script>
       document.addEventListener("DOMContentLoaded", function() {
@@ -38,5 +39,6 @@
     </script>
 @endif
 {{ $scripts ?? '' }}
+@stack('scripts')
 </body>
 </html>

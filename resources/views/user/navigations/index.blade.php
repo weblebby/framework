@@ -1,6 +1,6 @@
 <x-feadmin::layouts.panel>
     <x-slot:scripts>
-        @vite('resources/js/navigation.js', 'vendor/feadmin')
+        @vite('resources/js/navigation.js', 'feadmin')
         <script>
             @if ($errors->item->any())
             Feadmin.Drawer.open(document.getElementById("drawer-create-menu-item"), { isError: true });

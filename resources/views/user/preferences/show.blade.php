@@ -10,8 +10,8 @@
                     <x-feadmin::link-card>
                         @foreach (panel()->preference($namespace)->get() as $id => $bag)
                             <x-feadmin::link-card.item
-                                href="{{ panel_route('preferences.show', $id) }}"
-                                :active="$selectedBag === $id">
+                                    href="{{ panel_route('preferences.show', $id) }}"
+                                    :active="$selectedBag === $id">
                                 {{ $bag['title'] }}
                             </x-feadmin::link-card.item>
                         @endforeach
@@ -19,7 +19,8 @@
                 </div>
                 <div class="fd-col-span-4">
                     <x-feadmin::card padding>
-                        <x-feadmin::form :action="panel_route('preferences.update', [$namespace, $selectedBag])" method="PUT" enctype="multipart/form-data">
+                        <x-feadmin::form :action="panel_route('preferences.update', [$namespace, $selectedBag])"
+                                         method="PUT" enctype="multipart/form-data">
                             <div class="fd-space-y-3">
                                 @foreach (panel()->preference($namespace)->fields($selectedBag) as $field)
                                     <x-feadmin::form.field :field="$field" />

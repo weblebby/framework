@@ -5,20 +5,16 @@
   "__commonjsHelpers-725317a4.js": {
     "file": "assets/_commonjsHelpers-725317a4.js"
   },
-  "__tab-478b96a1.js": {
-    "file": "assets/_tab-478b96a1.js"
-  },
   "resources/css/feadmin.css": {
     "file": "assets/feadmin-6c55b293.css",
     "isEntry": true,
     "src": "resources/css/feadmin.css"
   },
   "resources/js/feadmin.js": {
-    "file": "assets/feadmin-583d4228.js",
+    "file": "assets/feadmin-3fc498b7.js",
     "imports": [
       "__commonjsHelpers-725317a4.js",
-      "__api-da6cda26.js",
-      "__tab-478b96a1.js"
+      "__api-da6cda26.js"
     ],
     "isEntry": true,
     "src": "resources/js/feadmin.js"
@@ -33,10 +29,9 @@
     "src": "resources/js/navigation.js"
   },
   "resources/js/pages/post/post.js": {
-    "file": "assets/post-c5071f0e.js",
+    "file": "assets/post-6238a3c8.js",
     "imports": [
-      "__api-da6cda26.js",
-      "__tab-478b96a1.js"
+      "__api-da6cda26.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/post/post.js"

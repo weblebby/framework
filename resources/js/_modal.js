@@ -12,7 +12,7 @@ const Modal = {
         modal.dispatchEvent(
             new CustomEvent('modal.open', {
                 detail,
-            })
+            }),
         )
     },
 
@@ -23,7 +23,7 @@ const Modal = {
         modal.dispatchEvent(
             new CustomEvent('modal.close', {
                 detail,
-            })
+            }),
         )
     },
 
@@ -45,8 +45,6 @@ document.addEventListener('click', e => {
         Modal.open(document.querySelector(openTrigger.dataset.modalOpen), {
             related: openTrigger,
         })
-
-        return
     }
 })
 
@@ -54,7 +52,7 @@ closeTriggers.forEach(trigger => {
     const modal = trigger.closest('[data-modal]')
 
     trigger.addEventListener('click', () =>
-        Modal.close(modal, { related: trigger })
+        Modal.close(modal, { related: trigger }),
     )
 })
 

@@ -4,6 +4,8 @@ namespace Feadmin\Enums;
 
 enum FieldTypeEnum: string
 {
+    case REPEATED = 'repeated';
+    case GROUPED = 'grouped';
     case PARAGRAPH = 'paragraph';
     case TEXT = 'text';
     case TEL = 'tel';
@@ -30,6 +32,8 @@ enum FieldTypeEnum: string
     {
         return [
             self::PARAGRAPH,
+            self::REPEATED,
+            self::GROUPED,
         ];
     }
 

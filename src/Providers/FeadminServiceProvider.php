@@ -2,9 +2,11 @@
 
 namespace Feadmin\Providers;
 
+use Astrotomic\Translatable\Locales;
 use Feadmin\Console\Commands\InstallFeadmin;
 use Feadmin\Console\Commands\MigrateExtension;
 use Feadmin\Facades\Localization;
+use Feadmin\Facades\Preference;
 use Feadmin\Models\User;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
@@ -29,6 +31,7 @@ class FeadminServiceProvider extends ServiceProvider
             \Feadmin\Managers\LocalizationManager::class,
             \Feadmin\Managers\NavigationLinkableManager::class,
             \Feadmin\Managers\PreferenceManager::class,
+            \Feadmin\Managers\ThemeManager::class,
         ];
 
         foreach ($singletons as $singleton) {
@@ -51,6 +54,9 @@ class FeadminServiceProvider extends ServiceProvider
             $this->bootLocalization();
             $this->bootGates();
         }
+
+        app(Locales::class)->load();
+        Preference::loadPreferences();
     }
 
     private function bootViews(): void

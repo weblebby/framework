@@ -3,6 +3,7 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Feadmin\Facades\Theme;
 use Feadmin\Http\Requests\User\StorePostRequest;
 use Feadmin\Http\Requests\User\UpdatePostRequest;
 use Feadmin\Models\Post;
@@ -14,7 +15,7 @@ class PostController extends Controller
     public function index(): View
     {
         $this->authorize('post:read');
-        
+
         $posts = Post::query()->paginate();
 
         seo()->title(__('Yazılar'));
@@ -27,10 +28,14 @@ class PostController extends Controller
         $this->authorize('post:create');
 
         $posts = Post::query()->paginate();
+        $templates = Theme::active()->templatesFor(Post::class);
 
         seo()->title(__('Yazı oluştur'));
 
-        return view('feadmin::user.posts.create', compact('posts'));
+        return view('feadmin::user.posts.create', [
+            ...compact('posts', 'templates'),
+            'postType' => Post::class,
+        ]);
     }
 
     public function store(StorePostRequest $request): RedirectResponse

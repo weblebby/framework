@@ -3,7 +3,7 @@
 namespace Feadmin\Providers;
 
 use Feadmin\Facades\Preference;
-use Feadmin\Items\PreferenceItem;
+use Feadmin\Items\Field\FieldItem;
 use Illuminate\Support\ServiceProvider;
 
 class PreferenceServiceProvider extends ServiceProvider
@@ -32,17 +32,17 @@ class PreferenceServiceProvider extends ServiceProvider
     {
         Preference::create('default', 'slugs')
             ->addMany([
-                PreferenceItem::paragraph(
+                FieldItem::paragraph(
                     __('Sayfa adreslerini bu bölümden ayarlayabilirsiniz.')
                 ),
 
-                PreferenceItem::text('post')
+                FieldItem::text('post')
                     ->translatable()
                     ->label(__('Yazı adresi'))
                     ->rules(['required', 'string', 'max:191'])
                     ->default('makale'),
 
-                PreferenceItem::text('page')
+                FieldItem::text('page')
                     ->translatable()
                     ->label(__('Sayfa adresi'))
                     ->rules(['required', 'string', 'max:191'])

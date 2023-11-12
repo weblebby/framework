@@ -54,4 +54,9 @@ class Features
     {
         return 'posts';
     }
+
+    public static function themes(): string
+    {
+        return 'themes';
+    }
 }
