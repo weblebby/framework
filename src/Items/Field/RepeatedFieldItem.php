@@ -22,6 +22,8 @@ class RepeatedFieldItem implements Fieldable, Arrayable, ArrayAccess, Jsonable, 
 
     private ?string $hint = null;
 
+    private ?array $default = [];
+
     private array $fields;
 
     private ?int $max = null;
@@ -51,6 +53,13 @@ class RepeatedFieldItem implements Fieldable, Arrayable, ArrayAccess, Jsonable, 
     public function hint(string $hint): self
     {
         $this->hint = $hint;
+
+        return $this;
+    }
+
+    public function default(array $fields): self
+    {
+        $this->default = $fields;
 
         return $this;
     }
@@ -108,6 +117,7 @@ class RepeatedFieldItem implements Fieldable, Arrayable, ArrayAccess, Jsonable, 
             'type' => FieldTypeEnum::REPEATED,
             'label' => $this->label,
             'hint' => $this->hint,
+            'default' => $this->default,
             'fields' => $this->fields,
             'max' => $this->max,
             'position' => $this->position,

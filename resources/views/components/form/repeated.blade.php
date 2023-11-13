@@ -1,6 +1,6 @@
 @props(['field'])
 
-@php ($default = old($field['name'], []))
+@php ($default = array_values(old($field['name'], $field['default'] ?? []) ?: []))
 
 <div
         class="fd-border fd-rounded fd-p-3 fd-space-y-3"

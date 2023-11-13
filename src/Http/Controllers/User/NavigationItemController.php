@@ -29,7 +29,7 @@ class NavigationItemController extends Controller
 
         $item->save();
 
-        return back()->with('success', __(':item başarıyla oluşturuldu.', ['item' => $item->title]));
+        return back()->with('message', __(':item başarıyla oluşturuldu.', ['item' => $item->title]));
     }
 
     public function update(
@@ -49,7 +49,7 @@ class NavigationItemController extends Controller
 
         $item->save();
 
-        return back()->with('success', __(':item başarıyla güncellendi', ['item' => $item->title]));
+        return back()->with('message', __(':item başarıyla güncellendi', ['item' => $item->title]));
     }
 
     public function destroy(Navigation $navigation, NavigationItem $item): RedirectResponse

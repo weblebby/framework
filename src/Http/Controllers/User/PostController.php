@@ -42,7 +42,7 @@ class PostController extends Controller
     {
         Post::query()->create($request->validated());
 
-        return to_panel_route('posts.index')->with('success', __('Yazı oluşturuldu'));
+        return to_panel_route('posts.index')->with('message', __('Yazı oluşturuldu'));
     }
 
     public function edit(Post $post): View

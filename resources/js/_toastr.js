@@ -38,7 +38,7 @@ const Toastr = {
     },
 }
 
-document.addEventListener('DOMContentLoaded', () => Toastr.init())
+Toastr.init()
 
 window.Feadmin.Toastr = Toastr
 

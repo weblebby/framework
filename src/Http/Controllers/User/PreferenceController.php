@@ -68,8 +68,7 @@ class PreferenceController extends Controller
             unset($validated[$key]);
         }
 
-        $a = preference($validated);
-        dd($a);
+        preference($validated);
 
         return back()->with('message', __('Ayarlar kaydedildi'));
     }

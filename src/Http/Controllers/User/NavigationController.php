@@ -38,7 +38,7 @@ class NavigationController extends Controller
         $navigation = Navigation::query()->create($request->validated());
 
         return to_panel_route('navigations.show', $navigation)
-            ->with('message', __('Menü başarıyla oluşturuldu.'));
+            ->with('message', __(':navigation oluşturuldu.', ['navigation' => $navigation->title]));
     }
 
     public function show(Navigation $navigation, NavigationService $navigationService): View
@@ -65,7 +65,7 @@ class NavigationController extends Controller
     {
         $navigation->update($request->validated());
 
-        return back()->with('message', __('Menü başarıyla güncellendi.'));
+        return back()->with('message', __(':navigation güncellendi.', ['navigation' => $navigation->title]));
     }
 
     public function destroy(Navigation $navigation)

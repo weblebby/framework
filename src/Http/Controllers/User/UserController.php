@@ -51,7 +51,7 @@ class UserController extends Controller
          */
         info($password);
 
-        return to_panel_route('users.index')->with('success', __('Kullanıcı oluşturuldu'));
+        return to_panel_route('users.index')->with('message', __('Kullanıcı oluşturuldu'));
     }
 
     public function edit(Request $request, RoleService $roleService, User $user): View

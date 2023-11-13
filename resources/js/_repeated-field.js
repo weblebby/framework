@@ -6,6 +6,7 @@ const RepeatedField = {
     templateSelector: '[data-repeated-field-template]',
     addRowSelector: '[data-repeated-field-add-row]',
     removeRowSelector: '[data-repeated-field-remove-row]',
+    emptyInputSelector: '[data-repeated-field-empty-input]',
 
     findContainer: containerName => {
         return document.querySelector(
@@ -73,7 +74,11 @@ const RepeatedField = {
             .dataset.repeatedFieldItem
 
         const rows = e.target.closest(RepeatedField.rowsSelector)
-        rows.children.length <= 1 && rows.classList.add('fd-hidden')
+
+        if (rows.children.length <= 1) {
+            rows.classList.add('fd-hidden')
+            RepeatedField.addEmptyInput(containerName)
+        }
 
         RepeatedField.enableAddRowButton(containerName)
 
@@ -88,23 +93,49 @@ const RepeatedField = {
         removeRowButton.addEventListener('click', RepeatedField.removeRow)
 
         const rows = row.closest(RepeatedField.rowsSelector)
-        rows.children.length > 0 && rows.classList.remove('fd-hidden')
+
+        if (rows.children.length > 0) {
+            rows.classList.remove('fd-hidden')
+            RepeatedField.removeEmptyInput(
+                row.closest(RepeatedField.itemSelector).dataset
+                    .repeatedFieldItem,
+            )
+        }
     },
 
-    enableAddRowButton: container => {
-        const button = RepeatedField.findContainer(container).querySelector(
+    enableAddRowButton: containerName => {
+        const button = RepeatedField.findContainer(containerName).querySelector(
             RepeatedField.addRowSelector,
         )
 
         button.removeAttribute('disabled')
     },
 
-    disableAddRowButton: container => {
-        const button = RepeatedField.findContainer(container).querySelector(
+    disableAddRowButton: containerName => {
+        const button = RepeatedField.findContainer(containerName).querySelector(
             RepeatedField.addRowSelector,
         )
 
         button.setAttribute('disabled', 'disabled')
+    },
+
+    addEmptyInput: containerName => {
+        const container = RepeatedField.findContainer(containerName)
+
+        const input = document.createElement('input')
+        const selector = RepeatedField.emptyInputSelector.replace(/\[|]/g, '')
+
+        input.setAttribute('type', 'hidden')
+        input.setAttribute('name', container.dataset.repeatedFieldItem)
+        input.setAttribute(selector, selector)
+
+        container.appendChild(input)
+    },
+
+    removeEmptyInput: containerName => {
+        const container = RepeatedField.findContainer(containerName)
+        const input = container.querySelector(RepeatedField.emptyInputSelector)
+        input?.remove()
     },
 }
 
