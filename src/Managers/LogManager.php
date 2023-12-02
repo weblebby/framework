@@ -10,11 +10,10 @@ class LogManager
 {
     public function store(
         string $action,
-        array  $payload = [],
-        Model  $loggable = null,
-        User   $user = null
-    ): Log
-    {
+        array $payload = [],
+        Model $loggable = null,
+        User $user = null
+    ): Log {
         /** @var User $user */
         $user ??= auth()->user();
 

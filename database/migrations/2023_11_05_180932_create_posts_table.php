@@ -5,7 +5,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -18,7 +19,8 @@ return new class extends Migration {
             $table->string('slug');
             $table->text('content');
             $table->integer('status')->default(PostStatusEnum::DRAFT);
-            $table->integer('type');
+            $table->string('type');
+            $table->string('template')->nullable();
             $table->integer('position')->default(0);
             $table->foreignId('created_by_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('updated_by_id')->nullable()->constrained('users')->nullOnDelete();

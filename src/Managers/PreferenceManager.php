@@ -65,7 +65,7 @@ class PreferenceManager
             $field->name("{$this->currentNamespace}::{$this->currentBag}->{$field['key']}");
         }
 
-        if (!is_array($field)) {
+        if (! is_array($field)) {
             $field->position(count($this->getCurrentFields()) * 10);
         }
 
@@ -79,8 +79,8 @@ class PreferenceManager
                         ...$this->namespaces[$this->currentNamespace][$this->currentBag]['fields'] ?? [],
                         $field,
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         return $this;
@@ -101,8 +101,8 @@ class PreferenceManager
 
         if ($preference instanceof Collection) {
             return $preference->map(
-                fn(Collection $preferences) => $preferences->map(
-                    fn(array $fieldAndPreference) => $this->getValue(
+                fn (Collection $preferences) => $preferences->map(
+                    fn (array $fieldAndPreference) => $this->getValue(
                         $fieldAndPreference['preference'],
                         $fieldAndPreference['field'],
                     )
@@ -122,6 +122,7 @@ class PreferenceManager
 
             if ($field['type'] === FieldTypeEnum::REPEATED) {
                 $saved = array_merge($saved, $this->setRepeatedField($preference, $field, $value));
+
                 continue;
             }
 
@@ -140,8 +141,8 @@ class PreferenceManager
             $preferences = $this->preferences
                 ->where('namespace', $namespace)
                 ->where('bag', $bag)
-                ->where(fn(Preference $preference) => str_contains($preference->key, $key))
-                ->groupBy(fn(Preference $preference) => explode('.', $preference->key)[1])
+                ->where(fn (Preference $preference) => str_contains($preference->key, $key))
+                ->groupBy(fn (Preference $preference) => explode('.', $preference->key)[1])
                 ->map(function (Collection $preferences) {
                     return $preferences->mapWithKeys(function (Preference $preference) {
                         $field = $this->field(
@@ -204,6 +205,7 @@ class PreferenceManager
         foreach ($this->fields($namespace, $bag) as $field) {
             if ($field['type'] === FieldTypeEnum::REPEATED) {
                 $this->processRepeatedFieldForValidation($field, $rules, $attributes);
+
                 continue;
             }
 
@@ -221,7 +223,7 @@ class PreferenceManager
     {
         $saved = [];
 
-        $preferences->each(function (Collection $preferences, string $index) use ($rows, $field) {
+        $preferences->each(function (Collection $preferences, string $index) use ($rows) {
             $row = $rows[$index] ?? null;
 
             if (is_null($row)) {
@@ -263,11 +265,13 @@ class PreferenceManager
 
         if ($preference && blank($value)) {
             $preference->delete();
+
             return null;
         }
 
         if ($preference) {
             $preference->update([$valueKey => $value]);
+
             return $preference;
         }
 
@@ -314,13 +318,13 @@ class PreferenceManager
 
     protected function parseRawKey(string $rawKey): array
     {
-        if (!str_contains($rawKey, '->')) {
+        if (! str_contains($rawKey, '->')) {
             throw new Exception(
                 sprintf('Invalid preference key [%s]. Please use the following format: namespace::bag->key', $rawKey)
             );
         }
 
-        if (!str_contains($rawKey, '::')) {
+        if (! str_contains($rawKey, '::')) {
             $rawKey = "default::{$rawKey}";
         }
 
@@ -332,7 +336,7 @@ class PreferenceManager
 
     protected function getField(array $bag, string $key): ?Fieldable
     {
-        $field = head(array_filter($bag['fields'], fn($field) => $field['key'] === $key));
+        $field = head(array_filter($bag['fields'], fn ($field) => $field['key'] === $key));
 
         if ($field === false) {
             return null;
@@ -344,13 +348,13 @@ class PreferenceManager
     protected function getRepeatedField(array $bag, string $key): ?Fieldable
     {
         [$repeatedKey, $fieldIndex, $fieldKey] = explode('.', $key);
-        $repeatedField = head(array_filter($bag['fields'], fn($field) => $field['key'] === $repeatedKey));
+        $repeatedField = head(array_filter($bag['fields'], fn ($field) => $field['key'] === $repeatedKey));
 
         if ($repeatedField === false) {
             return null;
         }
 
-        $field = head(array_filter($repeatedField['fields'], fn($field) => $field['key'] === $fieldKey));
+        $field = head(array_filter($repeatedField['fields'], fn ($field) => $field['key'] === $fieldKey));
 
         if ($field === false) {
             return null;

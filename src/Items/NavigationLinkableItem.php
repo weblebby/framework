@@ -2,10 +2,16 @@
 
 namespace Feadmin\Items;
 
+use Feadmin\Concerns\HasArray;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
+use JsonSerializable;
 
-class NavigationLinkableItem
+class NavigationLinkableItem implements \ArrayAccess, Arrayable, Jsonable, JsonSerializable
 {
+    use HasArray;
+
     protected string $name;
 
     protected string $title;
@@ -15,6 +21,11 @@ class NavigationLinkableItem
     protected string $model;
 
     protected Collection $links;
+
+    public static function make(): self
+    {
+        return new static();
+    }
 
     public function setName(string $name): self
     {

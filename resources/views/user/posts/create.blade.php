@@ -1,8 +1,7 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page id="post" class="fd-mx-auto">
         <x-feadmin::page.head :back="panel_route('posts.index')">
-            <x-feadmin::page.title>@lang('Yazı oluşturun')</x-feadmin::page.title>
-            <x-feadmin::page.subtitle>@lang('Yeni bir yazı oluşturun')</x-feadmin::page.subtitle>
+            <x-feadmin::page.title>@lang(':name oluşturun', ['name' => $model::getSingularName()])</x-feadmin::page.title>
         </x-feadmin::page.head>
         <x-feadmin::form :action="panel_route('posts.store')" enctype="multipart/form-data">
             <div class="fd-flex fd-gap-3">
@@ -16,15 +15,15 @@
                     <x-feadmin::tabs container="post" default="seo">
                         <x-feadmin::tabs.header>
                             <x-feadmin::tabs.button id="seo">SEO</x-feadmin::tabs.button>
+                            @foreach ($sections as $id => $section)
+                                <x-feadmin::tabs.button :id="$id">{{ $section['title'] }}</x-feadmin::tabs.button>
+                            @endforeach
                         </x-feadmin::tabs.header>
                         <x-feadmin::tabs.content for="seo">
                             <div class="fd-space-y-3">
                                 <x-feadmin::form.group name="slug">
                                     <x-feadmin::form.label>@lang('URL')</x-feadmin::form.label>
-                                    <div class="fd-flex fd-items-center fd-gap-2">
-                                        <span class="fd-text-sm fd-text-zinc-500">{{ route('posts.show', '') }}/</span>
-                                        <x-feadmin::form.input class="fd-flex-1" />
-                                    </div>
+                                    <x-feadmin::form.input :prefix="route('posts.show', '') . '/'" class="fd-flex-1" />
                                 </x-feadmin::form.group>
                                 <x-feadmin::form.group name="metafields[seo_title]">
                                     <x-feadmin::form.label>@lang('Meta başlığı')</x-feadmin::form.label>
@@ -37,6 +36,15 @@
                                 </x-feadmin::form.group>
                             </div>
                         </x-feadmin::tabs.content>
+                        @foreach($sections as $id => $section)
+                            <x-feadmin::tabs.content :for="$id">
+                                <div class="fd-space-y-3">
+                                    @foreach ($section['fields'] as $field)
+                                        <x-feadmin::form.field :field="$field" />
+                                    @endforeach
+                                </div>
+                            </x-feadmin::tabs.content>
+                        @endforeach
                     </x-feadmin::tabs>
                 </div>
                 <div class="fd-flex-1 fd-space-y-3">
@@ -54,9 +62,21 @@
                         </x-feadmin::form.group>
                     </x-feadmin::card>
                     <x-feadmin::card padding>
+                        <x-feadmin::card.title>@lang('Kategori')</x-feadmin::card.title>
+                        <x-feadmin::taxonomies :taxonomies="$taxonomies" />
+                    </x-feadmin::card>
+                    <x-feadmin::card padding>
+                        <x-feadmin::card.title>@lang('Etiketler')</x-feadmin::card.title>
+                        <x-feadmin::form.tagify :options="[
+                            'source' => panel_api_route('taxonomies.index', $model::getTaxonomyFor('tag')),
+                            'map' => ['value' => 'taxonomy_id', 'label' => 'title'],
+                            'name' => 'taxonomies[]',
+                        ]" />
+                    </x-feadmin::card>
+                    <x-feadmin::card padding>
                         <x-feadmin::card.title>@lang('Şablon')</x-feadmin::card.title>
                         <x-feadmin::form.group name="template">
-                            <x-feadmin::form.select data-post-type="{{ $postType }}">
+                            <x-feadmin::form.select data-post-type="{{ $model::class }}">
                                 <x-feadmin::form.option value="default">Varsayılan</x-feadmin::form.option>
                                 @foreach ($templates as $template)
                                         <?php /** @var \Feadmin\Concerns\Theme\Template $template */ ?>

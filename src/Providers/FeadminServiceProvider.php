@@ -6,6 +6,7 @@ use Astrotomic\Translatable\Locales;
 use Feadmin\Console\Commands\InstallFeadmin;
 use Feadmin\Console\Commands\MigrateExtension;
 use Feadmin\Facades\Localization;
+use Feadmin\Facades\PostModels;
 use Feadmin\Facades\Preference;
 use Feadmin\Models\User;
 use Illuminate\Support\Facades\Blade;
@@ -16,8 +17,6 @@ class FeadminServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -41,8 +40,6 @@ class FeadminServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -53,6 +50,7 @@ class FeadminServiceProvider extends ServiceProvider
             $this->bootViews();
             $this->bootLocalization();
             $this->bootGates();
+            $this->bootPostModels();
         }
 
         app(Locales::class)->load();
@@ -61,7 +59,7 @@ class FeadminServiceProvider extends ServiceProvider
 
     private function bootViews(): void
     {
-        $this->loadViewsFrom(dirname(__DIR__) . '/../resources/views', 'feadmin');
+        $this->loadViewsFrom(dirname(__DIR__).'/../resources/views', 'feadmin');
 
         Blade::directive('feinject', function ($expression) {
             return "<?php echo \Feadmin\Facades\Injection::render($expression); ?>";
@@ -87,15 +85,15 @@ class FeadminServiceProvider extends ServiceProvider
     private function bootPublishes(): void
     {
         $this->publishes([
-            dirname(__DIR__) . '/../resources/views' => resource_path('views/vendor/feadmin'),
+            dirname(__DIR__).'/../resources/views' => resource_path('views/vendor/feadmin'),
         ], ['feadmin-views', 'views']);
 
         $this->publishes([
-            dirname(__DIR__) . '/../public' => public_path('vendor/feadmin'),
+            dirname(__DIR__).'/../public' => public_path('vendor/feadmin'),
         ], ['feadmin-public', 'public']);
 
         $this->publishes([
-            dirname(__DIR__) . '/../database/migrations' => database_path('migrations'),
+            dirname(__DIR__).'/../database/migrations' => database_path('migrations'),
         ], ['feadmin-migrations', 'migrations']);
     }
 
@@ -104,6 +102,14 @@ class FeadminServiceProvider extends ServiceProvider
         $this->commands([
             InstallFeadmin::class,
             MigrateExtension::class,
+        ]);
+    }
+
+    public function bootPostModels(): void
+    {
+        PostModels::register([
+            \Feadmin\Models\Post::class,
+            \Feadmin\Models\Page::class,
         ]);
     }
 }

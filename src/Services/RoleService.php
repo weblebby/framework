@@ -2,8 +2,8 @@
 
 namespace Feadmin\Services;
 
-use Feadmin\Models\Role;
 use App\Models\User;
+use Feadmin\Models\Role;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -21,7 +21,7 @@ class RoleService
         $missingPermissions = array_diff($permissions, $existingPermissions);
 
         DB::table($table)->insert(
-            array_map(fn($permission) => [
+            array_map(fn ($permission) => [
                 'name' => $permission,
                 'guard_name' => 'web',
                 'created_at' => $now = now(),
@@ -33,7 +33,7 @@ class RoleService
     public function getAssignableRolesFor(User $user): Collection
     {
         return Role::query()
-            ->when(!$user->hasRole('Super Admin'), function ($query) {
+            ->when(! $user->hasRole('Super Admin'), function ($query) {
                 return $query->whereNotIn('name', ['Super Admin']);
             })
             ->get();

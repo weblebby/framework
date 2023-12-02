@@ -2,7 +2,6 @@
 
 namespace Feadmin\Http\Controllers\User;
 
-use Core\Facades\PreferenceManager;
 use App\Http\Controllers\Controller;
 use Feadmin\Facades\Extension;
 use Illuminate\Http\RedirectResponse;

@@ -57,7 +57,7 @@ class PreferenceBagHook
             return null;
         }
 
-        $field = head(array_filter($bag['fields'], fn($field) => $field['key'] === $key));
+        $field = head(array_filter($bag['fields'], fn ($field) => $field['key'] === $key));
 
         if ($field === false) {
             return null;
@@ -75,7 +75,7 @@ class PreferenceBagHook
 
     public function getAll(): array
     {
-        if (!$this->authorization) {
+        if (! $this->authorization) {
             return $this->namespaces;
         }
 
@@ -83,7 +83,7 @@ class PreferenceBagHook
             ->map(function ($preferences) {
                 return array_filter(
                     $preferences,
-                    fn($item) => auth()->check() && auth()->user()->can($item['permission'])
+                    fn ($item) => auth()->check() && auth()->user()->can($item['permission'])
                 );
             })
             ->toArray();
@@ -120,7 +120,7 @@ class PreferenceBagHook
     {
         $map = function ($preferences, $namespace) {
             return collect($preferences)->mapWithKeys(
-                fn($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
+                fn ($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
             );
         };
 
@@ -129,13 +129,13 @@ class PreferenceBagHook
         }
 
         return collect($this->getAll())
-            ->map(fn($preferences, $namespace) => $map($preferences, $namespace))
+            ->map(fn ($preferences, $namespace) => $map($preferences, $namespace))
             ->collapse()
-            ->sortByDesc(fn($_, $key) => str_starts_with($key, 'default.'));
+            ->sortByDesc(fn ($_, $key) => str_starts_with($key, 'default.'));
     }
 
     public function toPermissions(): Collection
     {
-        return $this->toDotted()->keys()->map(fn($bag) => "preference:{$bag}");
+        return $this->toDotted()->keys()->map(fn ($bag) => "preference:{$bag}");
     }
 }

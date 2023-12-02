@@ -94,7 +94,7 @@ class MenuItem
             'badge' => $this->badge,
             'can' => $this->can,
             'children' => array_map(
-                fn($child) => $child instanceof static ? $child->toArray() : $child,
+                fn ($child) => $child instanceof static ? $child->toArray() : $child,
                 $this->children,
             ),
         ];

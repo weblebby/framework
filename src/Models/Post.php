@@ -5,9 +5,11 @@ namespace Feadmin\Models;
 use Feadmin\Concerns\Eloquent\HasMetafields;
 use Feadmin\Concerns\Eloquent\HasOwner;
 use Feadmin\Concerns\Eloquent\HasPosition;
-use Feadmin\Concerns\Eloquent\HasTaxonomies;
+use Feadmin\Concerns\Eloquent\HasPost;
+use Feadmin\Concerns\Postable;
 use Feadmin\Enums\HasOwnerEnum;
 use Feadmin\Enums\PostStatusEnum;
+use Feadmin\Items\TaxonomyItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,22 +19,24 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Post extends Model implements HasMedia
+class Post extends Model implements HasMedia, Postable
 {
     use HasFactory,
         HasMetafields,
-        HasTaxonomies,
         HasOwner,
-        HasSlug,
         HasPosition,
+        HasPost,
+        HasSlug,
         InteractsWithMedia;
+
+    protected $table = 'posts';
 
     protected $fillable = [
         'title',
         'slug',
         'content',
         'status',
-        'type',
+        'template',
         'position',
     ];
 
@@ -46,11 +50,54 @@ class Post extends Model implements HasMedia
         HasOwnerEnum::UPDATED_BY,
     ];
 
+    protected static function boot(): void
+    {
+        parent::boot();
+
+        static::creating(function (Post $post) {
+            if ($post->status === PostStatusEnum::PUBLISHED && is_null($post->published_at)) {
+                $post->published_at = now();
+            }
+
+            if (is_null($post->type)) {
+                $post->type = static::class;
+            }
+        });
+    }
+
     protected static function booted(): void
     {
         static::addGlobalScope('type', function (Builder $builder) {
             $builder->where('type', static::class);
         });
+    }
+
+    public function getMaxPosition(): int
+    {
+        return (int) static::query()->max('position');
+    }
+
+    public static function getSingularName(): string
+    {
+        return __('Yazı');
+    }
+
+    public static function getPluralName(): string
+    {
+        return __('Yazılar');
+    }
+
+    public static function getTaxonomies(): array
+    {
+        return [
+            TaxonomyItem::make('post_category')
+                ->withSingularName(__('Yazı kategorisi'))
+                ->withPluralName(__('Yazı kategorileri')),
+
+            TaxonomyItem::make('post_tag')
+                ->withSingularName(__('Yazı etiketi'))
+                ->withPluralName(__('Yazı etiketleri')),
+        ];
     }
 
     public function getSlugOptions(): SlugOptions

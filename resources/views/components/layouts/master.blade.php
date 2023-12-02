@@ -27,7 +27,7 @@
 @endif
 <script>
   Feadmin.API = {
-    baseUrl: @json(panel_route('dashboard')),
+    baseUrl: @json('https://' . config('app.domains.api')),
   };
 </script>
 @vite('resources/js/feadmin.js', 'feadmin')

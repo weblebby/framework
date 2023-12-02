@@ -17,7 +17,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static void setExtensionPanel(string $panel)
  * @method static void usePanelRoutes()
  * @method static void useExtensionRoutes()
- * @method static void useWebRoutes()
+ * @method static void useWebRoutes(array $middlewares = null)
+ * @method static void useApiRoutes(array $middlewares = null)
  * @method static void useRoutes()
  * @method static string version()
  *

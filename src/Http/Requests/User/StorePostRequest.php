@@ -26,7 +26,7 @@ class StorePostRequest extends FormRequest
             'slug' => [
                 'required', 'string', 'max:255',
                 Rule::unique('posts')
-                    ->where('type', 'post')
+                    ->where('type', 'post'),
             ],
             'content' => ['required', 'string', 'max:65535'],
             'status' => ['required', Rule::enum(PostStatusEnum::class)],

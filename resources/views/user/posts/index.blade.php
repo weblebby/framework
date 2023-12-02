@@ -1,25 +1,42 @@
 <x-feadmin::layouts.panel>
-    <x-feadmin::page class="fd-w-2/3 fd-mx-auto">
+    <x-feadmin::page>
         <x-feadmin::page.head>
             <x-slot name="actions">
-                @can('post:create')
+                @can($model::getPostAbilityFor('create'))
                     <x-feadmin::button
                             as="a"
-                            :href="panel_route('posts.create')"
+                            :href="panel_route('posts.create', ['type' => $model::getModelName()])"
                             icon="plus"
                             size="sm"
                     >
-                        @lang('Yeni yazı')
+                        @lang('Yeni :name', ['name' => Str::lower($model::getSingularName())])
                     </x-feadmin::button>
                 @endcan
             </x-slot>
-            <x-feadmin::page.title>@lang('Yazılar')</x-feadmin::page.title>
-            <x-feadmin::page.subtitle>@lang('Yazılarınızı yönetin')</x-feadmin::page.subtitle>
+            <x-feadmin::page.title>{{ $model::getPluralName() }}</x-feadmin::page.title>
         </x-feadmin::page.head>
         <div class="fd-space-y-3">
+            <form class="fd-flex fd-items-center fd-gap-2" method="GET">
+                <input type="hidden" name="type" value="{{ $model::getModelName() }}">
+                <x-feadmin::form.group name="term" class="fd-flex-[3]">
+                    <x-feadmin::form.input type="search" :placeholder="__('Ara')" />
+                </x-feadmin::form.group>
+                <x-feadmin::form.group name="status" class="fd-flex-1">
+                    <x-feadmin::form.select onchange="this.form.submit()">
+                        <x-feadmin::form.option value="">@lang('Tümü')</x-feadmin::form.option>
+                        @foreach(\Feadmin\Enums\PostStatusEnum::cases() as $status)
+                            <x-feadmin::form.option :value="$status->value">
+                                {{ $status->label() }}
+                            </x-feadmin::form.option>
+                        @endforeach
+                    </x-feadmin::form.select>
+                </x-feadmin::form.group>
+            </form>
             <x-feadmin::table>
                 <x-feadmin::table.head>
                     <x-feadmin::table.th>@lang('Başlık')</x-feadmin::table.th>
+                    <x-feadmin::table.th>@lang('Kategoriler')</x-feadmin::table.th>
+                    <x-feadmin::table.th>@lang('Etiketler')</x-feadmin::table.th>
                     <x-feadmin::table.th>@lang('Yayında')</x-feadmin::table.th>
                     <x-feadmin::table.th>@lang('Değişiklik tarihi')</x-feadmin::table.th>
                     <x-feadmin::table.th />
@@ -28,11 +45,17 @@
                     @foreach ($posts as $post)
                         <tr>
                             <x-feadmin::table.td class="fd-font-medium fd-text-lg">
-                                @can('post:update')
+                                @can($model::getPostAbilityFor('update'))
                                     <a href="{{ panel_route('posts.edit', $post) }}">{{ $post->title }}</a>
                                 @else
                                     <span>{{ $post->title }}</span>
                                 @endcan
+                            </x-feadmin::table.td>
+                            <x-feadmin::table.td>
+                                {{ Str::limit($post->getTaxonomiesFor('category')->implode('term.title', ', '), 30) ?: '-' }}
+                            </x-feadmin::table.td>
+                            <x-feadmin::table.td>
+                                {{ Str::limit($post->getTaxonomiesFor('tag')->implode('term.title', ', '), 30) ?: '-' }}
                             </x-feadmin::table.td>
                             <x-feadmin::table.td>
                                 {{ $post->published_at?->isPast() ? __('Evet') : __('Hayır') }}
@@ -41,16 +64,22 @@
                                 {{ Date::short($post->updated_at) }}
                             </x-feadmin::table.td>
                             <x-feadmin::table.td>
-                                <div class="fd-ml-auto">
-                                    @can('post:delete')
+                                <div class="fd-flex fd-items-center fd-gap-2 fd-ml-auto">
+                                    @can($model::getPostAbilityFor('update'))
                                         <x-feadmin::button
-                                                size="sm"
+                                                as="a"
+                                                variant="light"
+                                                :href="panel_route('posts.edit', $post)"
+                                                icon="pencil-fill"
+                                        />
+                                    @endcan
+                                    @can($model::getPostAbilityFor('delete'))
+                                        <x-feadmin::button
                                                 variant="red"
+                                                icon="trash"
                                                 data-modal-open="#modal-delete-post"
                                                 :data-action="panel_route('posts.destroy', $post)"
-                                        >
-                                            @lang('Sil')
-                                        </x-feadmin::button>
+                                        />
                                     @endcan
                                 </div>
                             </x-feadmin::table.td>
@@ -61,7 +90,8 @@
             {{ $posts->links() }}
         </div>
     </x-feadmin::page>
-    @can('post:delete')
-        <x-feadmin::modal.destroy id="modal-delete-post" :title="__('Yazıyı sil')" />
+    @can($model::getPostAbilityFor('delete'))
+        <x-feadmin::modal.destroy id="modal-delete-post"
+                                  :title="__(':name siliyorsunuz', ['name' => $model::getSingularName()])" />
     @endcan
 </x-feadmin::layouts.panel>

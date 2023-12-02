@@ -130,7 +130,7 @@ class ExtensionItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializabl
 
     public function path(string $path = null): string
     {
-        return $this->path . ($path ? DIRECTORY_SEPARATOR . $path : '');
+        return $this->path.($path ? DIRECTORY_SEPARATOR.$path : '');
     }
 
     public function routes(): array

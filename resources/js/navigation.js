@@ -1,4 +1,5 @@
 import api from './_api.js'
+import Tagify from './_tagify.js'
 
 import $ from 'jquery'
 import './_jquery.nestable.js'
@@ -22,7 +23,7 @@ const Navigation = {
 
                 const data = await response.json()
 
-                if (data.success === true) {
+                if (response.ok) {
                     Feadmin.Toastr.add(data.message)
                 }
             },
@@ -40,31 +41,123 @@ const Navigation = {
         })
     },
 
-    handleIsSmartMenu: () => {
-        const manuel = document.querySelector('[data-manuel-item]')
+    handleSmartMenu: () => {
+        const { isSmartMenu } = Navigation.getFormElements()
+        const custom = document.querySelector('[data-custom-item]')
         const smart = document.querySelector('[data-smart-item]')
 
-        if (item_is_smart_menu.checked) {
-            manuel.classList.add('fd-hidden')
+        if (isSmartMenu.checked) {
+            custom.classList.add('fd-hidden')
             smart.classList.remove('fd-hidden')
         } else {
-            manuel.classList.remove('fd-hidden')
+            custom.classList.remove('fd-hidden')
             smart.classList.add('fd-hidden')
         }
     },
 
+    onSmartTypeChange: async () => {
+        const { smartType, smartCondition } = Navigation.getFormElements()
+
+        if (!smartType.value) {
+            document
+                .querySelector('[data-form-group="smart_condition"]')
+                .classList.add('fd-hidden')
+            document
+                .querySelector('[data-form-group="smart_filters"]')
+                .classList.add('fd-hidden')
+            document
+                .querySelector('[data-form-group="smart_limit"]')
+                .classList.add('fd-hidden')
+            return
+        }
+
+        const response = await api(`/post-models?model=${smartType.value}`)
+
+        const taxonomies = await response.json()
+
+        smartCondition.innerHTML = `<option value="">Filtre yok</option>`
+
+        taxonomies.forEach(taxonomy => {
+            smartCondition.innerHTML += `<option value="${taxonomy.name}">${taxonomy.singular_name}</option>`
+        })
+
+        document
+            .querySelector('[data-form-group="smart_limit"]')
+            .classList.remove('fd-hidden')
+
+        document
+            .querySelector('[data-form-group="smart_condition"]')
+            .classList.remove('fd-hidden')
+
+        void Navigation.onSmartConditionChange()
+    },
+
+    onSmartConditionChange: async (filterValue = '') => {
+        const elements = Navigation.getFormElements()
+        const conditionValue = elements.smartCondition.value
+        const smartFiltersGroup = document.querySelector(
+            '[data-form-group="smart_filters"]',
+        )
+
+        elements.smartFilters.value = filterValue
+
+        if (!conditionValue) {
+            smartFiltersGroup.classList.add('fd-hidden')
+            return
+        }
+
+        smartFiltersGroup.querySelector('label').textContent =
+            elements.smartCondition.querySelector(
+                `option[value="${conditionValue}"]`,
+            ).textContent
+
+        smartFiltersGroup.classList.remove('fd-hidden')
+
+        if (elements.smartFilters?.__tagify) {
+            elements.smartFilters.__tagify.destroy()
+        }
+
+        return Tagify.init(elements.smartFilters, {
+            name: 'smart_filters[]',
+            source: `/taxonomies/${conditionValue}`,
+            map: {
+                value: 'taxonomy_id',
+                label: 'title',
+            },
+        })
+    },
+
     handleLinkable: () => {
+        const { linkable } = Navigation.getFormElements()
         const link = document.querySelector('[data-form-group="link"]')
 
-        item_linkable.value === ''
+        linkable.value === ''
             ? link.classList.remove('fd-hidden')
             : link.classList.add('fd-hidden')
+    },
+
+    getFormElements: () => {
+        return {
+            title: drawer.querySelector('input[name="title"]'),
+            isSmartMenu: drawer.querySelector('input[name="is_smart_menu"]'),
+            smartType: drawer.querySelector('select[name="smart_type"]'),
+            smartCondition: drawer.querySelector(
+                'select[name="smart_condition"]',
+            ),
+            smartLimit: drawer.querySelector('input[name="smart_limit"]'),
+            smartFilters: drawer.querySelector('input[name="smart_filters"]'),
+            smartViewAll: drawer.querySelector('input[name="smart_view_all"]'),
+            link: drawer.querySelector('input[name="link"]'),
+            isActive: drawer.querySelector('input[name="is_active"]'),
+            openInNewTab: drawer.querySelector('input[name="open_in_new_tab"]'),
+            linkable: drawer.querySelector('select[name="linkable"]'),
+        }
     },
 }
 
 drawer.addEventListener(
     'drawer.open',
-    ({ detail: { related, item, isEdit, isError } }) => {
+    async ({ detail: { related, item, isEdit, hasError } }) => {
         if (related) {
             parentIdInput.value = related.dataset.parentId || ''
         }
@@ -77,50 +170,72 @@ drawer.addEventListener(
             ? 'PUT'
             : 'POST'
 
-        const title = drawer.querySelector('input[name="title"]')
-        const isSmartMenu = drawer.querySelector('input[name="is_smart_menu"]')
-        const smartType = drawer.querySelector('select[name="smart_type"]')
-        const smartLimit = drawer.querySelector('input[name="smart_limit"]')
-        const link = drawer.querySelector('input[name="link"]')
-        const isActive = drawer.querySelector('input[name="is_active"]')
-        const openInNewTab = drawer.querySelector(
-            'input[name="open_in_new_tab"]',
-        )
-        const linkable = drawer.querySelector('select[name="linkable"]')
+        const elements = Navigation.getFormElements()
 
-        if (!isError) {
-            title.value = item?.title || ''
-            isSmartMenu.checked = item?.type === 3
-            smartType.value = item?.smart_type || ''
-            smartLimit.value = item?.smart_limit || ''
-            link.value = item?.link || ''
-            isActive.checked = item?.is_active
-            openInNewTab.checked = item?.open_in_new_tab
+        if (!hasError) {
+            elements.title.value = item?.title || ''
+            elements.isSmartMenu.checked = item?.type === 3
+            elements.smartType.value = item?.smart_type || ''
+            elements.smartLimit.value = item?.smart_limit || ''
+            elements.smartViewAll.checked = item?.smart_view_all
+            elements.link.value = item?.link || ''
+            elements.isActive.checked = item?.is_active
+            elements.openInNewTab.checked = item?.open_in_new_tab
 
             if (!isEdit) {
-                isActive.checked = true
+                elements.isActive.checked = true
             }
 
             if (item?.type === 1) {
-                item_linkable.value = 'homepage'
+                elements.linkable.value = 'homepage'
             } else if (item?.type === 2) {
-                item_linkable.value = JSON.stringify({
+                elements.linkable.value = JSON.stringify({
                     linkable_id: item?.linkable_id,
                     linkable_type: item?.linkable_type,
                 })
             } else {
-                item_linkable.value = ''
+                elements.linkable.value = ''
             }
+
+            if (item?.smart_filters) {
+                await Navigation.onSmartTypeChange()
+
+                const option = elements.smartCondition.querySelector(
+                    `option[value="${item.smart_condition}"]`,
+                )
+
+                if (option) {
+                    option.selected = true
+                }
+
+                void Navigation.onSmartConditionChange(
+                    JSON.stringify(item?.smart_filters),
+                )
+            } else {
+                elements.smartFilters.value = ''
+                void Navigation.onSmartTypeChange()
+                void Navigation.onSmartConditionChange()
+            }
+        } else {
+            void Navigation.onSmartTypeChange()
+            void Navigation.onSmartConditionChange()
         }
 
-        Navigation.handleIsSmartMenu()
+        Navigation.handleSmartMenu()
         Navigation.handleLinkable()
     },
 )
 drawer.addEventListener('drawer.hide', () => (parentIdInput.value = ''))
 
-item_is_smart_menu.addEventListener('change', Navigation.handleIsSmartMenu)
-item_linkable.addEventListener('change', Navigation.handleLinkable)
+const elements = Navigation.getFormElements()
+
+elements.isSmartMenu.addEventListener('change', Navigation.handleSmartMenu)
+elements.linkable.addEventListener('change', Navigation.handleLinkable)
+elements.smartType.addEventListener('change', Navigation.onSmartTypeChange)
+elements.smartCondition.addEventListener(
+    'change',
+    () => void Navigation.onSmartConditionChange(),
+)
 
 dd.querySelectorAll('[data-toggle="edit"]').forEach(button => {
     button.addEventListener('click', () => {

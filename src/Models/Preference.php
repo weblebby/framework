@@ -11,7 +11,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Preference extends Model implements HasMedia
 {
-    use HasFactory, Translatable, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, Translatable;
 
     protected $fillable = [
         'namespace',

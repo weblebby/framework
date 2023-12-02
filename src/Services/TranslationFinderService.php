@@ -63,13 +63,13 @@ class TranslationFinderService
     {
         $path = lang_path("{$locale}.json");
 
-        if (!File::exists($path)) {
+        if (! File::exists($path)) {
             return false;
         }
 
         $json = json_decode(File::get($path), true);
 
-        if (!is_array($json)) {
+        if (! is_array($json)) {
             return false;
         }
 
@@ -84,7 +84,7 @@ class TranslationFinderService
     private function getUnusedTranslationKeys(Collection $scanned, Collection $current): array
     {
         foreach ($current as $key) {
-            if (!$scanned->contains($key)) {
+            if (! $scanned->contains($key)) {
                 $keys[] = $key;
             }
         }
@@ -122,8 +122,8 @@ class TranslationFinderService
             resource_path(),
             base_path('routes'),
             dirname(__DIR__),
-            dirname(__DIR__) . '/../resources',
-            dirname(__DIR__) . '/../routes',
+            dirname(__DIR__).'/../resources',
+            dirname(__DIR__).'/../routes',
         ];
     }
 
@@ -147,7 +147,7 @@ class TranslationFinderService
 
     private function putLocaleFile(string $locale, string $content = '{}'): bool
     {
-        if (!File::exists($langPath = lang_path())) {
+        if (! File::exists($langPath = lang_path())) {
             File::makeDirectory($langPath, 0755, true);
         }
 

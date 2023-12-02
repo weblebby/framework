@@ -29,7 +29,6 @@ class NavigationController extends Controller
 
         return view('feadmin::user.navigations.index', [
             'navigations' => $navigationService->getForListing(),
-            'smartMenuItems' => $navigationService->smartMenuItems(),
         ]);
     }
 
@@ -56,7 +55,6 @@ class NavigationController extends Controller
 
         return view('feadmin::user.navigations.index', [
             'navigations' => $navigationService->getForListing(),
-            'smartMenuItems' => $navigationService->smartMenuItems(),
             'selectedNavigation' => $navigation,
         ]);
     }
@@ -76,31 +74,5 @@ class NavigationController extends Controller
 
         return to_panel_route('navigations.index')
             ->with('message', __('Menü silindi'));
-    }
-
-    public function sort(SortNavigationRequest $request): JsonResponse
-    {
-        $this->authorize('navigation:update');
-
-        $positions = [];
-
-        foreach ($request->items as $item) {
-            $depth = $item['depth'];
-            $positions[$depth] ??= 0;
-
-            DB::table('navigation_items')
-                ->where('id', $item['id'])
-                ->update([
-                    'position' => $positions[$depth],
-                    'parent_id' => $item['parent_id'] ?? null
-                ]);
-
-            $positions[$depth]++;
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => __('Menü sıralaması kaydedildi')
-        ]);
     }
 }

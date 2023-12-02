@@ -3,9 +3,9 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Feadmin\Http\Requests\User\StoreUserRequest;
 use Feadmin\Http\Requests\User\UpdateUserRequest;
-use App\Models\User;
 use Feadmin\Services\RoleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;

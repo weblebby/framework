@@ -2,12 +2,10 @@
 
 namespace Feadmin\Managers;
 
-use Carbon\Carbon;
+use Feadmin\Enums\TranslationStatusEnum;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use IntlDateFormatter;
 use Locale;
-use NumberFormatter;
 use Symfony\Component\Intl\Locales;
 
 class LocalizationManager
@@ -80,15 +78,21 @@ class LocalizationManager
         return $this->allLocales;
     }
 
-    public function getTranslations(string $search = null): array
+    public function getTranslations(string $code = null, array $filters = []): array
     {
-        if (filled($search)) {
-            return collect($this->translations)
-                ->filter(fn($value, $key) => str_contains($key, $search) || str_contains($value, $search))
-                ->toArray();
-        }
-
-        return $this->translations;
+        return collect($this->translations)
+            ->when(
+                filled($filters['search'] ?? null),
+                fn (Collection $translations) => $translations->filter(fn ($value, $key) => str_contains($key, $filters['search']) || str_contains($value, $filters['search'])),
+            )
+            ->when(filled($filters['status'] ?? null), function (Collection $translations) use ($filters, $code) {
+                return match ((int) $filters['status']) {
+                    TranslationStatusEnum::TRANSLATED->value => $translations->filter(fn ($value, $key) => __($key, locale: $code) !== $value),
+                    TranslationStatusEnum::NOT_TRANSLATED->value => $translations->filter(fn ($value, $key) => __($key, locale: $code) === $value),
+                    default => $translations,
+                };
+            })
+            ->toArray();
     }
 
     public function getRemainingLocales(): Collection
@@ -146,11 +150,11 @@ class LocalizationManager
     private function setDefaultLocale(): void
     {
         $this->defaultLocale = $this->getSupportedLocales()
-            ->firstWhere('is_default', true) ?? (object)[
-            'id' => -1,
-            'code' => app()->getLocale(),
-            'is_default' => 1,
-        ];
+            ->firstWhere('is_default', true) ?? (object) [
+                'id' => -1,
+                'code' => app()->getLocale(),
+                'is_default' => 1,
+            ];
 
         $this->currentLocale = $this->defaultLocale;
     }

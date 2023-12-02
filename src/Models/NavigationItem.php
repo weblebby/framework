@@ -2,15 +2,15 @@
 
 namespace Feadmin\Models;
 
+use Feadmin\Enums\NavigationTypeEnum;
+use Feadmin\Services\TaxonomyService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Feadmin\Enums\NavigationTypeEnum;
-use Feadmin\Facades\NavigationLinkable;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class NavigationItem extends Model
 {
@@ -25,6 +25,9 @@ class NavigationItem extends Model
         'link',
         'smart_type',
         'smart_limit',
+        'smart_filters',
+        'smart_sort',
+        'smart_view_all',
         'open_in_new_tab',
         'is_active',
     ];
@@ -33,6 +36,9 @@ class NavigationItem extends Model
         'open_in_new_tab' => 'boolean',
         'is_active' => 'boolean',
         'type' => NavigationTypeEnum::class,
+        'smart_filters' => 'array',
+        'smart_sort' => 'array',
+        'smart_view_all' => 'boolean',
     ];
 
     public function linkable(): MorphTo
@@ -57,24 +63,17 @@ class NavigationItem extends Model
 
     public function scopeWithRecursiveChildren(Builder $query): Builder
     {
-        return $query
-            ->with([
-                'children' => function ($query) {
-                    $query->oldest('position');
-                }
-            ]);
+        return $query->with(['children' => fn($query) => $query->oldest('position')]);
     }
 
     public function url(): Attribute
     {
-        return new Attribute(
-            get: fn ($value) => match ($this->type) {
-                NavigationTypeEnum::LINK => $value,
-                NavigationTypeEnum::LINKABLE => $this->linkable->url,
-                NavigationTypeEnum::SMART => 'smart',
-                NavigationTypeEnum::HOMEPAGE => route('home'),
-            }
-        );
+        return Attribute::get(fn($value) => match ($this->type) {
+            NavigationTypeEnum::LINK => $value,
+            NavigationTypeEnum::LINKABLE => $this->linkable->url,
+            NavigationTypeEnum::SMART => 'smart',
+            NavigationTypeEnum::HOMEPAGE => route('home'),
+        });
     }
 
     public function toExport(): array
@@ -88,16 +87,29 @@ class NavigationItem extends Model
             'link',
             'smart_type',
             'smart_limit',
+            'smart_sort',
+            'smart_view_all',
             'is_active',
             'open_in_new_tab',
         ]);
 
-        if ($this->linkable_type) {
-            $findLinkable = NavigationLinkable::linkables()
-                ->firstWhere('model', $this->linkable_type);
+        /** @var TaxonomyService $taxonomyService */
+        $taxonomyService = app(TaxonomyService::class);
 
-            if ($findLinkable) {
-                $data['linkable_type'] = $findLinkable['id'];
+        foreach ($this->smart_filters ?? [] as $key => $taxonomyIds) {
+            $data['smart_condition'] = $key;
+
+            foreach ($taxonomyIds as $taxonomyId) {
+                $taxonomy = $taxonomyService->getTaxonomyById($taxonomyId);
+
+                if (is_null($taxonomy)) {
+                    continue;
+                }
+                
+                $data['smart_filters'][] = [
+                    'value' => $taxonomyId,
+                    'label' => $taxonomy->term->title,
+                ];
             }
         }
 

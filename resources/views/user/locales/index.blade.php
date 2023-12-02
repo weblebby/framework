@@ -2,7 +2,7 @@
     <x-slot name="scripts">
         @if ($errors->any())
             <script>
-                Feadmin.Drawer.open(document.getElementById('drawer-create-locale'))
+              Feadmin.Drawer.open(document.getElementById("drawer-create-locale"));
             </script>
         @endif
     </x-slot>
@@ -67,12 +67,17 @@
                                 @endcan
                             </div>
                         </div>
-                        <form class="fd-mb-3">
-                            <x-feadmin::form.input
-                                    name="search"
-                                    :placeholder="__('Çevirilerde ara')"
-                                    :default="request('search')"
-                            />
+                        <form class="fd-flex fd-items-center fd-gap-2 fd-mb-3">
+                            <x-feadmin::form.group name="search" class="fd-flex-[3]">
+                                <x-feadmin::form.input :placeholder="__('Çevirilerde ara')" />
+                            </x-feadmin::form.group>
+                            <x-feadmin::form.select name="status" onchange="this.form.submit()" class="fd-flex-1">
+                                <x-feadmin::form.option value="">@lang('Tüm çeviriler')</x-feadmin::form.option>
+                                @foreach (\Feadmin\Enums\TranslationStatusEnum::cases() as $case)
+                                    <x-feadmin::form.option
+                                            value="{{ $case->value }}">{{ $case->label() }}</x-feadmin::form.option>
+                                @endforeach
+                            </x-feadmin::form.select>
                         </form>
                         <x-feadmin::card class="fd-divide-y">
                             <div class="fd-py-4 fd-space-y-3">
@@ -107,7 +112,7 @@
                                     </div>
                                 @empty
                                     <div class="fd-px-4">
-                                        @if (request()->filled('search'))
+                                        @if (request()->filled('search') || request()->filled('status'))
                                             <p class="fd-text-zinc-600">@lang('Arama sonuçlarıyla eşleşen bir sonuç yok.')</p>
                                         @else
                                             <p class="fd-text-zinc-600">@lang('Çeviriler senkronize edilmemiş, yukarıdaki butona tıklayıp senkronizasyon işlemini başlatabilirsiniz.')</p>
@@ -117,7 +122,7 @@
                             </div>
                         </x-feadmin::card>
                         <div class="fd-mt-3">
-                            <x-feadmin::overflow>{{ $translations->links() }}</x-feadmin::overflow>
+                            <x-feadmin::overflow>{{ $translations->withQueryString()->links() }}</x-feadmin::overflow>
                         </div>
                     @else
                         <x-feadmin::empty

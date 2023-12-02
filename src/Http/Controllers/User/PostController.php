@@ -3,43 +3,67 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Feadmin\Facades\PostModels;
 use Feadmin\Facades\Theme;
 use Feadmin\Http\Requests\User\StorePostRequest;
 use Feadmin\Http\Requests\User\UpdatePostRequest;
 use Feadmin\Models\Post;
+use Feadmin\Models\Taxonomy;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PostController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $this->authorize('post:read');
+        $model = PostModels::find($request->input('type', Post::getModelName()));
+        abort_if(is_null($model), 404);
 
-        $posts = Post::query()->paginate();
+        $this->authorize($model::getPostAbilityFor('read'));
 
-        seo()->title(__('Yazılar'));
+        $posts = $model::query()
+            ->withTaxonomies()
+            ->search($request->only(['term', 'status']))
+            ->paginate();
 
-        return view('feadmin::user.posts.index', compact('posts'));
+        seo()->title($model::getPluralName());
+
+        return view('feadmin::user.posts.index', compact('posts', 'model'));
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
-        $this->authorize('post:create');
+        $model = PostModels::find($request->input('type', Post::getModelName()));
+        abort_if(is_null($model), 404);
 
-        $posts = Post::query()->paginate();
-        $templates = Theme::active()->templatesFor(Post::class);
+        $this->authorize($model::getPostAbilityFor('create'));
 
-        seo()->title(__('Yazı oluştur'));
+        $posts = $model::query()->paginate();
+        $templates = Theme::active()->templatesFor($model::class);
+        $sections = $model::getPostSections()->toArray();
 
-        return view('feadmin::user.posts.create', [
-            ...compact('posts', 'templates'),
-            'postType' => Post::class,
-        ]);
+        $taxonomies = Taxonomy::query()
+            ->taxonomy($model::getTaxonomyFor('category'))
+            ->with('term')
+            ->onlyParents()
+            ->withRecursiveChildren()
+            ->get();
+
+        seo()->title(__(':name oluştur', ['name' => $model::getSingularName()]));
+
+        return view('feadmin::user.posts.create', compact(
+            'posts',
+            'templates',
+            'sections',
+            'taxonomies',
+            'model'
+        ));
     }
 
     public function store(StorePostRequest $request): RedirectResponse
     {
+        dd($request->all());
         Post::query()->create($request->validated());
 
         return to_panel_route('posts.index')->with('message', __('Yazı oluşturuldu'));

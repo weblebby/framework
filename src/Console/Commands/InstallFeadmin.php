@@ -2,10 +2,10 @@
 
 namespace Feadmin\Console\Commands;
 
+use App\Models\User;
 use Feadmin\Database\Seeders\CreateDefaultRoles;
 use Feadmin\Models\Locale;
 use Feadmin\Models\Role;
-use App\Models\User;
 use Feadmin\Providers\FeadminServiceProvider;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
@@ -77,7 +77,7 @@ class InstallFeadmin extends Command
         foreach ($localeCodes as $localeCode) {
             Locale::query()->create([
                 'code' => $localeCode,
-                'is_default' => $localeCode === $localeCodes[0]
+                'is_default' => $localeCode === $localeCodes[0],
             ]);
         }
 
@@ -98,6 +98,6 @@ class InstallFeadmin extends Command
 
         $admin->assignRole(Role::findByName('Super Admin'));
 
-        $this->info("Admin created.");
+        $this->info('Admin created.');
     }
 }

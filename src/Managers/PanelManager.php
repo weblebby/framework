@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 
 class PanelManager
 {
+    const API_ROUTE_NAME_PREFIX = 'panel::api.';
+
     private array $panels = [];
 
     private ?string $currentPanel = null;
@@ -93,9 +95,16 @@ class PanelManager
         });
     }
 
-    public function useWebRoutes(): void
+    public function useWebRoutes(array $middlewares = null): void
     {
-        Route::middleware('web')->group(__DIR__ . '/../../routes/web.php');
+        Route::middleware($middlewares ?? 'web')->group(__DIR__ . '/../../routes/web.php');
+    }
+
+    public function useApiRoutes(array $middlewares = null): void
+    {
+        Route::middleware($middlewares ?? ['api', 'auth:sanctum'])
+            ->as(self::API_ROUTE_NAME_PREFIX)
+            ->group(__DIR__ . '/../../routes/api.php');
     }
 
     public function useRoutes(): void
@@ -103,6 +112,7 @@ class PanelManager
         $this->usePanelRoutes();
         $this->useExtensionRoutes();
         $this->useWebRoutes();
+        $this->useApiRoutes();
     }
 
     public function version(): string

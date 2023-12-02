@@ -17,12 +17,4 @@ class NavigationService
     {
         return Navigation::query()->select('id', 'title')->get();
     }
-
-    /**
-     * @return Collection<int, ExtensionItem>
-     */
-    public function smartMenuItems(): Collection
-    {
-        return Extension::get()->where('category', ExtensionCategoryEnum::CONTENT);
-    }
 }

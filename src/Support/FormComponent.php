@@ -48,10 +48,7 @@ class FormComponent
 
         $value = filled($name) ? old($name, $default) : $default;
 
-        return filled($value) && in_array(
-                (string)$attributes->get('value'),
-                Arr::wrap($value)
-            );
+        return filled($value) && in_array((string)$attributes->get('value'), Arr::wrap($value));
     }
 
     public static function value(mixed $value): ?string

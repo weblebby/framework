@@ -12,12 +12,12 @@ enum CurrencyEnum: string
 
     public static function sortedCases(): array
     {
-        return collect(self::cases())->sortByDesc(fn($case) => $case === Currency::current() || Currency::primary())->toArray();
+        return collect(self::cases())->sortByDesc(fn ($case) => $case === Currency::current() || Currency::primary())->toArray();
     }
 
     public static function casesWithoutPrimary(): array
     {
-        return array_filter(self::cases(), fn(self $currency) => $currency !== Currency::primary());
+        return array_filter(self::cases(), fn (self $currency) => $currency !== Currency::primary());
     }
 
     public function title(): string

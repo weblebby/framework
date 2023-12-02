@@ -70,12 +70,12 @@ class PanelItem
 
     public function route($name, $parameters = [], $absolute = true): string
     {
-        return route($this->as() . $name, $parameters, $absolute);
+        return route($this->as().$name, $parameters, $absolute);
     }
 
     public function toRoute($route, $parameters = [], $status = 302, $headers = []): RedirectResponse
     {
-        return to_route($this->as() . $route, $parameters, $status, $headers);
+        return to_route($this->as().$route, $parameters, $status, $headers);
     }
 
     public function features(array $features = null): self|array

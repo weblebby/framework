@@ -16,7 +16,7 @@ class Taxable extends Model
         'position',
     ];
 
-    public function maxPosition(): int
+    public function getMaxPosition(): int
     {
         return $this->taxable->taxonomies()
             ->where('taxonomy_id', $this->taxonomy_id)

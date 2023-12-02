@@ -71,7 +71,7 @@ enum FieldTypeEnum: string
 
     public function isEditable(): bool
     {
-        return !$this->isInformational();
+        return ! $this->isInformational();
     }
 
     public function isLabelFree(): bool

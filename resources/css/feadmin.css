@@ -1,4 +1,5 @@
 @import './_nestable.css';
+@import '@yaireo/tagify/dist/tagify.css';
 
 @tailwind base;
 @tailwind components;
@@ -26,7 +27,7 @@
 
     .drawer {
         @apply fd-bg-zinc-100 fd-min-w-full fd-max-w-[25rem] lg:fd-min-w-[30rem]
-        fd-fixed fd-z-40 fd-right-0 fd-inset-y-0 fd-p-4
+        fd-overflow-y-auto fd-fixed fd-z-40 fd-right-0 fd-inset-y-0 fd-p-4
         fd-translate-x-full fd-transition-transform fd-duration-300 fd-ease-in-out fd-space-y-4;
     }
 
@@ -87,6 +88,10 @@
     border: 6px solid #000;
     border-color: #000 transparent #000 transparent;
     animation: spin 1.2s linear infinite;
+}
+
+.ck-editor__editable_inline {
+    min-height: 200px;
 }
 
 @keyframes spin {

@@ -11,7 +11,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
 
-class FieldItem implements Fieldable, Arrayable, ArrayAccess, Jsonable, JsonSerializable
+class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSerializable
 {
     use HasArray;
 
@@ -97,7 +97,7 @@ class FieldItem implements Fieldable, Arrayable, ArrayAccess, Jsonable, JsonSeri
         return (new static($key))->type(FieldTypeEnum::RADIO);
     }
 
-    public function __construct(?string $key = null)
+    public function __construct(string $key = null)
     {
         $this->key = $key;
         $this->name = $key;
@@ -143,7 +143,7 @@ class FieldItem implements Fieldable, Arrayable, ArrayAccess, Jsonable, JsonSeri
      */
     public function translatable(bool $translatable = true): self
     {
-        if (!$this->type->isTranslatable()) {
+        if (! $this->type->isTranslatable()) {
             throw new Exception(sprintf('Fieldable type [%s] is not translatable.', $this->type->name));
         }
 

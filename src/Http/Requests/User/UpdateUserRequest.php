@@ -29,9 +29,9 @@ class UpdateUserRequest extends FormRequest
         $rules['role'] = [
             'required',
             Rule::exists(Role::class, 'id')->when(
-                !$this->user()->hasRole('Super Admin'),
-                fn($query) => $query->whereNot('name', 'Super Admin'),
-            )
+                ! $this->user()->hasRole('Super Admin'),
+                fn ($query) => $query->whereNot('name', 'Super Admin'),
+            ),
         ];
 
         return $rules;

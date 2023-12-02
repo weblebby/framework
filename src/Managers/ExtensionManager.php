@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 class ExtensionManager
 {
     /**
-     * @var Collection<int, ExtensionItem> $extensions
+     * @var Collection<int, ExtensionItem>
      */
     protected Collection $extensions;
 
@@ -25,7 +25,7 @@ class ExtensionManager
     public function unregister(string $name): void
     {
         $this->extensions = $this->extensions->reject(
-            fn(ExtensionItem $extension) => $extension->name() === $name
+            fn (ExtensionItem $extension) => $extension->name() === $name
         );
     }
 

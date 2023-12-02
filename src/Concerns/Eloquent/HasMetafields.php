@@ -15,7 +15,7 @@ trait HasMetafields
 
     public function scopeByMetafield(Builder $builder, string $key, mixed $value): Builder
     {
-        return $builder->whereHas('metafields', fn($q) => $q->where('key', $key)->where('value', $value));
+        return $builder->whereHas('metafields', fn ($q) => $q->where('key', $key)->where('value', $value));
     }
 
     public function getMetafield(string $key): ?Metafield
@@ -41,7 +41,7 @@ trait HasMetafields
 
                 return null;
             }
-            
+
             $metafield->value = $value;
             $metafield->save();
 

@@ -45,7 +45,7 @@ class CurrencyRate
         $response = Http::get('https://api.currencyapi.com/v3/latest', [
             'apikey' => config('services.currency-api.access_token'),
             'base_currency' => Currency::primary()->value,
-            'currencies' => implode(',', array_map(fn(CurrencyEnum $currency) => $currency->value, CurrencyEnum::casesWithoutPrimary())),
+            'currencies' => implode(',', array_map(fn (CurrencyEnum $currency) => $currency->value, CurrencyEnum::casesWithoutPrimary())),
         ]);
 
         return $response->json();

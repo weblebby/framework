@@ -3,7 +3,9 @@
 namespace Feadmin\Http\Middleware;
 
 use Closure;
-use Feadmin\Facades\Localization;
+use Feadmin\Facades\NavigationLinkable;
+use Feadmin\Facades\PostModels;
+use Feadmin\Facades\SmartMenu;
 use Feadmin\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -22,9 +24,6 @@ class Panel
         $user = $request->user();
         abort_if(is_null($user) || !$user->canAccessPanel(panel()->name()), 403);
 
-        $preferredLocale = $user->locale?->code ?? Localization::getCurrentLocale()->code;
-        app()->setLocale($preferredLocale);
-
         config([
             'app.name' => $siteName = preference('general->site_name'),
             'seo.app.name' => $siteName,
@@ -32,6 +31,10 @@ class Panel
 
         Paginator::defaultView('feadmin::vendor.pagination.tailwind');
         Paginator::defaultSimpleView('feadmin::vendor.pagination.simple-tailwind');
+
+        foreach (PostModels::get() as $model) {
+            $model->register();
+        }
 
         return $next($request);
     }

@@ -3,6 +3,13 @@
 use Feadmin\Http\Controllers;
 use Illuminate\Support\Facades\Route;
 
+Route::get('test', function () {
+    /** @var \Feadmin\Models\Page $page */
+    $page = \Feadmin\Models\Page::first();
+
+    dd($page->getAbilities());
+});
+
 /**
  * Post
  */

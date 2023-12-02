@@ -3,11 +3,13 @@
         @vite('resources/js/navigation.js', 'feadmin')
         <script>
             @if ($errors->item->any())
-            Feadmin.Drawer.open(document.getElementById("drawer-create-menu-item"), { isError: true });
+            document.addEventListener("DOMContentLoaded", function() {
+              Feadmin.Drawer.open(document.getElementById("drawer-create-menu-item"), { hasError: true });
+            });
             @endif
 
             @if ($selectedNavigation ?? null)
-            document.addEventListener("DOMContentLoaded", () => {
+            document.addEventListener("DOMContentLoaded", function() {
               Feadmin.Navigation.init({{ $selectedNavigation->id }});
             });
             @endif
@@ -122,7 +124,7 @@
                     <x-feadmin::form.input data-drawer-focus />
                 </x-feadmin::form.group>
                 <x-feadmin::form.group name="is_smart_menu">
-                    <x-feadmin::form.checkbox :label="__('Otomatik menü')" />
+                    <x-feadmin::form.checkbox :label="__('Otomatik menü')" value="1" />
                 </x-feadmin::form.group>
                 <div class="fd-space-y-3" data-smart-item>
                     <x-feadmin::form.group name="smart_type">
@@ -130,30 +132,43 @@
                         <x-feadmin::form.select>
                             <x-feadmin::form.option value="" selected
                                                     disabled>@lang('Menü seçiniz')</x-feadmin::form.option>
-                            @foreach ($smartMenuItems as $item)
+                            @foreach (SmartMenu::items() as $item)
                                 <x-feadmin::form.option
-                                        value="{{ $item->id }}">{{ $item->plural_title }}</x-feadmin::form.option>
+                                        value="{{ $item->name() }}">{{ $item->title() }}</x-feadmin::form.option>
                             @endforeach
                         </x-feadmin::form.select>
+                    </x-feadmin::form.group>
+                    <x-feadmin::form.group name="smart_condition">
+                        <x-feadmin::form.label>@lang('Filtrele')</x-feadmin::form.label>
+                        <x-feadmin::form.select />
+                    </x-feadmin::form.group>
+                    <x-feadmin::form.group name="smart_filters">
+                        <x-feadmin::form.label>@lang('Kategoriler')</x-feadmin::form.label>
+                        <x-feadmin::form.tagify :options="[]" />
                     </x-feadmin::form.group>
                     <x-feadmin::form.group name="smart_limit">
                         <x-feadmin::form.label>@lang('Limit')</x-feadmin::form.label>
                         <x-feadmin::form.input default="5" />
                     </x-feadmin::form.group>
+                    <x-feadmin::form.group name="smart_view_all">
+                        <x-feadmin::form.checkbox :label="__('Tümünü gör bağlantısını göster')" value="1" />
+                    </x-feadmin::form.group>
                 </div>
-                <div class="fd-space-y-3" data-manuel-item>
+                <div class="fd-space-y-3" data-custom-item>
                     <x-feadmin::form.group name="linkable">
                         <x-feadmin::form.label>@lang('Bağlantı türü')</x-feadmin::form.label>
                         <x-feadmin::form.select>
-                            <x-feadmin::form.option value="">@lang('Manuel bağlantı')</x-feadmin::form.option>
+                            <x-feadmin::form.option value="">@lang('Özel bağlantı')</x-feadmin::form.option>
                             <x-feadmin::form.option value="homepage">@lang('Ana sayfa')</x-feadmin::form.option>
                             @foreach (NavigationLinkable::linkables() as $linkable)
-                                <optgroup label="{{ $linkable['title'] }}">
-                                    @foreach ($linkable['links'] as $link)
-                                        <x-feadmin::form.option
-                                                value="{{ json_encode(['linkable_id' => $link->id, 'linkable_type' => $linkable['id']]) }}">{{ $link->title }}</x-feadmin::form.option>
-                                    @endforeach
-                                </optgroup>
+                                @if (count($linkable->links()) > 0)
+                                    <optgroup label="{{ $linkable->title() }}">
+                                        @foreach ($linkable->links() as $link)
+                                            <x-feadmin::form.option
+                                                    value="{{ json_encode(['linkable_id' => $link->id, 'linkable_type' => $linkable->model()]) }}">{{ $link->title }}</x-feadmin::form.option>
+                                        @endforeach
+                                    </optgroup>
+                                @endif
                             @endforeach
                         </x-feadmin::form.select>
                     </x-feadmin::form.group>
@@ -163,10 +178,10 @@
                     </x-feadmin::form.group>
                 </div>
                 <x-feadmin::form.group name="open_in_new_tab">
-                    <x-feadmin::form.checkbox :label="__('Yeni sekmede aç')" />
+                    <x-feadmin::form.checkbox :label="__('Yeni sekmede aç')" value="1" />
                 </x-feadmin::form.group>
                 <x-feadmin::form.group name="is_active">
-                    <x-feadmin::form.checkbox :label="__('Aktif')" :default="true" />
+                    <x-feadmin::form.checkbox :label="__('Aktif')" :default="true" value="1" />
                 </x-feadmin::form.group>
                 <x-feadmin::button type="submit">@lang('Kaydet')</x-feadmin::button>
             </x-feadmin::form>

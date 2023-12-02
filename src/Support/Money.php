@@ -12,7 +12,8 @@ class Money implements Castable
 {
     public static function castUsing(array $arguments): object|string
     {
-        return new class($arguments) implements CastsAttributes {
+        return new class($arguments) implements CastsAttributes
+        {
             public function __construct(private readonly array $arguments = [])
             {
             }
@@ -81,7 +82,7 @@ class Money implements Castable
     {
         $formatter = NumberFormatter::create(app()->getLocale(), NumberFormatter::SPELLOUT);
 
-        return $formatter->format((int)self::from($amount));
+        return $formatter->format((int) self::from($amount));
     }
 
     public static function format(int $amount, CurrencyEnum|bool $symbol = true, bool $abs = false): string
@@ -112,12 +113,12 @@ class Money implements Castable
 
     public static function formatMany(array $amounts): array
     {
-        return array_map(fn($amount) => self::format($amount), $amounts);
+        return array_map(fn ($amount) => self::format($amount), $amounts);
     }
 
     public static function fromMany(array $amounts): array
     {
-        return array_map(fn($amount) => self::from($amount), $amounts);
+        return array_map(fn ($amount) => self::from($amount), $amounts);
     }
 
     #[ArrayShape(['decimal' => 'false|string', 'group' => 'false|string'])]

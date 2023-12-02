@@ -1,3 +1,6 @@
+import TextEditor from './_ckeditor.js'
+import Form from './_form.js'
+
 const RepeatedField = {
     itemSelector: '[data-repeated-field-item]',
     singleItemSelector: '[data-repeated-field-item=":id"]',
@@ -94,8 +97,17 @@ const RepeatedField = {
 
         const rows = row.closest(RepeatedField.rowsSelector)
 
+        rows.querySelectorAll(TextEditor.selector).forEach(input => {
+            TextEditor.init(input)
+        })
+
+        rows.querySelectorAll(Form.imageSelector).forEach(container => {
+            Form.handleImageInput(container.querySelector('input[type="file"]'))
+        })
+
         if (rows.children.length > 0) {
             rows.classList.remove('fd-hidden')
+
             RepeatedField.removeEmptyInput(
                 row.closest(RepeatedField.itemSelector).dataset
                     .repeatedFieldItem,

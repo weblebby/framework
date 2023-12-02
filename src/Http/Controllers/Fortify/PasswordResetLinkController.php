@@ -14,9 +14,6 @@ class PasswordResetLinkController extends Controller
 {
     /**
      * Send a reset link to the given user.
-     *
-     * @param Request $request
-     * @return Responsable
      */
     public function store(Request $request): Responsable
     {

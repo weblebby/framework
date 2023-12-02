@@ -3,6 +3,7 @@
 use Feadmin\Facades\Panel;
 use Feadmin\Facades\Preference;
 use Feadmin\Items\PanelItem;
+use Feadmin\Managers\PanelManager;
 use Illuminate\Http\RedirectResponse;
 
 function panel(string $panel = null): ?PanelItem
@@ -26,6 +27,11 @@ function preference(string|array $rawKey, mixed $default = null): mixed
 function panel_route($name, $parameters = [], $absolute = true): string
 {
     return panel()->route($name, $parameters, $absolute);
+}
+
+function panel_api_route($name, $parameters = [], $absolute = true): string
+{
+    return route(PanelManager::API_ROUTE_NAME_PREFIX.$name, $parameters, $absolute);
 }
 
 function to_panel_route($route, $parameters = [], $status = 302, $headers = []): RedirectResponse

@@ -7,6 +7,8 @@ export default function api(path, options = {}) {
         'meta[name="csrf-token"]',
     ).content
 
+    options.credentials = 'include'
+
     let url
 
     if (path.startsWith('http')) {

@@ -63,13 +63,13 @@ class MenuHook
         return collect($this->menus[$this->currentBag])
             ->map(function ($bag) {
                 $bag['items'] = collect($bag['items'] ?? [])
-                    ->filter(fn($item) => $this->canDisplay($item))
+                    ->filter(fn ($item) => $this->canDisplay($item))
                     ->sortBy('position')
                     ->values();
 
                 return $bag;
             })
-            ->filter(fn($bag) => $bag['items']->count() > 0)
+            ->filter(fn ($bag) => $bag['items']->count() > 0)
             ->sortBy('position');
     }
 
@@ -87,7 +87,7 @@ class MenuHook
                     return false;
                 }
 
-                if (is_callable($value) && !$value()) {
+                if (is_callable($value) && ! $value()) {
                     return false;
                 }
             }

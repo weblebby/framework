@@ -4,13 +4,13 @@ namespace Feadmin\Items\Field;
 
 use ArrayAccess;
 use Feadmin\Concerns\Fieldable;
-use Feadmin\Enums\FieldTypeEnum;
-use JsonSerializable;
 use Feadmin\Concerns\HasArray;
+use Feadmin\Enums\FieldTypeEnum;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use JsonSerializable;
 
-class GroupedFieldItem implements Fieldable, Arrayable, ArrayAccess, Jsonable, JsonSerializable
+class GroupedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSerializable
 {
     use HasArray;
 

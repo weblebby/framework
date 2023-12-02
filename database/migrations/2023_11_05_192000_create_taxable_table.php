@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -15,9 +16,11 @@ return new class extends Migration {
             $table->foreignId('taxonomy_id')->constrained()->cascadeOnDelete();
             $table->morphs('taxable');
             $table->integer('position')->default(0);
+            $table->boolean('is_primary')->default(false);
             $table->timestamps();
 
             $table->unique(['taxonomy_id', 'taxable_id', 'taxable_type'], 'taxables_unique');
+            $table->unique(['taxonomy_id', 'taxable_id', 'taxable_type', 'is_primary'], 'taxables_primary_unique');
         });
     }
 

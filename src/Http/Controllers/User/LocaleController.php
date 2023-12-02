@@ -2,12 +2,12 @@
 
 namespace Feadmin\Http\Controllers\User;
 
-use Feadmin\Facades\Localization;
 use App\Http\Controllers\Controller;
-use Feadmin\Support\Paginator;
+use Feadmin\Facades\Localization;
 use Feadmin\Http\Requests\User\StoreLocaleRequest;
 use Feadmin\Models\Locale;
 use Feadmin\Services\TranslationFinderService;
+use Feadmin\Support\Paginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +37,7 @@ class LocaleController extends Controller
 
         seo()->title(Localization::display($locale->code));
 
-        $translations = Localization::getTranslations($request->input('search'));
+        $translations = Localization::getTranslations($locale->code, $request->only('search', 'status'));
         $translations = Paginator::fromArray($translations, 50);
 
         return view('feadmin::user.locales.index', [
@@ -49,10 +49,9 @@ class LocaleController extends Controller
     }
 
     public function store(
-        StoreLocaleRequest       $request,
+        StoreLocaleRequest $request,
         TranslationFinderService $translationFinderService
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         $validated = $request->validated();
 
         if (Locale::query()->count() === 0) {

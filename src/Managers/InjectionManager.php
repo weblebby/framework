@@ -20,7 +20,7 @@ class InjectionManager
 
     public function render(string $name): HtmlString
     {
-        $string = collect($this->injections[$name] ??  [])
+        $string = collect($this->injections[$name] ?? [])
             ->map(function ($callable) {
                 $callable = $callable();
 

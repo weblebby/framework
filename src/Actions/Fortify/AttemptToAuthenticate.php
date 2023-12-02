@@ -13,7 +13,6 @@ class AttemptToAuthenticate extends Base
      * Throw a failed authentication validation exception.
      *
      * @param  Request  $request
-     * @return void
      *
      * @throws ValidationException
      */

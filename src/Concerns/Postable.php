@@ -1,0 +1,40 @@
+<?php
+
+namespace Feadmin\Concerns;
+
+use Feadmin\Items\NavigationLinkableItem;
+use Feadmin\Items\PostSectionsItem;
+use Feadmin\Items\SmartMenuItem;
+use Feadmin\Items\TaxonomyItem;
+
+interface Postable
+{
+    public function register(): void;
+    
+    public static function getModelName(): string;
+
+    public static function getSingularName(): string;
+
+    public static function getPluralName(): string;
+
+    public static function getPostSections(): PostSectionsItem;
+
+    public static function getPostAbilities(): array;
+
+    public static function getPostAbilityFor(string $ability): ?string;
+
+    public static function getTaxonomyAbilityFor(string $taxonomy, string $ability): ?string;
+
+    public static function saveAbilitiesToPanel(): void;
+
+    public static function getTaxonomyFor(string $taxonomy): string;
+
+    /**
+     * @return array<int, TaxonomyItem>
+     */
+    public static function getTaxonomies(): array;
+
+    public static function getNavigationLinkable(): NavigationLinkableItem;
+
+    public static function getSmartMenu(): SmartMenuItem;
+}

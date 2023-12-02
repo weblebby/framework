@@ -18,6 +18,6 @@ class VerifyEmailResponse implements VerifyEmailResponseContract
     {
         return $request->wantsJson()
             ? new JsonResponse('', 204)
-            : redirect()->intended(Fortify::redirects('email-verification') . '?verified=email');
+            : redirect()->intended(Fortify::redirects('email-verification').'?verified=email');
     }
 }

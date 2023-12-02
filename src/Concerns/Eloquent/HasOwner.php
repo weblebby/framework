@@ -51,7 +51,7 @@ trait HasOwner
 
     public function isLogging(HasOwnerEnum $logType): bool
     {
-        if (!property_exists($this, 'userTouches')) {
+        if (! property_exists($this, 'userTouches')) {
             return false;
         }
 

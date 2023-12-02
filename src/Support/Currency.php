@@ -37,11 +37,10 @@ class Currency
     }
 
     public static function convert(
-        int          $amount,
+        int $amount,
         CurrencyEnum $from = null,
         CurrencyEnum $to = null
-    ): float
-    {
+    ): float {
         if (is_null($from)) {
             $from = self::primary();
         }

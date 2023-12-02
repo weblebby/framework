@@ -14,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 abstract class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, HasRoles, Notifiable, InteractsWithMedia;
+    use HasFactory, HasRoles, InteractsWithMedia, Notifiable;
 
     abstract public function authorizedPanels(): array|bool;
 
@@ -67,7 +67,7 @@ abstract class User extends Authenticatable implements HasMedia
 
             if (count($words) > 1) {
                 return collect($words)
-                    ->map(fn($word) => Str::upper(mb_substr($word, 0, 1)))
+                    ->map(fn ($word) => Str::upper(mb_substr($word, 0, 1)))
                     ->implode('');
             }
 

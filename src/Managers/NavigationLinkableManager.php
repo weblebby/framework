@@ -7,6 +7,9 @@ use Illuminate\Support\Collection;
 
 class NavigationLinkableManager
 {
+    /**
+     * @var Collection<int, NavigationLinkableItem>
+     */
     protected Collection $linkables;
 
     public function __construct()
@@ -25,6 +28,9 @@ class NavigationLinkableManager
         return $this;
     }
 
+    /**
+     * @return Collection<int, NavigationLinkableItem>
+     */
     public function linkables(): Collection
     {
         return $this->linkables->sortBy('position');

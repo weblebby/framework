@@ -17,7 +17,6 @@ class FailedPasswordResetLinkRequestResponse implements FailedPasswordResetLinkR
     /**
      * Create a new response instance.
      *
-     * @param  string  $status
      * @return void
      */
     public function __construct(string $status)

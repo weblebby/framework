@@ -8,7 +8,7 @@ trait HasPosition
     {
         static::creating(function ($model) {
             if (is_null($model->position)) {
-                if (is_null($position = $model->maxPosition())) {
+                if (is_null($position = $model->getMaxPosition())) {
                     return;
                 }
 
@@ -17,7 +17,7 @@ trait HasPosition
         });
     }
 
-    public function maxPosition(): ?int
+    public function getMaxPosition(): ?int
     {
         return null;
     }

@@ -4,7 +4,6 @@ namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Feadmin\Facades\Theme;
-use Feadmin\Models\Post;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -18,12 +17,12 @@ class ThemeTemplatePostFieldController extends Controller
         $template = $theme->templatesFor($request->type)->firstWhere('name', $template);
         abort_if(is_null($template), 404);
 
-        $tabs = collect($template->tabs())
-            ->map(function ($title, $tab) use ($template) {
+        $tabs = collect($template->sections()->toArray())
+            ->map(function ($section, $tab) {
                 return [
                     'id' => $tab,
-                    'title' => $title,
-                    'fields' => view('feadmin::user.themes.templates.post-fields', ['fields' => $template->fields()[$tab] ?? []])->render(),
+                    'title' => $section['title'],
+                    'fields' => view('feadmin::user.themes.templates.post-fields', ['fields' => $section['fields']])->render(),
                 ];
             })
             ->values()

@@ -2,8 +2,6 @@
 
 namespace Feadmin\Http\Requests\User;
 
-use Core\Facades\PermissionManager;
-use Feadmin\Facades\Panel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
@@ -15,7 +13,7 @@ class UpdateRoleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return !$this->role->is_default && $this->user()->can('role:update');
+        return ! $this->role->is_default && $this->user()->can('role:update');
     }
 
     /**

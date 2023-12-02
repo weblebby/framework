@@ -1,5 +1,15 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
+const TextEditor = {
+    selector: '[data-ckeditor]',
+
+    init: element => {
+        ClassicEditor.create(element)
+    },
+}
+
 document
-    .querySelectorAll('[data-ckeditor]')
-    .forEach(item => ClassicEditor.create(item))
+    .querySelectorAll(TextEditor.selector)
+    .forEach(item => TextEditor.init(item))
+
+export default TextEditor

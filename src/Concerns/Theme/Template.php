@@ -4,7 +4,7 @@ namespace Feadmin\Concerns\Theme;
 
 use ArrayAccess;
 use Feadmin\Concerns\HasArray;
-use Feadmin\Items\Field\FieldItem;
+use Feadmin\Items\PostSectionsItem;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
@@ -22,15 +22,7 @@ abstract class Template implements Arrayable, ArrayAccess, Jsonable, JsonSeriali
 
     abstract public function title(): string;
 
-    /**
-     * @return array<string, string>
-     */
-    abstract public function tabs(): array;
-
-    /**
-     * @return array<string, array<int, FieldItem>>
-     */
-    abstract public function fields(): array;
+    abstract public function sections(): PostSectionsItem;
 
     public function toArray(): array
     {
@@ -38,8 +30,7 @@ abstract class Template implements Arrayable, ArrayAccess, Jsonable, JsonSeriali
             'post_types' => $this->postTypes(),
             'name' => $this->name(),
             'title' => $this->title(),
-            'tabs' => $this->tabs(),
-            'fields' => $this->fields(),
+            'sections' => $this->sections(),
         ];
     }
 }

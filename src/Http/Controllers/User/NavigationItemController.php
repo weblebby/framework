@@ -3,17 +3,18 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Feadmin\Enums\NavigationTypeEnum;
 use Feadmin\Http\Requests\User\StoreNavigationItemRequest;
 use Feadmin\Models\Navigation;
 use Feadmin\Models\NavigationItem;
-use Feadmin\Enums\NavigationTypeEnum;
+use Feadmin\Services\TaxonomyService;
 use Illuminate\Http\RedirectResponse;
 
 class NavigationItemController extends Controller
 {
     public function store(StoreNavigationItemRequest $request, Navigation $navigation): RedirectResponse
     {
-        $item = new NavigationItem($request->validated());
+        $item = new NavigationItem($request->safeWithCasts()->toArray());
         $item->navigation()->associate($navigation);
 
         $item->position = $navigation->items()->max('position') + 1;
@@ -40,7 +41,7 @@ class NavigationItemController extends Controller
     {
         abort_if($navigation->id !== $item->navigation_id, 404);
 
-        $item->fill($request->validated());
+        $item->fill($request->safeWithCasts()->toArray());
         $item->type = $request->type;
 
         if ($item->type === NavigationTypeEnum::LINKABLE) {

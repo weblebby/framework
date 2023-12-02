@@ -26,7 +26,7 @@ class Date
     {
         $date = $args[0] ?? null;
 
-        if (!$date instanceof DateTimeInterface && !is_string($date)) {
+        if (! $date instanceof DateTimeInterface && ! is_string($date)) {
             return null;
         }
 

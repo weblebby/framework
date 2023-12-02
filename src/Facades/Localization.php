@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static Collection getSupportedLocales()
  * @method static Collection getAllLocales()
  * @method static object getLocale(string $code)
- * @method static array getTranslations(string $search = null)
+ * @method static array getTranslations(string $code = null, array $filters = [])
  * @method static Collection getRemainingLocales()
  * @method static string currencyCode(string $code)
  * @method static string display(string $code)

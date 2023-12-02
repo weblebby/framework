@@ -16,9 +16,6 @@ Route::get('/', [User\DashboardController::class, 'index'])->name('dashboard');
  * Navigations
  */
 if (Features::enabled(Features::navigations(), $panel->name())) {
-    Route::post('navigations/{navigation}/sort', [User\NavigationController::class, 'sort'])
-        ->name('navigations.sort');
-
     Route::resource('navigations.items', User\NavigationItemController::class)
         ->only('store', 'update', 'destroy');
 
@@ -85,9 +82,8 @@ if (Features::enabled(Features::users(), $panel->name())) {
  * Posts
  */
 if (Features::enabled(Features::posts(), $panel->name())) {
-    Route::resource('categories', User\CategoryController::class);
     Route::resource('posts', User\PostController::class);
-    Route::resource('pages', User\PageController::class);
+    Route::resource('taxonomies', User\TaxonomyController::class);
 }
 
 /**

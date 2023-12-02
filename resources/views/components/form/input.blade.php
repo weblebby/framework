@@ -7,7 +7,7 @@
     'bind',
 ])
 
-@aware(['default' => $bind->$name ?? null])
+@aware(['default' => $bind->$name ?? request($name)])
 
 @php($id = FormComponent::id($name, $bag))
 @php($dottedName = FormComponent::dottedName($name))

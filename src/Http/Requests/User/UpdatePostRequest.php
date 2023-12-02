@@ -27,7 +27,7 @@ class UpdatePostRequest extends FormRequest
                 'required', 'string', 'max:255',
                 Rule::unique('posts')
                     ->where('type', 'post')
-                    ->ignore($this->post->id)
+                    ->ignore($this->post->id),
             ],
             'content' => ['required', 'string', 'max:65535'],
             'status' => ['required', Rule::enum(PostStatusEnum::class)],
