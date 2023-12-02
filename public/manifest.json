@@ -27,7 +27,7 @@
     "src": "resources/js/feadmin.js"
   },
   "resources/js/navigation.js": {
-    "file": "assets/navigation-56dd6d4f.js",
+    "file": "assets/navigation-e3646370.js",
     "imports": [
       "__api-79210ede.js",
       "__tagify-9b296c4d.js"

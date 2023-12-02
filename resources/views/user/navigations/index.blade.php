@@ -4,7 +4,9 @@
         <script>
             @if ($errors->item->any())
             document.addEventListener("DOMContentLoaded", function() {
-              Feadmin.Drawer.open(document.getElementById("drawer-create-menu-item"), { hasError: true });
+              Feadmin.Drawer.open(document.getElementById("drawer-create-menu-item"), {
+                hasError: true,
+                item: @json(old()) });
             });
             @endif
 

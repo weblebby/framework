@@ -196,27 +196,26 @@ drawer.addEventListener(
             } else {
                 elements.linkable.value = ''
             }
+        }
 
-            if (item?.smart_filters) {
-                await Navigation.onSmartTypeChange()
+        if (item?.smart_filters) {
+            await Navigation.onSmartTypeChange()
 
-                const option = elements.smartCondition.querySelector(
-                    `option[value="${item.smart_condition}"]`,
-                )
+            const option = elements.smartCondition.querySelector(
+                `option[value="${item.smart_condition}"]`,
+            )
 
-                if (option) {
-                    option.selected = true
-                }
-
-                void Navigation.onSmartConditionChange(
-                    JSON.stringify(item?.smart_filters),
-                )
-            } else {
-                elements.smartFilters.value = ''
-                void Navigation.onSmartTypeChange()
-                void Navigation.onSmartConditionChange()
+            if (option) {
+                option.selected = true
             }
+
+            if (typeof item.smart_filters !== 'string') {
+                item.smart_filters = JSON.stringify(item.smart_filters)
+            }
+
+            void Navigation.onSmartConditionChange(item.smart_filters)
         } else {
+            elements.smartFilters.value = ''
             void Navigation.onSmartTypeChange()
             void Navigation.onSmartConditionChange()
         }

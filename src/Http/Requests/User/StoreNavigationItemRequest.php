@@ -35,7 +35,7 @@ class StoreNavigationItemRequest extends FormRequest
      */
     public function safeWithCasts(): ValidatedInput
     {
-        if ($this->smart_condition) {
+        if ($this->type === NavigationTypeEnum::SMART->value && $this->smart_condition) {
             /** @var TaxonomyService $taxonomyService */
             $taxonomyService = app(TaxonomyService::class);
 
