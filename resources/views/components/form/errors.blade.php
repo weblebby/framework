@@ -1,7 +1,7 @@
 @aware(['name', 'bag' => 'default'])
 
-@php($name = FormComponent::dottedName($name))
+@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
-@if ($name && $errors->{$bag}->has($name))
-    <span class="fd-text-xs fd-text-red-500">{{ $errors->{$bag}->first($name) }}</span>
+@if ($name && $errors->{$bag}->has($dottedName))
+    <span class="fd-text-xs fd-text-red-500">{{ $errors->{$bag}->first($dottedName) }}</span>
 @endif

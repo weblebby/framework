@@ -1,5 +1,6 @@
 import api from '../../_api.js'
 import { Tab } from '../../_tab.js'
+import ConditionalField from '../../_conditional-field.js'
 
 const templateSelect = document.getElementById('template')
 const templateOptions = templateSelect.querySelectorAll('option')
@@ -26,18 +27,22 @@ templateSelect.addEventListener('change', () => {
     })
 
     const setTabs = async () => {
+        if (!selectedOption.value) return
+
         const response = await fetchPostFields(
             templateSelect.dataset.postType,
             selectedOption.value,
         )
 
         response.tabs.forEach(tab => {
-            Tab.create({
+            const createdTab = Tab.create({
                 container: 'post',
                 id: tab.id,
                 title: tab.title,
                 content: tab.fields,
             })
+
+            ConditionalField.listen(createdTab.content)
         })
     }
 

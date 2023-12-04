@@ -77,7 +77,7 @@
                         <x-feadmin::card.title>@lang('Şablon')</x-feadmin::card.title>
                         <x-feadmin::form.group name="template">
                             <x-feadmin::form.select data-post-type="{{ $model::class }}">
-                                <x-feadmin::form.option value="default">Varsayılan</x-feadmin::form.option>
+                                <x-feadmin::form.option value="">Varsayılan</x-feadmin::form.option>
                                 @foreach ($templates as $template)
                                         <?php /** @var \Feadmin\Concerns\Theme\Template $template */ ?>
                                     <x-feadmin::form.option

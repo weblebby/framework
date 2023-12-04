@@ -1,5 +1,11 @@
 import TextEditor from './_ckeditor.js'
 import Form from './_form.js'
+import ConditionalField from './_conditional-field.js'
+import {
+    convertDottedToInputName,
+    inputNameToDotted,
+    inputNameToId,
+} from './lib/utils.js'
 
 const RepeatedField = {
     itemSelector: '[data-repeated-field-item]',
@@ -10,6 +16,7 @@ const RepeatedField = {
     addRowSelector: '[data-repeated-field-add-row]',
     removeRowSelector: '[data-repeated-field-remove-row]',
     emptyInputSelector: '[data-repeated-field-empty-input]',
+    formGroupSelector: '[data-form-group]',
 
     findContainer: containerName => {
         return document.querySelector(
@@ -17,57 +24,140 @@ const RepeatedField = {
         )
     },
 
+    getRowsElement: container => {
+        return container.querySelector(RepeatedField.rowsSelector)
+    },
+
+    getRowsCount: container => {
+        return RepeatedField.getRowsElement(container).children.length
+    },
+
+    getMaxRow: container => {
+        const maxRow = Number(container.dataset.maxRow)
+        return maxRow === -1 ? Infinity : maxRow
+    },
+
+    getIndexOfRow(row) {
+        const rows = row.closest(RepeatedField.rowsSelector)
+        return Array.from(rows.children).indexOf(row)
+    },
+
+    /*parseName(row, key) {
+const container = row.closest(RepeatedField.itemSelector)
+
+const index = RepeatedField.getIndexOfRow(row)
+const prefix = container.dataset.repeatedFieldItem
+const dottedPrefix = inputNameToDotted(prefix)
+
+const dottedName = [dottedPrefix, index, key].join('.')
+const computedName = convertDottedToInputName(dottedName)
+const id = inputNameToId(computedName)
+
+const parentRow = container.closest(RepeatedField.rowSelector)
+
+if (parentRow) {
+return RepeatedField.parseName(parentRow, dottedName)
+}
+
+return { id, key, computedName, dottedName }
+},*/
+
+    parseName(row, key, dottedName = null) {
+        const container = row.closest(RepeatedField.itemSelector)
+
+        const index = RepeatedField.getIndexOfRow(row)
+
+        if (!dottedName) {
+            dottedName = row.querySelector(`[data-form-field-key="${key}"]`)
+                .dataset.originalFormGroup
+        }
+
+        dottedName = dottedName.replace(
+            /(.*)(\*.*)/,
+            (match, group1, group2) => {
+                return group1 + group2.replace(/\*/, index)
+            },
+        )
+
+        const computedName = convertDottedToInputName(dottedName)
+        const id = inputNameToId(computedName)
+
+        const parentRow = container.closest(RepeatedField.rowSelector)
+
+        if (parentRow) {
+            return RepeatedField.parseName(parentRow, key, dottedName)
+        }
+
+        return { id, key, computedName, dottedName }
+    },
+
+    getTemplate: container => {
+        const templates = container.querySelectorAll(
+            RepeatedField.templateSelector,
+        )
+
+        return templates[templates.length - 1]
+    },
+
     addRow: options => {
-        const container = RepeatedField.findContainer(options.container)
-        const rows = container.querySelector(RepeatedField.rowsSelector)
+        const itemContainer =
+            typeof options.itemContainer === 'string'
+                ? RepeatedField.findContainer(options.itemContainer)
+                : options.itemContainer
 
-        let maxRow = Number(container.dataset.maxRow)
-        maxRow = maxRow === -1 ? Infinity : maxRow
+        const rowsEl = RepeatedField.getRowsElement(itemContainer)
+        const maxRow = RepeatedField.getMaxRow(itemContainer)
 
-        if (rows.children.length >= maxRow) {
+        if (RepeatedField.getRowsCount(itemContainer) >= maxRow) {
             return
         }
 
-        const index = rows.children.length
-        const template = document.querySelector(RepeatedField.templateSelector)
+        const template = RepeatedField.getTemplate(itemContainer)
+        const row = template.cloneNode(true).content.children[0]
 
-        const row = document.createElement('div')
-        row.innerHTML = template.innerHTML
-        row.querySelectorAll('[name]').forEach(input => {
-            let originalName = input.getAttribute('name')
-            let newName = `${container.dataset.repeatedFieldItem}[${index}][${originalName}]`
-            const dottedName = `${container.dataset.repeatedFieldItem}.${index}.${originalName}`
+        rowsEl.appendChild(row)
+        RepeatedField.onAddRow(row, options)
 
-            if (originalName.includes('[]')) {
-                originalName = originalName.replace('[]', '')
-                newName = `${container.dataset.repeatedFieldItem}[${index}][${originalName}][]`
-            }
+        if (RepeatedField.getRowsCount(itemContainer) >= maxRow) {
+            RepeatedField.disableAddRowButton(itemContainer)
+        }
 
-            input.setAttribute('value', options?.fields?.[originalName] || '')
-            input.setAttribute('name', newName)
-            input.setAttribute(
-                'id',
-                newName
-                    .replace(/\[]/g, '')
-                    .replace(/\[/g, '_')
-                    .replace(/]/g, ''),
-            )
+        Object.keys(options?.fields || {}).forEach(key => {
+            const value = options?.fields?.[key]
 
-            if (options?.errors?.[dottedName]) {
-                const errorSpan = document.createElement('span')
-                errorSpan.classList.add('fd-text-xs', 'fd-text-red-500')
-                errorSpan.innerText = options.errors[dottedName][0]
+            if (Array.isArray(value)) {
+                value.forEach((value, index) => {
+                    const childItemContainers = itemContainer.querySelectorAll(
+                        RepeatedField.singleItemSelector.replace(
+                            ':id',
+                            `${options?.dottedName}.*.${key}`,
+                        ),
+                    )
 
-                input.parentNode.parentNode.appendChild(errorSpan)
+                    /*console.log({
+dottedName: `${options?.dottedName}.*.${key}`,
+value,
+index,
+key,
+childItemContainers,
+optionsIndex: options?.index,
+errorName: `${options?.dottedName}.${options?.index}.${key}.${index}.`,
+errors: options?.errors,
+})*/
+
+                    const childItemContainer =
+                        childItemContainers[options.index]
+
+                    RepeatedField.addRow({
+                        itemContainer: childItemContainer,
+                        fields: value,
+                        errors: options?.errors,
+                        dottedName: `${options?.dottedName}.*.${key}`,
+                        index,
+                    })
+                })
             }
         })
-
-        rows.appendChild(row)
-        RepeatedField.onAddRow(row)
-
-        if (rows.children.length >= maxRow) {
-            RepeatedField.disableAddRowButton(options.container)
-        }
     },
 
     removeRow: e => {
@@ -86,33 +176,101 @@ const RepeatedField = {
         RepeatedField.enableAddRowButton(containerName)
 
         const row = e.target.closest(RepeatedField.rowSelector)
-        row.parentNode.remove()
+        row.remove()
+
+        RepeatedField.resetRowIndexes(rows)
     },
 
-    onAddRow: row => {
+    setRowIndexes: (row, options) => {
+        row.querySelectorAll('[name]').forEach(input => {
+            const formGroup = input.closest(RepeatedField.formGroupSelector)
+
+            const { id, key, computedName, dottedName } =
+                RepeatedField.parseName(row, formGroup.dataset.formFieldKey)
+
+            input.setAttribute('name', computedName)
+            input.setAttribute('id', id)
+
+            const value = options?.fields?.[key] || ''
+            if (value) {
+                input.setAttribute('value', value)
+                input?._CKEDITOR?.then(editor => {
+                    editor.setData(value)
+                })
+            }
+
+            formGroup.dataset.formGroup = dottedName
+
+            const formLabel = formGroup.querySelector('label')
+            if (formLabel) formLabel.setAttribute('for', id)
+
+            if (
+                options?.errors?.[dottedName] &&
+                !formGroup.classList.contains('fd-has-error')
+            ) {
+                formGroup.classList.add('fd-has-error')
+
+                const errorSpan = document.createElement('span')
+                errorSpan.classList.add('fd-text-xs', 'fd-text-red-500')
+                errorSpan.innerText = options.errors[dottedName][0]
+
+                input.parentNode.parentNode.appendChild(errorSpan)
+            }
+        })
+
+        row.querySelectorAll(ConditionalField.containerSelector).forEach(
+            conditionalFieldContainer => {
+                const conditions = ConditionalField.parseConditions(
+                    conditionalFieldContainer,
+                )
+
+                const computedConditions = conditions.map(condition => {
+                    const { id } = RepeatedField.parseName(row, condition.key)
+
+                    return {
+                        ...condition,
+                        key: id,
+                    }
+                })
+
+                conditionalFieldContainer.dataset.conditionalFieldItem =
+                    JSON.stringify(computedConditions)
+            },
+        )
+    },
+
+    resetRowIndexes: rows => {
+        rows.querySelectorAll(RepeatedField.rowSelector).forEach(row => {
+            RepeatedField.setRowIndexes(row)
+        })
+    },
+
+    onAddRow: (row, options) => {
+        RepeatedField.setRowIndexes(row, options)
+        RepeatedField.initPlugins(row)
+        RepeatedField.listenRemoveRowButton(row)
+        RepeatedField.removeEmptyInputIfNoRows(
+            row.closest(RepeatedField.rowsSelector),
+        )
+    },
+
+    initPlugins: row => {
+        row.querySelectorAll(TextEditor.selector).forEach(input => {
+            TextEditor.init(input)
+        })
+
+        row.querySelectorAll(Form.imageSelector).forEach(container => {
+            Form.handleImageInput(container.querySelector('input[type="file"]'))
+        })
+
+        ConditionalField.listen(row)
+    },
+
+    listenRemoveRowButton: row => {
         const removeRowButton = row.querySelector(
             RepeatedField.removeRowSelector,
         )
         removeRowButton.addEventListener('click', RepeatedField.removeRow)
-
-        const rows = row.closest(RepeatedField.rowsSelector)
-
-        rows.querySelectorAll(TextEditor.selector).forEach(input => {
-            TextEditor.init(input)
-        })
-
-        rows.querySelectorAll(Form.imageSelector).forEach(container => {
-            Form.handleImageInput(container.querySelector('input[type="file"]'))
-        })
-
-        if (rows.children.length > 0) {
-            rows.classList.remove('fd-hidden')
-
-            RepeatedField.removeEmptyInput(
-                row.closest(RepeatedField.itemSelector).dataset
-                    .repeatedFieldItem,
-            )
-        }
     },
 
     enableAddRowButton: containerName => {
@@ -123,12 +281,22 @@ const RepeatedField = {
         button.removeAttribute('disabled')
     },
 
-    disableAddRowButton: containerName => {
-        const button = RepeatedField.findContainer(containerName).querySelector(
-            RepeatedField.addRowSelector,
-        )
+    disableAddRowButton: itemContainer => {
+        const button = itemContainer.querySelector(RepeatedField.addRowSelector)
 
         button.setAttribute('disabled', 'disabled')
+    },
+
+    removeEmptyInputIfNoRows: rows => {
+        if (rows.children.length <= 0) {
+            return
+        }
+
+        rows.classList.remove('fd-hidden')
+
+        RepeatedField.removeEmptyInput(
+            rows.closest(RepeatedField.itemSelector).dataset.repeatedFieldItem,
+        )
     },
 
     addEmptyInput: containerName => {
@@ -151,15 +319,16 @@ const RepeatedField = {
     },
 }
 
-const addRowButtons = document.querySelectorAll(RepeatedField.addRowSelector)
-addRowButtons.forEach(button => {
-    button.addEventListener('click', e => {
-        e.preventDefault()
+document.addEventListener('click', e => {
+    const button = e.target.closest(RepeatedField.addRowSelector)
+    if (!button) return
 
-        RepeatedField.addRow({
-            container: button.closest(RepeatedField.itemSelector).dataset
-                .repeatedFieldItem,
-        })
+    e.preventDefault()
+
+    const itemContainer = button.closest(RepeatedField.itemSelector)
+
+    RepeatedField.addRow({
+        itemContainer,
     })
 })
 

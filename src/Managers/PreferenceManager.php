@@ -4,15 +4,19 @@ namespace Feadmin\Managers;
 
 use Exception;
 use Feadmin\Concerns\Fieldable;
+use Feadmin\Concerns\HasFieldValidations;
 use Feadmin\Enums\FieldTypeEnum;
 use Feadmin\Items\Field\FieldItem;
 use Feadmin\Items\Field\RepeatedFieldItem;
 use Feadmin\Models\Preference;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
 class PreferenceManager
 {
+    use HasFieldValidations;
+
     protected string $currentNamespace;
 
     protected string $currentBag;
@@ -61,11 +65,9 @@ class PreferenceManager
 
     public function add(Fieldable $field): self
     {
-        if ($field instanceof FieldItem || $field instanceof RepeatedFieldItem) {
-            $field->name("{$this->currentNamespace}::{$this->currentBag}->{$field['key']}");
-        }
+        $this->setFieldName($field);
 
-        if (! is_array($field)) {
+        if (!is_array($field)) {
             $field->position(count($this->getCurrentFields()) * 10);
         }
 
@@ -100,17 +102,26 @@ class PreferenceManager
         [$preference, $field] = $this->find($rawKey);
 
         if ($preference instanceof Collection) {
-            return $preference->map(
-                fn (Collection $preferences) => $preferences->map(
-                    fn (array $fieldAndPreference) => $this->getValue(
-                        $fieldAndPreference['preference'],
-                        $fieldAndPreference['field'],
-                    )
-                )->toArray()
-            )->toArray();
+            $map = function (array $preferenceAndField) use ($default, &$map) {
+                if (!isset($preferenceAndField['preference']) || !isset($preferenceAndField['field'])) {
+                    foreach ($preferenceAndField as $key => $value) {
+                        $preferenceAndField[$key] = $map($value);
+                    }
+
+                    return $preferenceAndField;
+                }
+
+                return $this->getFieldValue(
+                    $preferenceAndField['preference'],
+                    $preferenceAndField['field'],
+                    $default,
+                );
+            };
+
+            return $preference->map($map)->toArray();
         }
 
-        return $this->getValue($preference, $field, $default);
+        return $this->getFieldValue($preference, $field, $default);
     }
 
     public function set(array $data): array
@@ -119,6 +130,7 @@ class PreferenceManager
 
         foreach ($data as $rawKey => $value) {
             [$preference, $field] = $this->find($rawKey);
+            $field = (clone $field)->name($rawKey);
 
             if ($field['type'] === FieldTypeEnum::REPEATED) {
                 $saved = array_merge($saved, $this->setRepeatedField($preference, $field, $value));
@@ -126,7 +138,7 @@ class PreferenceManager
                 continue;
             }
 
-            $saved[] = $this->setSingleField($preference, $field, $value);
+            $saved[] = $this->setField($preference, $field, $value);
         }
 
         return array_filter($saved);
@@ -135,29 +147,10 @@ class PreferenceManager
     public function find(string $rawKey): array
     {
         [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
-        $field = $this->field($namespace, $bag, $key);
+        $field = $this->field($rawKey);
 
         if (($field['type'] ?? null) === FieldTypeEnum::REPEATED) {
-            $preferences = $this->preferences
-                ->where('namespace', $namespace)
-                ->where('bag', $bag)
-                ->where(fn (Preference $preference) => str_contains($preference->key, $key))
-                ->groupBy(fn (Preference $preference) => explode('.', $preference->key)[1])
-                ->map(function (Collection $preferences) {
-                    return $preferences->mapWithKeys(function (Preference $preference) {
-                        $field = $this->field(
-                            $preference->namespace,
-                            $preference->bag,
-                            $preference->key
-                        );
-
-                        $key = explode('.', $preference->key)[2];
-
-                        return [$key => compact('preference', 'field')];
-                    });
-                });
-
-            return [$preferences, $field];
+            return $this->findFromRepeatedPreference($field, $rawKey);
         }
 
         $foundPreference = $this->preferences
@@ -169,8 +162,31 @@ class PreferenceManager
         return [$foundPreference, $field];
     }
 
-    public function field(string $namespace, string $bag, string $key): ?Fieldable
+    protected function findFromRepeatedPreference(Fieldable $field, string $rawKey): array
     {
+        [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
+
+        $preferences = $this->preferences
+            ->where('namespace', $namespace)
+            ->where('bag', $bag)
+            ->where(fn(Preference $preference) => str_contains($preference->key, $key))
+            ->mapWithKeys(function (Preference $preference) use ($rawKey) {
+                $field = $this->field($preference->getFullKey());
+
+                $key = str_replace($rawKey, '', $preference->getFullKey());
+                $key = ltrim($key, '.');
+
+                return [$key => compact('preference', 'field')];
+            })
+            ->undot();
+
+        return [$preferences, $field];
+    }
+
+    public function field(string $rawKey): ?Fieldable
+    {
+        [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
+
         $preferences = $this->namespaces($namespace);
 
         if (is_null($preferences)) {
@@ -184,10 +200,10 @@ class PreferenceManager
         }
 
         if (str_contains($key, '.')) {
-            return $this->getRepeatedField($bag, $key);
+            return $this->findFromRepeatedFieldByKey($bag['fields'], $rawKey);
         }
 
-        return $this->getField($bag, $key);
+        return $this->findFieldByKey($bag['fields'], $key);
     }
 
     public function fields(string $namespace, string $bag): Collection
@@ -197,39 +213,146 @@ class PreferenceManager
             ->values();
     }
 
-    public function fieldsForValidation(string $namespace, string $bag): array
+    protected function createNewPreference(Fieldable $field, array $data): Preference
     {
-        $rules = [];
-        $attributes = [];
+        [$namespace, $bag, $key] = $this->parseRawKey($field['name']);
 
-        foreach ($this->fields($namespace, $bag) as $field) {
-            if ($field['type'] === FieldTypeEnum::REPEATED) {
-                $this->processRepeatedFieldForValidation($field, $rules, $attributes);
+        /** @var Preference $preference */
+        $preference = Preference::query()->create(array_filter([
+            'namespace' => $namespace,
+            'bag' => $bag,
+            'key' => $key,
+            ...$data,
+        ], fn($value) => filled($value)));
 
-                continue;
-            }
+        return $preference;
+    }
 
-            $attributes[$field['name']] = $field['label'];
+    protected function getFieldValue(?Preference $preference, ?Fieldable $field, mixed $default = null): mixed
+    {
+        if (blank($field['key'] ?? null) || ($field['type'] ?? null) === FieldTypeEnum::REPEATED) {
+            return $default;
+        }
 
-            if ($field['type']?->isEditable() && isset($field['rules'])) {
-                $rules[$field['name']] = $field['rules'];
+        $value = $field['translatable'] ? $preference?->value : $preference?->original_value;
+        $value = $value ?? $field['default'] ?? $default;
+
+        /** @var ?FieldTypeEnum $type */
+        $type = $field['type'] ?? null;
+
+        if ($type?->isUploadable()) {
+            return $preference?->getFirstMediaUrl(conversionName: 'lg') ?? '';
+        }
+
+        if ($type?->isHtmlable()) {
+            return new HtmlString($value);
+        }
+
+        return $value;
+    }
+
+    protected function findFieldByKey(array $fields, string $key): ?Fieldable
+    {
+        $field = head(array_filter($fields, fn($field) => $field['key'] === $key));
+
+        if ($field === false) {
+            return null;
+        }
+
+        return $field;
+    }
+
+    protected function findFromRepeatedFieldByKey(array $fields, string $rawKey): ?Fieldable
+    {
+        foreach ($fields as $field) {
+            $rawKeyToWildcard = preg_replace('/\.\d+\./', '.*.', $rawKey);
+
+            if (str_contains($rawKeyToWildcard, $field['name'])) {
+                $index = str_replace($field['name'] . '.', '', $rawKeyToWildcard);
+
+                if (is_numeric($index)) {
+                    return $field;
+                }
+
+                if ($rawKeyToWildcard !== $field['name'] && $field instanceof RepeatedFieldItem) {
+                    return $this->findFromRepeatedFieldByKey($field['fields'], $rawKey);
+                }
+
+                return $field;
             }
         }
 
-        return compact('rules', 'attributes');
+        return null;
     }
 
-    protected function setRepeatedField(Collection $preferences, Fieldable $field, ?array $rows): array
+    protected function getCurrentFields(): array
+    {
+        return $this->namespaces[$this->currentNamespace][$this->currentBag]['fields'] ?? [];
+    }
+
+    protected function addMissingNamespaceToRawKey(string $rawKey): string
+    {
+        if (!str_contains($rawKey, '::')) {
+            $rawKey = "{$this->currentNamespace}::{$rawKey}";
+        }
+
+        return $rawKey;
+    }
+
+    protected function parseRawKey(string $rawKey): array
+    {
+        if (!str_contains($rawKey, '->')) {
+            throw new Exception(
+                sprintf('Invalid preference key [%s]. Please use the following format: namespace::bag->key', $rawKey)
+            );
+        }
+
+        $rawKey = $this->addMissingNamespaceToRawKey($rawKey);
+
+        [$namespace, $bagAndKey] = explode('::', $rawKey);
+        [$bag, $key] = explode('->', $bagAndKey, 2);
+
+        return [$namespace, $bag, $key];
+    }
+
+    protected function setFieldName(Fieldable $field, string $parentKey = null): void
+    {
+        if (method_exists($field, 'name')) {
+            if (is_null($parentKey)) {
+                $field->name("{$this->currentNamespace}::{$this->currentBag}->{$field['key']}");
+            } else {
+                $field->name("{$parentKey}.*.{$field['key']}");
+            }
+        }
+
+        if (method_exists($field, 'fields')) {
+            collect($field['fields'])->each(function (Fieldable $child) use ($field) {
+                $this->setFieldName($child, $field['name']);
+            });
+        }
+    }
+
+    protected function setRepeatedField(Collection $preferences, Fieldable $field, array|null $rows): array
     {
         $saved = [];
 
-        $preferences->each(function (Collection $preferences, string $index) use ($rows) {
+        $preferences->each(function (array $preferences, string $index) use ($rows) {
             $row = $rows[$index] ?? null;
 
             if (is_null($row)) {
-                $preferences->each(function (array $preferenceAndField) {
-                    $preferenceAndField['preference']->delete();
-                });
+                $map = function (array $preferenceAndField) use (&$map) {
+                    if (!isset($preferenceAndField['preference']) || !isset($preferenceAndField['field'])) {
+                        foreach ($preferenceAndField as $key => $value) {
+                            $preferenceAndField[$key] = $map($value);
+                        }
+
+                        return $preferenceAndField;
+                    }
+
+                    return $preferenceAndField['preference'];
+                };
+
+                collect($preferences)->map($map)->dot()->each->delete();
             }
         });
 
@@ -249,7 +372,7 @@ class PreferenceManager
         return $saved;
     }
 
-    protected function setSingleField(?Preference $preference, Fieldable $field, mixed $value): ?Preference
+    protected function setField(?Preference $preference, Fieldable $field, mixed $value): ?Preference
     {
         $valueless = $preference && ($field['type'] ?? null)?->isValueless();
         $value = $valueless ? null : $value;
@@ -276,110 +399,5 @@ class PreferenceManager
         }
 
         return null;
-    }
-
-    protected function createNewPreference(Fieldable $field, array $data): Preference
-    {
-        [$namespace, $bag, $key] = $this->parseRawKey($field['name']);
-
-        /** @var Preference $preference */
-        $preference = Preference::query()->create(array_filter([
-            'namespace' => $namespace,
-            'bag' => $bag,
-            'key' => $key,
-            ...$data,
-        ]));
-
-        return $preference;
-    }
-
-    protected function getValue(?Preference $preference, ?Fieldable $field, mixed $default = null): mixed
-    {
-        if (blank($field['key'] ?? null) || ($field['type'] ?? null) === FieldTypeEnum::REPEATED) {
-            return $default;
-        }
-
-        $value = $field['translatable'] ? $preference?->value : $preference?->original_value;
-        $value = $value ?? $field['default'] ?? $default;
-
-        /** @var ?FieldTypeEnum $type */
-        $type = $field['type'] ?? null;
-
-        if ($type?->isUploadable()) {
-            return $preference?->getFirstMediaUrl(conversionName: 'lg') ?? '';
-        }
-
-        if ($type?->isHtmlable()) {
-            return new HtmlString($value);
-        }
-
-        return $value;
-    }
-
-    protected function parseRawKey(string $rawKey): array
-    {
-        if (! str_contains($rawKey, '->')) {
-            throw new Exception(
-                sprintf('Invalid preference key [%s]. Please use the following format: namespace::bag->key', $rawKey)
-            );
-        }
-
-        if (! str_contains($rawKey, '::')) {
-            $rawKey = "default::{$rawKey}";
-        }
-
-        [$namespace, $bagAndKey] = explode('::', $rawKey);
-        [$bag, $key] = explode('->', $bagAndKey, 2);
-
-        return [$namespace, $bag, $key];
-    }
-
-    protected function getField(array $bag, string $key): ?Fieldable
-    {
-        $field = head(array_filter($bag['fields'], fn ($field) => $field['key'] === $key));
-
-        if ($field === false) {
-            return null;
-        }
-
-        return $field;
-    }
-
-    protected function getRepeatedField(array $bag, string $key): ?Fieldable
-    {
-        [$repeatedKey, $fieldIndex, $fieldKey] = explode('.', $key);
-        $repeatedField = head(array_filter($bag['fields'], fn ($field) => $field['key'] === $repeatedKey));
-
-        if ($repeatedField === false) {
-            return null;
-        }
-
-        $field = head(array_filter($repeatedField['fields'], fn ($field) => $field['key'] === $fieldKey));
-
-        if ($field === false) {
-            return null;
-        }
-
-        return (clone $field)->name(
-            implode('.', [$repeatedField['name'], $fieldIndex, $fieldKey])
-        );
-    }
-
-    protected function processRepeatedFieldForValidation(Fieldable $field, array &$rules, array &$attributes): void
-    {
-        $rules[$field['name']] = ['nullable', 'array', "max:{$field['max']}"];
-
-        foreach ($field['field_rules'] as $key => $rule) {
-            $rules[$key] = $rule;
-        }
-
-        foreach ($field['field_labels'] as $key => $label) {
-            $attributes[$key] = $label;
-        }
-    }
-
-    protected function getCurrentFields(): array
-    {
-        return $this->namespaces[$this->currentNamespace][$this->currentBag]['fields'] ?? [];
     }
 }

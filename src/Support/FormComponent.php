@@ -5,6 +5,7 @@ namespace Feadmin\Support;
 use Feadmin\Enums\UnitEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class FormComponent
 {
@@ -13,8 +14,38 @@ class FormComponent
         return $name;
     }
 
-    public static function dottedName(?string $name): ?string
+    public static function dottedToName(?string $name): ?string
     {
+        if (str_contains($name, '.')) {
+            $parts = explode('.', $name);
+            $result = '';
+
+            foreach ($parts as $index => $part) {
+                if ($index === 0) {
+                    $result .= $part;
+                    continue;
+                }
+
+                if ($part === '*') {
+                    $result .= '[]';
+                    continue;
+                }
+
+                $result .= "[{$part}]";
+            }
+
+            return $result;
+        }
+
+        return $name;
+    }
+
+    public static function nameToDotted(?string $name): ?string
+    {
+        if (str_contains($name, '.')) {
+            return $name;
+        }
+
         if ($name) {
             return str_replace(['[]', ']', '['], ['', '', '.'], $name);
         }
@@ -22,15 +53,31 @@ class FormComponent
         return null;
     }
 
+    public static function nameToDottedWithoutEmptyWildcard(?string $name): ?string
+    {
+        $dottedName = static::nameToDotted($name);
+        
+        if (str_contains($dottedName, '.*')) {
+            $pattern = '/(.*)(\.\*)([^.]*$)/';
+            $replacement = '$1$3';
+
+            $dottedName = preg_replace($pattern, $replacement, $dottedName, 1);
+        }
+
+        return $dottedName;
+    }
+
     public static function id(?string $id, string $bag = null): ?string
     {
         if ($id) {
-            $id = str_replace('[]', '', $id);
-            $id = str_replace(['[', ']'], ['_', ''], $id);
-        }
+            $shouldUseBag = $bag !== 'default' && !is_null($bag);
 
-        if ($bag !== 'default' && !is_null($bag)) {
-            $id = "{$bag}_{$id}";
+            $id = str_replace('.', '_', self::nameToDotted($id));
+            $id = str_replace('_*', '', $id);
+
+            if ($shouldUseBag) {
+                $id = "{$bag}_{$id}";
+            }
         }
 
         return $id ?? null;

@@ -66,6 +66,14 @@
     .btn--loading [data-spinner] {
         @apply fd-block;
     }
+
+    [data-form-group].fd-has-error input, textarea {
+        @apply fd-border-red-500;
+    }
+
+    [data-form-group].fd-has-error label {
+        @apply fd-text-red-500;
+    }
 }
 
 #page .ck-editor__editable {

@@ -6,6 +6,7 @@ enum FieldTypeEnum: string
 {
     case REPEATED = 'repeated';
     case GROUPED = 'grouped';
+    case CONDITIONAL = 'conditional';
     case PARAGRAPH = 'paragraph';
     case TEXT = 'text';
     case TEL = 'tel';
@@ -34,6 +35,7 @@ enum FieldTypeEnum: string
             self::PARAGRAPH,
             self::REPEATED,
             self::GROUPED,
+            self::CONDITIONAL,
         ];
     }
 
@@ -71,7 +73,7 @@ enum FieldTypeEnum: string
 
     public function isEditable(): bool
     {
-        return ! $this->isInformational();
+        return !$this->isInformational();
     }
 
     public function isLabelFree(): bool

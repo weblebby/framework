@@ -20,8 +20,10 @@ class Page extends Post
 
     public static function getPostSections(): PostSectionsItem
     {
+        return PostSectionsItem::make();
+        
         return PostSectionsItem::make()
-            ->add('content', __('Ürün Sekmeleri'), [
+            ->add('product', __('Ürün Sekmeleri'), [
                 FieldItem::repeated('tabs')
                     ->label(__('Sekmeler'))
                     ->hint(__('Sekme ekleyin.'))

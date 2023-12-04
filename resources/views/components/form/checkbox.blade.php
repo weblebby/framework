@@ -1,8 +1,9 @@
 @aware(['name', 'bind', 'label', 'bag' => 'default'])
 @aware(['default' => $bind->$name ?? null])
 
-@php($id = FormComponent::id($name, $bag))
-@php($dottedName = FormComponent::dottedName($name))
+@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
+@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
+@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
 <label class="fd-inline-flex fd-items-center">
     <input
@@ -24,8 +25,7 @@
                         focus:fd-ring
                         focus:fd-ring-offset-0
                         focus:fd-ring-sky-200
-                        focus:fd-ring-opacity-50')
-                ->class($dottedName && $errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}
+                        focus:fd-ring-opacity-50') }}
     >
     @if ($label ?? false)
         <span class="fd-ml-2">{{ $label }}</span>

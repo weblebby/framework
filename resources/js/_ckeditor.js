@@ -4,7 +4,7 @@ const TextEditor = {
     selector: '[data-ckeditor]',
 
     init: element => {
-        ClassicEditor.create(element)
+        element._CKEDITOR = ClassicEditor.create(element)
     },
 }
 

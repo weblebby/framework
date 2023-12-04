@@ -19,6 +19,10 @@ export const Tab = {
     },
 
     content: (container, id) => {
+        if (!id.startsWith('tab-')) {
+            id = `tab-${id}`
+        }
+
         return container.querySelector(
             Tab.singleContentSelector.replace(':for', id),
         )
@@ -104,6 +108,11 @@ export const Tab = {
         const lastButton = buttons[buttons.length - 1]
 
         Tab.listenButton(lastButton)
+
+        return {
+            button: lastButton,
+            content: Tab.content(container, tab.id),
+        }
     },
 }
 

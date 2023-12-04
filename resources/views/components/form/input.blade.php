@@ -9,8 +9,9 @@
 
 @aware(['default' => $bind->$name ?? request($name)])
 
-@php($id = FormComponent::id($name, $bag))
-@php($dottedName = FormComponent::dottedName($name))
+@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
+@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
+@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
 <div class="fd-flex fd-items-center">
     @if ($prefix)
@@ -34,8 +35,7 @@
             focus:fd-ring-opacity-50
             read-only:fd-opacity-70
             read-only:fd-bg-zinc-200
-            fd-transition')
-        ->class($dottedName && $errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}>
+            fd-transition') }}>
     @if ($suffix)
         <x-feadmin::form.prefix class="-fd-ml-[1px] fd-rounded-r">{{ $suffix }}</x-feadmin::form.prefix>
     @endif

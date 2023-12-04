@@ -6,8 +6,9 @@
 
 @aware(['default' => $bind->$name ?? request($name)])
 
-@php($id = FormComponent::id($name, $bag))
-@php($dottedName = FormComponent::dottedName($name))
+@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
+@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
+@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
 <select
         id="{{ $id }}"
@@ -21,8 +22,7 @@
                 focus:fd-border-sky-300
                 focus:fd-ring
                 focus:fd-ring-sky-200
-                focus:fd-ring-opacity-50')
-            ->class($dottedName && $errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}
+                focus:fd-ring-opacity-50') }}
 >
     {{ $slot }}
 </select>

@@ -1,10 +1,12 @@
 @props(['field'])
 
-@php ($default = array_values(old($field['name'], $field['default'] ?? []) ?: []))
+@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($field['name']))
+@php($fieldItemName = \Feadmin\Support\FormComponent::nameToDottedWithoutEmptyWildcard($field['name']))
+@php ($default = array_values(old($dottedName, $field['default'] ?? []) ?: []))
 
 <div
         class="fd-border fd-rounded fd-p-3 fd-space-y-3"
-        data-repeated-field-item="{{ $field['name'] }}"
+        data-repeated-field-item="{{ $fieldItemName }}"
         data-max-row="{{ $field['max'] ?? -1 }}"
 >
     <div class="fd-flex fd-items-center fd-justify-between fd-gap-2">
@@ -30,17 +32,17 @@
     </div>
     <div class="fd-hidden fd-space-y-3" data-repeated-field-rows></div>
     <template data-repeated-field-template>
-        <div class="fd-border fd-rounded fd-p-3 fd-space-y-3" data-repeated-field-row>
-            {{ $slot }}
+        <div class="fd-border fd-rounded fd-p-3 fd-relative" data-repeated-field-row>
+            <div class="fd-space-y-3">
+                {{ $slot }}
+            </div>
             <x-feadmin::button
+                    class="fd-absolute fd-right-0 fd-top-0 -fd-translate-y-1/2 fd-translate-x-1/2"
                     type="button"
                     variant="danger"
                     icon="x"
-                    size="sm"
                     :data-repeated-field-remove-row="true"
-            >
-                @lang('Kaldır')
-            </x-feadmin::button>
+            />
         </div>
     </template>
 </div>
@@ -50,9 +52,11 @@
       document.addEventListener("DOMContentLoaded", () => {
           @foreach ($default as $index => $value)
           window.Feadmin.RepeatedField.addRow({
-            container: @json($field['name']),
+            itemContainer: @json($fieldItemName),
             fields: @json($value),
-            errors: @json($errors->get(sprintf('%s.%d.*', $field['name'], $index))),
+            errors: @json($errors->get(sprintf('%s.%d.*', $dottedName, $index))),
+            dottedName: @json($dottedName),
+            index: @json($index),
           });
           @endforeach
       });

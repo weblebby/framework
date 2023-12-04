@@ -1,15 +1,21 @@
-@props(['field'])
+@props(['field', 'withErrors' => true])
 
 @if ($field['type'] === \Feadmin\Enums\FieldTypeEnum::REPEATED)
     <x-feadmin::form.repeated :field="$field">
         @foreach ($field['fields'] as $field)
-            <x-feadmin::form.field :field="$field" />
+            <x-feadmin::form.field :field="$field" :with-errors="false" />
         @endforeach
     </x-feadmin::form.repeated>
+@elseif ($field['type'] === \Feadmin\Enums\FieldTypeEnum::CONDITIONAL)
+    <x-feadmin::form.conditional :field="$field">
+        @foreach ($field['fields'] as $field)
+            <x-feadmin::form.field :field="$field" />
+        @endforeach
+    </x-feadmin::form.conditional>
 @else
     @php($default ??= $field['default'] ?? null)
 
-    <x-feadmin::form.group :name="$field['name']">
+    <x-feadmin::form.group :name="$field['name']" :data-form-field-key="$field['key']" :with-errors="$withErrors">
         <div>
             @if (!$field['type']->isLabelFree())
                 <x-feadmin::form.label>{{ $field['label'] }}</x-feadmin::form.label>
@@ -25,7 +31,7 @@
             @case(\Feadmin\Enums\FieldTypeEnum::TEXT)
             @case(\Feadmin\Enums\FieldTypeEnum::TEL)
             @case(\Feadmin\Enums\FieldTypeEnum::NUMBER)
-                <x-feadmin::form.input :type="$field['type']->value" :default="$default" autofocus />
+                <x-feadmin::form.input :type="$field['type']->value" :default="$default" />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::RICH_TEXT)
                 <x-feadmin::form.textarea :default="$default" data-ckeditor />
@@ -37,7 +43,7 @@
                 <x-feadmin::form.textarea :default="$default" rows="4" autofocus />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::CHECKBOX)
-                <x-feadmin::form.checkbox :default="$default" :label="$field['label']" />
+                <x-feadmin::form.checkbox :default="$default" :label="$field['label']" :value="true" />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::SELECT)
                 <x-feadmin::form.select :default="$default">

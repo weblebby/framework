@@ -1,8 +1,11 @@
-@aware(['name'])
+@aware(['name', 'bag' => 'default'])
 @props(['name', 'image'])
 
+@php($name = \Feadmin\Support\FormComponent::nameToDotted($name))
+@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
+
 <label class="fd-rounded-lg fd-overflow-hidden fd-block fd-cursor-pointer fd-relative" data-form-image>
-    <input type="file" name="{{ $name }}" class="fd-hidden" accept="image/*">
+    <input type="file" id="{{ $id }}" name="{{ $name }}" class="fd-hidden" accept="image/*">
     <div class="fd-h-60" data-image-wrapper>
         @if ($image ?? null)
             <img class="fd-w-full fd-h-full fd-object-cover" src="{{ $image }}" alt="Uploaded image">

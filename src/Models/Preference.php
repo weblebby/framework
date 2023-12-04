@@ -35,4 +35,9 @@ class Preference extends Model implements HasMedia
         $this->addMediaConversion('lg')->width(1920)->height(1080);
         $this->addMediaConversion('sm')->width(400)->height(225);
     }
+
+    public function getFullKey(): string
+    {
+        return "{$this->namespace}::{$this->bag}->{$this->key}";
+    }
 }

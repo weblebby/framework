@@ -11,8 +11,9 @@
 
 @props(['options' => null])
 
-@php($id = FormComponent::id($name, $bag))
-@php($dottedName = FormComponent::dottedName($name))
+@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
+@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
+@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
 <div class="fd-flex fd-items-center" data-tagify-container>
     @if ($prefix)
@@ -22,7 +23,7 @@
         ->merge([
             'type' => $type,
             'data-tagify' => is_array($options) ? json_encode($options) : true,
-            'value' => FormComponent::value(isset($name) ? old($dottedName, $default) : $default),
+            'value' => \Feadmin\Support\FormComponent::value(isset($name) ? old($dottedName, $default) : $default),
             'id' => $id ?? false,
             'name' => $name ?? false,
         ])
@@ -33,8 +34,7 @@
             'fd-border-gray-300',
             'fd-shadow-sm',
             'fd-transition'
-        ])
-        ->class($dottedName && $errors->{$bag}->has($dottedName) ? 'fd-border-red-500' : '') }}>
+        ]) }}>
     @if ($suffix)
         <x-feadmin::form.prefix class="-fd-ml-[1px] fd-rounded-r">{{ $suffix }}</x-feadmin::form.prefix>
     @endif

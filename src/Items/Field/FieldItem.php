@@ -7,8 +7,10 @@ use Exception;
 use Feadmin\Concerns\Fieldable;
 use Feadmin\Concerns\HasArray;
 use Feadmin\Enums\FieldTypeEnum;
+use Feadmin\Support\FormComponent;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Validation\Rule;
 use JsonSerializable;
 
 class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSerializable
@@ -43,6 +45,19 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
     public static function grouped(string $key): GroupedFieldItem
     {
         return new GroupedFieldItem($key);
+    }
+
+    public static function conditional(string $key, string $value, array $fields): ConditionalFieldItem
+    {
+        $conditions = [
+            'key' => $key,
+            'value' => $value,
+            'operator' => '===',
+        ];
+
+        return (new ConditionalFieldItem())
+            ->conditions([$conditions])
+            ->fields($fields);
     }
 
     public static function paragraph(string $text): static
@@ -99,11 +114,12 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
 
     public function __construct(string $key = null)
     {
-        $this->key = $key;
-        $this->name = $key;
+        $this->key = FormComponent::nameToDotted($key);
+
+        $this->name($key);
     }
 
-    public function name(string $name): self
+    public function name(?string $name): self
     {
         $this->name = $name;
 
@@ -143,7 +159,7 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
      */
     public function translatable(bool $translatable = true): self
     {
-        if (! $this->type->isTranslatable()) {
+        if (!$this->type->isTranslatable()) {
             throw new Exception(sprintf('Fieldable type [%s] is not translatable.', $this->type->name));
         }
 
@@ -152,9 +168,13 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
         return $this;
     }
 
-    public function rules(array $rules): self
+    public function rules(array $rules, bool $merge = true): self
     {
-        $this->rules = $rules;
+        if ($merge) {
+            $this->rules = array_merge($this->rules, $rules);
+        } else {
+            $this->rules = $rules;
+        }
 
         return $this;
     }
@@ -162,6 +182,10 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
     public function options(array $options): self
     {
         $this->options = $options;
+
+        if (count($this->options) > 0) {
+            $this->rules[] = Rule::in(array_keys($this->options));
+        }
 
         return $this;
     }

@@ -66,7 +66,13 @@ class RepeatedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, 
 
     public function fields(array $fields): self
     {
-        $this->fields = $fields;
+        $this->fields = collect($fields)
+            ->map(function (Fieldable $field) {
+                $this->setFieldName($field);
+
+                return $field;
+            })
+            ->all();
 
         return $this;
     }
@@ -90,8 +96,12 @@ class RepeatedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, 
         $labels = [];
 
         foreach ($this->fields as $field) {
-            $key = sprintf('%s.*.%s', $this->name, $field['name']);
-            $labels[$key] = $field['label'];
+            if ($field['type']->isInformational()) {
+                continue;
+            }
+
+            // $key = sprintf('%s.*.%s', $this->name, $field['name']);
+            $labels[$field['name']] = $field['label'];
         }
 
         return $labels;
@@ -102,8 +112,12 @@ class RepeatedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, 
         $rules = [];
 
         foreach ($this->fields as $field) {
-            $key = sprintf('%s.*.%s', $this->name, $field['name']);
-            $rules[$key] = $field['rules'];
+            if ($field['type']->isInformational()) {
+                continue;
+            }
+
+            // $key = sprintf('%s.*.%s', $this->name, $field['name']);
+            $rules[$field['name']] = $field['rules'];
         }
 
         return $rules;
@@ -124,5 +138,22 @@ class RepeatedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, 
             'field_rules' => $this->fieldRules(),
             'field_labels' => $this->fieldLabels(),
         ];
+    }
+
+    protected function setFieldName(Fieldable $field, string $parentKey = null): void
+    {
+        if (method_exists($field, 'name')) {
+            $name = is_null($parentKey)
+                ? sprintf('%s.*.%s', $this->name, $field['key'])
+                : "{$parentKey}.*.{$field['key']}";
+
+            $field->name($name);
+        }
+
+        if (method_exists($field, 'fields')) {
+            collect($field['fields'])->each(function (Fieldable $child) use ($field) {
+                $this->setFieldName($child, $field['name'] ?? null);
+            });
+        }
     }
 }
