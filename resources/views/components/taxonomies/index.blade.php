@@ -9,7 +9,7 @@
     @forelse ($taxonomies as $taxonomy)
         <x-feadmin::taxonomies.item :taxonomy="$taxonomy" />
     @empty
-        <div class="fd-text-center fd-text-sm fd-text-zinc-500">
+        <div class="fd-text-sm fd-text-zinc-500">
             @lang('Hiçbir :taxonomy bulunamadı.', ['taxonomy' => Str::lower($taxonomyItem->singularName())])
         </div>
     @endforelse

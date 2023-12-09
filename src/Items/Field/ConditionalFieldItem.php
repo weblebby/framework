@@ -2,13 +2,7 @@
 
 namespace Feadmin\Items\Field;
 
-use ArrayAccess;
-use Feadmin\Concerns\Fieldable;
-use Feadmin\Concerns\HasArray;
 use Feadmin\Enums\FieldTypeEnum;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
-use JsonSerializable;
 
 class ConditionalFieldItem extends FieldItem
 {
@@ -36,6 +30,8 @@ class ConditionalFieldItem extends FieldItem
             'name' => $this->name,
             'conditions' => $this->conditions,
             'fields' => $this->fields,
+            'field_rules' => $this->fieldRules(),
+            'field_labels' => $this->fieldLabels(),
         ]);
     }
 }

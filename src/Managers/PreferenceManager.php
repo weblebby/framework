@@ -369,15 +369,22 @@ class PreferenceManager
 
     protected function setField(?Preference $preference, Fieldable $field, mixed $value): ?Preference
     {
-        $valueless = $preference && ($field['type'] ?? null)?->isValueless();
-        $value = $valueless ? null : $value;
-        $valueKey = $field['translatable'] ? 'value' : 'original_value';
+        $valueColumn = $field['translatable'] && !$field['type']->isValueless() ? 'value' : 'original_value';
 
-        if (is_null($preference) && filled($value)) {
-            return $this->createNewPreference($field, [$valueKey => $value]);
+        if ($field['type']->isUploadable()) {
+            $uploadable = $value;
+            $value = true;
+        } elseif ($field['type']->isValueless()) {
+            $value = null;
         }
 
-        if ($valueless) {
+        if (is_null($preference) && filled($value)) {
+            $preference = $this->createNewPreference($field, [$valueColumn => $value]);
+
+            if ($field['type']->isUploadable()) {
+                $preference->addMedia($uploadable)->toMediaCollection();
+            }
+
             return $preference;
         }
 
@@ -388,7 +395,11 @@ class PreferenceManager
         }
 
         if ($preference) {
-            $preference->update([$valueKey => $value]);
+            if ($field['type']->isUploadable()) {
+                $preference->addMedia($uploadable)->toMediaCollection();
+            } else {
+                $preference->update([$valueColumn => $value]);
+            }
 
             return $preference;
         }

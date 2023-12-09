@@ -4,8 +4,11 @@ namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Feadmin\Facades\Preference;
+use Feadmin\Services\FieldInputService;
+use Feadmin\Services\FieldValidationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\View\View;
 
 class PreferenceController extends Controller
@@ -33,40 +36,25 @@ class PreferenceController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $namespace, string $bag): RedirectResponse
+    public function update(
+        Request                $request,
+        FieldValidationService $fieldValidationService,
+        FieldInputService      $fieldInputService,
+        string                 $namespace,
+        string                 $bag
+    ): RedirectResponse
     {
-        $fields = Preference::fields($namespace, $bag)
-            //->filter(fn($field) => $field['type']->isEditable())
-            ->values();
+        $fields = Preference::fields($namespace, $bag);
 
-        $fieldsForValidation = Preference::fieldsForValidation($fields);
+        $mappedInput = $fieldInputService->mapFieldsWithInput($fields, $request->all());
+        $fieldsForValidation = $fieldValidationService->get($fields, $mappedInput);
 
         $validated = $request->validate(
             $fieldsForValidation['rules'],
             attributes: $fieldsForValidation['attributes'],
         );
 
-        $uploadables = [];
-
-        foreach ($fields as $field) {
-            $value = $validated[$field['name']] ?? null;
-
-            if (is_null($value)) {
-                continue;
-            }
-
-            if ($field['type']->isUploadable()) {
-                $uploadables[$field['name']] = $value;
-            }
-        }
-
-        foreach ($uploadables as $key => $uploadable) {
-            preference([$key => true])[0]
-                ->addMedia($uploadable)
-                ->toMediaCollection();
-
-            unset($validated[$key]);
-        }
+        $validated = Arr::dot($validated);
 
         preference($validated);
 

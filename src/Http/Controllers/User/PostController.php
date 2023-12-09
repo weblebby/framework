@@ -65,6 +65,7 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request): RedirectResponse
     {
+        dd($request->validated());
         $request->postable::query()->create($request->validated());
 
         return to_panel_route('posts.index')->with('message', __('Yazı oluşturuldu'));

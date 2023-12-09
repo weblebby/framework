@@ -63,8 +63,6 @@ class StorePostRequest extends FormRequest
             $rules = array_merge($rules, $fieldValidationService->get($section['fields'], $mappedFields)['rules']);
         }
 
-        dd($rules);
-
         return $rules;
     }
 }

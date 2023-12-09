@@ -67,18 +67,53 @@ class FieldValidationService
 
     protected function validateConditionalField(Fieldable $field, mixed $input, array &$rules, array &$attributes): void
     {
-        foreach ($field['conditions'] as $condition) {
-            foreach ($input as $key => $value) {
-                $conditionKey = sprintf("%d.%s", $key, $condition['key']);
-                $fieldAndValue = Arr::get($input, $conditionKey);
+        foreach ($input ?? [] as $key => $value) {
+            $allConditionsPassed = true;
 
-                if ($fieldAndValue && $fieldAndValue['value'] === $condition['value']) {
-                    foreach ($field['fields'] as $childField) {
-                        dd($value);
-                        $this->validate($childField, $input, $rules, $attributes);
-                    }
+            foreach ($field['conditions'] as $condition) {
+                $conditionIdentifier = sprintf('%s.value', $condition['key']);
+                $inputValue = Arr::get($value, $conditionIdentifier);
+
+                if (!$this->validateCondition($condition['operator'], $inputValue, $condition['value'])) {
+                    $allConditionsPassed = false;
+                    break;
                 }
             }
+
+            if (!$allConditionsPassed) {
+                continue;
+            }
+
+            foreach ($field['fields'] as $childField) {
+                // FIXME: Dont change original object name
+                $childField->name(sprintf('%s.%d.%s', $field['name'], $key, $childField['key']));
+                $this->validate($childField, $value[$childField['key']] ?? [], $rules, $attributes);
+            }
         }
+    }
+
+    protected function validateCondition(string $operator, mixed $value, mixed $conditionValue): bool
+    {
+        return match ($operator) {
+            '===' => $value === $conditionValue,
+            '!==' => $value !== $conditionValue,
+            '==' => $value == $conditionValue,
+            '!=' => $value != $conditionValue,
+            '>' => $value > $conditionValue,
+            '>=' => $value >= $conditionValue,
+            '<' => $value < $conditionValue,
+            '<=' => $value <= $conditionValue,
+            'in' => in_array($value, $conditionValue),
+            'not_in' => !in_array($value, $conditionValue),
+            'between' => $value >= $conditionValue[0] && $value <= $conditionValue[1],
+            'not_between' => $value < $conditionValue[0] || $value > $conditionValue[1],
+            'contains' => Str::contains($value, $conditionValue),
+            'not_contains' => !Str::contains($value, $conditionValue),
+            'starts_with' => Str::startsWith($value, $conditionValue),
+            'ends_with' => Str::endsWith($value, $conditionValue),
+            'regex' => preg_match($conditionValue, $value),
+            'not_regex' => !preg_match($conditionValue, $value),
+            default => false,
+        };
     }
 }
