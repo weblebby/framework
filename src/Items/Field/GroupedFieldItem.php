@@ -2,31 +2,21 @@
 
 namespace Feadmin\Items\Field;
 
-use ArrayAccess;
-use Feadmin\Concerns\Fieldable;
-use Feadmin\Concerns\HasArray;
 use Feadmin\Enums\FieldTypeEnum;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
-use JsonSerializable;
 
-class GroupedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSerializable
+class GroupedFieldItem extends FieldItem
 {
-    use HasArray;
+    use HasChildFields;
 
-    private string $key;
+    protected ?string $label = null;
 
-    private ?string $label = null;
+    protected ?string $hint = null;
 
-    private ?string $hint = null;
-
-    private array $fields;
-
-    private float $position = 0;
-
-    public function __construct(string $key)
+    public function __construct(string $key = null)
     {
-        $this->key = $key;
+        parent::__construct($key);
+
+        $this->type = FieldTypeEnum::GROUPED;
     }
 
     public function label(string $label): self
@@ -43,29 +33,12 @@ class GroupedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, J
         return $this;
     }
 
-    public function fields(array $fields): self
-    {
-        $this->fields = $fields;
-
-        return $this;
-    }
-
-    public function position(float $position): self
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
     public function toArray(): array
     {
-        return [
-            'key' => $this->key,
-            'type' => FieldTypeEnum::GROUPED,
+        return array_merge(parent::toArray(), [
             'label' => $this->label,
             'hint' => $this->hint,
             'fields' => $this->fields,
-            'position' => $this->position,
-        ];
+        ]);
     }
 }

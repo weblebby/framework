@@ -7,6 +7,8 @@ use Feadmin\Enums\PostStatusEnum;
 use Feadmin\Facades\PostModels;
 use Feadmin\Facades\Theme;
 use Feadmin\Models\Post;
+use Feadmin\Services\FieldInputService;
+use Feadmin\Services\FieldValidationService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -43,6 +45,11 @@ class StorePostRequest extends FormRequest
 
         $sections = $this->postable::getPostSections()->toArray();
 
+        /** @var FieldInputService $fieldInputService */
+        $fieldInputService = app(FieldInputService::class);
+        /** @var FieldValidationService $fieldValidationService */
+        $fieldValidationService = app(FieldValidationService::class);
+
         if ($this->postable::doesSupportTemplates() && $this->template) {
             $template = Theme::active()
                 ->templatesFor($this->postable::class)
@@ -52,7 +59,8 @@ class StorePostRequest extends FormRequest
         }
 
         foreach ($sections as $section) {
-            $rules = array_merge($rules, $this->postable->fieldsForValidation($section['fields'], $this->all())['rules']);
+            $mappedFields = $fieldInputService->mapFieldsWithInput($section['fields'], $this->all());
+            $rules = array_merge($rules, $fieldValidationService->get($section['fields'], $mappedFields)['rules']);
         }
 
         dd($rules);

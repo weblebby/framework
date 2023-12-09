@@ -3,44 +3,25 @@
 namespace Feadmin\Items\Field;
 
 use ArrayAccess;
-use Exception;
 use Feadmin\Concerns\Fieldable;
 use Feadmin\Concerns\HasArray;
 use Feadmin\Enums\FieldTypeEnum;
 use Feadmin\Support\FormComponent;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Validation\Rule;
-use Illuminate\View\ComponentAttributeBag;
 use JsonSerializable;
 
-class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSerializable
+class FieldItem implements Fieldable, Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {
     use HasArray;
 
-    private ?Fieldable $parent;
+    protected ?Fieldable $parent = null;
 
-    private ?string $key;
+    protected ?string $key;
 
-    private ?string $name;
+    protected FieldTypeEnum $type;
 
-    private FieldTypeEnum $type;
-
-    private ?array $attributes = null;
-
-    private ?string $label = null;
-
-    private ?string $hint = null;
-
-    private ?string $default = null;
-
-    private bool $translatable = false;
-
-    private array $rules = [];
-
-    private array $options = [];
-
-    private ?float $position = 0;
+    protected ?float $position = 0;
 
     public static function repeated(string $key): RepeatedFieldItem
     {
@@ -67,61 +48,59 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
 
     public static function paragraph(string $text): static
     {
-        return (new static())
+        return (new InformationalFieldItem())
             ->type(FieldTypeEnum::PARAGRAPH)
-            ->default($text);
+            ->body($text);
     }
 
     public static function text(string $key): static
     {
-        return (new static($key))->type(FieldTypeEnum::TEXT);
+        return (new TextFieldItem($key))->type(FieldTypeEnum::TEXT);
     }
 
     public static function tel(string $key): static
     {
-        return (new static($key))->type(FieldTypeEnum::TEL);
+        return (new TextFieldItem($key))->type(FieldTypeEnum::TEL);
     }
 
     public static function number(string $key): static
     {
-        return (new static($key))->type(FieldTypeEnum::NUMBER);
+        return (new TextFieldItem($key))->type(FieldTypeEnum::NUMBER);
     }
 
     public static function textarea(string $key): static
     {
-        return (new static($key))->type(FieldTypeEnum::TEXT_AREA);
-    }
-
-    public static function image(string $key): static
-    {
-        return (new static($key))->type(FieldTypeEnum::IMAGE);
+        return (new TextFieldItem($key))->type(FieldTypeEnum::TEXT_AREA);
     }
 
     public static function richText(string $key): static
     {
-        return (new static($key))->type(FieldTypeEnum::RICH_TEXT);
+        return (new TextFieldItem($key))->type(FieldTypeEnum::RICH_TEXT);
+    }
+
+    public static function image(string $key): static
+    {
+        return (new ImageFieldItem($key))->type(FieldTypeEnum::IMAGE);
     }
 
     public static function select(string $key): static
     {
-        return (new static($key))->type(FieldTypeEnum::SELECT);
+        return (new SelectFieldItem($key))->type(FieldTypeEnum::SELECT);
     }
 
     public static function checkbox(string $key): static
     {
-        return (new static($key))->type(FieldTypeEnum::CHECKBOX);
+        return (new CheckboxFieldItem($key))->type(FieldTypeEnum::CHECKBOX);
     }
 
     public static function radio(string $key): static
     {
-        return (new static($key))->type(FieldTypeEnum::RADIO);
+        return (new RadioFieldItem($key))->type(FieldTypeEnum::RADIO);
     }
 
     public function __construct(string $key = null)
     {
         $this->key = FormComponent::nameToDotted($key);
-
-        $this->name($key);
     }
 
     public function parent(?Fieldable $parent): self
@@ -131,80 +110,9 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
         return $this;
     }
 
-    public function name(?string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function type(FieldTypeEnum $type): self
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    public function attributes(array $attributes): self
-    {
-        $this->attributes = $attributes;
-
-        return $this;
-    }
-
-    public function label(string $label): self
-    {
-        $this->label = $label;
-
-        return $this;
-    }
-
-    public function hint(string $hint): self
-    {
-        $this->hint = $hint;
-
-        return $this;
-    }
-
-    public function default(?string $default): self
-    {
-        $this->default = $default;
-
-        return $this;
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function translatable(bool $translatable = true): self
-    {
-        if (!$this->type->isTranslatable()) {
-            throw new Exception(sprintf('Fieldable type [%s] is not translatable.', $this->type->name));
-        }
-
-        $this->translatable = $translatable;
-
-        return $this;
-    }
-
-    public function rules(array $rules, bool $merge = true): self
-    {
-        if ($merge) {
-            $this->rules = array_merge($this->rules, $rules);
-        } else {
-            $this->rules = $rules;
-        }
-
-        return $this;
-    }
-
-    public function options(array $options): self
-    {
-        $this->options = $options;
-
-        if (count($this->options) > 0) {
-            $this->rules[] = Rule::in(array_keys($this->options));
-        }
 
         return $this;
     }
@@ -219,16 +127,9 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
     public function toArray(): array
     {
         return [
+            'parent' => $this->parent,
             'key' => $this->key,
-            'name' => $this->name,
             'type' => $this->type,
-            'attributes' => new ComponentAttributeBag($this->attributes ?? []),
-            'label' => $this->label,
-            'hint' => $this->hint,
-            'default' => $this->default,
-            'translatable' => $this->translatable,
-            'rules' => $this->rules,
-            'options' => $this->options,
             'position' => $this->position,
         ];
     }

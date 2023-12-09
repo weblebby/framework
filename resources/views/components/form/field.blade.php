@@ -49,7 +49,7 @@
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::CHECKBOX)
                 <x-feadmin::form.checkbox :attributes="$field['attributes']" :default="$default"
-                                          :label="$field['label']" :value="true" />
+                                          :label="$field['label']" value="1" />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::SELECT)
                 <x-feadmin::form.select :attributes="$field['attributes']" :default="$default">

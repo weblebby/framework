@@ -4,19 +4,14 @@ namespace Feadmin\Managers;
 
 use Exception;
 use Feadmin\Concerns\Fieldable;
-use Feadmin\Concerns\HasFieldValidations;
 use Feadmin\Enums\FieldTypeEnum;
-use Feadmin\Items\Field\FieldItem;
 use Feadmin\Items\Field\RepeatedFieldItem;
 use Feadmin\Models\Preference;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 
 class PreferenceManager
 {
-    use HasFieldValidations;
-
     protected string $currentNamespace;
 
     protected string $currentBag;

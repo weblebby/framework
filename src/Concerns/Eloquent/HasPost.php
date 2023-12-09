@@ -2,9 +2,7 @@
 
 namespace Feadmin\Concerns\Eloquent;
 
-use Feadmin\Concerns\HasFieldValidations;
 use Feadmin\Facades\NavigationLinkable;
-use Feadmin\Facades\PostModels;
 use Feadmin\Facades\SmartMenu;
 use Feadmin\Items\Field\FieldItem;
 use Feadmin\Items\NavigationLinkableItem;
@@ -16,7 +14,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 trait HasPost
 {
-    use HasTaxonomies, HasFieldValidations;
+    use HasTaxonomies;
 
     public function scopeSearch(Builder $builder, array $filters = []): Builder
     {

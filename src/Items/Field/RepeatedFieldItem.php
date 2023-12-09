@@ -10,37 +10,24 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
 
-class RepeatedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSerializable
+class RepeatedFieldItem extends FieldItem
 {
-    use HasArray;
-    
-    private string $key;
+    use HasChildFields, HasFieldName;
 
-    private string $name;
+    protected ?string $label = null;
 
-    private ?string $label = null;
+    protected ?string $hint = null;
 
-    private ?string $hint = null;
+    protected ?array $default = [];
 
-    private ?array $default = [];
-
-    private array $fields;
-
-    private ?int $max = null;
-
-    private float $position = 0;
+    protected ?int $max = null;
 
     public function __construct(string $key)
     {
-        $this->key = $key;
-        $this->name = $key;
-    }
+        parent::__construct($key);
 
-    public function name(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
+        $this->name($key);
+        $this->type = FieldTypeEnum::REPEATED;
     }
 
     public function label(string $label): self
@@ -64,19 +51,6 @@ class RepeatedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, 
         return $this;
     }
 
-    public function fields(array $fields): self
-    {
-        $this->fields = collect($fields)
-            ->map(function (Fieldable $field) {
-                $this->setFieldName($field);
-
-                return $field;
-            })
-            ->all();
-
-        return $this;
-    }
-
     public function max(int $max): self
     {
         $this->max = $max;
@@ -84,76 +58,17 @@ class RepeatedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, 
         return $this;
     }
 
-    public function position(float $position): self
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    public function fieldLabels(): array
-    {
-        $labels = [];
-
-        foreach ($this->fields as $field) {
-            if ($field['type']->isInformational()) {
-                continue;
-            }
-
-            // $key = sprintf('%s.*.%s', $this->name, $field['name']);
-            $labels[$field['name']] = $field['label'];
-        }
-
-        return $labels;
-    }
-
-    public function fieldRules(): array
-    {
-        $rules = [];
-
-        foreach ($this->fields as $field) {
-            if ($field['type']->isInformational()) {
-                continue;
-            }
-
-            // $key = sprintf('%s.*.%s', $this->name, $field['name']);
-            $rules[$field['name']] = $field['rules'];
-        }
-
-        return $rules;
-    }
-
     public function toArray(): array
     {
-        return [
-            'key' => $this->key,
+        return array_merge(parent::toArray(), [
             'name' => $this->name,
-            'type' => FieldTypeEnum::REPEATED,
             'label' => $this->label,
             'hint' => $this->hint,
             'default' => $this->default,
             'fields' => $this->fields,
             'max' => $this->max,
-            'position' => $this->position,
             'field_rules' => $this->fieldRules(),
             'field_labels' => $this->fieldLabels(),
-        ];
-    }
-
-    protected function setFieldName(Fieldable $field, string $parentKey = null): void
-    {
-        if (method_exists($field, 'name')) {
-            $name = is_null($parentKey)
-                ? sprintf('%s.*.%s', $this->name, $field['key'])
-                : "{$parentKey}.*.{$field['key']}";
-
-            $field->name($name);
-        }
-
-        if (method_exists($field, 'fields')) {
-            collect($field['fields'])->each(function (Fieldable $child) use ($field) {
-                $this->setFieldName($child, $field['name'] ?? null);
-            });
-        }
+        ]);
     }
 }

@@ -10,15 +10,18 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
 
-class ConditionalFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSerializable
+class ConditionalFieldItem extends FieldItem
 {
-    use HasArray;
+    use HasChildFields, HasFieldName;
 
-    private array $conditions = [];
+    protected array $conditions = [];
 
-    private array $fields;
+    public function __construct(string $key = null)
+    {
+        parent::__construct($key);
 
-    private float $position = 0;
+        $this->type = FieldTypeEnum::CONDITIONAL;
+    }
 
     public function conditions(array $conditions): self
     {
@@ -27,31 +30,12 @@ class ConditionalFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonabl
         return $this;
     }
 
-    public function fields(array $fields): self
-    {
-        $this->fields = array_map(function (Fieldable $field) {
-            $field->parent($this);
-            
-            return $field;
-        }, $fields);
-
-        return $this;
-    }
-
-    public function position(float $position): self
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
     public function toArray(): array
     {
-        return [
-            'type' => FieldTypeEnum::CONDITIONAL,
+        return array_merge(parent::toArray(), [
+            'name' => $this->name,
             'conditions' => $this->conditions,
             'fields' => $this->fields,
-            'position' => $this->position,
-        ];
+        ]);
     }
 }
