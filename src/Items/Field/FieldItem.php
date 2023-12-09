@@ -11,17 +11,22 @@ use Feadmin\Support\FormComponent;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Validation\Rule;
+use Illuminate\View\ComponentAttributeBag;
 use JsonSerializable;
 
 class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSerializable
 {
     use HasArray;
 
+    private ?Fieldable $parent;
+
     private ?string $key;
 
     private ?string $name;
 
     private FieldTypeEnum $type;
+
+    private ?array $attributes = null;
 
     private ?string $label = null;
 
@@ -119,6 +124,13 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
         $this->name($key);
     }
 
+    public function parent(?Fieldable $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
     public function name(?string $name): self
     {
         $this->name = $name;
@@ -129,6 +141,13 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
     public function type(FieldTypeEnum $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function attributes(array $attributes): self
+    {
+        $this->attributes = $attributes;
 
         return $this;
     }
@@ -203,6 +222,7 @@ class FieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSeri
             'key' => $this->key,
             'name' => $this->name,
             'type' => $this->type,
+            'attributes' => new ComponentAttributeBag($this->attributes ?? []),
             'label' => $this->label,
             'hint' => $this->hint,
             'default' => $this->default,

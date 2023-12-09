@@ -2,7 +2,9 @@
 
 namespace Feadmin\Models;
 
+use Feadmin\Facades\PostModels;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -44,7 +46,7 @@ class Taxonomy extends Model
             return $query;
         }
 
-        return $query->whereHas('term', fn (Builder $query) => $query->where('title', 'like', "%{$term}%"));
+        return $query->whereHas('term', fn(Builder $query) => $query->where('title', 'like', "%{$term}%"));
     }
 
     public function scopeTaxonomy(Builder $query, string $taxonomy): Builder
@@ -54,12 +56,12 @@ class Taxonomy extends Model
 
     public function scopeTerm(Builder $query, string $term): Builder
     {
-        return $query->whereHas('term', fn (Builder $query) => $query->where('slug', $term));
+        return $query->whereHas('term', fn(Builder $query) => $query->where('slug', $term));
     }
 
     public function scopeParent(Builder $query, string $parent): Builder
     {
-        return $query->whereHas('parent', fn (Builder $query) => $query->where('slug', $parent));
+        return $query->whereHas('parent', fn(Builder $query) => $query->where('slug', $parent));
     }
 
     public function scopeOnlyParents(Builder $query): Builder
@@ -69,6 +71,11 @@ class Taxonomy extends Model
 
     public function scopeWithRecursiveChildren(Builder $query): Builder
     {
-        return $query->with(['children' => fn (HasMany $query) => $query->withRecursiveChildren()]);
+        return $query->with(['children' => fn(HasMany $query) => $query->withRecursiveChildren()]);
+    }
+
+    protected function item(): Attribute
+    {
+        return Attribute::get(fn() => PostModels::taxonomy($this->taxonomy));
     }
 }

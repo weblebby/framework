@@ -2,22 +2,22 @@
     <x-feadmin::page>
         <x-feadmin::page.head>
             <x-slot name="actions">
-                @can($model::getPostAbilityFor('create'))
+                @can($postable::getPostAbilityFor('create'))
                     <x-feadmin::button
                             as="a"
-                            :href="panel_route('posts.create', ['type' => $model::getModelName()])"
+                            :href="panel_route('posts.create', ['type' => $postable::getModelName()])"
                             icon="plus"
                             size="sm"
                     >
-                        @lang('Yeni :name', ['name' => Str::lower($model::getSingularName())])
+                        @lang('Yeni :name', ['name' => Str::lower($postable::getSingularName())])
                     </x-feadmin::button>
                 @endcan
             </x-slot>
-            <x-feadmin::page.title>{{ $model::getPluralName() }}</x-feadmin::page.title>
+            <x-feadmin::page.title>{{ $postable::getPluralName() }}</x-feadmin::page.title>
         </x-feadmin::page.head>
         <div class="fd-space-y-3">
             <form class="fd-flex fd-items-center fd-gap-2" method="GET">
-                <input type="hidden" name="type" value="{{ $model::getModelName() }}">
+                <input type="hidden" name="type" value="{{ $postable::getModelName() }}">
                 <x-feadmin::form.group name="term" class="fd-flex-[3]">
                     <x-feadmin::form.input type="search" :placeholder="__('Ara')" />
                 </x-feadmin::form.group>
@@ -45,7 +45,7 @@
                     @foreach ($posts as $post)
                         <tr>
                             <x-feadmin::table.td class="fd-font-medium fd-text-lg">
-                                @can($model::getPostAbilityFor('update'))
+                                @can($postable::getPostAbilityFor('update'))
                                     <a href="{{ panel_route('posts.edit', $post) }}">{{ $post->title }}</a>
                                 @else
                                     <span>{{ $post->title }}</span>
@@ -65,7 +65,7 @@
                             </x-feadmin::table.td>
                             <x-feadmin::table.td>
                                 <div class="fd-flex fd-items-center fd-gap-2 fd-ml-auto">
-                                    @can($model::getPostAbilityFor('update'))
+                                    @can($postable::getPostAbilityFor('update'))
                                         <x-feadmin::button
                                                 as="a"
                                                 variant="light"
@@ -73,7 +73,7 @@
                                                 icon="pencil-fill"
                                         />
                                     @endcan
-                                    @can($model::getPostAbilityFor('delete'))
+                                    @can($postable::getPostAbilityFor('delete'))
                                         <x-feadmin::button
                                                 variant="red"
                                                 icon="trash"
@@ -90,8 +90,8 @@
             {{ $posts->links() }}
         </div>
     </x-feadmin::page>
-    @can($model::getPostAbilityFor('delete'))
+    @can($postable::getPostAbilityFor('delete'))
         <x-feadmin::modal.destroy id="modal-delete-post"
-                                  :title="__(':name siliyorsunuz', ['name' => $model::getSingularName()])" />
+                                  :title="__(':name siliyorsunuz', ['name' => $postable::getSingularName()])" />
     @endcan
 </x-feadmin::layouts.panel>

@@ -10,7 +10,7 @@ use Feadmin\Items\TaxonomyItem;
 interface Postable
 {
     public function register(): void;
-    
+
     public static function getModelName(): string;
 
     public static function getSingularName(): string;
@@ -27,7 +27,7 @@ interface Postable
 
     public static function saveAbilitiesToPanel(): void;
 
-    public static function getTaxonomyFor(string $taxonomy): string;
+    public static function getTaxonomyFor(string $taxonomy): ?TaxonomyItem;
 
     /**
      * @return array<int, TaxonomyItem>
@@ -37,4 +37,6 @@ interface Postable
     public static function getNavigationLinkable(): NavigationLinkableItem;
 
     public static function getSmartMenu(): SmartMenuItem;
+
+    public static function doesSupportTemplates(): bool;
 }

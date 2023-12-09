@@ -35,7 +35,7 @@ trait HasTaxonomies
 
     public function getTaxonomiesFor(string $taxonomy): Collection
     {
-        return $this->taxonomies->where('taxonomy', static::getTaxonomyFor($taxonomy));
+        return $this->taxonomies->where('taxonomy', static::getTaxonomyFor($taxonomy)->name());
     }
 
     public function addTaxonomy(string $taxonomy, array|string $terms): void

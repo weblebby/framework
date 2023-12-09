@@ -17,53 +17,55 @@ class PostController extends Controller
 {
     public function index(Request $request): View
     {
-        $model = PostModels::find($request->input('type', Post::getModelName()));
-        abort_if(is_null($model), 404);
+        $postable = PostModels::find($request->input('type', Post::getModelName()));
+        abort_if(is_null($postable), 404);
 
-        $this->authorize($model::getPostAbilityFor('read'));
+        $this->authorize($postable::getPostAbilityFor('read'));
 
-        $posts = $model::query()
+        $posts = $postable::query()
             ->withTaxonomies()
             ->search($request->only(['term', 'status']))
             ->paginate();
 
-        seo()->title($model::getPluralName());
+        seo()->title($postable::getPluralName());
 
-        return view('feadmin::user.posts.index', compact('posts', 'model'));
+        return view('feadmin::user.posts.index', compact('posts', 'postable'));
     }
 
     public function create(Request $request): View
     {
-        $model = PostModels::find($request->input('type', Post::getModelName()));
-        abort_if(is_null($model), 404);
+        $postable = PostModels::find($request->input('type', Post::getModelName()));
+        abort_if(is_null($postable), 404);
 
-        $this->authorize($model::getPostAbilityFor('create'));
+        $this->authorize($postable::getPostAbilityFor('create'));
 
-        $posts = $model::query()->paginate();
-        $templates = Theme::active()->templatesFor($model::class);
-        $sections = $model::getPostSections()->toArray();
+        $posts = $postable::query()->paginate();
+        $templates = Theme::active()->templatesFor($postable::class);
+        $sections = $postable::getPostSections()->toArray();
 
-        $taxonomies = Taxonomy::query()
-            ->taxonomy($model::getTaxonomyFor('category'))
-            ->with('term')
-            ->onlyParents()
-            ->withRecursiveChildren()
-            ->get();
+        $categories = ($categoryTaxonomy = $postable::getTaxonomyFor('category'))
+            ? Taxonomy::query()
+                ->taxonomy($categoryTaxonomy->name())
+                ->with('term')
+                ->onlyParents()
+                ->withRecursiveChildren()
+                ->get()
+            : null;
 
-        seo()->title(__(':name oluştur', ['name' => $model::getSingularName()]));
+        seo()->title(__(':name oluştur', ['name' => $postable::getSingularName()]));
 
         return view('feadmin::user.posts.create', compact(
             'posts',
             'templates',
             'sections',
-            'taxonomies',
-            'model'
+            'categories',
+            'postable'
         ));
     }
 
     public function store(StorePostRequest $request): RedirectResponse
     {
-        Post::query()->create($request->validated());
+        $request->postable::query()->create($request->validated());
 
         return to_panel_route('posts.index')->with('message', __('Yazı oluşturuldu'));
     }

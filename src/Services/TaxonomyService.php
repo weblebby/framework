@@ -4,6 +4,7 @@ namespace Feadmin\Services;
 
 use Feadmin\Models\Taxonomy;
 use Feadmin\Models\Term;
+use Illuminate\Support\Arr;
 
 class TaxonomyService
 {
@@ -37,17 +38,24 @@ class TaxonomyService
         return $taxonomy;
     }
 
-    public function getOrCreateTaxonomy(string $taxonomy, Term|string|int $term): Taxonomy
+    public function getOrCreateTaxonomy(string $taxonomy, Term|string|int $term, array $data = []): Taxonomy
     {
         if (is_string($term) || is_numeric($term)) {
             $term = $this->getOrCreateTerm($term);
         }
 
+        $fillable = Arr::except($data, ['parent_id']);
+
         /** @var Taxonomy $taxonomy */
-        $taxonomy = Taxonomy::query()->firstOrCreate([
+        $taxonomy = Taxonomy::query()->updateOrCreate([
             'term_id' => $term->getKey(),
             'taxonomy' => $taxonomy,
-        ]);
+        ], $fillable);
+
+        if (array_key_exists('parent_id', $data)) {
+            $taxonomy->parent()->associate($data['parent_id']);
+            $taxonomy->save();
+        }
 
         return $taxonomy;
     }

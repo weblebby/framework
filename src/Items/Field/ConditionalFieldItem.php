@@ -29,7 +29,11 @@ class ConditionalFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonabl
 
     public function fields(array $fields): self
     {
-        $this->fields = $fields;
+        $this->fields = array_map(function (Fieldable $field) {
+            $field->parent($this);
+            
+            return $field;
+        }, $fields);
 
         return $this;
     }

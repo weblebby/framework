@@ -39,7 +39,7 @@ class PreferenceController extends Controller
             //->filter(fn($field) => $field['type']->isEditable())
             ->values();
 
-        $fieldsForValidation = Preference::fieldsForValidation($namespace, $bag);
+        $fieldsForValidation = Preference::fieldsForValidation($fields);
 
         $validated = $request->validate(
             $fieldsForValidation['rules'],

@@ -3,25 +3,36 @@
 namespace Feadmin\Concerns;
 
 use Feadmin\Enums\FieldTypeEnum;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 trait HasFieldValidations
 {
-    public function fieldsForValidation(string $namespace, string $bag): array
+    public function fieldsForValidation(Collection|array $fields, array $input): array
     {
         $rules = [];
         $attributes = [];
 
-        foreach ($this->fields($namespace, $bag) as $field) {
-            $this->validateField($field, $rules, $attributes);
+        foreach ($fields as $field) {
+            $this->validateField($field, $input, $rules, $attributes);
         }
 
         return compact('rules', 'attributes');
     }
 
-    protected function validateField(Fieldable $field, array &$rules, array &$attributes): void
+    protected function validateField(Fieldable $field, mixed $input, array &$rules, array &$attributes): void
     {
         if ($field['type'] === FieldTypeEnum::REPEATED) {
-            $this->processRepeatedFieldForValidation($field, $rules, $attributes);
+            $this->processRepeatedFieldForValidation($field, $input, $rules, $attributes);
+
+            return;
+        }
+
+        if ($field['type'] === FieldTypeEnum::CONDITIONAL) {
+            dd($field, $input);
+            foreach ($field['fields'] as $child) {
+                $this->validateField($child, Arr::get($input, $child['name']), $rules, $attributes);
+            }
 
             return;
         }
@@ -33,7 +44,7 @@ trait HasFieldValidations
         }
     }
 
-    protected function processRepeatedFieldForValidation(Fieldable $field, array &$rules, array &$attributes): void
+    protected function processRepeatedFieldForValidation(Fieldable $field, mixed $input, array &$rules, array &$attributes): void
     {
         $rules[$field['name']] = ['nullable', 'array'];
 
@@ -50,7 +61,7 @@ trait HasFieldValidations
         }
 
         foreach ($field['fields'] as $childField) {
-            $this->validateField($childField, $rules, $attributes);
+            $this->validateField($childField, $input, $rules, $attributes);
         }
     }
 }

@@ -2,18 +2,21 @@
 
 namespace Feadmin\Concerns\Eloquent;
 
+use Feadmin\Concerns\HasFieldValidations;
 use Feadmin\Facades\NavigationLinkable;
 use Feadmin\Facades\PostModels;
 use Feadmin\Facades\SmartMenu;
+use Feadmin\Items\Field\FieldItem;
 use Feadmin\Items\NavigationLinkableItem;
 use Feadmin\Items\PostSectionsItem;
 use Feadmin\Items\SmartMenuItem;
+use Feadmin\Items\TaxonomyItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 trait HasPost
 {
-    use HasTaxonomies;
+    use HasTaxonomies, HasFieldValidations;
 
     public function scopeSearch(Builder $builder, array $filters = []): Builder
     {
@@ -58,7 +61,24 @@ trait HasPost
 
     public static function getPostSections(): PostSectionsItem
     {
-        return PostSectionsItem::make();
+        return PostSectionsItem::make()->add('seo', __('SEO'), [
+            FieldItem::text('slug')
+                ->label(__('URL'))
+                ->attributes([
+                    'prefix' => route('posts.show', '') . '/',
+                ])
+                ->rules(['required', 'string']),
+
+            FieldItem::text('metafields.seo_title')
+                ->label(__('Meta başlığı'))
+                ->hint(__('Arama motorlarında görünecek sayfa başlığını buradan değiştirebilirsiniz.'))
+                ->rules(['nullable', 'string']),
+
+            FieldItem::textarea('metafields.seo_description')
+                ->label(__('Meta açıklaması'))
+                ->attributes(['rows' => 3])
+                ->rules(['nullable', 'string']),
+        ]);
     }
 
     public static function getPostAbilities(): array
@@ -80,7 +100,7 @@ trait HasPost
 
     public static function getTaxonomyAbilityFor(string $taxonomy, string $ability): ?string
     {
-        return PostModels::taxonomy(static::getTaxonomyFor($taxonomy))->abilityFor($ability);
+        return static::getTaxonomyFor($taxonomy)->abilityFor($ability);
     }
 
     public static function saveAbilitiesToPanel(): void
@@ -112,9 +132,13 @@ trait HasPost
         }
     }
 
-    public static function getTaxonomyFor(string $taxonomy): string
+    public static function getTaxonomyFor(string $taxonomy): ?TaxonomyItem
     {
-        return sprintf('%s_%s', static::getModelName(), $taxonomy);
+        $taxonomy = sprintf('%s_%s', static::getModelName(), $taxonomy);
+
+        return array_values(
+            array_filter(static::getTaxonomies(), fn(TaxonomyItem $taxonomyItem) => $taxonomyItem->name() === $taxonomy)
+        )[0] ?? null;
     }
 
     public static function getNavigationLinkable(): NavigationLinkableItem
@@ -131,5 +155,10 @@ trait HasPost
         return SmartMenuItem::make()
             ->setName(static::getModelName())
             ->setTitle(static::getPluralName());
+    }
+
+    public static function doesSupportTemplates(): bool
+    {
+        return true;
     }
 }

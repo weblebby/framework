@@ -4,88 +4,105 @@ namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Feadmin\Facades\PostModels;
-use Feadmin\Facades\Theme;
-use Feadmin\Http\Requests\User\StorePostRequest;
+use Feadmin\Http\Requests\User\StoreTaxonomyRequest;
 use Feadmin\Http\Requests\User\UpdatePostRequest;
+use Feadmin\Items\TaxonomyItem;
 use Feadmin\Models\Post;
 use Feadmin\Models\Taxonomy;
+use Feadmin\Services\TaxonomyService;
+use Feadmin\Services\User\UserTaxonomyService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class TaxonomyController extends Controller
 {
-    public function index(Request $request): View
+    public function index(Request $request, UserTaxonomyService $userTaxonomyService): View
     {
-        $taxonomyOption = PostModels::taxonomy($request->taxonomy);
-        abort_if(is_null($taxonomyOption), 404);
+        $taxonomyItem = $this->taxonomy($request->taxonomy, 'read');
+        $taxonomies = $userTaxonomyService->getPaginatedTaxonomies($taxonomyItem);
+        $taxonomiesForParentSelect = $userTaxonomyService->getTaxonomiesBuilder($taxonomyItem)->get();
+        $taxonomy = null;
 
-        $this->authorize($taxonomyOption->abilityFor('read'));
-
-        $taxonomies = Taxonomy::query()
-            ->taxonomy($taxonomyOption->name())
-            ->with('term:id,title')
-            ->paginate();
+        seo()->title($taxonomyItem->pluralName());
 
         return view('feadmin::user.taxonomies.index', compact(
+            'taxonomy',
             'taxonomies',
-            'taxonomyOption'
+            'taxonomiesForParentSelect',
+            'taxonomyItem'
         ));
     }
 
-    public function create(): View
+    public function store(StoreTaxonomyRequest $request, TaxonomyService $taxonomyService): RedirectResponse
     {
-        $this->authorize('post:create');
+        $taxonomyItem = $this->taxonomy($request->taxonomy, 'create');
 
-        $posts = Post::query()->paginate();
-        $templates = Theme::active()->templatesFor(Post::class);
+        $taxonomyService->getOrCreateTaxonomy($taxonomyItem->name(), $request->title, [
+            'parent_id' => $request->parent_id,
+            'description' => $request->description,
+        ]);
 
-        $taxonomies = Taxonomy::query()
-            ->taxonomy(Post::class)
-            ->with('term')
-            ->onlyParents()
-            ->withRecursiveChildren()
+        return to_panel_route('taxonomies.index', ['taxonomy' => $taxonomyItem->name()])
+            ->with('message', __(':taxonomy oluşturuldu', ['taxonomy' => $taxonomyItem->singularName()]));
+    }
+
+    public function edit(Taxonomy $taxonomy, UserTaxonomyService $userTaxonomyService): View
+    {
+        $taxonomyItem = $this->taxonomy($taxonomy->item, 'update');
+
+        $taxonomies = $userTaxonomyService->getPaginatedTaxonomies($taxonomyItem);
+
+        $taxonomiesForParentSelect = $userTaxonomyService->getTaxonomiesBuilder($taxonomyItem)
+            ->whereNot('id', $taxonomy->id)
             ->get();
 
-        seo()->title(__('Yazı oluştur'));
+        seo()->title(__(':taxonomy düzenle', ['taxonomy' => $taxonomyItem->singularName()]));
 
-        return view('feadmin::user.posts.create', [
-            ...compact('posts', 'templates', 'taxonomies'),
-            'postType' => Post::class,
+        return view('feadmin::user.taxonomies.index', compact(
+            'taxonomy',
+            'taxonomies',
+            'taxonomiesForParentSelect',
+            'taxonomyItem',
+        ));
+    }
+
+    public function update(StoreTaxonomyRequest $request, Taxonomy $taxonomy, TaxonomyService $taxonomyService): RedirectResponse
+    {
+        $taxonomyService->getOrCreateTaxonomy($taxonomy->taxonomy, $taxonomy->term, [
+            'parent_id' => $request->parent_id,
+            'description' => $request->description,
         ]);
+
+        return to_panel_route('taxonomies.edit', $taxonomy)
+            ->with('message', __(':taxonomy güncellendi', ['taxonomy' => $taxonomy->item->singularName()]));
     }
 
-    public function store(StorePostRequest $request): RedirectResponse
+    public function destroy(Taxonomy $taxonomy): RedirectResponse
     {
-        Post::query()->create($request->validated());
+        $this->taxonomy($taxonomy->item, 'delete');
 
-        return to_panel_route('posts.index')->with('message', __('Yazı oluşturuldu'));
+        $taxonomy->delete();
+
+        return to_panel_route('taxonomies.index', ['taxonomy' => $taxonomy->item->name()])
+            ->with('message', __(':taxonomy silindi', ['taxonomy' => $taxonomy->item->singularName()]));
     }
 
-    public function edit(Post $post): View
+    /**
+     * @throws AuthorizationException
+     */
+    protected function taxonomy(TaxonomyItem|string $taxonomy, string $ability): TaxonomyItem
     {
-        $this->authorize('post:update');
+        if (!($taxonomy instanceof TaxonomyItem)) {
+            $taxonomyItem = PostModels::taxonomy($taxonomy);
+        } else {
+            $taxonomyItem = $taxonomy;
+        }
 
-        $posts = Post::query()->paginate();
+        abort_if(is_null($taxonomyItem), 404);
+        $this->authorize($taxonomyItem->abilityFor($ability));
 
-        seo()->title(__('Yazıyı [:post] düzenle', ['post' => $post->title]));
-
-        return view('feadmin::user.posts.edit', compact('post', 'posts'));
-    }
-
-    public function update(UpdatePostRequest $request, Post $post): RedirectResponse
-    {
-        $post->update($request->validated());
-
-        return to_panel_route('posts.index')->with('message', __('Yazı güncellendi'));
-    }
-
-    public function destroy(Post $post): RedirectResponse
-    {
-        $this->authorize('post:delete');
-
-        $post->delete();
-
-        return to_panel_route('users.index')->with('message', __('Yazı silindi'));
+        return $taxonomyItem;
     }
 }

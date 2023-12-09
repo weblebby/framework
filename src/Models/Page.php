@@ -20,33 +20,39 @@ class Page extends Post
 
     public static function getPostSections(): PostSectionsItem
     {
-        return PostSectionsItem::make();
-        
-        return PostSectionsItem::make()
-            ->add('product', __('Ürün Sekmeleri'), [
-                FieldItem::repeated('tabs')
-                    ->label(__('Sekmeler'))
-                    ->hint(__('Sekme ekleyin.'))
-                    ->fields([
-                        FieldItem::text('title')
-                            ->label(__('Sekme Başlığı'))
-                            ->rules(['nullable', 'string']),
+        $section = PostSectionsItem::make();
 
-                        FieldItem::richText('text')
-                            ->label(__('Sekme İçeriği'))
-                            ->rules(['nullable', 'string']),
-                    ]),
-            ])
-            ->add('content', __('Galeri'), [
-                FieldItem::repeated('gallery')
-                    ->label(__('Galeri'))
-                    ->hint(__('Fotoğraf ekleyin.'))
-                    ->fields([
-                        FieldItem::image('image')
-                            ->label(__('Fotoğraf'))
-                            ->rules(['nullable', 'string']),
-                    ]),
-            ]);
+        foreach (parent::getPostSections()->toArray() as $name => $item) {
+            $section->add($name, $item['title'], $item['fields']);
+        }
+
+        $section->add('product', __('Ürün Sekmeleri'), [
+            FieldItem::repeated('tabs')
+                ->label(__('Sekmeler'))
+                ->hint(__('Sekme ekleyin.'))
+                ->fields([
+                    FieldItem::text('title')
+                        ->label(__('Sekme Başlığı'))
+                        ->rules(['nullable', 'string']),
+
+                    FieldItem::richText('text')
+                        ->label(__('Sekme İçeriği'))
+                        ->rules(['nullable', 'string']),
+                ]),
+        ]);
+
+        $section->add('content', __('Galeri'), [
+            FieldItem::repeated('gallery')
+                ->label(__('Galeri'))
+                ->hint(__('Fotoğraf ekleyin.'))
+                ->fields([
+                    FieldItem::image('image')
+                        ->label(__('Fotoğraf'))
+                        ->rules(['nullable', 'string']),
+                ]),
+        ]);
+
+        return $section;
     }
 
     public static function getTaxonomies(): array

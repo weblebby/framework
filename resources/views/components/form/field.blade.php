@@ -15,7 +15,11 @@
 @else
     @php($default ??= $field['default'] ?? null)
 
-    <x-feadmin::form.group :name="$field['name']" :data-form-field-key="$field['key']" :with-errors="$withErrors">
+    <x-feadmin::form.group
+            :name="$field['name']"
+            :data-form-field-key="$field['key']"
+            :with-errors="$withErrors"
+    >
         <div>
             @if (!$field['type']->isLabelFree())
                 <x-feadmin::form.label>{{ $field['label'] }}</x-feadmin::form.label>
@@ -31,22 +35,24 @@
             @case(\Feadmin\Enums\FieldTypeEnum::TEXT)
             @case(\Feadmin\Enums\FieldTypeEnum::TEL)
             @case(\Feadmin\Enums\FieldTypeEnum::NUMBER)
-                <x-feadmin::form.input :type="$field['type']->value" :default="$default" />
+                <x-feadmin::form.input :attributes="$field['attributes']" :type="$field['type']->value"
+                                       :default="$default" />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::RICH_TEXT)
-                <x-feadmin::form.textarea :default="$default" data-ckeditor />
+                <x-feadmin::form.textarea :attributes="$field['attributes']" :default="$default" data-ckeditor />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::IMAGE)
-                <x-feadmin::form.image :image="$default" />
+                <x-feadmin::form.image :attributes="$field['attributes']" :image="$default" />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::TEXT_AREA)
-                <x-feadmin::form.textarea :default="$default" rows="4" autofocus />
+                <x-feadmin::form.textarea rows="4" :attributes="$field['attributes']" :default="$default" autofocus />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::CHECKBOX)
-                <x-feadmin::form.checkbox :default="$default" :label="$field['label']" :value="true" />
+                <x-feadmin::form.checkbox :attributes="$field['attributes']" :default="$default"
+                                          :label="$field['label']" :value="true" />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::SELECT)
-                <x-feadmin::form.select :default="$default">
+                <x-feadmin::form.select :attributes="$field['attributes']" :default="$default">
                     <option value="" selected disabled>{{ __('Bir öğe seçin') }}</option>
                     @foreach ($field['options'] as $value => $label)
                         <option value="{{ $value }}">{{ $label }}</option>

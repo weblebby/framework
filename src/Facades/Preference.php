@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array find(string $rawKey)
  * @method static Fieldable|null field(string $namespace, string $bag, string $key)
  * @method static Collection fields(string $namespace, string $bag)
- * @method static array fieldsForValidation(string $namespace, string $bag)
+ * @method static array fieldsForValidation(Collection|array $fields)
  *
  * @see PreferenceManager
  */

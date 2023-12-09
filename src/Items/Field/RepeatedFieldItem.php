@@ -13,7 +13,7 @@ use JsonSerializable;
 class RepeatedFieldItem implements Arrayable, ArrayAccess, Fieldable, Jsonable, JsonSerializable
 {
     use HasArray;
-
+    
     private string $key;
 
     private string $name;
