@@ -65,4 +65,41 @@ class StorePostRequest extends FormRequest
 
         return $rules;
     }
+
+    /**
+     * Get custom attributes for validator errors.
+     */
+    public function attributes()
+    {
+        $attributes = [
+            'title' => __('Başlık'),
+            'slug' => __('URL'),
+            'content' => __('İçerik'),
+            'status' => __('Durum'),
+            'published_at' => __('Yayınlanma Tarihi'),
+            'position' => __('Sıra'),
+        ];
+
+        $sections = $this->postable::getPostSections()->toArray();
+
+        /** @var FieldInputService $fieldInputService */
+        $fieldInputService = app(FieldInputService::class);
+        /** @var FieldValidationService $fieldValidationService */
+        $fieldValidationService = app(FieldValidationService::class);
+
+        if ($this->postable::doesSupportTemplates() && $this->template) {
+            $template = Theme::active()
+                ->templatesFor($this->postable::class)
+                ->firstWhere('name', $this->template);
+
+            $sections = array_merge($sections, $template->sections()->toArray());
+        }
+
+        foreach ($sections as $section) {
+            $mappedFields = $fieldInputService->mapFieldsWithInput($section['fields'], $this->all());
+            $attributes = array_merge($attributes, $fieldValidationService->get($section['fields'], $mappedFields)['attributes']);
+        }
+
+        return $attributes;
+    }
 }

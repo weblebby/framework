@@ -19,7 +19,7 @@ const fetchPostFields = async (postType, template) => {
     return await response.json()
 }
 
-templateSelect.addEventListener('change', () => {
+const handleOnChange = () => {
     const selectedOption = templateOptions[templateSelect.selectedIndex]
 
     document.querySelectorAll('[data-template-tab]').forEach(node => {
@@ -47,4 +47,7 @@ templateSelect.addEventListener('change', () => {
     }
 
     setTabs()
-})
+}
+
+templateSelect.addEventListener('change', handleOnChange)
+handleOnChange()

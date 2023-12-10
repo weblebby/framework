@@ -44,6 +44,7 @@ enum FieldTypeEnum: string
         return [
             self::CHECKBOX,
             self::RADIO,
+            self::PARAGRAPH,
         ];
     }
 

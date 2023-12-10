@@ -16,7 +16,7 @@
     @php($default ??= $field['default'] ?? null)
 
     <x-feadmin::form.group
-            :name="$field['name']"
+            :name="$field['name'] ?? null"
             :data-form-field-key="$field['key']"
             :with-errors="$withErrors"
     >
@@ -30,7 +30,7 @@
         </div>
         @switch ($field['type'])
             @case(\Feadmin\Enums\FieldTypeEnum::PARAGRAPH)
-                <p class="fd-text-zinc-600">{{ $field['default'] }}</p>
+                <p class="fd-text-zinc-600">{{ $field['body'] }}</p>
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::TEXT)
             @case(\Feadmin\Enums\FieldTypeEnum::TEL)

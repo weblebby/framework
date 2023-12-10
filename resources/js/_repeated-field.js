@@ -42,26 +42,6 @@ const RepeatedField = {
         return Array.from(rows.children).indexOf(row)
     },
 
-    /*parseName(row, key) {
-const container = row.closest(RepeatedField.itemSelector)
-
-const index = RepeatedField.getIndexOfRow(row)
-const prefix = container.dataset.repeatedFieldItem
-const dottedPrefix = inputNameToDotted(prefix)
-
-const dottedName = [dottedPrefix, index, key].join('.')
-const computedName = convertDottedToInputName(dottedName)
-const id = inputNameToId(computedName)
-
-const parentRow = container.closest(RepeatedField.rowSelector)
-
-if (parentRow) {
-return RepeatedField.parseName(parentRow, dottedName)
-}
-
-return { id, key, computedName, dottedName }
-},*/
-
     parseName(row, key, dottedName = null) {
         const container = row.closest(RepeatedField.itemSelector)
 
@@ -134,17 +114,6 @@ return { id, key, computedName, dottedName }
                         ),
                     )
 
-                    /*console.log({
-dottedName: `${options?.dottedName}.*.${key}`,
-value,
-index,
-key,
-childItemContainers,
-optionsIndex: options?.index,
-errorName: `${options?.dottedName}.${options?.index}.${key}.${index}.`,
-errors: options?.errors,
-})*/
-
                     const childItemContainer =
                         childItemContainers[options.index]
 
@@ -197,6 +166,22 @@ errors: options?.errors,
                 input?._CKEDITOR?.then(editor => {
                     editor.setData(value)
                 })
+
+                const imageWrapperEl = formGroup.querySelector(
+                    '[data-image-wrapper]',
+                )
+
+                if (imageWrapperEl) {
+                    const imgEl = document.createElement('img')
+                    imgEl.classList.add(
+                        'fd-w-full',
+                        'fd-h-full',
+                        'fd-object-cover',
+                    )
+                    imgEl.setAttribute('src', value)
+                    imgEl.setAttribute('alt', 'Uploaded image')
+                    imageWrapperEl.append(imgEl)
+                }
             }
 
             formGroup.dataset.formGroup = dottedName

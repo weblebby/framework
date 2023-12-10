@@ -29,6 +29,10 @@ class FieldInputService
     protected function findFieldByName(string $name, Collection|array $fields): Fieldable|null
     {
         foreach ($fields as $field) {
+            if (!isset($field['name'])) {
+                continue;
+            }
+            
             if ($field['name'] === $name) {
                 return $field;
             }

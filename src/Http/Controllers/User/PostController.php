@@ -43,6 +43,10 @@ class PostController extends Controller
         $templates = Theme::active()->templatesFor($postable::class);
         $sections = $postable::getPostSections()->toArray();
 
+        if (old('template')) {
+            $sections = array_merge($sections, $templates->firstWhere('name', old('template'))->sections()->toArray());
+        }
+
         $categories = ($categoryTaxonomy = $postable::getTaxonomyFor('category'))
             ? Taxonomy::query()
                 ->taxonomy($categoryTaxonomy->name())

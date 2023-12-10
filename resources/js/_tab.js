@@ -3,6 +3,7 @@ export const Tab = {
     singleContainerSelector: '[data-tab-container=":id"]',
     headerSelector: '[data-tab-header]',
     buttonSelector: '[data-tab-button]',
+    singleButtonSelector: '[data-tab-button=":id"]',
     contentSelector: '[data-tab-content]',
     singleContentSelector: '[data-tab-content=":for"]',
     activeClassList: ['fd-bg-zinc-100', 'fd-font-medium'],
@@ -65,6 +66,17 @@ export const Tab = {
             Tab.singleContainerSelector.replace(':id', tab.container),
         )
         const header = container.querySelector(Tab.headerSelector)
+
+        const currentButton = header.querySelector(
+            Tab.singleButtonSelector.replace(':id', `tab-${tab.id}`),
+        )
+
+        if (currentButton) {
+            return {
+                button: currentButton,
+                content: Tab.content(container, tab.id),
+            }
+        }
 
         const buttonTemplate = document.importNode(
             document.querySelector(Tab.buttonTemplateSelector).cloneNode(true)

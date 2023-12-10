@@ -2,7 +2,9 @@
 
 @php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($field['name']))
 @php($fieldItemName = \Feadmin\Support\FormComponent::nameToDottedWithoutEmptyWildcard($field['name']))
-@php ($default = array_values(old($dottedName, $field['default'] ?? []) ?: []))
+@php ($default = array_values(
+    array_replace_recursive($field['default'], old($dottedName, []))
+))
 
 <div
         class="fd-border fd-rounded fd-p-3 fd-space-y-3"

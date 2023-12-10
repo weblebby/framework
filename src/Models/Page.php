@@ -33,7 +33,7 @@ class Page extends Post
                 ->fields([
                     FieldItem::text('title')
                         ->label(__('Sekme Başlığı'))
-                        ->rules(['nullable', 'string']),
+                        ->rules(['required', 'string']),
 
                     FieldItem::richText('text')
                         ->label(__('Sekme İçeriği'))

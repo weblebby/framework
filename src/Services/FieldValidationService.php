@@ -17,6 +17,10 @@ class FieldValidationService
         $attributes = [];
 
         foreach ($fields as $field) {
+            if (!isset($field['name'])) {
+                continue;
+            }
+
             $this->validate($field, Arr::get($fieldsWithInput, $field['name']), $rules, $attributes);
         }
 
@@ -25,6 +29,10 @@ class FieldValidationService
 
     protected function validate(Fieldable $field, mixed $input, array &$rules, array &$attributes): void
     {
+        if (!isset($field['name'])) {
+            return;
+        }
+
         if ($field instanceof RepeatedFieldItem) {
             $this->validateRepeatedField($field, $input, $rules, $attributes);
 
