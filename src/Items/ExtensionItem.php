@@ -3,7 +3,7 @@
 namespace Feadmin\Items;
 
 use ArrayAccess;
-use Feadmin\Concerns\ExtensionObserver;
+use Feadmin\Abstracts\ExtensionObserver;
 use Feadmin\Enums\ExtensionCategoryEnum;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
@@ -130,7 +130,7 @@ class ExtensionItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializabl
 
     public function path(string $path = null): string
     {
-        return $this->path.($path ? DIRECTORY_SEPARATOR.$path : '');
+        return $this->path . ($path ? DIRECTORY_SEPARATOR . $path : '');
     }
 
     public function routes(): array

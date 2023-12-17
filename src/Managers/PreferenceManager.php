@@ -3,8 +3,8 @@
 namespace Feadmin\Managers;
 
 use Exception;
-use Feadmin\Concerns\Fieldable;
 use Feadmin\Enums\FieldTypeEnum;
+use Feadmin\Items\Field\Contracts\FieldInterface;
 use Feadmin\Items\Field\RepeatedFieldItem;
 use Feadmin\Models\Preference;
 use Illuminate\Support\Collection;
@@ -58,7 +58,7 @@ class PreferenceManager
         return is_null($namespace) ? $this->namespaces : $this->namespaces[$namespace] ?? null;
     }
 
-    public function add(Fieldable $field): self
+    public function add(FieldInterface $field): self
     {
         $this->setFieldName($field);
 
@@ -157,7 +157,7 @@ class PreferenceManager
         return [$foundPreference, $field];
     }
 
-    protected function findFromRepeatedPreference(Fieldable $field, string $rawKey): array
+    protected function findFromRepeatedPreference(FieldInterface $field, string $rawKey): array
     {
         [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
 
@@ -178,7 +178,7 @@ class PreferenceManager
         return [$preferences, $field];
     }
 
-    public function field(string $rawKey): ?Fieldable
+    public function field(string $rawKey): ?FieldInterface
     {
         [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
 
@@ -208,7 +208,7 @@ class PreferenceManager
             ->values();
     }
 
-    protected function createNewPreference(Fieldable $field, array $data): Preference
+    protected function createNewPreference(FieldInterface $field, array $data): Preference
     {
         [$namespace, $bag, $key] = $this->parseRawKey($field['name']);
 
@@ -223,7 +223,7 @@ class PreferenceManager
         return $preference;
     }
 
-    protected function getFieldValue(?Preference $preference, ?Fieldable $field, mixed $default = null): mixed
+    protected function getFieldValue(?Preference $preference, ?FieldInterface $field, mixed $default = null): mixed
     {
         if (blank($field['key'] ?? null) || ($field['type'] ?? null) === FieldTypeEnum::REPEATED) {
             return $default;
@@ -246,7 +246,7 @@ class PreferenceManager
         return $value;
     }
 
-    protected function findFieldByKey(array $fields, string $key): ?Fieldable
+    protected function findFieldByKey(array $fields, string $key): ?FieldInterface
     {
         $field = head(array_filter($fields, fn($field) => $field['key'] === $key));
 
@@ -257,7 +257,7 @@ class PreferenceManager
         return $field;
     }
 
-    protected function findFromRepeatedFieldByKey(array $fields, string $rawKey): ?Fieldable
+    protected function findFromRepeatedFieldByKey(array $fields, string $rawKey): ?FieldInterface
     {
         foreach ($fields as $field) {
             $rawKeyToWildcard = preg_replace('/\.\d+\./', '.*.', $rawKey);
@@ -310,7 +310,7 @@ class PreferenceManager
         return [$namespace, $bag, $key];
     }
 
-    protected function setFieldName(Fieldable $field, string $parentKey = null): void
+    protected function setFieldName(FieldInterface $field, string $parentKey = null): void
     {
         if (method_exists($field, 'name')) {
             if (is_null($parentKey)) {
@@ -321,13 +321,13 @@ class PreferenceManager
         }
 
         if (method_exists($field, 'fields')) {
-            collect($field['fields'])->each(function (Fieldable $child) use ($field) {
+            collect($field['fields'])->each(function (FieldInterface $child) use ($field) {
                 $this->setFieldName($child, $field['name']);
             });
         }
     }
 
-    protected function setRepeatedField(Collection $preferences, Fieldable $field, array|null $rows): array
+    protected function setRepeatedField(Collection $preferences, FieldInterface $field, array|null $rows): array
     {
         $saved = [];
 
@@ -367,12 +367,12 @@ class PreferenceManager
         return $saved;
     }
 
-    protected function setField(?Preference $preference, Fieldable $field, mixed $value): ?Preference
+    protected function setField(?Preference $preference, FieldInterface $field, mixed $value): ?Preference
     {
         $valueColumn = $field['translatable'] && !$field['type']->isValueless() ? 'value' : 'original_value';
 
         if ($field['type']->isUploadable()) {
-            $uploadable = $value;
+            $uploadedFile = $value;
             $value = true;
         } elseif ($field['type']->isValueless()) {
             $value = null;
@@ -382,7 +382,7 @@ class PreferenceManager
             $preference = $this->createNewPreference($field, [$valueColumn => $value]);
 
             if ($field['type']->isUploadable()) {
-                $preference->addMedia($uploadable)->toMediaCollection();
+                $preference->addMedia($uploadedFile)->toMediaCollection();
             }
 
             return $preference;
@@ -396,7 +396,7 @@ class PreferenceManager
 
         if ($preference) {
             if ($field['type']->isUploadable()) {
-                $preference->addMedia($uploadable)->toMediaCollection();
+                $preference->addMedia($uploadedFile)->toMediaCollection();
             } else {
                 $preference->update([$valueColumn => $value]);
             }

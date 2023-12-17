@@ -2,13 +2,7 @@
 
 namespace Feadmin\Items\Field;
 
-use ArrayAccess;
-use Feadmin\Concerns\Fieldable;
-use Feadmin\Concerns\HasArray;
 use Feadmin\Enums\FieldTypeEnum;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
-use JsonSerializable;
 
 class RepeatedFieldItem extends FieldItem
 {
@@ -62,6 +56,7 @@ class RepeatedFieldItem extends FieldItem
     {
         return array_merge(parent::toArray(), [
             'name' => $this->name,
+            'indexed_name' => $this->indexedName,
             'label' => $this->label,
             'hint' => $this->hint,
             'default' => $this->default,

@@ -2,10 +2,8 @@
 
 namespace Feadmin\Support;
 
-use Feadmin\Enums\UnitEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 class FormComponent
 {
@@ -56,7 +54,7 @@ class FormComponent
     public static function nameToDottedWithoutEmptyWildcard(?string $name): ?string
     {
         $dottedName = static::nameToDotted($name);
-        
+
         if (str_contains($dottedName, '.*')) {
             $pattern = '/(.*)(\.\*)([^.]*$)/';
             $replacement = '$1$3';
@@ -89,7 +87,7 @@ class FormComponent
             $default = $default->getKey();
         }
 
-        if ($default instanceof UnitEnum) {
+        if ($default instanceof \UnitEnum) {
             $default = $default->value;
         }
 

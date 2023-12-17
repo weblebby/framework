@@ -3,15 +3,21 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Facades\PostModels;
 use Feadmin\Facades\Theme;
 use Feadmin\Http\Requests\User\StorePostRequest;
 use Feadmin\Http\Requests\User\UpdatePostRequest;
 use Feadmin\Models\Post;
 use Feadmin\Models\Taxonomy;
+use Feadmin\Services\TaxonomyService;
+use Feadmin\Services\User\PostFieldService;
+use Feadmin\Services\User\PostService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
+use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
 class PostController extends Controller
 {
@@ -39,7 +45,6 @@ class PostController extends Controller
 
         $this->authorize($postable::getPostAbilityFor('create'));
 
-        $posts = $postable::query()->paginate();
         $templates = Theme::active()->templatesFor($postable::class);
         $sections = $postable::getPostSections()->toArray();
 
@@ -59,31 +64,67 @@ class PostController extends Controller
         seo()->title(__(':name oluştur', ['name' => $postable::getSingularName()]));
 
         return view('feadmin::user.posts.create', compact(
-            'posts',
             'templates',
             'sections',
             'categories',
-            'postable'
+            'postable',
         ));
     }
 
-    public function store(StorePostRequest $request): RedirectResponse
+    /**
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
+     */
+    public function store(
+        StorePostRequest $request,
+        PostService      $postService,
+        PostFieldService $postFieldService,
+    ): RedirectResponse
     {
-        dd($request->validated());
-        $request->postable::query()->create($request->validated());
+        /** @var Post $postable */
+        $postable = $request->postable::query()->create($request->validated());
 
-        return to_panel_route('posts.index')->with('message', __('Yazı oluşturuldu'));
+        $metafields = $postFieldService->dottedMetafieldValues($request->postable, $request->validated());
+        $postable->setMetafieldWithSchema($metafields);
+
+        $postService->attachTaxonomies($postable, $request->safe()->offsetGet('taxonomies') ?? []);
+
+        return to_panel_route('posts.index', ['type' => $request->postable::getModelName()])
+            ->with('message', __('Yazı oluşturuldu'));
     }
 
     public function edit(Post $post): View
     {
-        $this->authorize('post:update');
+        /** @var PostInterface $postable */
+        $postable = $post->type::findOrFail($post->getKey());
+        $this->authorize($postable::getPostAbilityFor('update'));
 
-        $posts = Post::query()->paginate();
+        $templates = Theme::active()->templatesFor($postable::class);
+
+        $sections = $postable::getPostSections()
+            ->withTemplateSections($postable, old('template'))
+            ->toArray();
+
+        dd($postable->getMetafieldValues());
+
+        $categories = ($categoryTaxonomy = $postable::getTaxonomyFor('category'))
+            ? Taxonomy::query()
+                ->taxonomy($categoryTaxonomy->name())
+                ->with('term')
+                ->onlyParents()
+                ->withRecursiveChildren()
+                ->get()
+            : null;
 
         seo()->title(__('Yazıyı [:post] düzenle', ['post' => $post->title]));
 
-        return view('feadmin::user.posts.edit', compact('post', 'posts'));
+        return view('feadmin::user.posts.edit', compact(
+            'post',
+            'templates',
+            'sections',
+            'categories',
+            'postable',
+        ));
     }
 
     public function update(UpdatePostRequest $request, Post $post): RedirectResponse
@@ -95,10 +136,13 @@ class PostController extends Controller
 
     public function destroy(Post $post): RedirectResponse
     {
-        $this->authorize('post:delete');
+        /** @var PostInterface $postable */
+        $postable = $post->type::findOrFail($post->getKey());
+        $this->authorize($postable::getPostAbilityFor('delete'));
 
-        $post->delete();
+        $postable->delete();
 
-        return to_panel_route('users.index')->with('message', __('Yazı silindi'));
+        return to_panel_route('posts.index', ['type' => $postable::getModelName()])
+            ->with('message', __(':post silindi', ['post' => $postable::getSingularName()]));
     }
 }

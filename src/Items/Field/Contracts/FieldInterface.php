@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Concerns;
+namespace Feadmin\Items\Field\Contracts;
 
 use Feadmin\Enums\FieldTypeEnum;
 
-interface Fieldable
+interface FieldInterface
 {
-    public function parent(?Fieldable $parent): self;
+    public function parent(?FieldInterface $parent): self;
 
     public function type(FieldTypeEnum $type): self;
 

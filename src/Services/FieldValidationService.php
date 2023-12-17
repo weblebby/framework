@@ -2,8 +2,10 @@
 
 namespace Feadmin\Services;
 
-use Feadmin\Concerns\Fieldable;
 use Feadmin\Items\Field\ConditionalFieldItem;
+use Feadmin\Items\Field\Contracts\FieldInterface;
+use Feadmin\Items\Field\FieldValueItem;
+use Feadmin\Items\Field\HasFieldName;
 use Feadmin\Items\Field\RepeatedFieldItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -11,7 +13,7 @@ use Illuminate\Support\Str;
 
 class FieldValidationService
 {
-    public function get(Collection|array $fields, Collection $fieldsWithInput): array
+    public function get(Collection|array $fields, array $fieldsWithInput): array
     {
         $rules = [];
         $attributes = [];
@@ -27,37 +29,45 @@ class FieldValidationService
         return compact('rules', 'attributes');
     }
 
-    protected function validate(Fieldable $field, mixed $input, array &$rules, array &$attributes): void
+    protected function validate(FieldInterface $field, ?FieldValueItem $fieldValueItem, array &$rules, array &$attributes): void
     {
         if (!isset($field['name'])) {
             return;
         }
 
         if ($field instanceof RepeatedFieldItem) {
-            $this->validateRepeatedField($field, $input, $rules, $attributes);
+            $this->validateRepeatedField($field, $fieldValueItem, $rules, $attributes);
 
             return;
         }
 
         if ($field instanceof ConditionalFieldItem) {
-            $this->validateConditionalField($field, $input, $rules, $attributes);
+            $this->validateConditionalField($field, $fieldValueItem, $rules, $attributes);
 
             return;
         }
 
-        $attributes[$field['name']] = $field['label'];
+        if ($fieldValueItem?->field() instanceof RepeatedFieldItem) {
+            return;
+        }
+
+        $name = $fieldValueItem?->field()['indexed_name'] ?? $field['name'];
+
+        $attributes[$name] = $field['label'];
 
         if ($field['type']?->isEditable() && isset($field['rules'])) {
-            $rules[$field['name']] = $field['rules'];
+            $rules[$name] = $field['rules'];
         }
     }
 
-    protected function validateRepeatedField(Fieldable $field, mixed $input, array &$rules, array &$attributes): void
+    protected function validateRepeatedField(FieldInterface $field, ?FieldValueItem $fieldValueItem, array &$rules, array &$attributes): void
     {
-        $rules[$field['name']] = ['nullable', 'array'];
+        $name = $fieldValueItem?->field()['indexed_name'] ?? $field['name'];
+
+        $rules[$name] = ['nullable', 'array'];
 
         if ($field['max']) {
-            $rules[$field['name']][] = "max:{$field['max']}";
+            $rules[$name][] = "max:{$field['max']}";
         }
 
         foreach ($field['field_rules'] as $key => $rule) {
@@ -69,13 +79,13 @@ class FieldValidationService
         }
 
         foreach ($field['fields'] as $childField) {
-            $this->validate($childField, $input, $rules, $attributes);
+            $this->validate($childField, $fieldValueItem, $rules, $attributes);
         }
     }
 
-    protected function validateConditionalField(Fieldable $field, mixed $input, array &$rules, array &$attributes): void
+    protected function validateConditionalField(FieldInterface $field, ?FieldValueItem $fieldValueItem, array &$rules, array &$attributes): void
     {
-        foreach ($input ?? [] as $key => $value) {
+        foreach ($fieldValueItem?->value() ?? [] as $value) {
             $allConditionsPassed = true;
 
             foreach ($field['conditions'] as $condition) {
@@ -92,9 +102,15 @@ class FieldValidationService
                 continue;
             }
 
+            /** @var FieldInterface&HasFieldName $childField */
             foreach ($field['fields'] as $childField) {
-                // FIXME: Dont change original object name
-                $childField->name(sprintf('%s.%d.%s', $field['name'], $key, $childField['key']));
+                $childValue = Arr::get($value, $childField['key']);
+
+                if (is_array($childValue)) {
+                    continue;
+                }
+
+                $childField = Arr::get($value, sprintf('%s.field', $childField['key']));
                 $this->validate($childField, $value[$childField['key']] ?? [], $rules, $attributes);
             }
         }

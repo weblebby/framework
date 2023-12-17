@@ -3,7 +3,7 @@
 @php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($field['name']))
 @php($fieldItemName = \Feadmin\Support\FormComponent::nameToDottedWithoutEmptyWildcard($field['name']))
 @php ($default = array_values(
-    array_replace_recursive($field['default'], old($dottedName, []))
+    array_replace_recursive($field['default'], old($dottedName, []) ?? [])
 ))
 
 <div

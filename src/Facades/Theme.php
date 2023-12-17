@@ -7,11 +7,11 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static ThemeManager register(\Feadmin\Concerns\Theme\Theme|string $theme)
+ * @method static ThemeManager register(\Feadmin\Abstracts\Theme\Theme|string $theme)
  * @method static ThemeManager activate(string $themeName)
- * @method static Collection<int, \Feadmin\Concerns\Theme\Theme> get()
- * @method static \Feadmin\Concerns\Theme\Theme find(string $themeName)
- * @method static \Feadmin\Concerns\Theme\Theme active()
+ * @method static Collection<int, \Feadmin\Abstracts\Theme\Theme> get()
+ * @method static \Feadmin\Abstracts\Theme\Theme find(string $themeName)
+ * @method static \Feadmin\Abstracts\Theme\Theme active()
  *
  * @see ThemeManager
  */

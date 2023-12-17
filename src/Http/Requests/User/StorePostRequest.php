@@ -2,28 +2,36 @@
 
 namespace Feadmin\Http\Requests\User;
 
-use Feadmin\Concerns\Postable;
+use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Enums\PostStatusEnum;
 use Feadmin\Facades\PostModels;
 use Feadmin\Facades\Theme;
 use Feadmin\Models\Post;
-use Feadmin\Services\FieldInputService;
-use Feadmin\Services\FieldValidationService;
+use Feadmin\Services\User\PostFieldService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rules\Exists;
+use Illuminate\Validation\Rules\In;
 
 class StorePostRequest extends FormRequest
 {
-    readonly public Postable $postable;
+    readonly public PostInterface $postable;
+
+    readonly public array $rulesAndAttributes;
 
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $this->postable = PostModels::find($this->input('postable', Post::getModelName()));
+        return $this->postable && $this->user()->can($this->postable::getPostAbilityFor('create'));
+    }
 
-        return $this->user()->can($this->postable::getPostAbilityFor('create'));
+    protected function prepareForValidation(): void
+    {
+        $this->loadRulesAndAttributes();
+        $this->transformTaxonomies();
     }
 
     /**
@@ -31,75 +39,68 @@ class StorePostRequest extends FormRequest
      */
     public function rules(): array
     {
+        $templates = Theme::active()->templatesFor($this->postable::class)->pluck('name');
+        $taxonomies = collect($this->postable::getTaxonomies())->pluck('name');
+
         $rules = [
             'title' => ['required', 'string', 'max:191'],
             'slug' => [
-                'required', 'string', 'max:191',
+                'nullable', 'string', 'max:191',
                 Rule::unique('posts')->where('type', $this->postable::getModelName()),
             ],
-            'content' => ['required', 'string', 'max:65535'],
-            'status' => ['required', Rule::enum(PostStatusEnum::class)],
+            'content' => ['nullable', 'string', 'max:65535'],
+            'taxonomies' => ['nullable', 'array', 'max:5'],
+            'taxonomies.*.taxonomy' => ['required', 'string', new In($taxonomies)],
+            'taxonomies.*.terms' => ['required', 'array', 'max:20'],
+            'taxonomies.*.terms.*' => ['required', 'string', 'max:191'],
+            'template' => ['nullable', 'string', new In($templates)],
+            'status' => ['required', new Enum(PostStatusEnum::class)],
             'published_at' => ['nullable', 'date'],
             'position' => ['nullable', 'integer'],
         ];
 
-        $sections = $this->postable::getPostSections()->toArray();
-
-        /** @var FieldInputService $fieldInputService */
-        $fieldInputService = app(FieldInputService::class);
-        /** @var FieldValidationService $fieldValidationService */
-        $fieldValidationService = app(FieldValidationService::class);
-
-        if ($this->postable::doesSupportTemplates() && $this->template) {
-            $template = Theme::active()
-                ->templatesFor($this->postable::class)
-                ->firstWhere('name', $this->template);
-
-            $sections = array_merge($sections, $template->sections()->toArray());
-        }
-
-        foreach ($sections as $section) {
-            $mappedFields = $fieldInputService->mapFieldsWithInput($section['fields'], $this->all());
-            $rules = array_merge($rules, $fieldValidationService->get($section['fields'], $mappedFields)['rules']);
-        }
-
-        return $rules;
+        return array_merge($this->rulesAndAttributes['rules'], $rules);
     }
 
     /**
      * Get custom attributes for validator errors.
      */
-    public function attributes()
+    public function attributes(): array
     {
         $attributes = [
             'title' => __('Başlık'),
             'slug' => __('URL'),
             'content' => __('İçerik'),
+            'taxonomies' => __('Etiketler'),
+            'template' => __('Şablon'),
             'status' => __('Durum'),
             'published_at' => __('Yayınlanma Tarihi'),
             'position' => __('Sıra'),
         ];
 
-        $sections = $this->postable::getPostSections()->toArray();
+        return array_merge($this->rulesAndAttributes['attributes'], $attributes);
+    }
 
-        /** @var FieldInputService $fieldInputService */
-        $fieldInputService = app(FieldInputService::class);
-        /** @var FieldValidationService $fieldValidationService */
-        $fieldValidationService = app(FieldValidationService::class);
+    protected function loadRulesAndAttributes(): void
+    {
+        $this->postable = PostModels::find($this->input('postable', Post::getModelName()));
 
-        if ($this->postable::doesSupportTemplates() && $this->template) {
-            $template = Theme::active()
-                ->templatesFor($this->postable::class)
-                ->firstWhere('name', $this->template);
+        /** @var PostFieldService $postFieldService */
+        $postFieldService = app(PostFieldService::class);
+        $this->rulesAndAttributes = $postFieldService->rulesAndAttributes($this->postable, $this->input());
+    }
 
-            $sections = array_merge($sections, $template->sections()->toArray());
+    protected function transformTaxonomies(): void
+    {
+        $taxonomies = [];
+
+        foreach ($this->taxonomies ?? [] as $taxonomy => $terms) {
+            $taxonomies[] = [
+                'taxonomy' => $taxonomy,
+                'terms' => $terms,
+            ];
         }
 
-        foreach ($sections as $section) {
-            $mappedFields = $fieldInputService->mapFieldsWithInput($section['fields'], $this->all());
-            $attributes = array_merge($attributes, $fieldValidationService->get($section['fields'], $mappedFields)['attributes']);
-        }
-
-        return $attributes;
+        $this->merge(['taxonomies' => $taxonomies]);
     }
 }

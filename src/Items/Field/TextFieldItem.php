@@ -8,7 +8,7 @@ use Illuminate\View\ComponentAttributeBag;
 class TextFieldItem extends FieldItem
 {
     use HasFieldName;
-    
+
     protected ?array $attributes = null;
 
     protected ?string $label = null;
@@ -55,16 +55,9 @@ class TextFieldItem extends FieldItem
 
         return $this;
     }
-
-    /**
-     * @throws Exception
-     */
+    
     public function translatable(bool $translatable = true): self
     {
-        if (!$this->type->isTranslatable()) {
-            throw new Exception(sprintf('Fieldable type [%s] is not translatable.', $this->type->name));
-        }
-
         $this->translatable = $translatable;
 
         return $this;
@@ -85,6 +78,7 @@ class TextFieldItem extends FieldItem
     {
         return array_merge(parent::toArray(), [
             'name' => $this->name,
+            'indexed_name' => $this->indexedName,
             'attributes' => new ComponentAttributeBag($this->attributes ?? []),
             'label' => $this->label,
             'hint' => $this->hint,

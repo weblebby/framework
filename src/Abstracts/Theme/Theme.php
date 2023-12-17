@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Concerns\Theme;
+namespace Feadmin\Abstracts\Theme;
 
 use ArrayAccess;
 use Feadmin\Concerns\HasArray;
@@ -26,14 +26,14 @@ abstract class Theme implements Arrayable, ArrayAccess, Jsonable, JsonSerializab
     abstract public function templates(): array;
 
     /**
-     * @param  class-string  $postType
+     * @param class-string $postType
      * @return Collection<int, Template>
      */
     public function templatesFor(string $postType): Collection
     {
         return collect($this->templates())
-            ->map(fn (string $template) => new $template())
-            ->filter(fn (Template $template) => in_array($postType, Arr::wrap($template->postTypes())))
+            ->map(fn(string $template) => new $template())
+            ->filter(fn(Template $template) => in_array($postType, Arr::wrap($template->postTypes())))
             ->values();
     }
 

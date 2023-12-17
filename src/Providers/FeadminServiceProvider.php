@@ -59,7 +59,7 @@ class FeadminServiceProvider extends ServiceProvider
 
     private function bootViews(): void
     {
-        $this->loadViewsFrom(dirname(__DIR__).'/../resources/views', 'feadmin');
+        $this->loadViewsFrom(dirname(__DIR__) . '/../resources/views', 'feadmin');
 
         Blade::directive('feinject', function ($expression) {
             return "<?php echo \Feadmin\Facades\Injection::render($expression); ?>";
@@ -85,15 +85,15 @@ class FeadminServiceProvider extends ServiceProvider
     private function bootPublishes(): void
     {
         $this->publishes([
-            dirname(__DIR__).'/../resources/views' => resource_path('views/vendor/feadmin'),
+            dirname(__DIR__) . '/../resources/views' => resource_path('views/vendor/feadmin'),
         ], ['feadmin-views', 'views']);
 
         $this->publishes([
-            dirname(__DIR__).'/../public' => public_path('vendor/feadmin'),
+            dirname(__DIR__) . '/../public' => public_path('vendor/feadmin'),
         ], ['feadmin-public', 'public']);
 
         $this->publishes([
-            dirname(__DIR__).'/../database/migrations' => database_path('migrations'),
+            dirname(__DIR__) . '/../database/migrations' => database_path('migrations'),
         ], ['feadmin-migrations', 'migrations']);
     }
 

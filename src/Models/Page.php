@@ -3,7 +3,7 @@
 namespace Feadmin\Models;
 
 use Feadmin\Items\Field\FieldItem;
-use Feadmin\Items\PostSectionsItem;
+use Feadmin\Items\FieldSectionsItem;
 use Feadmin\Items\TaxonomyItem;
 
 class Page extends Post
@@ -18,16 +18,16 @@ class Page extends Post
         return __('Sayfalar');
     }
 
-    public static function getPostSections(): PostSectionsItem
+    public static function getPostSections(): FieldSectionsItem
     {
-        $section = PostSectionsItem::make();
+        $section = FieldSectionsItem::make();
 
         foreach (parent::getPostSections()->toArray() as $name => $item) {
             $section->add($name, $item['title'], $item['fields']);
         }
 
         $section->add('product', __('Ürün Sekmeleri'), [
-            FieldItem::repeated('tabs')
+            FieldItem::repeated('metafields.tabs')
                 ->label(__('Sekmeler'))
                 ->hint(__('Sekme ekleyin.'))
                 ->fields([

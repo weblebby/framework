@@ -1,4 +1,4 @@
-<?php /** @var \Feadmin\Concerns\Fieldable $field */ ?>
+<?php /** @var \Feadmin\Items\Field\Contracts\FieldInterface $field */ ?>
 
 <div class="fd-space-y-3">
     @foreach ($fields as $field)

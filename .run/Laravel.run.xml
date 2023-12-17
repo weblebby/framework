@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Laravel" type="PhpBuiltInWebServerConfigurationType" factoryName="PHP Built-in Web Server" document_root="$PROJECT_DIR$/../weblebby/public" host="admin.weblebby.test" port="8085">
+    <method v="2" />
+  </configuration>
+</component>

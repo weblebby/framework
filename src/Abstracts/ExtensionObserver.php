@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Concerns;
+namespace Feadmin\Abstracts;
 
 abstract class ExtensionObserver
 {

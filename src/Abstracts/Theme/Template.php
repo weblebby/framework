@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Concerns\Theme;
+namespace Feadmin\Abstracts\Theme;
 
 use ArrayAccess;
 use Feadmin\Concerns\HasArray;
-use Feadmin\Items\PostSectionsItem;
+use Feadmin\Items\FieldSectionsItem;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
@@ -22,7 +22,7 @@ abstract class Template implements Arrayable, ArrayAccess, Jsonable, JsonSeriali
 
     abstract public function title(): string;
 
-    abstract public function sections(): PostSectionsItem;
+    abstract public function sections(): FieldSectionsItem;
 
     public function toArray(): array
     {

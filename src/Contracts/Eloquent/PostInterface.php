@@ -1,13 +1,13 @@
 <?php
 
-namespace Feadmin\Concerns;
+namespace Feadmin\Contracts\Eloquent;
 
 use Feadmin\Items\NavigationLinkableItem;
-use Feadmin\Items\PostSectionsItem;
+use Feadmin\Items\FieldSectionsItem;
 use Feadmin\Items\SmartMenuItem;
 use Feadmin\Items\TaxonomyItem;
 
-interface Postable
+interface PostInterface
 {
     public function register(): void;
 
@@ -17,7 +17,7 @@ interface Postable
 
     public static function getPluralName(): string;
 
-    public static function getPostSections(): PostSectionsItem;
+    public static function getPostSections(): FieldSectionsItem;
 
     public static function getPostAbilities(): array;
 

@@ -6,7 +6,7 @@ use Feadmin\Concerns\Eloquent\HasMetafields;
 use Feadmin\Concerns\Eloquent\HasOwner;
 use Feadmin\Concerns\Eloquent\HasPosition;
 use Feadmin\Concerns\Eloquent\HasPost;
-use Feadmin\Concerns\Postable;
+use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Enums\HasOwnerEnum;
 use Feadmin\Enums\PostStatusEnum;
 use Feadmin\Items\TaxonomyItem;
@@ -19,7 +19,7 @@ use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class Post extends Model implements HasMedia, Postable
+class Post extends Model implements HasMedia, PostInterface
 {
     use HasFactory,
         HasMetafields,
@@ -72,9 +72,16 @@ class Post extends Model implements HasMedia, Postable
         });
     }
 
+    public function resolveRouteBinding($value, $field = null): Model
+    {
+        return $this->newQueryWithoutScopes()
+            ->where($field ?? $this->getRouteKeyName(), $value)
+            ->firstOrFail();
+    }
+
     public function getMaxPosition(): int
     {
-        return (int) static::query()->max('position');
+        return (int)static::query()->max('position');
     }
 
     public static function getSingularName(): string

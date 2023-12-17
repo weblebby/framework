@@ -2,7 +2,7 @@
 
 namespace Feadmin\Items\Field;
 
-use Feadmin\Concerns\Fieldable;
+use Feadmin\Items\Field\Contracts\FieldInterface;
 
 trait HasChildFields
 {
@@ -11,7 +11,7 @@ trait HasChildFields
     public function fields(array $fields): self
     {
         $this->fields = collect($fields)
-            ->map(function (Fieldable $field) {
+            ->map(function (FieldInterface $field) {
                 $field->parent($this);
                 $this->setFieldName($field);
 
@@ -52,7 +52,7 @@ trait HasChildFields
         return $rules;
     }
 
-    protected function setFieldName(Fieldable $field, string $parentKey = null): void
+    protected function setFieldName(FieldInterface $field, string $parentKey = null): void
     {
         if (method_exists($field, 'name') && method_exists($this, 'name')) {
             $prefix = is_null($parentKey) ? $this->name : $parentKey;
@@ -65,7 +65,7 @@ trait HasChildFields
         }
 
         if (method_exists($field, 'fields')) {
-            collect($field['fields'])->each(function (Fieldable $child) use ($field) {
+            collect($field['fields'])->each(function (FieldInterface $child) use ($field) {
                 $this->setFieldName($child, $field['name'] ?? null);
             });
         }

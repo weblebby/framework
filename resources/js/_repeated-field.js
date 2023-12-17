@@ -182,6 +182,13 @@ const RepeatedField = {
                     imgEl.setAttribute('alt', 'Uploaded image')
                     imageWrapperEl.append(imgEl)
                 }
+
+                if (input.tagName === 'SELECT') {
+                    const optionEl = input.querySelector(
+                        `option[value="${value}"]`,
+                    )
+                    optionEl?.setAttribute('selected', 'selected')
+                }
             }
 
             formGroup.dataset.formGroup = dottedName

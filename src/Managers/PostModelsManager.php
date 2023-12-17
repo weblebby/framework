@@ -2,13 +2,13 @@
 
 namespace Feadmin\Managers;
 
-use Feadmin\Concerns\Postable;
+use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Items\TaxonomyItem;
 
 class PostModelsManager
 {
     /**
-     * @var array<string, Postable>
+     * @var array<string, PostInterface>
      */
     protected array $models = [];
 
@@ -26,14 +26,14 @@ class PostModelsManager
     }
 
     /**
-     * @return array<string, Postable>
+     * @return array<string, PostInterface>
      */
     public function get(): array
     {
         return $this->models;
     }
 
-    public function find(string $key): ?Postable
+    public function find(string $key): ?PostInterface
     {
         return $this->models[$key] ?? null;
     }

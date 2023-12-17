@@ -126,10 +126,35 @@ export const Tab = {
             content: Tab.content(container, tab.id),
         }
     },
+
+    printErrors: container => {
+        const contents = container.querySelectorAll(Tab.contentSelector)
+
+        contents.forEach(content => {
+            const errors = content.querySelectorAll('.fd-has-error')
+
+            if (errors.length <= 0) {
+                return
+            }
+
+            const button = container.querySelector(
+                Tab.singleButtonSelector.replace(
+                    ':id',
+                    content.dataset.tabContent,
+                ),
+            )
+
+            button?.classList?.add('fd-has-error')
+        })
+    },
 }
 
 document.querySelectorAll(Tab.containerSelector).forEach(container => {
     Tab.listenContainer(container)
+
+    setTimeout(() => {
+        Tab.printErrors(container)
+    }, 250)
 })
 
 window.Feadmin.Tab = Tab

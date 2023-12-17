@@ -1,10 +1,9 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page id="post" class="fd-mx-auto">
         <x-feadmin::page.head :back="panel_route('posts.index')">
-            <x-feadmin::page.title>@lang(':name oluşturun', ['name' => $postable::getSingularName()])</x-feadmin::page.title>
+            <x-feadmin::page.title>@lang('Düzenle: :name', ['name' => $post->title])</x-feadmin::page.title>
         </x-feadmin::page.head>
-        <x-feadmin::form :action="panel_route('posts.store')" enctype="multipart/form-data">
-            <input type="hidden" name="postable" value="{{ $postable::getModelName() }}">
+        <x-feadmin::form :bind="$post" :action="panel_route('posts.update', $post)" enctype="multipart/form-data">
             <div class="fd-flex fd-gap-3">
                 <div class="fd-w-2/3 fd-space-y-2">
                     <x-feadmin::form.group name="title">
@@ -56,7 +55,7 @@
                             <x-feadmin::form.tagify :options="[
                             'source' => panel_api_route('taxonomies.index', $tagTax->name()),
                             'map' => ['value' => 'taxonomy_id', 'label' => 'title'],
-                            'name' => sprintf('taxonomies[%s][]', $tagTax->name()),
+                            'name' => 'taxonomies[]',
                         ]" />
                         </x-feadmin::card>
                     @endif

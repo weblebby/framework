@@ -6,7 +6,7 @@ use Feadmin\Facades\NavigationLinkable;
 use Feadmin\Facades\SmartMenu;
 use Feadmin\Items\Field\FieldItem;
 use Feadmin\Items\NavigationLinkableItem;
-use Feadmin\Items\PostSectionsItem;
+use Feadmin\Items\FieldSectionsItem;
 use Feadmin\Items\SmartMenuItem;
 use Feadmin\Items\TaxonomyItem;
 use Illuminate\Database\Eloquent\Builder;
@@ -57,26 +57,30 @@ trait HasPost
         return str(static::class)->classBasename()->plural()->title()->toString();
     }
 
-    public static function getPostSections(): PostSectionsItem
+    public static function getPostSections(): FieldSectionsItem
     {
-        return PostSectionsItem::make()->add('seo', __('SEO'), [
-            FieldItem::text('slug')
-                ->label(__('URL'))
-                ->attributes([
-                    'prefix' => route('posts.show', '') . '/',
-                ])
-                ->rules(['required', 'string']),
+        return FieldSectionsItem::make()
+            ->add('seo', __('SEO'), [
+                FieldItem::text('slug')
+                    ->translatable()
+                    ->label(__('URL'))
+                    ->attributes([
+                        'prefix' => route('posts.show', '') . '/',
+                    ])
+                    ->rules(['nullable', 'string', 'max:191']),
 
-            FieldItem::text('metafields.seo_title')
-                ->label(__('Meta başlığı'))
-                ->hint(__('Arama motorlarında görünecek sayfa başlığını buradan değiştirebilirsiniz.'))
-                ->rules(['nullable', 'string']),
+                FieldItem::text('metafields.seo_title')
+                    ->translatable()
+                    ->label(__('Meta başlığı'))
+                    ->hint(__('Arama motorlarında görünecek sayfa başlığını buradan değiştirebilirsiniz.'))
+                    ->rules(['nullable', 'string', 'max:191']),
 
-            FieldItem::textarea('metafields.seo_description')
-                ->label(__('Meta açıklaması'))
-                ->attributes(['rows' => 3])
-                ->rules(['nullable', 'string']),
-        ]);
+                FieldItem::textarea('metafields.seo_description')
+                    ->translatable()
+                    ->label(__('Meta açıklaması'))
+                    ->attributes(['rows' => 3])
+                    ->rules(['nullable', 'string', 'max:400']),
+            ]);
     }
 
     public static function getPostAbilities(): array
@@ -98,7 +102,7 @@ trait HasPost
 
     public static function getTaxonomyAbilityFor(string $taxonomy, string $ability): ?string
     {
-        return static::getTaxonomyFor($taxonomy)->abilityFor($ability);
+        return static::getTaxonomyFor($taxonomy)?->abilityFor($ability);
     }
 
     public static function saveAbilitiesToPanel(): void
@@ -132,7 +136,9 @@ trait HasPost
 
     public static function getTaxonomyFor(string $taxonomy): ?TaxonomyItem
     {
-        $taxonomy = sprintf('%s_%s', static::getModelName(), $taxonomy);
+        if (!str_starts_with($taxonomy, static::getModelName() . '_')) {
+            $taxonomy = sprintf('%s_%s', static::getModelName(), $taxonomy);
+        }
 
         return array_values(
             array_filter(static::getTaxonomies(), fn(TaxonomyItem $taxonomyItem) => $taxonomyItem->name() === $taxonomy)

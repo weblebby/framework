@@ -78,6 +78,10 @@
     [data-form-group].fd-has-error [data-form-prefix] {
         @apply fd-text-red-500 fd-border-red-500;
     }
+
+    [data-tab-button].fd-has-error {
+        @apply fd-text-red-500;
+    }
 }
 
 #page .ck-editor__editable {

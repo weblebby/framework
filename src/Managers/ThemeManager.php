@@ -3,7 +3,7 @@
 namespace Feadmin\Managers;
 
 use Exception;
-use Feadmin\Concerns\Theme\Theme;
+use Feadmin\Abstracts\Theme\Theme;
 use Illuminate\Support\Collection;
 
 class ThemeManager

@@ -28,6 +28,7 @@ class ConditionalFieldItem extends FieldItem
     {
         return array_merge(parent::toArray(), [
             'name' => $this->name,
+            'indexed_name' => $this->indexedName,
             'conditions' => $this->conditions,
             'fields' => $this->fields,
             'field_rules' => $this->fieldRules(),
