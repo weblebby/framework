@@ -1,7 +1,7 @@
-@props(['field', 'withErrors' => true])
+@props(['field', 'default' => null, 'withErrors' => true])
 
 @if ($field['type'] === \Feadmin\Enums\FieldTypeEnum::REPEATED)
-    <x-feadmin::form.repeated :field="$field">
+    <x-feadmin::form.repeated :field="$field" :default="$default">
         @foreach ($field['fields'] as $field)
             <x-feadmin::form.field :field="$field" :with-errors="false" />
         @endforeach

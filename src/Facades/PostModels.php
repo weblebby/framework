@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void register(string|array $model)
  * @method static array<string, PostInterface> get()
  * @method static PostInterface|null find(string $key)
+ * @method static PostInterface findOrFail(string $key)
  * @method static array<string, TaxonomyItem> taxonomies()
  * @method static TaxonomyItem|null taxonomy(string|null $taxonomy)
  *

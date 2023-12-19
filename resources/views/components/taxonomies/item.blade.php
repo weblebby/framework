@@ -1,9 +1,11 @@
+@aware(['bind' => null])
 @props(['name', 'taxonomy'])
 
 <div class="fd-text-sm">
     <x-feadmin::form.checkbox
             :name="$name"
             :value="$taxonomy->id"
+            :default="$bind?->taxonomies?->pluck('id')"
             :label="$taxonomy->term->title"
             :data-taxonomy-checkbox="$taxonomy->term->title"
     />

@@ -18,26 +18,16 @@ const Tagify = {
             },
         })
 
-        tagify.on('change', e => {
-            if (!e.detail.value) return
-            const tags = JSON.parse(e.detail.value)
+        Tagify.handleHiddenInputs(tagify, options.name, tagify.value)
 
+        tagify.on('change', e => {
             tagify.DOM.input.parentNode
                 .querySelectorAll('[data-tagify-hidden]')
                 .forEach(input => input.remove())
 
-            tags.forEach(tag => {
-                const input = document.createElement('input')
-                input.type = 'hidden'
-                input.name = options.name
-                input.value = tag.value
-                input.setAttribute('data-tagify-hidden', true)
+            if (!e.detail.value) return
 
-                tagify.DOM.input.parentNode.insertBefore(
-                    input,
-                    tagify.DOM.input,
-                )
-            })
+            Tagify.handleHiddenInputs(tagify, options.name, e.detail.value)
         })
 
         tagify.on('input', e => Tagify.onInput(e.detail.value, tagify, options))
@@ -66,6 +56,27 @@ const Tagify = {
 
                 tagify.loading(false).dropdown.show.call(tagify, value)
             })
+    },
+
+    handleHiddenInputs: (tagify, name, tags) => {
+        if (typeof tags === 'string') {
+            tags = JSON.parse(tags)
+        }
+
+        tags.forEach(tag => {
+            Tagify.createHiddenInput(tagify, name, tag.value)
+            Tagify.createHiddenInput(tagify, `visualized_${name}`, tag.label)
+        })
+    },
+
+    createHiddenInput: (tagify, name, value) => {
+        const input = document.createElement('input')
+        input.type = 'hidden'
+        input.name = name
+        input.value = value
+        input.setAttribute('data-tagify-hidden', true)
+
+        tagify.DOM.input.parentNode.insertBefore(input, tagify.DOM.input)
     },
 }
 

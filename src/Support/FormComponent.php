@@ -4,6 +4,7 @@ namespace Feadmin\Support;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class FormComponent
 {
@@ -93,13 +94,21 @@ class FormComponent
 
         $value = filled($name) ? old($name, $default) : $default;
 
+        if ($value instanceof Collection) {
+            $value = $value->toArray();
+        }
+
         return filled($value) && in_array((string)$attributes->get('value'), Arr::wrap($value));
     }
 
-    public static function value(mixed $value): ?string
+    public static function value(mixed $value): array|string|null
     {
         if ($value instanceof Moneyable) {
             return $value->format();
+        }
+
+        if (is_array($value)) {
+            $value = collect($value);
         }
 
         return $value;

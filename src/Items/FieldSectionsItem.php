@@ -4,6 +4,7 @@ namespace Feadmin\Items;
 
 use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Facades\Theme;
+use Feadmin\Items\Field\Collections\FieldCollection;
 use Feadmin\Items\Field\Contracts\FieldInterface;
 use Illuminate\Support\Collection;
 
@@ -42,9 +43,9 @@ class FieldSectionsItem
         return $this;
     }
 
-    public function allFields(): Collection
+    public function allFields(): FieldCollection
     {
-        return collect($this->sections)
+        return (new FieldCollection($this->sections))
             ->map(fn($section) => $section['fields'])
             ->flatten();
     }

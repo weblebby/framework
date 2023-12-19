@@ -5,6 +5,8 @@
 @php($name = \Feadmin\Support\FormComponent::dottedToName($name))
 @php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
+@php($default = filled(old()) ? old($dottedName, $default) : $default)
+
 <label class="fd-inline-flex fd-items-center">
     <input
             id="{{ $id }}"

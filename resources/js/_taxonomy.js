@@ -1,66 +1,84 @@
 const Taxonomy = {
+    fieldSelector: '[data-taxonomy-field]',
     primaryGroupSelector: '[data-primary-taxonomy-group]',
     primarySelectSelector: '[data-primary-taxonomy-select]',
-    taxonomyCheckboxSelector: '[data-taxonomy-checkbox]',
+    checkboxSelector: '[data-taxonomy-checkbox]',
 
-    displaySelect: () => {
-        document
+    displaySelect: fieldContainer => {
+        fieldContainer
             .querySelector(Taxonomy.primaryGroupSelector)
             .classList.remove('fd-hidden')
     },
 
-    hideSelect: () => {
-        document
+    hideSelect: fieldContainer => {
+        fieldContainer
             .querySelector(Taxonomy.primaryGroupSelector)
             .classList.add('fd-hidden')
     },
 
-    clearSelectOptions: () => {
-        const select = document.querySelector(Taxonomy.primarySelectSelector)
-        select.innerHTML = ''
+    clearSelectOptions: fieldContainer => {
+        const select = fieldContainer.querySelector(
+            Taxonomy.primarySelectSelector,
+        )
+
+        while (select.options.length > 1) {
+            select.remove(1)
+        }
     },
 
-    createOption: (value, text) => {
+    createOption: (fieldContainer, value, text) => {
+        const select = fieldContainer.querySelector(
+            Taxonomy.primarySelectSelector,
+        )
+
         const option = document.createElement('option')
         option.value = value
         option.text = text
 
-        const select = document.querySelector(Taxonomy.primarySelectSelector)
+        if (select.dataset.primaryTaxonomySelect === value) {
+            option.selected = true
+        }
+
         select.appendChild(option)
     },
 
-    onChange: e => {
-        const checkboxes = document.querySelectorAll(
-            Taxonomy.taxonomyCheckboxSelector,
+    onChange: fieldContainer => {
+        const checkboxes = fieldContainer.querySelectorAll(
+            Taxonomy.checkboxSelector,
         )
 
         const checkedCheckboxes = Array.from(checkboxes).filter(
             checkbox => checkbox.checked,
         )
 
-        Taxonomy.clearSelectOptions()
+        Taxonomy.clearSelectOptions(fieldContainer)
 
         checkedCheckboxes.map(checkbox => {
             Taxonomy.createOption(
+                fieldContainer,
                 checkbox.value,
                 checkbox.dataset.taxonomyCheckbox,
             )
         })
 
         if (checkedCheckboxes.length > 0) {
-            Taxonomy.displaySelect()
+            Taxonomy.displaySelect(fieldContainer)
         } else {
-            Taxonomy.hideSelect()
+            Taxonomy.hideSelect(fieldContainer)
         }
     },
 }
 
-const primarySelect = document.querySelector(Taxonomy.primarySelectSelector)
+const checkboxes = document.querySelectorAll(Taxonomy.checkboxSelector)
 
-document
-    .querySelectorAll(Taxonomy.taxonomyCheckboxSelector)
-    .forEach(checkbox => {
-        checkbox.addEventListener('change', e => {
-            Taxonomy.onChange(e)
-        })
+checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', e => {
+        Taxonomy.onChange(e.target.closest(Taxonomy.fieldSelector))
     })
+})
+
+const fieldContainers = document.querySelectorAll(Taxonomy.fieldSelector)
+
+fieldContainers.forEach(fieldContainer => {
+    Taxonomy.onChange(fieldContainer)
+})

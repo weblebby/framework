@@ -9,10 +9,10 @@ use Feadmin\Facades\Theme;
 use Feadmin\Models\Post;
 use Feadmin\Services\User\PostFieldService;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Exists;
 use Illuminate\Validation\Rules\In;
+use Illuminate\Validation\Rules\Unique;
 
 class StorePostRequest extends FormRequest
 {
@@ -39,25 +39,39 @@ class StorePostRequest extends FormRequest
      */
     public function rules(): array
     {
-        $templates = Theme::active()->templatesFor($this->postable::class)->pluck('name');
         $taxonomies = collect($this->postable::getTaxonomies())->pluck('name');
 
         $rules = [
             'title' => ['required', 'string', 'max:191'],
             'slug' => [
                 'nullable', 'string', 'max:191',
-                Rule::unique('posts')->where('type', $this->postable::getModelName()),
+                (new Unique('posts'))
+                    ->where('type', $this->postable::getModelName())
+                    ->when($this->route('post'), fn(Unique $query, $post) => $query->ignore($post)),
             ],
             'content' => ['nullable', 'string', 'max:65535'],
             'taxonomies' => ['nullable', 'array', 'max:5'],
             'taxonomies.*.taxonomy' => ['required', 'string', new In($taxonomies)],
             'taxonomies.*.terms' => ['required', 'array', 'max:20'],
             'taxonomies.*.terms.*' => ['required', 'string', 'max:191'],
-            'template' => ['nullable', 'string', new In($templates)],
             'status' => ['required', new Enum(PostStatusEnum::class)],
+            'featured_image' => ['nullable', 'image', 'max:10240'],
             'published_at' => ['nullable', 'date'],
             'position' => ['nullable', 'integer'],
         ];
+
+        if ($this->postable::doesSupportTemplates()) {
+            $templates = Theme::active()->templatesFor($this->postable::class)->pluck('name');
+            $rules['template'] = ['nullable', 'string', new In($templates)];
+        }
+
+        if ($this->postable::getTaxonomyFor('category')) {
+            $rules['primary_category'] = [
+                'nullable',
+                (new Exists('taxonomies', 'id'))
+                    ->where('taxonomy', $this->postable::getTaxonomyFor('category')->name()),
+            ];
+        }
 
         return array_merge($this->rulesAndAttributes['rules'], $rules);
     }
@@ -83,7 +97,12 @@ class StorePostRequest extends FormRequest
 
     protected function loadRulesAndAttributes(): void
     {
-        $this->postable = PostModels::find($this->input('postable', Post::getModelName()));
+        /** @var PostInterface $post */
+        if ($post = $this->route('post')) {
+            $this->postable = $post;
+        } else {
+            $this->postable = PostModels::find($this->input('postable', Post::getModelName()));
+        }
 
         /** @var PostFieldService $postFieldService */
         $postFieldService = app(PostFieldService::class);

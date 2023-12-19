@@ -1,6 +1,6 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page id="post" class="fd-mx-auto">
-        <x-feadmin::page.head :back="panel_route('posts.index')">
+        <x-feadmin::page.head :back="panel_route('posts.index', ['type' => $postable::getModelName()])">
             <x-feadmin::page.title>@lang(':name oluşturun', ['name' => $postable::getSingularName()])</x-feadmin::page.title>
         </x-feadmin::page.head>
         <x-feadmin::form :action="panel_route('posts.store')" enctype="multipart/form-data">
@@ -47,17 +47,21 @@
                     @if ($categoryTax = $postable::getTaxonomyFor('category'))
                         <x-feadmin::card padding>
                             <x-feadmin::card.title>@lang('Kategori')</x-feadmin::card.title>
-                            <x-feadmin::taxonomies :taxonomies="$categories" :taxonomyItem="$categoryTax" />
+                            <x-feadmin::taxonomies
+                                    for="category"
+                                    :taxonomies="$categories"
+                                    :taxonomyItem="$categoryTax"
+                            />
                         </x-feadmin::card>
                     @endif
                     @if ($tagTax = $postable::getTaxonomyFor('tag'))
                         <x-feadmin::card padding>
                             <x-feadmin::card.title>@lang('Etiketler')</x-feadmin::card.title>
                             <x-feadmin::form.tagify :options="[
-                            'source' => panel_api_route('taxonomies.index', $tagTax->name()),
-                            'map' => ['value' => 'taxonomy_id', 'label' => 'title'],
-                            'name' => sprintf('taxonomies[%s][]', $tagTax->name()),
-                        ]" />
+                                'source' => panel_api_route('taxonomies.index', $tagTax->name()),
+                                'map' => ['value' => 'taxonomy_id', 'label' => 'title'],
+                                'name' => sprintf('taxonomies[%s][]', $tagTax->name()),
+                            ]" />
                         </x-feadmin::card>
                     @endif
                     @if ($postable::doesSupportTemplates())
@@ -65,7 +69,7 @@
                             <x-feadmin::card.title>@lang('Şablon')</x-feadmin::card.title>
                             <x-feadmin::form.group name="template">
                                 <x-feadmin::form.select data-post-type="{{ $postable::class }}">
-                                    <x-feadmin::form.option value="">Varsayılan</x-feadmin::form.option>
+                                    <x-feadmin::form.option value="">@lang('Varsayılan')</x-feadmin::form.option>
                                     @foreach ($templates as $template)
                                             <?php /** @var \Feadmin\Abstracts\Theme\Template $template */ ?>
                                         <x-feadmin::form.option

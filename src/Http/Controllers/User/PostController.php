@@ -38,28 +38,14 @@ class PostController extends Controller
         return view('feadmin::user.posts.index', compact('posts', 'postable'));
     }
 
-    public function create(Request $request): View
+    public function create(Request $request, PostService $postService): View
     {
-        $postable = PostModels::find($request->input('type', Post::getModelName()));
-        abort_if(is_null($postable), 404);
-
+        $postable = PostModels::findOrFail($request->input('type', Post::getModelName()));
         $this->authorize($postable::getPostAbilityFor('create'));
 
-        $templates = Theme::active()->templatesFor($postable::class);
-        $sections = $postable::getPostSections()->toArray();
-
-        if (old('template')) {
-            $sections = array_merge($sections, $templates->firstWhere('name', old('template'))->sections()->toArray());
-        }
-
-        $categories = ($categoryTaxonomy = $postable::getTaxonomyFor('category'))
-            ? Taxonomy::query()
-                ->taxonomy($categoryTaxonomy->name())
-                ->with('term')
-                ->onlyParents()
-                ->withRecursiveChildren()
-                ->get()
-            : null;
+        $templates = $postService->templates($postable);
+        $sections = $postService->sections($postable, old('template'));
+        $categories = $postService->taxonomies($postable, 'category');
 
         seo()->title(__(':name oluştur', ['name' => $postable::getSingularName()]));
 
@@ -81,40 +67,35 @@ class PostController extends Controller
         PostFieldService $postFieldService,
     ): RedirectResponse
     {
-        /** @var Post $postable */
-        $postable = $request->postable::query()->create($request->validated());
+        /** @var Post $post */
+        $post = $request->postable::query()->create($validated = $request->validated());
 
-        $metafields = $postFieldService->dottedMetafieldValues($request->postable, $request->validated());
-        $postable->setMetafieldWithSchema($metafields);
+        $metafields = $postFieldService->dottedMetafieldValues($post, $request->validated());
+        $post->setMetafieldWithSchema($metafields);
+        
+        $postService->syncTaxonomies(
+            postable: $post,
+            taxonomies: $request->safe()->offsetGet('taxonomies') ?? [],
+            primaryTaxonomyId: $request->input('primary_category'),
+        );
 
-        $postService->attachTaxonomies($postable, $request->safe()->offsetGet('taxonomies') ?? []);
+        if ($validated['featured_image'] ?? null) {
+            $post->addMedia($validated['featured_image'])->toMediaCollection('featured');
+        }
 
         return to_panel_route('posts.index', ['type' => $request->postable::getModelName()])
             ->with('message', __('Yazı oluşturuldu'));
     }
 
-    public function edit(Post $post): View
+    public function edit(Post $post, PostService $postService): View
     {
-        /** @var PostInterface $postable */
-        $postable = $post->type::findOrFail($post->getKey());
-        $this->authorize($postable::getPostAbilityFor('update'));
+        $this->authorize($post::getPostAbilityFor('update'));
 
-        $templates = Theme::active()->templatesFor($postable::class);
-
-        $sections = $postable::getPostSections()
-            ->withTemplateSections($postable, old('template'))
-            ->toArray();
-
-        dd($postable->getMetafieldValues());
-
-        $categories = ($categoryTaxonomy = $postable::getTaxonomyFor('category'))
-            ? Taxonomy::query()
-                ->taxonomy($categoryTaxonomy->name())
-                ->with('term')
-                ->onlyParents()
-                ->withRecursiveChildren()
-                ->get()
-            : null;
+        $templates = $postService->templates($post);
+        $sections = $postService->sections($post, old('template'));
+        $categories = $postService->taxonomies($post, 'category');
+        $metafields = $post->getMetafieldValues();
+        $metafields['slug'] = $post->slug;
 
         seo()->title(__('Yazıyı [:post] düzenle', ['post' => $post->title]));
 
@@ -123,26 +104,48 @@ class PostController extends Controller
             'templates',
             'sections',
             'categories',
-            'postable',
+            'post',
+            'metafields'
         ));
     }
 
-    public function update(UpdatePostRequest $request, Post $post): RedirectResponse
+    /**
+     * @throws FileDoesNotExist
+     * @throws FileIsTooBig
+     */
+    public function update(
+        StorePostRequest $request,
+        PostService      $postService,
+        PostFieldService $postFieldService,
+        Post             $post
+    ): RedirectResponse
     {
-        $post->update($request->validated());
+        $post->update($validated = $request->validated());
 
-        return to_panel_route('posts.index')->with('message', __('Yazı güncellendi'));
+        $metafields = $postFieldService->dottedMetafieldValues($post, $request->validated());
+        $post->setMetafieldWithSchema($metafields);
+
+        $postService->syncTaxonomies(
+            postable: $post,
+            taxonomies: $request->safe()->offsetGet('taxonomies') ?? [],
+            primaryTaxonomyId: $request->input('primary_category'),
+        );
+
+        if ($validated['featured_image'] ?? null) {
+            $post->addMedia($validated['featured_image'])->toMediaCollection('featured');
+        }
+
+        return to_panel_route('posts.edit', $post)
+            ->with('message', __('Yazı :post güncellendi', ['post' => $post->title]));
     }
 
     public function destroy(Post $post): RedirectResponse
     {
-        /** @var PostInterface $postable */
-        $postable = $post->type::findOrFail($post->getKey());
-        $this->authorize($postable::getPostAbilityFor('delete'));
+        $this->authorize($post::getPostAbilityFor('delete'));
 
-        $postable->delete();
+        $post->delete();
 
-        return to_panel_route('posts.index', ['type' => $postable::getModelName()])
-            ->with('message', __(':post silindi', ['post' => $postable::getSingularName()]));
+        return to_panel_route('posts.index', ['type' => $post::getModelName()])
+            ->with('message', __(':post silindi', ['post' => $post::getSingularName()]));
     }
 }

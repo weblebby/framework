@@ -82,7 +82,7 @@ if (Features::enabled(Features::users(), $panel->name())) {
  * Posts
  */
 if (Features::enabled(Features::posts(), $panel->name())) {
-    Route::resource('posts', User\PostController::class);
+    Route::resource('posts', User\PostController::class)->except('show');
     Route::resource('taxonomies', User\TaxonomyController::class);
 }
 

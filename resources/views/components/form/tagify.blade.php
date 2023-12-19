@@ -1,19 +1,17 @@
-@aware([
-    'name' => null,
-    'bag' => 'default',
-    'type' => 'text',
-    'prefix' => null,
-    'suffix' => null,
-    'bind',
-])
-
-@aware(['default' => $bind->$name ?? null])
-
 @props(['options' => null])
 
-@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
-@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
-@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
+@aware([
+    'name' => null,
+    'prefix' => null,
+    'suffix' => null,
+    'default' => null,
+])
+
+@if (isset($options['name']))
+    @php($visualizedName = 'visualized_' . $options['name'] ?? null)
+    @php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($visualizedName))
+    @php($value = \Feadmin\Support\FormComponent::value(old($dottedName, $default)))
+@endif
 
 <div class="fd-flex fd-items-center" data-tagify-container>
     @if ($prefix)
@@ -21,9 +19,9 @@
     @endif
     <input {{ $attributes
         ->merge([
-            'type' => $type,
+            'type' => 'text',
             'data-tagify' => is_array($options) ? json_encode($options) : true,
-            'value' => \Feadmin\Support\FormComponent::value(isset($name) ? old($dottedName, $default) : $default),
+            'value' => $value ?? false,
             'id' => $id ?? false,
             'name' => $name ?? false,
         ])

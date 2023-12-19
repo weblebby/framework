@@ -14,8 +14,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -74,9 +76,26 @@ class Post extends Model implements HasMedia, PostInterface
 
     public function resolveRouteBinding($value, $field = null): Model
     {
-        return $this->newQueryWithoutScopes()
-            ->where($field ?? $this->getRouteKeyName(), $value)
+        $post = $this->newQueryWithoutScopes()
+            ->select('type')
+            ->where($column = $field ?? $this->getRouteKeyName(), $value)
             ->firstOrFail();
+
+        return $post->type::where($column, $value)->firstOrFail();
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('featured')->singleFile();
+    }
+
+    /**
+     * @throws InvalidManipulation
+     */
+    public function registerMediaConversions(Media $media = null): void
+    {
+        $this->addMediaConversion('lg')->width(1920)->height(1080);
+        $this->addMediaConversion('sm')->width(400)->height(225);
     }
 
     public function getMaxPosition(): int

@@ -5,8 +5,8 @@
   "__conditional-field-44de3840.js": {
     "file": "assets/_conditional-field-44de3840.js"
   },
-  "__tagify-9b296c4d.js": {
-    "file": "assets/_tagify-9b296c4d.js",
+  "__tagify-f4a0bf07.js": {
+    "file": "assets/_tagify-f4a0bf07.js",
     "imports": [
       "__api-79210ede.js"
     ]
@@ -17,9 +17,9 @@
     "src": "resources/css/feadmin.css"
   },
   "resources/js/feadmin.js": {
-    "file": "assets/feadmin-e3894ceb.js",
+    "file": "assets/feadmin-1e8eb184.js",
     "imports": [
-      "__tagify-9b296c4d.js",
+      "__tagify-f4a0bf07.js",
       "__api-79210ede.js",
       "__conditional-field-44de3840.js"
     ],
@@ -27,10 +27,10 @@
     "src": "resources/js/feadmin.js"
   },
   "resources/js/navigation.js": {
-    "file": "assets/navigation-e3646370.js",
+    "file": "assets/navigation-9697128b.js",
     "imports": [
       "__api-79210ede.js",
-      "__tagify-9b296c4d.js"
+      "__tagify-f4a0bf07.js"
     ],
     "isEntry": true,
     "src": "resources/js/navigation.js"

@@ -1,11 +1,7 @@
 import TextEditor from './_ckeditor.js'
 import Form from './_form.js'
 import ConditionalField from './_conditional-field.js'
-import {
-    convertDottedToInputName,
-    inputNameToDotted,
-    inputNameToId,
-} from './lib/utils.js'
+import { convertDottedToInputName, inputNameToId } from './lib/utils.js'
 
 const RepeatedField = {
     itemSelector: '[data-repeated-field-item]',
@@ -238,8 +234,8 @@ const RepeatedField = {
     },
 
     onAddRow: (row, options) => {
-        RepeatedField.setRowIndexes(row, options)
         RepeatedField.initPlugins(row)
+        RepeatedField.setRowIndexes(row, options)
         RepeatedField.listenRemoveRowButton(row)
         RepeatedField.removeEmptyInputIfNoRows(
             row.closest(RepeatedField.rowsSelector),

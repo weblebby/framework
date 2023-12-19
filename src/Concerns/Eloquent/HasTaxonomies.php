@@ -2,11 +2,13 @@
 
 namespace Feadmin\Concerns\Eloquent;
 
+use Feadmin\Models\Taxable;
 use Feadmin\Models\Taxonomy;
 use Feadmin\Models\Term;
 use Feadmin\Services\TaxonomyService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 
@@ -22,8 +24,23 @@ trait HasTaxonomies
     public function taxonomies(): MorphToMany
     {
         return $this->morphToMany(Taxonomy::class, 'taxable')
-            ->withPivot(['position'])
+            ->withPivot(['position', 'is_primary'])
             ->withTimestamps();
+    }
+
+    public function primaryTaxonomy(): HasOneThrough
+    {
+        return $this
+            ->hasOneThrough(
+                Taxonomy::class,
+                Taxable::class,
+                'taxable_id',
+                'id',
+                'id',
+                'taxonomy_id'
+            )
+            ->where('taxable_type', static::class)
+            ->where('is_primary', true);
     }
 
     public function scopeWithTaxonomies(Builder $query): Builder

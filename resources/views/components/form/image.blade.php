@@ -1,8 +1,12 @@
-@aware(['name', 'bag' => 'default'])
+@aware(['name', 'bind' => null, 'bag' => 'default'])
 @props(['name', 'image'])
 
 @php($name = \Feadmin\Support\FormComponent::nameToDotted($name))
 @php($id = \Feadmin\Support\FormComponent::id($name, $bag))
+
+@if ($bind instanceof \Spatie\MediaLibrary\HasMedia && blank($image ?? null))
+    @php($image = $bind->getFirstMediaUrl($name))
+@endif
 
 <label class="fd-rounded-lg fd-overflow-hidden fd-block fd-cursor-pointer fd-relative" data-form-image>
     <input type="file" id="{{ $id }}" name="{{ $name }}" class="fd-hidden" accept="image/*">

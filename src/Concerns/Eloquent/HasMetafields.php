@@ -4,12 +4,14 @@ namespace Feadmin\Concerns\Eloquent;
 
 use Feadmin\Items\Field\FieldValueItem;
 use Feadmin\Items\Field\ImageFieldItem;
+use Feadmin\Items\Field\RepeatedFieldItem;
 use Feadmin\Items\Field\TextFieldItem;
 use Feadmin\Items\Field\UploadableFieldItem;
 use Feadmin\Models\Metafield;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 
@@ -39,14 +41,14 @@ trait HasMetafields
         $fieldDefinitions = $this::getPostSections()->withTemplateSections($this, $this->template)->allFields();
 
         foreach ($this->metafields as $metafield) {
-            $field = $fieldDefinitions->firstWhere('key', 'metafields.' . $metafield->key);
+            $field = $fieldDefinitions->findByName($metafield->key);
 
             if ($field instanceof TextFieldItem) {
                 $values[$metafield->key] = $metafield->value ?? $metafield->original_value;
             }
         }
 
-        return $values;
+        return Arr::undot($values);
     }
 
     /**

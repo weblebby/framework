@@ -38,6 +38,15 @@ class PostModelsManager
         return $this->models[$key] ?? null;
     }
 
+    public function findOrFail(string $key): PostInterface
+    {
+        $model = $this->find($key);
+
+        abort_if(is_null($model), 404);
+
+        return $model;
+    }
+
     /**
      * @return array<string, TaxonomyItem>
      */
