@@ -2,7 +2,7 @@
 
 namespace Feadmin\Items\Field;
 
-use Exception;
+use Feadmin\Items\Field\Concerns\HasFieldName;
 use Illuminate\View\ComponentAttributeBag;
 
 class TextFieldItem extends FieldItem
@@ -55,7 +55,7 @@ class TextFieldItem extends FieldItem
 
         return $this;
     }
-    
+
     public function translatable(bool $translatable = true): self
     {
         $this->translatable = $translatable;

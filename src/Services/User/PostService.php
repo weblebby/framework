@@ -18,7 +18,7 @@ class PostService
     public function sections(PostInterface $postable, string $template = null): array
     {
         return $postable::getPostSections()
-            ->withTemplateSections($postable, old('template'))
+            ->withTemplateSections($postable, $template)
             ->toArray();
     }
 

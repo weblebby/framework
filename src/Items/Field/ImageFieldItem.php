@@ -2,7 +2,9 @@
 
 namespace Feadmin\Items\Field;
 
-class ImageFieldItem extends UploadableFieldItem
+use Feadmin\Items\Field\Contracts\UploadableFieldInterface;
+
+class ImageFieldItem extends TextFieldItem implements UploadableFieldInterface
 {
     //
 }

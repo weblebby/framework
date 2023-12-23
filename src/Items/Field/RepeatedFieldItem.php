@@ -3,8 +3,11 @@
 namespace Feadmin\Items\Field;
 
 use Feadmin\Enums\FieldTypeEnum;
+use Feadmin\Items\Field\Concerns\HasChildFields;
+use Feadmin\Items\Field\Concerns\HasFieldName;
+use Feadmin\Items\Field\Contracts\HasChildFieldInterface;
 
-class RepeatedFieldItem extends FieldItem
+class RepeatedFieldItem extends FieldItem implements HasChildFieldInterface
 {
     use HasChildFields, HasFieldName;
 

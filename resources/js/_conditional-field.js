@@ -50,19 +50,44 @@ const ConditionalField = {
 
     compare(value, conditionValue, operator) {
         switch (operator) {
+            case '===':
+                return value === conditionValue
             case '!==':
                 return value !== conditionValue
-            case '<':
-                return value < conditionValue
-            case '<=':
-                return value <= conditionValue
+            case '==':
+                return value == conditionValue
+            case '!=':
+                return value != conditionValue
             case '>':
                 return value > conditionValue
             case '>=':
                 return value >= conditionValue
-            case '===':
+            case '<':
+                return value < conditionValue
+            case '<=':
+                return value <= conditionValue
+            case 'in':
+                return conditionValue.includes(value)
+            case 'not_in':
+                return !conditionValue.includes(value)
+            case 'between':
+                return value >= conditionValue[0] && value <= conditionValue[1]
+            case 'not_between':
+                return value < conditionValue[0] || value > conditionValue[1]
+            case 'contains':
+                return value.includes(conditionValue)
+            case 'not_contains':
+                return !value.includes(conditionValue)
+            case 'starts_with':
+                return value.startsWith(conditionValue)
+            case 'ends_with':
+                return value.endsWith(conditionValue)
+            case 'regex':
+                return new RegExp(conditionValue).test(value)
+            case 'not_regex':
+                return !new RegExp(conditionValue).test(value)
             default:
-                return value === conditionValue
+                return false
         }
     },
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace Feadmin\Items\Field;
+namespace Feadmin\Items\Field\Concerns;
 
 use Feadmin\Items\Field\Contracts\FieldInterface;
 
 trait HasChildFields
 {
     protected array $fields = [];
-    
+
     public function fields(array $fields): self
     {
         $this->fields = collect($fields)

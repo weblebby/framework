@@ -2,9 +2,9 @@
 
 namespace Feadmin\Services;
 
+use Feadmin\Items\Field\Concerns\HasFieldName;
 use Feadmin\Items\Field\Contracts\FieldInterface;
 use Feadmin\Items\Field\FieldValueItem;
-use Feadmin\Items\Field\HasFieldName;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;

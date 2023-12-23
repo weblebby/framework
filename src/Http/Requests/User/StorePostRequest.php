@@ -9,6 +9,7 @@ use Feadmin\Facades\Theme;
 use Feadmin\Models\Post;
 use Feadmin\Services\User\PostFieldService;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Exists;
 use Illuminate\Validation\Rules\In;
@@ -32,6 +33,7 @@ class StorePostRequest extends FormRequest
     {
         $this->loadRulesAndAttributes();
         $this->transformTaxonomies();
+        $this->transformDeletedFields();
     }
 
     /**
@@ -58,6 +60,8 @@ class StorePostRequest extends FormRequest
             'featured_image' => ['nullable', 'image', 'max:10240'],
             'published_at' => ['nullable', 'date'],
             'position' => ['nullable', 'integer'],
+            '_deleted_fields' => ['nullable', 'array'],
+            '_deleted_fields.*' => ['required', 'string', 'max:191'],
         ];
 
         if ($this->postable::doesSupportTemplates()) {
@@ -121,5 +125,18 @@ class StorePostRequest extends FormRequest
         }
 
         $this->merge(['taxonomies' => $taxonomies]);
+    }
+
+    protected function transformDeletedFields(): void
+    {
+        if (!$this->has('_deleted_fields')) {
+            return;
+        }
+
+        $this->merge([
+            '_deleted_fields' => collect($this->input('_deleted_fields'))
+                ->map(fn($field) => Str::after($field, 'metafields.'))
+                ->toArray(),
+        ]);
     }
 }

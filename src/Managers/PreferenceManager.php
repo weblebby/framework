@@ -5,7 +5,7 @@ namespace Feadmin\Managers;
 use Exception;
 use Feadmin\Enums\FieldTypeEnum;
 use Feadmin\Items\Field\Contracts\FieldInterface;
-use Feadmin\Items\Field\RepeatedFieldItem;
+use Feadmin\Items\Field\Contracts\HasChildFieldInterface;
 use Feadmin\Models\Preference;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
@@ -92,12 +92,15 @@ class PreferenceManager
         return $this;
     }
 
+    /**
+     * @throws Exception
+     */
     public function get(string $rawKey, mixed $default = null): mixed
     {
         [$preference, $field] = $this->find($rawKey);
 
         if ($preference instanceof Collection) {
-            $map = function (array $preferenceAndField) use ($default, &$map) {
+            $map = function (array $preferenceAndField) use ($preference, $default, &$map) {
                 if (!isset($preferenceAndField['preference']) || !isset($preferenceAndField['field'])) {
                     foreach ($preferenceAndField as $key => $value) {
                         $preferenceAndField[$key] = $map($value);
@@ -119,6 +122,9 @@ class PreferenceManager
         return $this->getFieldValue($preference, $field, $default);
     }
 
+    /**
+     * @throws Exception
+     */
     public function set(array $data): array
     {
         $saved = [];
@@ -139,12 +145,15 @@ class PreferenceManager
         return array_filter($saved);
     }
 
+    /**
+     * @throws Exception
+     */
     public function find(string $rawKey): array
     {
         [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
         $field = $this->field($rawKey);
 
-        if (($field['type'] ?? null) === FieldTypeEnum::REPEATED) {
+        if ($field instanceof HasChildFieldInterface) {
             return $this->findFromRepeatedPreference($field, $rawKey);
         }
 
@@ -157,7 +166,10 @@ class PreferenceManager
         return [$foundPreference, $field];
     }
 
-    protected function findFromRepeatedPreference(FieldInterface $field, string $rawKey): array
+    /**
+     * @throws Exception
+     */
+    protected function findFromRepeatedPreference(HasChildFieldInterface $field, string $rawKey): array
     {
         [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
 
@@ -178,6 +190,9 @@ class PreferenceManager
         return [$preferences, $field];
     }
 
+    /**
+     * @throws Exception
+     */
     public function field(string $rawKey): ?FieldInterface
     {
         [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
@@ -265,15 +280,15 @@ class PreferenceManager
             if (str_contains($rawKeyToWildcard, $field['name'])) {
                 $index = str_replace($field['name'] . '.', '', $rawKeyToWildcard);
 
-                if (is_numeric($index)) {
+                if (is_numeric($index) || $rawKeyToWildcard === $field['name']) {
                     return $field;
                 }
 
-                if ($rawKeyToWildcard !== $field['name'] && $field instanceof RepeatedFieldItem) {
-                    return $this->findFromRepeatedFieldByKey($field['fields'], $rawKey);
+                if ($field instanceof HasChildFieldInterface) {
+                    if ($foundField = $this->findFromRepeatedFieldByKey($field['fields'], $rawKey)) {
+                        return $foundField;
+                    }
                 }
-
-                return $field;
             }
         }
 
@@ -294,6 +309,9 @@ class PreferenceManager
         return $rawKey;
     }
 
+    /**
+     * @throws Exception
+     */
     protected function parseRawKey(string $rawKey): array
     {
         if (!str_contains($rawKey, '->')) {
@@ -315,12 +333,12 @@ class PreferenceManager
         if (method_exists($field, 'name')) {
             if (is_null($parentKey)) {
                 $field->name("{$this->currentNamespace}::{$this->currentBag}->{$field['key']}");
-            } else {
+            } elseif ($field['key']) {
                 $field->name("{$parentKey}.*.{$field['key']}");
             }
         }
 
-        if (method_exists($field, 'fields')) {
+        if ($field instanceof HasChildFieldInterface) {
             collect($field['fields'])->each(function (FieldInterface $child) use ($field) {
                 $this->setFieldName($child, $field['name']);
             });

@@ -46,8 +46,9 @@ class PreferenceController extends Controller
     {
         $fields = Preference::fields($namespace, $bag);
 
-        $mappedInput = $fieldInputService->mapFieldsWithInput($fields, $request->all());
-        $fieldsForValidation = $fieldValidationService->get($fields, $mappedInput);
+        $fieldValues = $fieldInputService->getFieldValues($fields, $request->all());
+        $fieldsForValidation = $fieldValidationService->get($fields, $fieldValues);
+        dd($fieldValues, $fieldsForValidation);
 
         $validated = $request->validate(
             $fieldsForValidation['rules'],

@@ -110,6 +110,14 @@
     min-height: 200px;
 }
 
+.draggable-source--is-dragging {
+    @apply fd-opacity-50 fd-bg-blue-200 fd-border-transparent;
+}
+
+.draggable-mirror {
+    @apply fd-border-transparent fd-ring-4 fd-ring-blue-600;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

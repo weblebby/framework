@@ -2,10 +2,11 @@
 
 namespace Feadmin\Services;
 
+use Feadmin\Items\Field\Concerns\HasFieldName;
 use Feadmin\Items\Field\ConditionalFieldItem;
 use Feadmin\Items\Field\Contracts\FieldInterface;
+use Feadmin\Items\Field\Contracts\HasChildFieldInterface;
 use Feadmin\Items\Field\FieldValueItem;
-use Feadmin\Items\Field\HasFieldName;
 use Feadmin\Items\Field\RepeatedFieldItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -52,7 +53,6 @@ class FieldValidationService
         }
 
         $name = $fieldValueItem?->field()['indexed_name'] ?? $field['name'];
-
         $attributes[$name] = $field['label'];
 
         if ($field['type']?->isEditable() && isset($field['rules'])) {
@@ -86,6 +86,17 @@ class FieldValidationService
     protected function validateConditionalField(FieldInterface $field, ?FieldValueItem $fieldValueItem, array &$rules, array &$attributes): void
     {
         foreach ($fieldValueItem?->value() ?? [] as $value) {
+            foreach ($value as $childValue) {
+                if ($childValue->field() instanceof HasChildFieldInterface) {
+                    $this->validate($childValue->field(), $childValue, $rules, $attributes);
+                    $validatedByChildField = true;
+                }
+            }
+
+            if ($validatedByChildField ?? false) {
+                continue;
+            }
+
             $allConditionsPassed = true;
 
             foreach ($field['conditions'] as $condition) {
@@ -111,6 +122,11 @@ class FieldValidationService
                 }
 
                 $childField = Arr::get($value, sprintf('%s.field', $childField['key']));
+
+                if (is_null($childField)) {
+                    continue;
+                }
+
                 $this->validate($childField, $value[$childField['key']] ?? [], $rules, $attributes);
             }
         }

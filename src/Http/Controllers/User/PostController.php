@@ -72,7 +72,7 @@ class PostController extends Controller
 
         $metafields = $postFieldService->dottedMetafieldValues($post, $request->validated());
         $post->setMetafieldWithSchema($metafields);
-        
+
         $postService->syncTaxonomies(
             postable: $post,
             taxonomies: $request->safe()->offsetGet('taxonomies') ?? [],
@@ -83,7 +83,7 @@ class PostController extends Controller
             $post->addMedia($validated['featured_image'])->toMediaCollection('featured');
         }
 
-        return to_panel_route('posts.index', ['type' => $request->postable::getModelName()])
+        return to_panel_route('posts.edit', $post)
             ->with('message', __('Yazı oluşturuldu'));
     }
 
@@ -92,7 +92,7 @@ class PostController extends Controller
         $this->authorize($post::getPostAbilityFor('update'));
 
         $templates = $postService->templates($post);
-        $sections = $postService->sections($post, old('template'));
+        $sections = $postService->sections($post, old('template', $post->template));
         $categories = $postService->taxonomies($post, 'category');
         $metafields = $post->getMetafieldValues();
         $metafields['slug'] = $post->slug;
@@ -124,6 +124,10 @@ class PostController extends Controller
 
         $metafields = $postFieldService->dottedMetafieldValues($post, $request->validated());
         $post->setMetafieldWithSchema($metafields);
+
+        $post->deleteMetafields(
+            startsWith: $validated['_deleted_fields'] ?? [],
+        );
 
         $postService->syncTaxonomies(
             postable: $post,

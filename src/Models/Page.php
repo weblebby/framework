@@ -42,13 +42,13 @@ class Page extends Post
         ]);
 
         $section->add('content', __('Galeri'), [
-            FieldItem::repeated('gallery')
+            FieldItem::repeated('metafields.gallery')
                 ->label(__('Galeri'))
                 ->hint(__('Fotoğraf ekleyin.'))
                 ->fields([
                     FieldItem::image('image')
                         ->label(__('Fotoğraf'))
-                        ->rules(['nullable', 'string']),
+                        ->rules(['nullable', 'image']),
                 ]),
         ]);
 

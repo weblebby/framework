@@ -2,14 +2,19 @@ import TextEditor from './_ckeditor.js'
 import Form from './_form.js'
 import ConditionalField from './_conditional-field.js'
 import { convertDottedToInputName, inputNameToId } from './lib/utils.js'
+import Sortable from '@shopify/draggable/build/esm/Sortable/Sortable'
 
 const RepeatedField = {
     itemSelector: '[data-repeated-field-item]',
     singleItemSelector: '[data-repeated-field-item=":id"]',
     rowsSelector: '[data-repeated-field-rows]',
     rowSelector: '[data-repeated-field-row]',
+    rowIterationSelector: '[data-repeated-field-row-iteration]',
     templateSelector: '[data-repeated-field-template]',
     addRowSelector: '[data-repeated-field-add-row]',
+    handleRowSelector: '[data-repeated-field-handle-row]',
+    collapseRowSelector: '[data-repeated-field-collapse-row]',
+    rowContentSelector: '[data-repeated-field-row-content]',
     removeRowSelector: '[data-repeated-field-remove-row]',
     emptyInputSelector: '[data-repeated-field-empty-input]',
     formGroupSelector: '[data-form-group]',
@@ -40,7 +45,6 @@ const RepeatedField = {
 
     parseName(row, key, dottedName = null) {
         const container = row.closest(RepeatedField.itemSelector)
-
         const index = RepeatedField.getIndexOfRow(row)
 
         if (!dottedName) {
@@ -128,19 +132,29 @@ const RepeatedField = {
     removeRow: e => {
         e.preventDefault()
 
-        const containerName = e.target.closest(RepeatedField.itemSelector)
-            .dataset.repeatedFieldItem
-
+        const container = e.target.closest(RepeatedField.itemSelector)
+        const containerName = container.dataset.repeatedFieldItem
         const rows = e.target.closest(RepeatedField.rowsSelector)
 
         if (rows.children.length <= 1) {
             rows.classList.add('fd-hidden')
-            RepeatedField.addEmptyInput(containerName)
         }
 
         RepeatedField.enableAddRowButton(containerName)
 
         const row = e.target.closest(RepeatedField.rowSelector)
+
+        const { dottedName } = RepeatedField.parseName(
+            row.parentElement.closest(RepeatedField.rowSelector) || row,
+            undefined,
+            containerName,
+        )
+
+        RepeatedField.addToRemoveList(
+            container,
+            `${dottedName}.${RepeatedField.getIndexOfRow(row)}`,
+        )
+
         row.remove()
 
         RepeatedField.resetRowIndexes(rows)
@@ -157,7 +171,7 @@ const RepeatedField = {
             input.setAttribute('id', id)
 
             const value = options?.fields?.[key] || ''
-            if (value) {
+            if (value && options.mode === 'add') {
                 input.setAttribute('value', value)
                 input?._CKEDITOR?.then(editor => {
                     editor.setData(value)
@@ -194,7 +208,8 @@ const RepeatedField = {
 
             if (
                 options?.errors?.[dottedName] &&
-                !formGroup.classList.contains('fd-has-error')
+                !formGroup.classList.contains('fd-has-error') &&
+                options.mode === 'add'
             ) {
                 formGroup.classList.add('fd-has-error')
 
@@ -206,40 +221,72 @@ const RepeatedField = {
             }
         })
 
-        row.querySelectorAll(ConditionalField.containerSelector).forEach(
-            conditionalFieldContainer => {
-                const conditions = ConditionalField.parseConditions(
-                    conditionalFieldContainer,
-                )
-
-                const computedConditions = conditions.map(condition => {
-                    const { id } = RepeatedField.parseName(row, condition.key)
-
-                    return {
-                        ...condition,
-                        key: id,
-                    }
-                })
-
-                conditionalFieldContainer.dataset.conditionalFieldItem =
-                    JSON.stringify(computedConditions)
+        row.querySelectorAll(RepeatedField.rowIterationSelector).forEach(
+            rowIteration => {
+                rowIteration.innerText = `${
+                    RepeatedField.getIndexOfRow(row) + 1
+                }.`
             },
         )
+
+        if (options.mode === 'add') {
+            row.querySelectorAll(ConditionalField.containerSelector).forEach(
+                conditionalFieldContainer => {
+                    const conditions = ConditionalField.parseConditions(
+                        conditionalFieldContainer,
+                    )
+
+                    const computedConditions = conditions.map(condition => {
+                        const { id } = RepeatedField.parseName(
+                            row,
+                            condition.key,
+                        )
+
+                        return {
+                            ...condition,
+                            key: id,
+                        }
+                    })
+
+                    conditionalFieldContainer.dataset.conditionalFieldItem =
+                        JSON.stringify(computedConditions)
+                },
+            )
+
+            ConditionalField.listen(row)
+        }
     },
 
     resetRowIndexes: rows => {
         rows.querySelectorAll(RepeatedField.rowSelector).forEach(row => {
-            RepeatedField.setRowIndexes(row)
+            RepeatedField.setRowIndexes(row, {
+                mode: 'reset',
+            })
         })
     },
 
     onAddRow: (row, options) => {
         RepeatedField.initPlugins(row)
-        RepeatedField.setRowIndexes(row, options)
+        RepeatedField.setRowIndexes(row, {
+            ...options,
+            mode: 'add',
+        })
+        RepeatedField.listenCollapseRowButton(row)
         RepeatedField.listenRemoveRowButton(row)
         RepeatedField.removeEmptyInputIfNoRows(
             row.closest(RepeatedField.rowsSelector),
         )
+
+        row.querySelectorAll(RepeatedField.itemSelector).forEach(item => {
+            RepeatedField.initializeSortable(item)
+        })
+
+        if (options?.collapse === false) {
+            const collapseRowButton = row.querySelector(
+                RepeatedField.collapseRowSelector,
+            )
+            RepeatedField.handleCollapseRowButton(collapseRowButton)
+        }
     },
 
     initPlugins: row => {
@@ -250,8 +297,6 @@ const RepeatedField = {
         row.querySelectorAll(Form.imageSelector).forEach(container => {
             Form.handleImageInput(container.querySelector('input[type="file"]'))
         })
-
-        ConditionalField.listen(row)
     },
 
     listenRemoveRowButton: row => {
@@ -259,6 +304,30 @@ const RepeatedField = {
             RepeatedField.removeRowSelector,
         )
         removeRowButton.addEventListener('click', RepeatedField.removeRow)
+    },
+
+    listenCollapseRowButton: row => {
+        const collapseRowButton = row.querySelector(
+            RepeatedField.collapseRowSelector,
+        )
+        collapseRowButton?.addEventListener('click', e => {
+            e.preventDefault()
+            RepeatedField.handleCollapseRowButton(collapseRowButton)
+        })
+    },
+
+    handleCollapseRowButton: button => {
+        const row = button.closest(RepeatedField.rowSelector)
+        const rowContent = row.querySelector(RepeatedField.rowContentSelector)
+        const isCollapsed = rowContent.classList.contains('fd-hidden')
+
+        if (isCollapsed) {
+            rowContent.classList.remove('fd-hidden')
+            button.style.transform = 'rotate(90deg)'
+        } else {
+            rowContent.classList.add('fd-hidden')
+            button.style.transform = 'rotate(0deg)'
+        }
     },
 
     enableAddRowButton: containerName => {
@@ -273,6 +342,15 @@ const RepeatedField = {
         const button = itemContainer.querySelector(RepeatedField.addRowSelector)
 
         button.setAttribute('disabled', 'disabled')
+    },
+
+    addToRemoveList: (container, key) => {
+        const input = document.createElement('input')
+        input.setAttribute('type', 'hidden')
+        input.setAttribute('name', '_deleted_fields[]')
+        input.setAttribute('value', key)
+
+        container.appendChild(input)
     },
 
     removeEmptyInputIfNoRows: rows => {
@@ -305,7 +383,33 @@ const RepeatedField = {
         const input = container.querySelector(RepeatedField.emptyInputSelector)
         input?.remove()
     },
+
+    initializeSortable: container => {
+        const rowWrapperEl = container.querySelector(RepeatedField.rowsSelector)
+
+        const sortable = new Sortable(rowWrapperEl, {
+            draggable: RepeatedField.rowSelector,
+            handle: RepeatedField.handleRowSelector,
+            mirror: {
+                constrainDimensions: true,
+            },
+        })
+
+        sortable.on('sortable:sort', e => {
+            // check e.dragEvent.data.originalSource and e.dragEvent.data.over is on same level
+            const originalSource = e.dragEvent.data.originalSource
+            const over = e.dragEvent.data.over
+
+            if (originalSource?.parentElement !== over?.parentElement) {
+                e.cancel()
+            }
+        })
+    },
 }
+
+document
+    .querySelectorAll(RepeatedField.itemSelector)
+    .forEach(RepeatedField.initializeSortable)
 
 document.addEventListener('click', e => {
     const button = e.target.closest(RepeatedField.addRowSelector)
@@ -317,6 +421,7 @@ document.addEventListener('click', e => {
 
     RepeatedField.addRow({
         itemContainer,
+        collapse: false,
     })
 })
 

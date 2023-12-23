@@ -34,17 +34,33 @@
     </div>
     <div class="fd-hidden fd-space-y-3" data-repeated-field-rows></div>
     <template data-repeated-field-template>
-        <div class="fd-border fd-rounded fd-p-3 fd-relative" data-repeated-field-row>
-            <div class="fd-space-y-3">
+        <div class="fd-bg-white fd-border fd-rounded fd-p-3 fd-relative fd-space-y-3" data-repeated-field-row>
+            <div class="fd-flex fd-items-center fd-justify-between fd-gap-2">
+                <div class="fd-flex fd-items-center fd-gap-1">
+                    <x-feadmin::button
+                            type="button"
+                            icon="caret-right-fill"
+                            class="fd-transition-transform"
+                            data-repeated-field-collapse-row="true"
+                    >
+                    </x-feadmin::button>
+                    <x-feadmin::button
+                            type="button"
+                            icon="grip-horizontal"
+                            data-repeated-field-handle-row="true"
+                    />
+                    <div class="fd-font-medium fd-text-lg fd-ms-3" data-repeated-field-row-iteration>1.</div>
+                </div>
+                <x-feadmin::button
+                        type="button"
+                        variant="red"
+                        icon="x"
+                        :data-repeated-field-remove-row="true"
+                />
+            </div>
+            <div class="fd-space-y-3 fd-hidden" data-repeated-field-row-content>
                 {{ $slot }}
             </div>
-            <x-feadmin::button
-                    class="fd-absolute fd-right-0 fd-top-0 -fd-translate-y-1/2 fd-translate-x-1/2"
-                    type="button"
-                    variant="danger"
-                    icon="x"
-                    :data-repeated-field-remove-row="true"
-            />
         </div>
     </template>
 </div>
