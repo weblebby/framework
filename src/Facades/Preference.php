@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static PreferenceManager add(FieldInterface $field)
  * @method static PreferenceManager addMany(array $fields)
  * @method static mixed get(string $rawKey, mixed $default = null, string $locale = null)
- * @method static array set(array $data, string $locale = null)
+ * @method static array set(array $data, string $locale = null, array $options = [])
  * @method static array find(string $rawKey)
  * @method static FieldInterface|null field(string $namespace, string $bag, string $key)
  * @method static Collection fields(string $namespace, string $bag)

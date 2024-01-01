@@ -4,6 +4,7 @@ namespace Feadmin\Services\User;
 
 use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Facades\Theme;
+use Feadmin\Items\FieldSectionsItem;
 use Feadmin\Models\Taxonomy;
 use Feadmin\Services\TaxonomyService;
 use Illuminate\Support\Collection;
@@ -15,11 +16,9 @@ class PostService
         return Theme::active()->templatesFor($postable::class);
     }
 
-    public function sections(PostInterface $postable, string $template = null): array
+    public function sections(PostInterface $postable, string $template = null): FieldSectionsItem
     {
-        return $postable::getPostSections()
-            ->withTemplateSections($postable, $template)
-            ->toArray();
+        return $postable::getPostSections()->withTemplateSections($postable, $template);
     }
 
     public function taxonomies(PostInterface $postable, string $taxonomy): ?Collection

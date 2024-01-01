@@ -11,6 +11,8 @@ use Feadmin\Items\Field\FieldValueItem;
 use Feadmin\Items\Field\RepeatedFieldItem;
 use Feadmin\Models\Metafield;
 use Feadmin\Models\Preference;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
@@ -32,7 +34,9 @@ class PreferenceManager
 
     public function loadPreferences(): self
     {
-        $this->preferences = Preference::query()->with('metafields')->get();
+        $this->preferences = Preference::query()
+            ->with(['metafields' => fn(MorphMany $builder) => $builder->oldest('key')])
+            ->get();
 
         return $this;
     }
@@ -102,50 +106,98 @@ class PreferenceManager
      */
     public function get(string $rawKey, mixed $default = null): mixed
     {
-        [$metafield, $field] = $this->find($rawKey);
-
-        if ($rawKey === 'default::general->settings') {
-            dd($metafield, $field, $rawKey);
+        if (str_starts_with($rawKey, 'fields.')) {
+            $rawKey = Str::replaceFirst('fields.', '', $rawKey);
         }
+
+        [$metafield, $field] = $this->find($rawKey);
 
         if ($metafield instanceof Collection) {
             $map = function (array $metafieldAndField) use ($metafield, $default, &$map) {
-                if (!isset($metafieldAndField['metafield']) || !isset($metafieldAndField['field'])) {
-                    foreach ($metafieldAndField as $key => $value) {
-                        $metafieldAndField[$key] = $map($value);
-                    }
-
-                    return $metafieldAndField;
+                if (isset($metafieldAndField['metafield']) && isset($metafieldAndField['field'])) {
+                    return $metafieldAndField['metafield']->toValue($metafieldAndField['field'], $default);
                 }
 
-                return $this->getFieldValue(
-                    $metafieldAndField['metafield']->metafieldable,
-                    $metafieldAndField['field'],
-                    $default,
-                );
+                foreach ($metafieldAndField as $key => $value) {
+                    $metafieldAndField[$key] = $map($value);
+                }
+
+                return $metafieldAndField;
             };
 
             return $metafield->map($map)->toArray();
         }
 
-        return $this->getFieldValue($metafield?->metafieldable, $field, $default);
+        return $metafield?->toValue($field, $default) ?? $default;
     }
 
     /**
      * @throws Exception
      */
-    public function set(array $data, string $locale = null): array
+    public function set(array $data, string $locale = null, array $options = []): array
     {
         $saved = [];
 
-        foreach ($data as $rawKey => $value) {
-            [$_, $_, $key] = $this->parseRawKey($rawKey);
-            [$_, $field] = $this->find($rawKey);
+        $groups = collect($data)->groupBy(function ($value, $rawKey) {
+            [$namespace, $bag] = $this->parseRawKey($rawKey);
+            return "{$namespace}::{$bag}";
+        }, preserveKeys: true);
 
-            $fieldValue = $value instanceof FieldValueItem ? $value : new FieldValueItem($field, $value);
+        foreach ($groups as $namespaceAndBag => $fields) {
+            [$namespace, $bag] = explode('::', $namespaceAndBag);
 
-            $preference ??= $this->getOrCreatePreference($field);
-            $saved[] = $preference->setMetafieldWithSchema($key, $fieldValue, $locale);
+            /** @var Preference $preference */
+            $preference = Preference::query()->firstOrCreate(
+                compact('namespace', 'bag')
+            );
+
+            $fields = $fields->mapWithKeys(function ($value, $rawKey) {
+                [$_, $_, $key] = $this->parseRawKey($rawKey);
+
+                if ($value instanceof FieldValueItem) {
+                    return [$key => $value];
+                }
+
+                return [$key => new FieldValueItem($this->field($rawKey), $value)];
+            });
+
+            if (is_array($options['deleted_fields'] ?? null)) {
+                $options['deleted_fields'] = collect($options['deleted_fields'])
+                    ->map(function ($field) use ($preference) {
+                        try {
+                            [$_, $_, $key] = $this->parseRawKey($field);
+                        } catch (Exception) {
+                            $key = $field;
+                        }
+
+                        return $key;
+                    })
+                    ->toArray();
+
+                $preference->deleteMetafields(startsWith: $options['deleted_fields']);
+            }
+
+            $preference->setMetafieldWithSchema($fields, locale: $locale);
+
+            if (is_array($options['reordered_fields'] ?? null)) {
+                $options['reordered_fields'] = collect($options['reordered_fields'])
+                    ->mapWithKeys(function ($newFullKey, $oldFullKey) use ($preference) {
+                        try {
+                            [$_, $_, $newKey] = $this->parseRawKey($newFullKey);
+                            [$_, $_, $oldKey] = $this->parseRawKey($oldFullKey);
+                        } catch (Exception) {
+                            $newKey = $newFullKey;
+                            $oldKey = $oldFullKey;
+                        }
+
+                        return [$oldKey => $newKey];
+                    })
+                    ->toArray();
+
+                $preference->reorderMetafields($options['reordered_fields']);
+            }
+
+            $preference->resetMetafieldKeys();
         }
 
         return array_filter($saved);
@@ -189,11 +241,15 @@ class PreferenceManager
             ->map(fn(Preference $preference) => $preference->metafields)
             ->flatten()
             ->filter(fn(Metafield $metafield) => str_contains($metafield->key, $key))
-            ->mapWithKeys(function (Metafield $metafield) {
-                $rawKey = "fields.{$metafield->metafieldable->getNamespaceAndBag()}->{$metafield->key}";
-                $field = $this->field($rawKey);
+            ->mapWithKeys(function (Metafield $metafield) use ($rawKey) {
+                $fullKey = "{$metafield->metafieldable->getNamespaceAndBag()}->{$metafield->key}";
 
-                return [$metafield->key => compact('metafield', 'field')];
+                $field = $this->field($fullKey);
+
+                $key = str_replace($rawKey, '', $fullKey);
+                $key = ltrim($key, '.');
+
+                return [$key => compact('metafield', 'field')];
             })
             ->undot();
 
@@ -234,30 +290,6 @@ class PreferenceManager
         return collect($this->namespaces($namespace)[$bag]['fields'])
             ->sortBy('position')
             ->values();
-    }
-
-    protected function getOrCreatePreference(FieldInterface $field): Preference
-    {
-        [$namespace, $bag] = $this->parseRawKey($field['name']);
-
-        /** @var Preference $preference */
-        $preference = Preference::query()->firstOrCreate([
-            'namespace' => $namespace,
-            'bag' => $bag,
-        ]);
-
-        return $preference;
-    }
-
-    protected function getFieldValue(?Preference $preference, ?FieldInterface $field, mixed $default = null): mixed
-    {
-        $values = $preference?->getMetafieldValues(new FieldCollection([$field]));
-
-        if (is_null($values)) {
-            return $default;
-        }
-
-        return head($values) ?: $default;
     }
 
     protected function findFieldByKey(array $fields, string $key): ?FieldInterface
@@ -343,85 +375,5 @@ class PreferenceManager
                 $this->setFieldName($child, $field['name']);
             });
         }
-    }
-
-    protected function setRepeatedField(Collection $preferences, FieldInterface $field, array|null $rows): array
-    {
-        $saved = [];
-
-        $preferences->each(function (array $preferences, string $index) use ($rows) {
-            $row = $rows[$index] ?? null;
-
-            if (is_null($row)) {
-                $map = function (array $preferenceAndField) use (&$map) {
-                    if (!isset($preferenceAndField['preference']) || !isset($preferenceAndField['field'])) {
-                        foreach ($preferenceAndField as $key => $value) {
-                            $preferenceAndField[$key] = $map($value);
-                        }
-
-                        return $preferenceAndField;
-                    }
-
-                    return $preferenceAndField['preference'];
-                };
-
-                collect($preferences)->map($map)->dot()->each->delete();
-            }
-        });
-
-        foreach ($rows ?? [] as $index => $row) {
-            foreach ($row as $key => $value) {
-                $rawKey = sprintf(
-                    '%s.%d.%s',
-                    $field['name'],
-                    $index,
-                    $key
-                );
-
-                $saved = array_merge($saved, $this->set([$rawKey => $value]));
-            }
-        }
-
-        return $saved;
-    }
-
-    protected function setField(?Preference $preference, FieldInterface $field, mixed $value): ?Preference
-    {
-        $valueColumn = $field['translatable'] && !$field['type']->isValueless() ? 'value' : 'original_value';
-
-        if ($field['type']->isUploadable()) {
-            $uploadedFile = $value;
-            $value = true;
-        } elseif ($field['type']->isValueless()) {
-            $value = null;
-        }
-
-        if (is_null($preference) && filled($value)) {
-            $preference = $this->createNewPreference($field, [$valueColumn => $value]);
-
-            if ($field['type']->isUploadable()) {
-                $preference->addMedia($uploadedFile)->toMediaCollection();
-            }
-
-            return $preference;
-        }
-
-        if ($preference && blank($value)) {
-            $preference->delete();
-
-            return null;
-        }
-
-        if ($preference) {
-            if ($field['type']->isUploadable()) {
-                $preference->addMedia($uploadedFile)->toMediaCollection();
-            } else {
-                $preference->update([$valueColumn => $value]);
-            }
-
-            return $preference;
-        }
-
-        return null;
     }
 }

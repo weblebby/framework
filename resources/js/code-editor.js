@@ -27,6 +27,11 @@ const CodeEditor = {
     selector: '[data-code-editor]',
 
     createEditor(element) {
+        if (element._MONACO_EDITOR) {
+            console.warn('Editor already initialized.')
+            return
+        }
+
         const hiddenInput = element
             .closest('[data-form-group]')
             .querySelector('input[data-code-editor-value]')
@@ -48,6 +53,8 @@ const CodeEditor = {
         editor.getModel().onDidChangeContent(() => {
             hiddenInput.value = editor.getValue()
         })
+
+        element._MONACO_EDITOR = editor
     },
 }
 
@@ -56,3 +63,5 @@ const elements = document.querySelectorAll(CodeEditor.selector)
 elements.forEach(element => {
     CodeEditor.createEditor(element)
 })
+
+export default CodeEditor

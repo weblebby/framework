@@ -3,6 +3,7 @@
 namespace Feadmin\Hooks;
 
 use Feadmin\Facades\Preference;
+use Feadmin\Items\Field\Collections\FieldCollection;
 use Feadmin\Items\Field\Contracts\FieldInterface;
 use Illuminate\Support\Collection;
 
@@ -66,9 +67,9 @@ class PreferenceBagHook
         return $field;
     }
 
-    public function fields(string $bag): Collection
+    public function fields(string $bag): FieldCollection
     {
-        return collect($this->get()[$bag]['fields'] ?? [])
+        return (new FieldCollection($this->get()[$bag]['fields'] ?? []))
             ->sortBy('position')
             ->values();
     }

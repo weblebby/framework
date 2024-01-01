@@ -22,4 +22,20 @@ class FieldCollection extends Collection
             ->filter()
             ->first();
     }
+
+    /**
+     * @param class-string $instance
+     */
+    public function hasAnyTypeOf(string $instance): ?FieldInterface
+    {
+        if ($first = $this->first(fn(FieldInterface $field) => $field::class === $instance)) {
+            return $first;
+        }
+
+        return $this
+            ->filter(fn(FieldInterface $field) => $field instanceof HasChildFieldInterface)
+            ->map(fn(HasChildFieldInterface $field) => (new static($field['fields']))->hasAnyTypeOf($instance))
+            ->filter()
+            ->first();
+    }
 }

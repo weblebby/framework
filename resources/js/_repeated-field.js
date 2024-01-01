@@ -300,6 +300,20 @@ const RepeatedField = {
         row.querySelectorAll(Form.imageSelector).forEach(container => {
             Form.handleImageInput(container.querySelector('input[type="file"]'))
         })
+
+        // Don't get selector from "CodeEditor.selector".
+        // We need to import conditionally for performance issues.
+        const codeEditorElements = row.querySelectorAll('[data-code-editor]')
+
+        if (codeEditorElements.length > 0) {
+            import('./code-editor.js').then(m => {
+                codeEditorElements.forEach(element => {
+                    if (!element._MONACO_EDITOR) {
+                        m.default.createEditor(element)
+                    }
+                })
+            })
+        }
     },
 
     listenRemoveRowButton: row => {

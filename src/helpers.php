@@ -15,10 +15,10 @@ function panel(string $panel = null): ?PanelItem
     return Panel::find($panel);
 }
 
-function preference(string|array $rawKey, mixed $default = null, string $locale = null): mixed
+function preference(string|array $rawKey, mixed $default = null, string $locale = null, array $options = []): mixed
 {
     if (is_array($rawKey)) {
-        return Preference::set($rawKey, $locale);
+        return Preference::set($rawKey, $locale, $options);
     }
 
     return Preference::get($rawKey, $default, $locale);

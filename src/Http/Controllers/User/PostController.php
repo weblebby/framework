@@ -8,6 +8,8 @@ use Feadmin\Facades\PostModels;
 use Feadmin\Facades\Theme;
 use Feadmin\Http\Requests\User\StorePostRequest;
 use Feadmin\Http\Requests\User\UpdatePostRequest;
+use Feadmin\Items\Field\CodeEditorFieldItem;
+use Feadmin\Items\Field\Contracts\FieldInterface;
 use Feadmin\Models\Metafield;
 use Feadmin\Models\Post;
 use Feadmin\Models\Taxonomy;
@@ -51,13 +53,18 @@ class PostController extends Controller
         $sections = $postService->sections($postable, old('template'));
         $categories = $postService->taxonomies($postable, 'category');
 
+        $isCodeEditorNeeded = $sections->allFields()->hasAnyTypeOf(CodeEditorFieldItem::class);
+
         seo()->title(__(':name oluştur', ['name' => $postable::getSingularName()]));
 
+        $sections = $sections->toArray();
+        
         return view('feadmin::user.posts.create', compact(
             'templates',
             'sections',
             'categories',
             'postable',
+            'isCodeEditorNeeded',
         ));
     }
 
@@ -105,7 +112,11 @@ class PostController extends Controller
         $metafields = $post->getMetafieldValues();
         $metafields['slug'] = $post->slug;
 
+        $isCodeEditorNeeded = $sections->allFields()->hasAnyTypeOf(CodeEditorFieldItem::class);
+
         seo()->title(__('Yazıyı [:post] düzenle', ['post' => $post->title]));
+
+        $sections = $sections->toArray();
 
         return view('feadmin::user.posts.edit', compact(
             'post',
@@ -113,7 +124,8 @@ class PostController extends Controller
             'sections',
             'categories',
             'post',
-            'metafields'
+            'metafields',
+            'isCodeEditorNeeded',
         ));
     }
 

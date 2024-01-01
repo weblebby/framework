@@ -3,9 +3,14 @@
 namespace Feadmin\Models;
 
 use Feadmin\Concerns\Eloquent\Translatable;
+use Feadmin\Items\Field\Contracts\FieldInterface;
+use Feadmin\Items\Field\Contracts\UploadableFieldInterface;
+use Feadmin\Items\Field\TextFieldItem;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Arr;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -41,5 +46,18 @@ class Metafield extends Model implements HasMedia
     public function metafieldable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function toValue(FieldInterface $field, mixed $default = null): mixed
+    {
+        if ($field instanceof UploadableFieldInterface) {
+            return $this->getFirstMediaUrl();
+        }
+
+        if ($field instanceof TextFieldItem) {
+            return $this->value ?? $this->original_value;
+        }
+
+        return $default;
     }
 }

@@ -80,6 +80,8 @@ class Post extends Model implements HasMedia, PostInterface
             ->select('type')
             ->where($column = $field ?? $this->getRouteKeyName(), $value)
             ->firstOrFail();
+        
+        abort_unless(class_exists($post->type), 404);
 
         return $post->type::where($column, $value)->firstOrFail();
     }

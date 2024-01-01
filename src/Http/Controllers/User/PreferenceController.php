@@ -4,12 +4,11 @@ namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Feadmin\Facades\Preference;
+use Feadmin\Http\Requests\User\UpdatePreferenceRequest;
+use Feadmin\Items\Field\CodeEditorFieldItem;
+use Feadmin\Items\Field\Contracts\FieldInterface;
 use Feadmin\Services\FieldInputService;
-use Feadmin\Services\FieldValidationService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class PreferenceController extends Controller
@@ -26,42 +25,39 @@ class PreferenceController extends Controller
 
     public function show(string $bag): View
     {
-        dd(\preference('default::general->settings'));
-        dd(panel()->preference(self::NAMESPACE)->fields($bag));
-        $foundBag = panel()->preference(self::NAMESPACE)->get()[$bag] ?? null;
-        abort_if(is_null($foundBag), 404);
+        $bagHook = panel()->preference(self::NAMESPACE);
+        $bags = $bagHook->get();
 
-        seo()->title($foundBag['title']);
+        abort_if(is_null($selectedBag = $bags[$bag] ?? null), 404);
+
+        $fields = $bagHook->fields($bag);
+        $isCodeEditorNeeded = $fields->hasAnyTypeOf(CodeEditorFieldItem::class);
+
+        seo()->title($selectedBag['title']);
 
         return view('feadmin::user.preferences.show', [
-            'selectedBag' => $bag,
+            ...compact('bags', 'fields', 'isCodeEditorNeeded'),
+            'selectedBagId' => $bag,
             'namespace' => self::NAMESPACE,
         ]);
     }
 
     public function update(
-        Request                $request,
-        FieldValidationService $fieldValidationService,
-        FieldInputService      $fieldInputService,
-        string                 $namespace,
-        string                 $bag
+        UpdatePreferenceRequest $request,
+        FieldInputService       $fieldInputService,
+        string                  $namespace,
+        string                  $bag
     ): RedirectResponse
     {
-        //dd(\preference('default::general->site_url'));
         $fields = Preference::fields($namespace, $bag);
 
-        $fieldValues = $fieldInputService->getFieldValues($fields, $request->all());
-        $fieldsForValidation = $fieldValidationService->get($fields, $fieldValues);
-
-        $validated = $request->validate(
-            $fieldsForValidation['rules'],
-            attributes: $fieldsForValidation['attributes'],
-        );
-
-        $validatedFieldValues = $fieldInputService->getFieldValues($fields, $validated);
+        $validatedFieldValues = $fieldInputService->getFieldValues($fields, $request->validated());
         $validatedFieldValues = $fieldInputService->getDottedFieldValues($validatedFieldValues);
 
-        preference($validatedFieldValues);
+        preference($validatedFieldValues, options: [
+            'deleted_fields' => $validated['_deleted_fields'] ?? [],
+            'reordered_fields' => $validated['_reordered_fields'] ?? [],
+        ]);
 
         return back()->with('message', __('Ayarlar kaydedildi'));
     }

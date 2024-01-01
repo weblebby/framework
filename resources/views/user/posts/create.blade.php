@@ -97,5 +97,8 @@
           };
         </script>
         @vite('resources/js/pages/post/post.js', 'feadmin')
+        @if($isCodeEditorNeeded)
+            @vite('resources/js/code-editor.js', 'feadmin')
+        @endif
     </x-slot:scripts>
 </x-feadmin::layouts.panel>

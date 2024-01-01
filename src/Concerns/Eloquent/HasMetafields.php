@@ -2,6 +2,7 @@
 
 namespace Feadmin\Concerns\Eloquent;
 
+use Feadmin\Enums\FieldTypeEnum;
 use Feadmin\Items\Field\Collections\FieldCollection;
 use Feadmin\Items\Field\Contracts\UploadableFieldInterface;
 use Feadmin\Items\Field\FieldValueItem;
@@ -9,12 +10,14 @@ use Feadmin\Items\Field\TextFieldItem;
 use Feadmin\Models\Metafield;
 use Feadmin\Models\Post;
 use Feadmin\Models\Preference;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Enumerable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
@@ -55,6 +58,9 @@ trait HasMetafields
             $fieldDefinitions = $this::getPostSections()->withTemplateSections($this, $this->template)->allFields();
         }
 
+        /**
+         * @var Collection<int, Metafield> $metafields
+         */
         $metafields = $this->metafields->sortBy('key')->values();
 
         foreach ($metafields as $metafield) {
@@ -72,17 +78,7 @@ trait HasMetafields
                 $field = null;
             }
 
-            if ($field instanceof UploadableFieldInterface) {
-                $values[$metafield->key] = $metafield->getFirstMediaUrl();
-
-                continue;
-            }
-
-            if ($field instanceof TextFieldItem) {
-                $values[$metafield->key] = $metafield->value ?? $metafield->original_value;
-
-                continue;
-            }
+            $values[$metafield->key] = $metafield->toValue($field);
         }
 
         return Arr::undot($values);
@@ -92,7 +88,7 @@ trait HasMetafields
      * @throws FileDoesNotExist
      * @throws FileIsTooBig
      */
-    public function setMetafield(string $key, mixed $value, bool $isTranslatable = false, string $locale = null): ?Metafield
+    public function setMetafield(string $key, mixed $value, string $locale = null, array $options = []): ?Metafield
     {
         $metafield = $this->getMetafield($key);
 
@@ -104,6 +100,27 @@ trait HasMetafields
         if ($metafield && is_null($value)) {
             $metafield->delete();
             return null;
+        }
+
+        $isTranslatable = $options['is_translatable'] ?? false;
+        $field = $options['field'] ?? null;
+
+        if (($field['type'] ?? null) === FieldTypeEnum::TEL) {
+            $phoneRule = collect($field['rules'])
+                ->filter(fn($rule) => is_string($rule) && str_starts_with($rule, 'phone:'))
+                ->first();
+
+            $phoneCountries = str($phoneRule)
+                ->after('phone:')
+                ->explode(',')
+                ->filter()
+                ->toArray();
+
+            if (phone($value, $phoneCountries)->isValid()) {
+                $value = phone($value, $phoneCountries)->formatE164();
+            } else {
+                $value = null;
+            }
         }
 
         if (is_null($value)) {
@@ -130,8 +147,18 @@ trait HasMetafields
      * @throws FileIsTooBig
      * @throws FileDoesNotExist
      */
-    public function setMetafieldWithSchema(string|array $key, FieldValueItem $fieldValue = null, string $locale = null): array|Metafield|null
+    public function setMetafieldWithSchema(
+        string|array|Arrayable $key,
+        FieldValueItem         $fieldValue = null,
+        string                 $locale = null
+    ): array|Metafield|null
     {
+        if ($key instanceof Enumerable) {
+            $key = $key->all();
+        } else if ($key instanceof Arrayable) {
+            $key = $key->toArray();
+        }
+
         if (is_array($key)) {
             $saved = [];
 
@@ -150,8 +177,11 @@ trait HasMetafields
         return $this->setMetafield(
             key: $key,
             value: $value,
-            isTranslatable: $field['translatable'],
-            locale: $locale
+            locale: $locale,
+            options: [
+                'is_translatable' => $field['translatable'],
+                'field' => $field,
+            ]
         );
     }
 
@@ -269,8 +299,12 @@ trait HasMetafields
                 ->whereIn('key', $reorderedFieldKeys)
                 ->get();
 
-            // Firstly, we update new keys with fields. prefix for avoid key conflicts.
+            // Firstly, we update new keys with "fields." prefix for avoid key conflicts.
             foreach ($reorderedFields as $key => $value) {
+                if (!str_starts_with($value, 'fields.')) {
+                    $value = "fields.{$value}";
+                }
+
                 $key = str_replace('fields.', '', $key);
                 $metafields->firstWhere('key', $key)?->updateQuietly(['key' => $value]);
             }

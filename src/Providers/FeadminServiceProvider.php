@@ -110,7 +110,6 @@ class FeadminServiceProvider extends ServiceProvider
         PostModels::register([
             \Feadmin\Models\Post::class,
             \Feadmin\Models\Page::class,
-            \Feadmin\Models\Product::class,
         ]);
     }
 }
