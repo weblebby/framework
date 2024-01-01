@@ -20,39 +20,7 @@ class Page extends Post
 
     public static function getPostSections(): FieldSectionsItem
     {
-        $section = FieldSectionsItem::make();
-
-        foreach (parent::getPostSections()->toArray() as $name => $item) {
-            $section->add($name, $item['title'], $item['fields']);
-        }
-
-        $section->add('product', __('Ürün Sekmeleri'), [
-            FieldItem::repeated('tabs')
-                ->label(__('Sekmeler'))
-                ->hint(__('Sekme ekleyin.'))
-                ->fields([
-                    FieldItem::text('title')
-                        ->label(__('Sekme Başlığı'))
-                        ->rules(['required', 'string']),
-
-                    FieldItem::richText('text')
-                        ->label(__('Sekme İçeriği'))
-                        ->rules(['nullable', 'string']),
-                ]),
-        ]);
-
-        $section->add('content', __('Galeri'), [
-            FieldItem::repeated('gallery')
-                ->label(__('Galeri'))
-                ->hint(__('Fotoğraf ekleyin.'))
-                ->fields([
-                    FieldItem::image('image')
-                        ->label(__('Fotoğraf'))
-                        ->rules(['nullable', 'image']),
-                ]),
-        ]);
-
-        return $section;
+        return parent::getPostSections();
     }
 
     public static function getTaxonomies(): array

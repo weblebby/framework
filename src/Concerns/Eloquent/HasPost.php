@@ -61,7 +61,7 @@ trait HasPost
     {
         return FieldSectionsItem::make()
             ->add('seo', __('SEO'), [
-                /*FieldItem::text('slug')
+                FieldItem::text('slug')
                     ->translatable()
                     ->label(__('URL'))
                     ->attributes([
@@ -79,48 +79,7 @@ trait HasPost
                     ->translatable()
                     ->label(__('Meta açıklaması'))
                     ->attributes(['rows' => 3])
-                    ->rules(['nullable', 'string', 'max:400']),*/
-
-                FieldItem::image('featured_image')
-                    ->label(__('Öne çıkan görsel'))
-                    ->rules(['nullable', 'image', 'max:10240']),
-
-                FieldItem::repeated('settings')
-                    ->label(__('Ayarlar'))
-                    ->max(6)
-                    ->fields([
-                        FieldItem::text('site_name')
-                            ->label(__('Site adı'))
-                            ->rules(['required', 'string', 'max:191']),
-
-                        FieldItem::repeated('sliders')
-                            ->label(__('Sliderlar'))
-                            ->max(4)
-                            ->fields([
-                                FieldItem::select('type')
-                                    ->label(__('Slider tipi'))
-                                    ->options([
-                                        'image' => 'Görsel',
-                                        'video' => 'Video',
-                                    ])
-                                    ->rules(['required', 'string', 'max:191']),
-
-                                FieldItem::conditional('type', 'image', [
-                                    FieldItem::text('title')
-                                        ->label(__('Başlık'))
-                                        ->rules(['required', 'string', 'max:191']),
-                                ]),
-
-                                FieldItem::repeated('images')
-                                    ->label(__('Görseller'))
-                                    ->max(4)
-                                    ->fields([
-                                        FieldItem::image('image_url')
-                                            ->label(__('Görsel URL\'i'))
-                                            ->rules(['required', 'image']),
-                                    ]),
-                            ]),
-                    ]),
+                    ->rules(['nullable', 'string', 'max:400']),
             ]);
     }
 

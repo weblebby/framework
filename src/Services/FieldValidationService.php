@@ -84,9 +84,16 @@ class FieldValidationService
         }
     }
 
-    protected function validateConditionalField(FieldInterface $field, ?FieldValueItem $fieldValueItem, array &$rules, array &$attributes): void
+    protected function validateConditionalField(
+        FieldInterface  $field,
+        ?FieldValueItem $fieldValueItem,
+        array           &$rules,
+        array           &$attributes
+    ): void
     {
         foreach ($fieldValueItem?->value() ?? [] as $value) {
+            // FIXME: $value'yu loopa alınca preference tarafı çalışıyor fakat post tarafı çalışmıyor.
+            // FIXME: Checkbox'a javascript ile true false değeri ver.
             foreach ($value as $childValue) {
                 if ($childValue->field() instanceof HasChildFieldInterface) {
                     $this->validate($childValue->field(), $childValue, $rules, $attributes);

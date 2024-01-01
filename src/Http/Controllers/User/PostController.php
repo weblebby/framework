@@ -58,7 +58,7 @@ class PostController extends Controller
         seo()->title(__(':name oluştur', ['name' => $postable::getSingularName()]));
 
         $sections = $sections->toArray();
-        
+
         return view('feadmin::user.posts.create', compact(
             'templates',
             'sections',

@@ -78,6 +78,10 @@ trait HasMetafields
                 $field = null;
             }
 
+            if (is_null($field)) {
+                continue;
+            }
+
             $values[$metafield->key] = $metafield->toValue($field);
         }
 
