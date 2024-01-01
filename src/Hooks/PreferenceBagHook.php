@@ -93,24 +93,22 @@ class PreferenceBagHook
     {
         return collect($this->getAll()[$this->currentNamespace])
             ->sortBy('position')
-            ->map(function ($preference, $namespace) {
-                $rest = Preference::namespaces($this->currentNamespace)[$namespace] ?? null;
+            ->map(function ($preference, $bag) {
+                $bag = Preference::namespaces($this->currentNamespace)[$bag]['fields'] ?? null;
 
-                if (is_null($rest)) {
+                if (is_null($bag)) {
                     return null;
                 }
 
-                if (isset($rest['fields'])) {
-                    $rest['fields'] = array_map(function (FieldInterface $field) {
-                        if (isset($field['name']) && method_exists($field, 'default')) {
-                            $field->default(preference($field['name'], $field['default'] ?? null));
-                        }
+                $bag = array_map(function (FieldInterface $field) {
+                    if (isset($field['name']) && method_exists($field, 'default')) {
+                        $field->default(preference($field['name'], $field['default'] ?? null));
+                    }
 
-                        return $field;
-                    }, $rest['fields']);
-                }
+                    return $field;
+                }, $bag);
 
-                return [...$preference, ...$rest];
+                return [...$preference, 'fields' => $bag];
             })
             ->filter()
             ->toArray();

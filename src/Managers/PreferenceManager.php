@@ -4,8 +4,12 @@ namespace Feadmin\Managers;
 
 use Exception;
 use Feadmin\Enums\FieldTypeEnum;
+use Feadmin\Items\Field\Collections\FieldCollection;
 use Feadmin\Items\Field\Contracts\FieldInterface;
 use Feadmin\Items\Field\Contracts\HasChildFieldInterface;
+use Feadmin\Items\Field\FieldValueItem;
+use Feadmin\Items\Field\RepeatedFieldItem;
+use Feadmin\Models\Metafield;
 use Feadmin\Models\Preference;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
@@ -28,7 +32,7 @@ class PreferenceManager
 
     public function loadPreferences(): self
     {
-        $this->preferences = Preference::query()->withTranslation()->get();
+        $this->preferences = Preference::query()->with('metafields')->get();
 
         return $this;
     }
@@ -98,49 +102,50 @@ class PreferenceManager
      */
     public function get(string $rawKey, mixed $default = null): mixed
     {
-        [$preference, $field] = $this->find($rawKey);
+        [$metafield, $field] = $this->find($rawKey);
 
-        if ($preference instanceof Collection) {
-            $map = function (array $preferenceAndField) use ($preference, $default, &$map) {
-                if (!isset($preferenceAndField['preference']) || !isset($preferenceAndField['field'])) {
-                    foreach ($preferenceAndField as $key => $value) {
-                        $preferenceAndField[$key] = $map($value);
+        if ($rawKey === 'default::general->settings') {
+            dd($metafield, $field, $rawKey);
+        }
+
+        if ($metafield instanceof Collection) {
+            $map = function (array $metafieldAndField) use ($metafield, $default, &$map) {
+                if (!isset($metafieldAndField['metafield']) || !isset($metafieldAndField['field'])) {
+                    foreach ($metafieldAndField as $key => $value) {
+                        $metafieldAndField[$key] = $map($value);
                     }
 
-                    return $preferenceAndField;
+                    return $metafieldAndField;
                 }
 
                 return $this->getFieldValue(
-                    $preferenceAndField['preference'],
-                    $preferenceAndField['field'],
+                    $metafieldAndField['metafield']->metafieldable,
+                    $metafieldAndField['field'],
                     $default,
                 );
             };
 
-            return $preference->map($map)->toArray();
+            return $metafield->map($map)->toArray();
         }
 
-        return $this->getFieldValue($preference, $field, $default);
+        return $this->getFieldValue($metafield?->metafieldable, $field, $default);
     }
 
     /**
      * @throws Exception
      */
-    public function set(array $data): array
+    public function set(array $data, string $locale = null): array
     {
         $saved = [];
 
         foreach ($data as $rawKey => $value) {
-            [$preference, $field] = $this->find($rawKey);
-            $field = (clone $field)->name($rawKey);
+            [$_, $_, $key] = $this->parseRawKey($rawKey);
+            [$_, $field] = $this->find($rawKey);
 
-            if ($field['type'] === FieldTypeEnum::REPEATED) {
-                $saved = array_merge($saved, $this->setRepeatedField($preference, $field, $value));
+            $fieldValue = $value instanceof FieldValueItem ? $value : new FieldValueItem($field, $value);
 
-                continue;
-            }
-
-            $saved[] = $this->setField($preference, $field, $value);
+            $preference ??= $this->getOrCreatePreference($field);
+            $saved[] = $preference->setMetafieldWithSchema($key, $fieldValue, $locale);
         }
 
         return array_filter($saved);
@@ -158,13 +163,17 @@ class PreferenceManager
             return $this->findFromRepeatedPreference($field, $rawKey);
         }
 
+        /** @var Preference $foundPreference */
         $foundPreference = $this->preferences
             ->where('namespace', $namespace)
             ->where('bag', $bag)
-            ->where('key', $key)
             ->first();
 
-        return [$foundPreference, $field];
+        /** @var Metafield $foundMetafield */
+        $foundMetafield = $foundPreference?->metafields->where('key', $key)->first();
+        $foundMetafield?->setRelation('preference', $foundPreference);
+
+        return [$foundMetafield, $field];
     }
 
     /**
@@ -174,21 +183,21 @@ class PreferenceManager
     {
         [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
 
-        $preferences = $this->preferences
+        $metafields = $this->preferences
             ->where('namespace', $namespace)
             ->where('bag', $bag)
-            ->where(fn(Preference $preference) => str_contains($preference->key, $key))
-            ->mapWithKeys(function (Preference $preference) use ($rawKey) {
-                $field = $this->field($preference->getFullKey());
+            ->map(fn(Preference $preference) => $preference->metafields)
+            ->flatten()
+            ->filter(fn(Metafield $metafield) => str_contains($metafield->key, $key))
+            ->mapWithKeys(function (Metafield $metafield) {
+                $rawKey = "fields.{$metafield->metafieldable->getNamespaceAndBag()}->{$metafield->key}";
+                $field = $this->field($rawKey);
 
-                $key = str_replace($rawKey, '', 'fields.' . $preference->getFullKey());
-                $key = ltrim($key, '.');
-
-                return [$key => compact('preference', 'field')];
+                return [$metafield->key => compact('metafield', 'field')];
             })
             ->undot();
 
-        return [$preferences, $field];
+        return [$metafields, $field];
     }
 
     /**
@@ -227,42 +236,28 @@ class PreferenceManager
             ->values();
     }
 
-    protected function createNewPreference(FieldInterface $field, array $data): Preference
+    protected function getOrCreatePreference(FieldInterface $field): Preference
     {
-        [$namespace, $bag, $key] = $this->parseRawKey($field['name']);
+        [$namespace, $bag] = $this->parseRawKey($field['name']);
 
         /** @var Preference $preference */
-        $preference = Preference::query()->create(array_filter([
+        $preference = Preference::query()->firstOrCreate([
             'namespace' => $namespace,
             'bag' => $bag,
-            'key' => $key,
-            ...$data,
-        ], fn($value) => filled($value)));
+        ]);
 
         return $preference;
     }
 
     protected function getFieldValue(?Preference $preference, ?FieldInterface $field, mixed $default = null): mixed
     {
-        if (blank($field['key'] ?? null) || ($field['type'] ?? null) === FieldTypeEnum::REPEATED) {
+        $values = $preference?->getMetafieldValues(new FieldCollection([$field]));
+
+        if (is_null($values)) {
             return $default;
         }
 
-        $value = $field['translatable'] ? $preference?->value : $preference?->original_value;
-        $value = $value ?? $field['default'] ?? $default;
-
-        /** @var ?FieldTypeEnum $type */
-        $type = $field['type'] ?? null;
-
-        if ($type?->isUploadable()) {
-            return $preference?->getFirstMediaUrl(conversionName: 'lg') ?? '';
-        }
-
-        if ($type?->isHtmlable()) {
-            return new HtmlString($value);
-        }
-
-        return $value;
+        return head($values) ?: $default;
     }
 
     protected function findFieldByKey(array $fields, string $key): ?FieldInterface

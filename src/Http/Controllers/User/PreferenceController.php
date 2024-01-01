@@ -26,6 +26,8 @@ class PreferenceController extends Controller
 
     public function show(string $bag): View
     {
+        dd(\preference('default::general->settings'));
+        dd(panel()->preference(self::NAMESPACE)->fields($bag));
         $foundBag = panel()->preference(self::NAMESPACE)->get()[$bag] ?? null;
         abort_if(is_null($foundBag), 404);
 
@@ -45,6 +47,7 @@ class PreferenceController extends Controller
         string                 $bag
     ): RedirectResponse
     {
+        //dd(\preference('default::general->site_url'));
         $fields = Preference::fields($namespace, $bag);
 
         $fieldValues = $fieldInputService->getFieldValues($fields, $request->all());
@@ -55,9 +58,10 @@ class PreferenceController extends Controller
             attributes: $fieldsForValidation['attributes'],
         );
 
-        $validated = Arr::dot($validated);
+        $validatedFieldValues = $fieldInputService->getFieldValues($fields, $validated);
+        $validatedFieldValues = $fieldInputService->getDottedFieldValues($validatedFieldValues);
 
-        preference($validated);
+        preference($validatedFieldValues);
 
         return back()->with('message', __('Ayarlar kaydedildi'));
     }

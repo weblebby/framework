@@ -2,10 +2,13 @@
 
 namespace Feadmin\Concerns\Eloquent;
 
+use Feadmin\Items\Field\Collections\FieldCollection;
 use Feadmin\Items\Field\Contracts\UploadableFieldInterface;
 use Feadmin\Items\Field\FieldValueItem;
 use Feadmin\Items\Field\TextFieldItem;
 use Feadmin\Models\Metafield;
+use Feadmin\Models\Post;
+use Feadmin\Models\Preference;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\UniqueConstraintViolationException;
@@ -44,15 +47,30 @@ trait HasMetafields
         return $metafield;
     }
 
-    public function getMetafieldValues(): array
+    public function getMetafieldValues(FieldCollection $fieldDefinitions = null): array
     {
         $values = [];
 
-        $fieldDefinitions = $this::getPostSections()->withTemplateSections($this, $this->template)->allFields();
+        if ($this instanceof Post && is_null($fieldDefinitions)) {
+            $fieldDefinitions = $this::getPostSections()->withTemplateSections($this, $this->template)->allFields();
+        }
+
         $metafields = $this->metafields->sortBy('key')->values();
 
         foreach ($metafields as $metafield) {
-            $field = $fieldDefinitions->findByName(sprintf('fields.%s', $metafield->key));
+            if ($metafield->metafieldable instanceof Post) {
+                $field = $fieldDefinitions->findByName(sprintf('fields.%s', $metafield->key));
+            } elseif ($metafield->metafieldable instanceof Preference) {
+                $field = $fieldDefinitions->findByName(
+                    sprintf(
+                        'fields.%s->%s',
+                        $metafield->metafieldable->getNamespaceAndBag(),
+                        $metafield->key
+                    )
+                );
+            } else {
+                $field = null;
+            }
 
             if ($field instanceof UploadableFieldInterface) {
                 $values[$metafield->key] = $metafield->getFirstMediaUrl();
