@@ -56,6 +56,7 @@ class FieldInputService
                     $value
                 );
             }
+
         }
 
         return $computedFields;
@@ -67,21 +68,24 @@ class FieldInputService
 
         foreach ($value as $index => $item) {
             $childName = sprintf('%s.%s', $prefixedName, $index);
+            $field = $this->findFieldByName($childName, $fields);
 
-            if ($field = $this->findFieldByName($childName, $fields)) {
-                if (is_array($item)) {
-                    $item = collect($this->mapFieldsWithInput($fields, $item, $childName))
-                        ->mapWithKeys(function (FieldValueItem $item) use ($childName) {
-                            $key = Str::replaceFirst($childName . '.', '', $item->field()['indexed_name']);
-
-                            return [$key => $item];
-                        })
-                        ->undot()
-                        ->all();
-                }
-
-                $computedFields[$childName] = new FieldValueItem((clone $field)->indexedName($childName), $item);
+            if (is_null($field)) {
+                continue;
             }
+
+            if (is_array($item)) {
+                $item = collect($this->mapFieldsWithInput($fields, $item, $childName))
+                    ->mapWithKeys(function (FieldValueItem $item) use ($childName) {
+                        $key = Str::replaceFirst($childName . '.', '', $item->field()['indexed_name']);
+
+                        return [$key => $item];
+                    })
+                    ->undot()
+                    ->all();
+            }
+
+            $computedFields[$childName] = new FieldValueItem((clone $field)->indexedName($childName), $item);
         }
 
         return $computedFields;

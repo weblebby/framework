@@ -118,6 +118,14 @@
     @apply fd-border-transparent fd-ring-4 fd-ring-blue-600;
 }
 
+.draggable-mirror [data-repeated-field-handle-row] {
+    @apply fd-cursor-grabbing;
+}
+
+.monaco-editor, .monaco-editor .overflow-guard {
+    @apply fd-rounded-md;
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);

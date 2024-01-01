@@ -22,7 +22,7 @@
                         <x-feadmin::form :action="panel_route('preferences.update', [$namespace, $selectedBag])"
                                          method="PUT" enctype="multipart/form-data">
                             <div class="fd-space-y-3">
-                                @foreach (panel()->preference($namespace)->fields($selectedBag) as $field)
+                                @foreach (($fields = panel()->preference($namespace)->fields($selectedBag)) as $field)
                                     <x-feadmin::form.field :field="$field" />
                                 @endforeach
                                 <x-feadmin::button type="submit">@lang('Kaydet')</x-feadmin::button>
@@ -33,4 +33,7 @@
             </div>
         </div>
     </x-feadmin::page>
+    @if($fields->where(fn (\Feadmin\Items\Field\Contracts\FieldInterface $field) => $field instanceof \Feadmin\Items\Field\CodeEditorFieldItem)->isNotEmpty())
+        @vite('resources/js/code-editor.js', 'feadmin')
+    @endif
 </x-feadmin::layouts.panel>

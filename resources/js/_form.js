@@ -49,6 +49,15 @@ const Form = {
 
                 if (!file.type.match('image.*')) {
                     imgElem.remove()
+                } else {
+                    const event = new CustomEvent('image:loaded', {
+                        detail: {
+                            file,
+                            imgElem,
+                        },
+                    })
+
+                    input.dispatchEvent(event)
                 }
             }
         }

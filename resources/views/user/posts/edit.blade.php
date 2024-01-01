@@ -29,7 +29,7 @@
                                     @foreach ($section['fields'] as $field)
                                         <x-feadmin::form.field
                                                 :field="$field"
-                                                :default="$metafields[\Illuminate\Support\Str::replaceFirst('metafields.', '', $field['key'])] ?? null"
+                                                :default="$metafields[\Illuminate\Support\Str::replaceFirst('fields.', '', $field['key'])] ?? null"
                                         />
                                     @endforeach
                                 </div>

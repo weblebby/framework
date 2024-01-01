@@ -27,7 +27,7 @@ class Page extends Post
         }
 
         $section->add('product', __('Ürün Sekmeleri'), [
-            FieldItem::repeated('metafields.tabs')
+            FieldItem::repeated('tabs')
                 ->label(__('Sekmeler'))
                 ->hint(__('Sekme ekleyin.'))
                 ->fields([
@@ -42,7 +42,7 @@ class Page extends Post
         ]);
 
         $section->add('content', __('Galeri'), [
-            FieldItem::repeated('metafields.gallery')
+            FieldItem::repeated('gallery')
                 ->label(__('Galeri'))
                 ->hint(__('Fotoğraf ekleyin.'))
                 ->fields([

@@ -8,13 +8,17 @@ use Feadmin\Facades\PostModels;
 use Feadmin\Facades\Theme;
 use Feadmin\Http\Requests\User\StorePostRequest;
 use Feadmin\Http\Requests\User\UpdatePostRequest;
+use Feadmin\Models\Metafield;
 use Feadmin\Models\Post;
 use Feadmin\Models\Taxonomy;
+use Feadmin\Services\FieldInputService;
 use Feadmin\Services\TaxonomyService;
 use Feadmin\Services\User\PostFieldService;
 use Feadmin\Services\User\PostService;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
@@ -70,8 +74,12 @@ class PostController extends Controller
         /** @var Post $post */
         $post = $request->postable::query()->create($validated = $request->validated());
 
-        $metafields = $postFieldService->dottedMetafieldValues($post, $request->validated());
-        $post->setMetafieldWithSchema($metafields);
+        /**
+         * This order is important for metafields to be updated correctly.
+         */
+        $post->setMetafieldWithSchema($postFieldService->dottedMetafieldValues($post, $request->validated()));
+        $post->reorderMetafields($validated['_reordered_fields'] ?? []);
+        $post->resetMetafieldKeys();
 
         $postService->syncTaxonomies(
             postable: $post,
@@ -122,12 +130,13 @@ class PostController extends Controller
     {
         $post->update($validated = $request->validated());
 
-        $metafields = $postFieldService->dottedMetafieldValues($post, $request->validated());
-        $post->setMetafieldWithSchema($metafields);
-
-        $post->deleteMetafields(
-            startsWith: $validated['_deleted_fields'] ?? [],
-        );
+        /**
+         * This order is important for metafields to be updated correctly.
+         */
+        $post->deleteMetafields(startsWith: $validated['_deleted_fields'] ?? []);
+        $post->setMetafieldWithSchema($postFieldService->dottedMetafieldValues($post, $request->validated()));
+        $post->reorderMetafields($validated['_reordered_fields'] ?? []);
+        $post->resetMetafieldKeys();
 
         $postService->syncTaxonomies(
             postable: $post,

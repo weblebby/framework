@@ -9,6 +9,7 @@ use Feadmin\Items\Field\Contracts\HasChildFieldInterface;
 use Feadmin\Models\Preference;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 
 class PreferenceManager
 {
@@ -180,7 +181,7 @@ class PreferenceManager
             ->mapWithKeys(function (Preference $preference) use ($rawKey) {
                 $field = $this->field($preference->getFullKey());
 
-                $key = str_replace($rawKey, '', $preference->getFullKey());
+                $key = str_replace($rawKey, '', 'fields.' . $preference->getFullKey());
                 $key = ltrim($key, '.');
 
                 return [$key => compact('preference', 'field')];
@@ -195,8 +196,11 @@ class PreferenceManager
      */
     public function field(string $rawKey): ?FieldInterface
     {
-        [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
+        if (!str_starts_with($rawKey, 'fields.')) {
+            $rawKey = "fields.{$rawKey}";
+        }
 
+        [$namespace, $bag, $key] = $this->parseRawKey($rawKey);
         $preferences = $this->namespaces($namespace);
 
         if (is_null($preferences)) {
@@ -320,6 +324,7 @@ class PreferenceManager
             );
         }
 
+        $rawKey = Str::replaceFirst('fields.', '', $rawKey);
         $rawKey = $this->addMissingNamespaceToRawKey($rawKey);
 
         [$namespace, $bagAndKey] = explode('::', $rawKey);

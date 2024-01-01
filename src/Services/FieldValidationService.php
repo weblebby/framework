@@ -24,7 +24,8 @@ class FieldValidationService
                 continue;
             }
 
-            $this->validate($field, Arr::get($fieldsWithInput, $field['name']), $rules, $attributes);
+            $fieldValue = Arr::get($fieldsWithInput, $field['name']);
+            $this->validate($field, $fieldValue, $rules, $attributes);
         }
 
         return compact('rules', 'attributes');
@@ -121,13 +122,13 @@ class FieldValidationService
                     continue;
                 }
 
-                $childField = Arr::get($value, sprintf('%s.field', $childField['key']));
+                $targetField = Arr::get($value, sprintf('%s.field', $childField['key']));
 
-                if (is_null($childField)) {
+                if (is_null($targetField)) {
                     continue;
                 }
 
-                $this->validate($childField, $value[$childField['key']] ?? [], $rules, $attributes);
+                $this->validate($targetField, $value[$targetField['key']] ?? [], $rules, $attributes);
             }
         }
     }

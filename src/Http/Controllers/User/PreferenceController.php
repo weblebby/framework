@@ -9,6 +9,7 @@ use Feadmin\Services\FieldValidationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class PreferenceController extends Controller
@@ -48,7 +49,6 @@ class PreferenceController extends Controller
 
         $fieldValues = $fieldInputService->getFieldValues($fields, $request->all());
         $fieldsForValidation = $fieldValidationService->get($fields, $fieldValues);
-        dd($fieldValues, $fieldsForValidation);
 
         $validated = $request->validate(
             $fieldsForValidation['rules'],

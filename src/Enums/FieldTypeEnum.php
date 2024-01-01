@@ -15,6 +15,7 @@ enum FieldTypeEnum: string
     case CHECKBOX = 'checkbox';
     case RADIO = 'radio';
     case TEXT_AREA = 'text_area';
+    case CODE_EDITOR = 'code_editor';
     case RICH_TEXT = 'rich_text';
     case IMAGE = 'image';
 

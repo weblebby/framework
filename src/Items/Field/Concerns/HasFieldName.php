@@ -12,6 +12,10 @@ trait HasFieldName
 
     public function name(?string $name): self
     {
+        if (is_null($this->parent) && !Str::startsWith($name, 'fields.')) {
+            $name = "fields.{$name}";
+        }
+
         $prevName = $this->name;
         $this->name = $name;
 

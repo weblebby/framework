@@ -41,6 +41,10 @@
             @case(\Feadmin\Enums\FieldTypeEnum::RICH_TEXT)
                 <x-feadmin::form.textarea :attributes="$field['attributes']" :default="$default" data-ckeditor />
                 @break
+            @case(\Feadmin\Enums\FieldTypeEnum::CODE_EDITOR)
+                <x-feadmin::form.code-editor :attributes="$field['attributes']" :default="$default"
+                                             :data-code-editor="json_encode($field['editor'])" />
+                @break
             @case(\Feadmin\Enums\FieldTypeEnum::IMAGE)
                 <x-feadmin::form.image :attributes="$field['attributes']" :image="$default" />
                 @break

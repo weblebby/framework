@@ -78,6 +78,11 @@ class FieldItem implements FieldInterface, Arrayable, ArrayAccess, Jsonable, Jso
         return (new TextFieldItem($key))->type(FieldTypeEnum::RICH_TEXT);
     }
 
+    public static function codeEditor(string $key): CodeEditorFieldItem
+    {
+        return (new CodeEditorFieldItem($key))->type(FieldTypeEnum::CODE_EDITOR);
+    }
+
     public static function image(string $key): ImageFieldItem
     {
         return (new ImageFieldItem($key))->type(FieldTypeEnum::IMAGE);

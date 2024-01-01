@@ -62,6 +62,8 @@ class StorePostRequest extends FormRequest
             'position' => ['nullable', 'integer'],
             '_deleted_fields' => ['nullable', 'array'],
             '_deleted_fields.*' => ['required', 'string', 'max:191'],
+            '_reordered_fields' => ['nullable', 'array'],
+            '_reordered_fields.*' => ['required', 'string', 'max:191'],
         ];
 
         if ($this->postable::doesSupportTemplates()) {
@@ -135,7 +137,7 @@ class StorePostRequest extends FormRequest
 
         $this->merge([
             '_deleted_fields' => collect($this->input('_deleted_fields'))
-                ->map(fn($field) => Str::after($field, 'metafields.'))
+                ->map(fn($field) => Str::after($field, 'fields.'))
                 ->toArray(),
         ]);
     }

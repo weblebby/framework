@@ -16,15 +16,9 @@ class PostFieldService
         /** @var FieldInputService $fieldInputService */
         $fieldInputService = app(FieldInputService::class);
 
-        $sections = $postable::getPostSections()->toArray();
-
-        if ($postable::doesSupportTemplates() && isset($input['template'])) {
-            $template = Theme::active()
-                ->templatesFor($postable::class)
-                ->firstWhere('name', $input['template']);
-
-            $sections = array_merge($sections, $template->sections()->toArray());
-        }
+        $sections = $postable::getPostSections()
+            ->withTemplateSections($postable, $input['template'] ?? null)
+            ->toArray();
 
         foreach ($sections as $key => $section) {
             $sections[$key]['field_values'] = $fieldInputService->getFieldValues($section['fields'], $input);
@@ -67,8 +61,8 @@ class PostFieldService
         $dottedFieldValues = $this->dottedFieldValues($postable, $input);
 
         foreach ($dottedFieldValues as $key => $value) {
-            if (Str::startsWith($key, 'metafields.')) {
-                $key = Str::after($key, 'metafields.');
+            if (Str::startsWith($key, 'fields.')) {
+                $key = Str::after($key, 'fields.');
                 $dottedMetafieldValues[$key] = $value;
             }
         }

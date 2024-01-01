@@ -8,9 +8,11 @@ use Feadmin\Items\Field\TextFieldItem;
 use Feadmin\Models\Metafield;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
@@ -45,10 +47,12 @@ trait HasMetafields
     public function getMetafieldValues(): array
     {
         $values = [];
-        $fieldDefinitions = $this::getPostSections()->withTemplateSections($this, $this->template)->allFields();
 
-        foreach ($this->metafields as $metafield) {
-            $field = $fieldDefinitions->findByName(sprintf('metafields.%s', $metafield->key));
+        $fieldDefinitions = $this::getPostSections()->withTemplateSections($this, $this->template)->allFields();
+        $metafields = $this->metafields->sortBy('key')->values();
+
+        foreach ($metafields as $metafield) {
+            $field = $fieldDefinitions->findByName(sprintf('fields.%s', $metafield->key));
 
             if ($field instanceof UploadableFieldInterface) {
                 $values[$metafield->key] = $metafield->getFirstMediaUrl();
@@ -168,8 +172,6 @@ trait HasMetafields
             }
         }
 
-        $this->resetMetafieldKeys();
-
         return $deleted;
     }
 
@@ -184,25 +186,85 @@ trait HasMetafields
      */
     public function resetMetafieldKeys(): void
     {
-        $metafields = $this->metafields()->get();
+        try {
+            DB::beginTransaction();
 
-        foreach ($metafields as $metafield) {
-            $key = $metafield->key;
+            $metafields = $this->metafields()
+                ->get()
+                ->mapWithKeys(fn(Metafield $metafield) => [$metafield->key => $metafield])
+                ->undot();
 
-            if (!Str::contains($key, '.')) {
-                continue;
+            $map = function ($metafield) use (&$map) {
+                if (is_array($metafield) && collect($metafield)->keys()->every(fn($key) => is_numeric($key))) {
+                    return collect($metafield)->map($map)
+                        ->sortBy(fn($value, $key) => $key)
+                        ->values()
+                        ->all();
+                }
+
+                if (is_array($metafield)) {
+                    return collect($metafield)->map($map)->all();
+                }
+
+                return $metafield;
+            };
+
+            $metafields = $metafields->map($map)->dot();
+
+            foreach ($metafields as $key => $metafield) {
+                if ($key !== $metafield->key) {
+                    // Add "fields." prefix to key for avoid key conflicts.
+                    $metafield->update(['key' => "fields.{$key}"]);
+                }
             }
 
-            $keyParts = explode('.', $key);
-            $lastKeyPart = array_pop($keyParts);
-
-            if (!is_numeric($lastKeyPart)) {
-                continue;
+            foreach ($metafields as $key => $metafield) {
+                if ($key !== $metafield->key) {
+                    // Remove "fields." prefix from key.
+                    $metafield->update(['key' => Str::replaceFirst('fields.', '', $metafield->key)]);
+                }
             }
 
-            $keyParts[] = $lastKeyPart - 1;
+            DB::commit();
+        } catch (\Exception) {
+            DB::rollBack();
+        }
+    }
 
-            $metafield->update(['key' => implode('.', $keyParts)]);
+    public function reorderMetafields(array $reorderedFields): void
+    {
+        try {
+            DB::beginTransaction();
+
+            // Get reordered field keys from request and remove "fields." prefix.
+            $reorderedFieldKeys = collect($reorderedFields)
+                ->map(fn($value, $key) => str_replace('fields.', '', $key))
+                ->values()
+                ->toArray();
+
+            /**
+             * Get metafields with reordered keys.
+             *
+             * @var Collection<int, Metafield> $metafields
+             */
+            $metafields = $this->metafields()
+                ->whereIn('key', $reorderedFieldKeys)
+                ->get();
+
+            // Firstly, we update new keys with fields. prefix for avoid key conflicts.
+            foreach ($reorderedFields as $key => $value) {
+                $key = str_replace('fields.', '', $key);
+                $metafields->firstWhere('key', $key)?->updateQuietly(['key' => $value]);
+            }
+
+            // Secondly, we remove "fields." prefix from reordered keys.
+            foreach ($metafields as $metafield) {
+                $metafield->update(['key' => str_replace('fields.', '', $metafield->key)]);
+            }
+
+            DB::commit();
+        } catch (\Exception) {
+            DB::rollBack();
         }
     }
 }

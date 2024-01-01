@@ -46,10 +46,15 @@
                     </x-feadmin::button>
                     <x-feadmin::button
                             type="button"
+                            variant="light"
                             icon="grip-horizontal"
+                            class="fd-cursor-grab active:fd-cursor-grabbing"
                             data-repeated-field-handle-row="true"
                     />
-                    <div class="fd-font-medium fd-text-lg fd-ms-3" data-repeated-field-row-iteration>1.</div>
+                    <div class="fd-flex fd-items-center fd-gap-3 fd-font-medium fd-text-lg fd-ms-3">
+                        <span data-repeated-field-row-iteration>1.</span>
+                        <div data-repeated-field-row-iteration-label></div>
+                    </div>
                 </div>
                 <x-feadmin::button
                         type="button"
