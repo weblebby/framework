@@ -273,26 +273,17 @@ const RepeatedField = {
     },
 
     onAddRow: (row, options) => {
-        RepeatedField.initPlugins(row)
+        RepeatedField.initPluginsBeforeSetRowIndexes(row)
+
         RepeatedField.setRowIndexes(row, {
             ...options,
             mode: 'add',
         })
-        RepeatedField.listenCollapseRowButton(row)
-        RepeatedField.listenRemoveRowButton(row)
-        RepeatedField.removeEmptyInputIfNoRows(
-            row.closest(RepeatedField.rowsSelector),
-        )
 
-        if (options?.collapse === false) {
-            const collapseRowButton = row.querySelector(
-                RepeatedField.collapseRowSelector,
-            )
-            RepeatedField.handleCollapseRowButton(collapseRowButton)
-        }
+        RepeatedField.initPluginsAfterSetRowIndexes(row, options)
     },
 
-    initPlugins: row => {
+    initPluginsBeforeSetRowIndexes: row => {
         row.querySelectorAll(TextEditor.selector).forEach(input => {
             TextEditor.init(input)
         })
@@ -313,6 +304,25 @@ const RepeatedField = {
                     }
                 })
             })
+        }
+    },
+
+    initPluginsAfterSetRowIndexes: (row, options) => {
+        row.querySelectorAll(Form.checkboxSelector).forEach(input => {
+            Form.handleCheckbox(input)
+        })
+
+        RepeatedField.listenCollapseRowButton(row)
+        RepeatedField.listenRemoveRowButton(row)
+        RepeatedField.removeEmptyInputIfNoRows(
+            row.closest(RepeatedField.rowsSelector),
+        )
+
+        if (options?.collapse === false) {
+            const collapseRowButton = row.querySelector(
+                RepeatedField.collapseRowSelector,
+            )
+            RepeatedField.handleCollapseRowButton(collapseRowButton)
         }
     },
 

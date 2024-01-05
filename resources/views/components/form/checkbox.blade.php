@@ -6,7 +6,9 @@
 @php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
 @php($default = filled(old()) ? old($dottedName, $default) : $default)
+@php($checked = \Feadmin\Support\FormComponent::selected($dottedName, $default, $attributes))
 
+<input type="hidden" name="{{ $name }}" value="{{ $checked ? '1' : '0' }}">
 <label class="fd-inline-flex fd-items-center">
     <input
             id="{{ $id }}"
@@ -14,7 +16,6 @@
             {{ $attributes
                 ->merge([
                     'type' => 'checkbox',
-                    'value' => '1',
                     'checked' => FormComponent::selected($dottedName, $default, $attributes),
                 ])
                 ->class('fd-w-6

@@ -1,5 +1,7 @@
 const Form = {
     imageSelector: '[data-form-image]',
+    formGroupSelector: '[data-form-group]',
+    checkboxSelector: 'input[type="checkbox"]',
 
     handleSubmitters: form => {
         const buttons = form.querySelectorAll('[type="submit"]')
@@ -70,6 +72,25 @@ const Form = {
             },
         }
     },
+
+    handleCheckbox: checkbox => {
+        checkbox.setAttribute('name', `_visualized_${checkbox.name}`)
+
+        checkbox.closest('label').addEventListener('click', e => {
+            if (e.target.tagName === 'INPUT') return
+            e.preventDefault()
+            checkbox.checked = !checkbox.checked
+            checkbox.dispatchEvent(new Event('change'))
+        })
+
+        checkbox.addEventListener('change', () => {
+            const hidden = checkbox
+                .closest(Form.formGroupSelector)
+                .querySelector('input[type="hidden"]')
+
+            hidden.value = checkbox.checked ? 1 : 0
+        })
+    },
 }
 
 document.querySelectorAll('form').forEach(form => {
@@ -86,6 +107,10 @@ document.querySelectorAll('[data-like-submit]').forEach(button => {
 
 document.querySelectorAll(Form.imageSelector).forEach(element => {
     Form.handleImageInput(element.querySelector('input[type="file"]'))
+})
+
+document.querySelectorAll(Form.checkboxSelector).forEach(element => {
+    Form.handleCheckbox(element)
 })
 
 export default Form
