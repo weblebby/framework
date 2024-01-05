@@ -500,7 +500,7 @@
     "src": "node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js"
   },
   "resources/css/feadmin.css": {
-    "file": "assets/feadmin-ce483213.css",
+    "file": "assets/feadmin-6e4c1150.css",
     "isEntry": true,
     "src": "resources/css/feadmin.css"
   },
@@ -621,7 +621,7 @@
     "dynamicImports": [
       "resources/js/code-editor.js"
     ],
-    "file": "assets/feadmin-083b8d94.js",
+    "file": "assets/feadmin-4358a723.js",
     "imports": [
       "__tagify-f4a0bf07.js",
       "__api-79210ede.js",

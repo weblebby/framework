@@ -9,7 +9,7 @@
 @elseif ($field['type'] === \Feadmin\Enums\FieldTypeEnum::CONDITIONAL)
     <x-feadmin::form.conditional :field="$field">
         @foreach ($field['fields'] as $field)
-            <x-feadmin::form.field :field="$field" />
+            <x-feadmin::form.field :field="$field" :with-errors="false" />
         @endforeach
     </x-feadmin::form.conditional>
 @else
@@ -52,8 +52,13 @@
                 <x-feadmin::form.textarea rows="4" :attributes="$field['attributes']" :default="$default" autofocus />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::CHECKBOX)
-                <x-feadmin::form.checkbox :attributes="$field['attributes']" :default="$default"
-                                          :label="$field['label']" value="1" />
+                <x-feadmin::form.checkbox
+                        :attributes="$field['attributes']"
+                        :default="$default"
+                        :label="$field['label']"
+                        :use-hidden-input="true"
+                        value="1"
+                />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::SELECT)
                 <x-feadmin::form.select :attributes="$field['attributes']" :default="$default">

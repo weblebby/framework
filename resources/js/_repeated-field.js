@@ -247,6 +247,14 @@ const RepeatedField = {
                     )
                     optionEl?.setAttribute('selected', 'selected')
                 }
+
+                if (input.type === 'checkbox') {
+                    if (value === '0' || value === 'false') {
+                        input.checked = false
+                    } else {
+                        input.checked = !!value
+                    }
+                }
             }
 
             if (
@@ -312,6 +320,7 @@ const RepeatedField = {
             Form.handleCheckbox(input)
         })
 
+        RepeatedField.highlightRowIfError(row, options)
         RepeatedField.listenCollapseRowButton(row)
         RepeatedField.listenRemoveRowButton(row)
         RepeatedField.removeEmptyInputIfNoRows(
@@ -331,6 +340,43 @@ const RepeatedField = {
             RepeatedField.removeRowSelector,
         )
         removeRowButton.addEventListener('click', RepeatedField.removeRow)
+    },
+
+    highlightRowIfError: (row, options, highlightWithoutCheck = false) => {
+        if (!options?.errors) return
+        if (!row) return
+
+        if (highlightWithoutCheck) {
+            row.classList.add('fd-border', 'fd-border-red-500')
+            row.querySelector(
+                RepeatedField.rowIterationSelector,
+            )?.classList?.add('fd-text-red-500')
+            row.querySelector(
+                RepeatedField.rowIterationLabelSelector,
+            )?.classList?.add('fd-text-red-500')
+            return
+        }
+
+        const formGroups = row.querySelectorAll(RepeatedField.formGroupSelector)
+
+        formGroups.forEach(formGroup => {
+            const { dottedName } = RepeatedField.parseName(
+                row,
+                formGroup.dataset.formFieldKey,
+            )
+
+            if (options.errors[dottedName]) {
+                // Highlight actual row
+                RepeatedField.highlightRowIfError(row, options, true)
+
+                // Highlight parent row recursively
+                RepeatedField.highlightRowIfError(
+                    row.parentElement.closest(RepeatedField.rowSelector),
+                    options,
+                    true,
+                )
+            }
+        })
     },
 
     listenCollapseRowButton: row => {

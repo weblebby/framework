@@ -92,7 +92,7 @@ class FieldValidationService
     ): void
     {
         foreach ($fieldValueItem?->value() ?? [] as $value) {
-            // FIXME: $value'yu loopa alınca preference tarafı çalışıyor fakat post tarafı çalışmıyor.
+            /*// FIXME: $value'yu loopa alınca preference tarafı çalışıyor fakat post tarafı çalışmıyor.
             // FIXME: Checkbox'a javascript ile true false değeri ver.
             foreach ($value as $childValue) {
                 if ($childValue->field() instanceof HasChildFieldInterface) {
@@ -103,7 +103,7 @@ class FieldValidationService
 
             if ($validatedByChildField ?? false) {
                 continue;
-            }
+            }*/
 
             $allConditionsPassed = true;
 
@@ -118,6 +118,12 @@ class FieldValidationService
             }
 
             if (!$allConditionsPassed) {
+                foreach ($value as $childValue) {
+                    if ($childValue->field() instanceof HasChildFieldInterface) {
+                        $this->validate($childValue->field(), $childValue, $rules, $attributes);
+                    }
+                }
+
                 continue;
             }
 
@@ -126,6 +132,8 @@ class FieldValidationService
                 $childValue = Arr::get($value, $childField['key']);
 
                 if (is_array($childValue)) {
+                    $this->validate($childField, $fieldValueItem, $rules, $attributes);
+
                     continue;
                 }
 

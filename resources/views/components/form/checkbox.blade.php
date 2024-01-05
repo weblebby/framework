@@ -1,4 +1,4 @@
-@aware(['name', 'bind', 'label', 'bag' => 'default'])
+@aware(['name', 'bind', 'label', 'bag' => 'default', 'useHiddenInput' => false])
 @aware(['default' => $bind->$name ?? null])
 
 @php($id = \Feadmin\Support\FormComponent::id($name, $bag))
@@ -8,15 +8,17 @@
 @php($default = filled(old()) ? old($dottedName, $default) : $default)
 @php($checked = \Feadmin\Support\FormComponent::selected($dottedName, $default, $attributes))
 
-<input type="hidden" name="{{ $name }}" value="{{ $checked ? '1' : '0' }}">
+@if ($useHiddenInput)
+    <input type="hidden" id="{{ $id }}" name="{{ $name }}" value="{{ $checked ? '1' : '0' }}">
+@endif
 <label class="fd-inline-flex fd-items-center">
     <input
-            id="{{ $id }}"
-            name="{{ $name }}"
             {{ $attributes
                 ->merge([
+                    'id' => $id,
+                    'name' => $name,
                     'type' => 'checkbox',
-                    'checked' => FormComponent::selected($dottedName, $default, $attributes),
+                    'checked' => $checked,
                 ])
                 ->class('fd-w-6
                         fd-h-6

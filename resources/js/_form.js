@@ -74,6 +74,12 @@ const Form = {
     },
 
     handleCheckbox: checkbox => {
+        const hidden = checkbox
+            ?.closest(Form.formGroupSelector)
+            ?.querySelector('input[type="hidden"]')
+
+        if (!hidden) return
+
         checkbox.setAttribute('name', `_visualized_${checkbox.name}`)
 
         checkbox.closest('label').addEventListener('click', e => {
@@ -84,11 +90,8 @@ const Form = {
         })
 
         checkbox.addEventListener('change', () => {
-            const hidden = checkbox
-                .closest(Form.formGroupSelector)
-                .querySelector('input[type="hidden"]')
-
             hidden.value = checkbox.checked ? 1 : 0
+            hidden.dispatchEvent(new Event('change'))
         })
     },
 }
