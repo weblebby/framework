@@ -1,9 +1,16 @@
 <?php
 
-namespace Feadmin\Abstracts;
+namespace Feadmin\Abstracts\Extension;
 
 abstract class ExtensionObserver
 {
+    protected Extension $extension;
+
+    public function __construct(Extension $extension)
+    {
+        $this->extension = $extension;
+    }
+
     public function register(): void
     {
         //

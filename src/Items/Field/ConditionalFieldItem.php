@@ -13,7 +13,7 @@ class ConditionalFieldItem extends FieldItem implements HasChildFieldInterface
 
     protected array $conditions = [];
 
-    public function __construct(string $key = null)
+    public function __construct(?string $key = null)
     {
         parent::__construct($key);
 

@@ -15,7 +15,7 @@ class Moneyable implements DeferringDisplayableValue, Jsonable, JsonSerializable
 
     protected ?CurrencyEnum $currency;
 
-    public function __construct($amount, CurrencyEnum $currency = null)
+    public function __construct($amount, ?CurrencyEnum $currency = null)
     {
         $this->amount = $amount ?: 0;
         $this->currency = $currency ?: Currency::current();
@@ -75,7 +75,7 @@ class Moneyable implements DeferringDisplayableValue, Jsonable, JsonSerializable
         );
     }
 
-    public function convert(CurrencyEnum $currency = null): static
+    public function convert(?CurrencyEnum $currency = null): static
     {
         if (is_null($currency)) {
             $currency = Currency::current();

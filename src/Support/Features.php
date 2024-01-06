@@ -30,11 +30,6 @@ class Features
         return 'extensions';
     }
 
-    public static function translations(): string
-    {
-        return 'translations';
-    }
-
     public static function preferences(): string
     {
         return 'preferences';

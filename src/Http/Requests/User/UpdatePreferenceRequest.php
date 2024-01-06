@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdatePreferenceRequest extends FormRequest
 {
-    readonly public array $rulesAndAttributes;
+    public readonly array $rulesAndAttributes;
 
     /**
      * Determine if the user is authorized to make this request.

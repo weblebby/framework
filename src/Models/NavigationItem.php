@@ -63,12 +63,12 @@ class NavigationItem extends Model
 
     public function scopeWithRecursiveChildren(Builder $query): Builder
     {
-        return $query->with(['children' => fn($query) => $query->oldest('position')]);
+        return $query->with(['children' => fn ($query) => $query->oldest('position')]);
     }
 
     public function url(): Attribute
     {
-        return Attribute::get(fn($value) => match ($this->type) {
+        return Attribute::get(fn ($value) => match ($this->type) {
             NavigationTypeEnum::LINK => $value,
             NavigationTypeEnum::LINKABLE => $this->linkable->url,
             NavigationTypeEnum::SMART => 'smart',
@@ -105,7 +105,7 @@ class NavigationItem extends Model
                 if (is_null($taxonomy)) {
                     continue;
                 }
-                
+
                 $data['smart_filters'][] = [
                     'value' => $taxonomyId,
                     'label' => $taxonomy->term->title,

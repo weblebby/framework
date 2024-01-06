@@ -7,7 +7,6 @@ use Feadmin\Facades\NavigationLinkable;
 use Feadmin\Facades\PostModels;
 use Feadmin\Facades\SmartMenu;
 use Feadmin\Models\NavigationItem;
-use Feadmin\Services\NavigationService;
 use Feadmin\Services\TaxonomyService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\ValidatedInput;
@@ -39,12 +38,12 @@ class StoreNavigationItemRequest extends FormRequest
             /** @var TaxonomyService $taxonomyService */
             $taxonomyService = app(TaxonomyService::class);
 
-            $smartFilterValues = array_map(fn($filter) => $filter['value'], $this->smart_filters);
+            $smartFilterValues = array_map(fn ($filter) => $filter['value'], $this->smart_filters);
             $terms = $taxonomyService->createMissingTaxonomies($this->smart_condition, $smartFilterValues);
 
             $data['smart_filters'] = collect($terms)
                 ->groupBy('taxonomy')
-                ->map(fn($terms) => $terms->pluck('id')->unique()->values())
+                ->map(fn ($terms) => $terms->pluck('id')->unique()->values())
                 ->toArray();
         }
 

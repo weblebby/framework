@@ -36,7 +36,7 @@ class PanelItem
         $this->permission = new PermissionHook($this);
     }
 
-    public function menu(string $bag = null): MenuHook
+    public function menu(?string $bag = null): MenuHook
     {
         if (is_null($bag)) {
             return $this->menu;
@@ -45,7 +45,7 @@ class PanelItem
         return $this->menu->withBag($bag);
     }
 
-    public function preference(string $namespace = null): PreferenceBagHook
+    public function preference(?string $namespace = null): PreferenceBagHook
     {
         if (is_null($namespace)) {
             return $this->preference;
@@ -54,7 +54,7 @@ class PanelItem
         return $this->preference->withNamespace($namespace);
     }
 
-    public function permission(string $group = null): PermissionHook
+    public function permission(?string $group = null): PermissionHook
     {
         if (is_null($group)) {
             return $this->permission;
@@ -68,6 +68,11 @@ class PanelItem
         return $this->name;
     }
 
+    public function nameWith(string $append): string
+    {
+        return sprintf('%s::%s', $this->name(), $append);
+    }
+
     public function route($name, $parameters = [], $absolute = true): string
     {
         return route($this->as().$name, $parameters, $absolute);
@@ -78,7 +83,7 @@ class PanelItem
         return to_route($this->as().$route, $parameters, $status, $headers);
     }
 
-    public function features(array $features = null): self|array
+    public function features(?array $features = null): self|array
     {
         if (is_null($features)) {
             return $this->features;
@@ -89,7 +94,7 @@ class PanelItem
         return $this;
     }
 
-    public function prefix(string $prefix = null): self|string|null
+    public function prefix(?string $prefix = null): self|string|null
     {
         if (is_null($prefix)) {
             return $this->prefix;
@@ -100,7 +105,7 @@ class PanelItem
         return $this;
     }
 
-    public function as(string $as = null): self|string|null
+    public function as(?string $as = null): self|string|null
     {
         if (is_null($as)) {
             return $this->as;
@@ -111,7 +116,7 @@ class PanelItem
         return $this;
     }
 
-    public function domain(string $domain = null): self|string|null
+    public function domain(?string $domain = null): self|string|null
     {
         if (is_null($domain)) {
             return $this->domain;
@@ -122,7 +127,7 @@ class PanelItem
         return $this;
     }
 
-    public function middleware(string|array $middleware = null): self|string|array|null
+    public function middleware(string|array|null $middleware = null): self|string|array|null
     {
         if (is_null($middleware)) {
             return $this->middleware;

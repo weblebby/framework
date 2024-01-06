@@ -21,12 +21,13 @@ class FieldInputService
         $dottedFields = [];
 
         foreach ($fieldValues as $fieldValue) {
-            if ($fieldValue instanceof FieldValueItem && !is_array($fieldValue->value())) {
+            if ($fieldValue instanceof FieldValueItem && ! is_array($fieldValue->value())) {
                 $dottedFields[$fieldValue->field()['indexed_name']] = $fieldValue;
             }
 
             if (is_array($fieldValue)) {
                 $dottedFields = array_merge($dottedFields, $this->getDottedFieldValues($fieldValue));
+
                 continue;
             }
 
@@ -38,15 +39,16 @@ class FieldInputService
         return $dottedFields;
     }
 
-    private function mapFieldsWithInput(Arrayable|array $fields, array $input, string $indexedNamePrefix = null): array
+    private function mapFieldsWithInput(Arrayable|array $fields, array $input, ?string $indexedNamePrefix = null): array
     {
         $computedFields = [];
 
         foreach ($input as $name => $value) {
-            $prefixedName = $indexedNamePrefix ? $indexedNamePrefix . '.' . $name : $name;
+            $prefixedName = $indexedNamePrefix ? $indexedNamePrefix.'.'.$name : $name;
 
             if (is_array($value)) {
                 $computedFields += $this->processArrayValue($fields, $value, $prefixedName);
+
                 continue;
             }
 
@@ -77,7 +79,7 @@ class FieldInputService
             if (is_array($item)) {
                 $item = collect($this->mapFieldsWithInput($fields, $item, $childName))
                     ->mapWithKeys(function (FieldValueItem $item) use ($childName) {
-                        $key = Str::replaceFirst($childName . '.', '', $item->field()['indexed_name']);
+                        $key = Str::replaceFirst($childName.'.', '', $item->field()['indexed_name']);
 
                         return [$key => $item];
                     })
@@ -94,10 +96,10 @@ class FieldInputService
     /**
      * @return FieldInterface&HasFieldName|null
      */
-    private function findFieldByName(string $name, Arrayable|array $fields): FieldInterface|null
+    private function findFieldByName(string $name, Arrayable|array $fields): ?FieldInterface
     {
         foreach ($fields as $field) {
-            if (!isset($field['name'])) {
+            if (! isset($field['name'])) {
                 continue;
             }
 

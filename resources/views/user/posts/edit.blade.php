@@ -109,7 +109,7 @@
             <x-feadmin::form.sticky-submit />
         </x-feadmin::form>
     </x-feadmin::page>
-    <x-slot:scripts>
+    @push('after_scripts')
         <x-feadmin::modal.destroy id="modal-delete-post" :title="__('Sil: :name', ['name' => $post->title])" />
         <x-feadmin::tabs.template />
         <script>
@@ -121,5 +121,5 @@
         @if($isCodeEditorNeeded)
             @vite('resources/js/code-editor.js', 'feadmin')
         @endif
-    </x-slot:scripts>
+    @endpush
 </x-feadmin::layouts.panel>

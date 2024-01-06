@@ -1,22 +1,4 @@
 <x-feadmin::layouts.panel>
-    <x-slot:scripts>
-        @vite('resources/js/navigation.js', 'feadmin')
-        <script>
-            @if ($errors->item->any())
-            document.addEventListener("DOMContentLoaded", function() {
-              Feadmin.Drawer.open(document.getElementById("drawer-create-menu-item"), {
-                hasError: true,
-                item: @json(old()) });
-            });
-            @endif
-
-            @if ($selectedNavigation ?? null)
-            document.addEventListener("DOMContentLoaded", function() {
-              Feadmin.Navigation.init({{ $selectedNavigation->id }});
-            });
-            @endif
-        </script>
-    </x-slot:scripts>
     <x-feadmin::page>
         @if ($selectedNavigation ?? null)
             <x-feadmin::page.head>
@@ -216,4 +198,23 @@
             <x-feadmin::button type="submit">@lang('Oluştur')</x-feadmin::button>
         </x-feadmin::form>
     </x-feadmin::drawer>
+
+    @push('after_scripts')
+        @vite('resources/js/navigation.js', 'feadmin')
+        <script>
+            @if ($errors->item->any())
+            document.addEventListener("DOMContentLoaded", function() {
+              Feadmin.Drawer.open(document.getElementById("drawer-create-menu-item"), {
+                hasError: true,
+                item: @json(old()) });
+            });
+            @endif
+
+            @if ($selectedNavigation ?? null)
+            document.addEventListener("DOMContentLoaded", function() {
+              Feadmin.Navigation.init({{ $selectedNavigation->id }});
+            });
+            @endif
+        </script>
+    @endpush
 </x-feadmin::layouts.panel>

@@ -2,8 +2,8 @@
 
 namespace Feadmin\Contracts\Eloquent;
 
-use Feadmin\Items\NavigationLinkableItem;
 use Feadmin\Items\FieldSectionsItem;
+use Feadmin\Items\NavigationLinkableItem;
 use Feadmin\Items\SmartMenuItem;
 use Feadmin\Items\TaxonomyItem;
 

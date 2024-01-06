@@ -1,8 +1,7 @@
 <x-feadmin::layouts.master {{ $attributes }}>
-    <x-slot:styles>{{ $styles ?? '' }}</x-slot:styles>
-    <x-slot:scripts>{{ $scripts ?? '' }}</x-slot:scripts>
     <main class="fd-flex fd-flex-1">
-        <section class="fd-fixed fd-inset-y-0 fd-z-30 fd-hidden md:fd-flex fd-flex-col fd-w-60 fd-h-full fd-gap-8 fd-bg-zinc-200 fd-border-r fd-border-zinc-300">
+        <section
+                class="fd-fixed fd-inset-y-0 fd-z-30 fd-hidden md:fd-flex fd-flex-col fd-w-60 fd-h-full fd-gap-8 fd-bg-zinc-200 fd-border-r fd-border-zinc-300">
             <div class="fd-flex fd-flex-col">
                 <a href="/" class="fd-px-4 fd-py-3 fd-bg-zinc-50 fd-border-b fd-border-zinc-200">
                     <div class="fd-uppercase fd-font-bold fd-text-sm fd-text-zinc-700 fd-truncate">{{ preference('general->site_name') }}</div>
@@ -15,7 +14,8 @@
             <x-feadmin::nav.menu-items />
             <x-feadmin::nav.footer />
         </section>
-        <section class="fd-fixed fd-inset-y-0 fd-z-30 fd-flex md:fd-hidden fd-items-center fd-px-4 fd-w-full fd-h-16 fd-bg-zinc-100 fd-border-b fd-border-zinc-300">
+        <section
+                class="fd-fixed fd-inset-y-0 fd-z-30 fd-flex md:fd-hidden fd-items-center fd-px-4 fd-w-full fd-h-16 fd-bg-zinc-100 fd-border-b fd-border-zinc-300">
             <x-feadmin::nav.mobile-header />
         </section>
         <nav id="drawer-mobile-nav" class="drawer drawer--half drawer--from-left fd-p-0">

@@ -5,9 +5,7 @@ namespace Feadmin\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Feadmin\Facades\PostModels;
 use Feadmin\Http\Requests\User\StoreTaxonomyRequest;
-use Feadmin\Http\Requests\User\UpdatePostRequest;
 use Feadmin\Items\TaxonomyItem;
-use Feadmin\Models\Post;
 use Feadmin\Models\Taxonomy;
 use Feadmin\Services\TaxonomyService;
 use Feadmin\Services\User\UserTaxonomyService;
@@ -94,7 +92,7 @@ class TaxonomyController extends Controller
      */
     protected function taxonomy(TaxonomyItem|string $taxonomy, string $ability): TaxonomyItem
     {
-        if (!($taxonomy instanceof TaxonomyItem)) {
+        if (! ($taxonomy instanceof TaxonomyItem)) {
             $taxonomyItem = PostModels::taxonomy($taxonomy);
         } else {
             $taxonomyItem = $taxonomy;

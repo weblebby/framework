@@ -3,7 +3,6 @@
 namespace Feadmin\Services\User;
 
 use Feadmin\Contracts\Eloquent\PostInterface;
-use Feadmin\Facades\Theme;
 use Feadmin\Items\Field\FieldValueItem;
 use Feadmin\Services\FieldInputService;
 use Feadmin\Services\FieldValidationService;

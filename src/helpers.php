@@ -6,7 +6,7 @@ use Feadmin\Items\PanelItem;
 use Feadmin\Managers\PanelManager;
 use Illuminate\Http\RedirectResponse;
 
-function panel(string $panel = null): ?PanelItem
+function panel(?string $panel = null): ?PanelItem
 {
     if (is_null($panel)) {
         return Panel::getCurrentPanel();
@@ -15,7 +15,7 @@ function panel(string $panel = null): ?PanelItem
     return Panel::find($panel);
 }
 
-function preference(string|array $rawKey, mixed $default = null, string $locale = null, array $options = []): mixed
+function preference(string|array $rawKey, mixed $default = null, ?string $locale = null, array $options = []): mixed
 {
     if (is_array($rawKey)) {
         return Preference::set($rawKey, $locale, $options);
@@ -31,17 +31,10 @@ function panel_route($name, $parameters = [], $absolute = true): string
 
 function panel_api_route($name, $parameters = [], $absolute = true): string
 {
-    return route(PanelManager::API_ROUTE_NAME_PREFIX . $name, $parameters, $absolute);
+    return route(PanelManager::API_ROUTE_NAME_PREFIX.$name, $parameters, $absolute);
 }
 
 function to_panel_route($route, $parameters = [], $status = 302, $headers = []): RedirectResponse
 {
     return panel()->toRoute($route, $parameters, $status, $headers);
-}
-
-function ext_asset(string $raw): string
-{
-    [$extension, $asset] = explode('::', $raw);
-
-    return route('ext-asset', [$extension, $asset]);
 }

@@ -3,18 +3,13 @@
 namespace Feadmin\Managers;
 
 use Exception;
-use Feadmin\Enums\FieldTypeEnum;
-use Feadmin\Items\Field\Collections\FieldCollection;
 use Feadmin\Items\Field\Contracts\FieldInterface;
 use Feadmin\Items\Field\Contracts\HasChildFieldInterface;
 use Feadmin\Items\Field\FieldValueItem;
-use Feadmin\Items\Field\RepeatedFieldItem;
 use Feadmin\Models\Metafield;
 use Feadmin\Models\Preference;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class PreferenceManager
@@ -35,7 +30,7 @@ class PreferenceManager
     public function loadPreferences(): self
     {
         $this->preferences = Preference::query()
-            ->with(['metafields' => fn(MorphMany $builder) => $builder->oldest('key')])
+            ->with(['metafields' => fn (MorphMany $builder) => $builder->oldest('key')])
             ->get();
 
         return $this;
@@ -62,7 +57,7 @@ class PreferenceManager
         return $this;
     }
 
-    public function namespaces(string $namespace = null): ?array
+    public function namespaces(?string $namespace = null): ?array
     {
         return is_null($namespace) ? $this->namespaces : $this->namespaces[$namespace] ?? null;
     }
@@ -71,7 +66,7 @@ class PreferenceManager
     {
         $this->setFieldName($field);
 
-        if (!is_array($field)) {
+        if (! is_array($field)) {
             $field->position(count($this->getCurrentFields()) * 10);
         }
 
@@ -113,7 +108,7 @@ class PreferenceManager
         [$metafield, $field] = $this->find($rawKey);
 
         if ($metafield instanceof Collection) {
-            $map = function (array $metafieldAndField) use ($metafield, $default, &$map) {
+            $map = function (array $metafieldAndField) use ($default, &$map) {
                 if (isset($metafieldAndField['metafield']) && isset($metafieldAndField['field'])) {
                     return $metafieldAndField['metafield']->toValue($metafieldAndField['field'], $default);
                 }
@@ -134,12 +129,13 @@ class PreferenceManager
     /**
      * @throws Exception
      */
-    public function set(array $data, string $locale = null, array $options = []): array
+    public function set(array $data, ?string $locale = null, array $options = []): array
     {
         $saved = [];
 
         $groups = collect($data)->groupBy(function ($value, $rawKey) {
             [$namespace, $bag] = $this->parseRawKey($rawKey);
+
             return "{$namespace}::{$bag}";
         }, preserveKeys: true);
 
@@ -163,7 +159,7 @@ class PreferenceManager
 
             if (is_array($options['deleted_fields'] ?? null)) {
                 $options['deleted_fields'] = collect($options['deleted_fields'])
-                    ->map(function ($field) use ($preference) {
+                    ->map(function ($field) {
                         try {
                             [$_, $_, $key] = $this->parseRawKey($field);
                         } catch (Exception) {
@@ -181,7 +177,7 @@ class PreferenceManager
 
             if (is_array($options['reordered_fields'] ?? null)) {
                 $options['reordered_fields'] = collect($options['reordered_fields'])
-                    ->mapWithKeys(function ($newFullKey, $oldFullKey) use ($preference) {
+                    ->mapWithKeys(function ($newFullKey, $oldFullKey) {
                         try {
                             [$_, $_, $newKey] = $this->parseRawKey($newFullKey);
                             [$_, $_, $oldKey] = $this->parseRawKey($oldFullKey);
@@ -238,9 +234,9 @@ class PreferenceManager
         $metafields = $this->preferences
             ->where('namespace', $namespace)
             ->where('bag', $bag)
-            ->map(fn(Preference $preference) => $preference->metafields)
+            ->map(fn (Preference $preference) => $preference->metafields)
             ->flatten()
-            ->filter(fn(Metafield $metafield) => str_contains($metafield->key, $key))
+            ->filter(fn (Metafield $metafield) => str_contains($metafield->key, $key))
             ->mapWithKeys(function (Metafield $metafield) use ($rawKey) {
                 $fullKey = "{$metafield->metafieldable->getNamespaceAndBag()}->{$metafield->key}";
 
@@ -261,7 +257,7 @@ class PreferenceManager
      */
     public function field(string $rawKey): ?FieldInterface
     {
-        if (!str_starts_with($rawKey, 'fields.')) {
+        if (! str_starts_with($rawKey, 'fields.')) {
             $rawKey = "fields.{$rawKey}";
         }
 
@@ -294,7 +290,7 @@ class PreferenceManager
 
     protected function findFieldByKey(array $fields, string $key): ?FieldInterface
     {
-        $field = head(array_filter($fields, fn($field) => $field['key'] === $key));
+        $field = head(array_filter($fields, fn ($field) => $field['key'] === $key));
 
         if ($field === false) {
             return null;
@@ -309,7 +305,7 @@ class PreferenceManager
             $rawKeyToWildcard = preg_replace('/\.\d+\./', '.*.', $rawKey);
 
             if (str_contains($rawKeyToWildcard, $field['name'])) {
-                $index = str_replace($field['name'] . '.', '', $rawKeyToWildcard);
+                $index = str_replace($field['name'].'.', '', $rawKeyToWildcard);
 
                 if (is_numeric($index) || $rawKeyToWildcard === $field['name']) {
                     return $field;
@@ -333,7 +329,7 @@ class PreferenceManager
 
     protected function addMissingNamespaceToRawKey(string $rawKey): string
     {
-        if (!str_contains($rawKey, '::')) {
+        if (! str_contains($rawKey, '::')) {
             $rawKey = "{$this->currentNamespace}::{$rawKey}";
         }
 
@@ -345,7 +341,7 @@ class PreferenceManager
      */
     protected function parseRawKey(string $rawKey): array
     {
-        if (!str_contains($rawKey, '->')) {
+        if (! str_contains($rawKey, '->')) {
             throw new Exception(
                 sprintf('Invalid preference key [%s]. Please use the following format: namespace::bag->key', $rawKey)
             );
@@ -360,7 +356,7 @@ class PreferenceManager
         return [$namespace, $bag, $key];
     }
 
-    protected function setFieldName(FieldInterface $field, string $parentKey = null): void
+    protected function setFieldName(FieldInterface $field, ?string $parentKey = null): void
     {
         if (method_exists($field, 'name')) {
             if (is_null($parentKey)) {

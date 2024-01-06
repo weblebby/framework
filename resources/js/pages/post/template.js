@@ -14,9 +14,7 @@ const fetchPostFields = async (postType, template) => {
         type: postType,
     })
 
-    const response = await api(`${url}?${params}`)
-
-    return await response.json()
+    return await api(`${url}?${params}`)
 }
 
 const handleOnChange = () => {

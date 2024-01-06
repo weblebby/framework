@@ -63,25 +63,11 @@ class PermissionHook
 
     public function defaults(
         bool $preferences = true,
-        bool $locales = true,
         bool $users = true,
         bool $roles = true,
         bool $extensions = true,
         bool $navigations = true,
     ): void {
-        if ($locales) {
-            $this
-                ->withGroup('locale')
-                ->withTitle(__('Diller'))
-                ->withPermissions([
-                    'create' => __('Dil oluşturabilir'),
-                    'read' => __('Dilleri görüntüleyebilir'),
-                    'update' => __('Dilleri düzenleyebilir'),
-                    'delete' => __('Dilleri silebilir'),
-                    'translate' => __('Çevirileri düzenleyebilir'),
-                ]);
-        }
-
         if ($users) {
             $this
                 ->withGroup('user')

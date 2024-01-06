@@ -2,9 +2,9 @@
 
 namespace Feadmin\Models;
 
+use Feadmin\Concerns\Eloquent\HasRelation;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
@@ -14,7 +14,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 abstract class User extends Authenticatable implements HasMedia
 {
-    use HasFactory, HasRoles, InteractsWithMedia, Notifiable;
+    use HasFactory, HasRelation, HasRoles, InteractsWithMedia, Notifiable;
 
     abstract public function authorizedPanels(): array|bool;
 
@@ -31,11 +31,6 @@ abstract class User extends Authenticatable implements HasMedia
         }
 
         return false;
-    }
-
-    public function locale(): BelongsTo
-    {
-        return $this->belongsTo(Locale::class);
     }
 
     protected function firstName(): Attribute

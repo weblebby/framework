@@ -4,7 +4,6 @@ namespace Feadmin\Concerns\Eloquent;
 
 use Feadmin\Models\Taxable;
 use Feadmin\Models\Taxonomy;
-use Feadmin\Models\Term;
 use Feadmin\Services\TaxonomyService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

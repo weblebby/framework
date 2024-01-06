@@ -3,24 +3,14 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Facades\PostModels;
-use Feadmin\Facades\Theme;
 use Feadmin\Http\Requests\User\StorePostRequest;
-use Feadmin\Http\Requests\User\UpdatePostRequest;
 use Feadmin\Items\Field\CodeEditorFieldItem;
-use Feadmin\Items\Field\Contracts\FieldInterface;
-use Feadmin\Models\Metafield;
 use Feadmin\Models\Post;
-use Feadmin\Models\Taxonomy;
-use Feadmin\Services\FieldInputService;
-use Feadmin\Services\TaxonomyService;
 use Feadmin\Services\User\PostFieldService;
 use Feadmin\Services\User\PostService;
-use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\View\View;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
@@ -74,10 +64,9 @@ class PostController extends Controller
      */
     public function store(
         StorePostRequest $request,
-        PostService      $postService,
+        PostService $postService,
         PostFieldService $postFieldService,
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         /** @var Post $post */
         $post = $request->postable::query()->create($validated = $request->validated());
 
@@ -135,11 +124,10 @@ class PostController extends Controller
      */
     public function update(
         StorePostRequest $request,
-        PostService      $postService,
+        PostService $postService,
         PostFieldService $postFieldService,
-        Post             $post
-    ): RedirectResponse
-    {
+        Post $post
+    ): RedirectResponse {
         $post->update($validated = $request->validated());
 
         /**

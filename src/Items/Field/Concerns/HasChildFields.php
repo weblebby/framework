@@ -52,7 +52,7 @@ trait HasChildFields
         return $rules;
     }
 
-    protected function setFieldName(FieldInterface $field, string $parentKey = null): void
+    protected function setFieldName(FieldInterface $field, ?string $parentKey = null): void
     {
         if (method_exists($field, 'name') && method_exists($this, 'name')) {
             $prefix = is_null($parentKey) ? $this->name : $parentKey;

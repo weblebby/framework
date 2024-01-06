@@ -14,18 +14,16 @@ const Navigation = {
     init: id => {
         $(dd).nestable({
             callback: async () => {
-                const response = await api(`/navigations/${id}/sort`, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        items: $('.dd').nestable('toArray'),
-                    }),
-                })
+                try {
+                    const response = await api(`/navigations/${id}/sort`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            items: $('.dd').nestable('toArray'),
+                        }),
+                    })
 
-                const data = await response.json()
-
-                if (response.ok) {
-                    Feadmin.Toastr.add(data.message)
-                }
+                    Feadmin.Toastr.add(response.message)
+                } catch (err) {}
             },
             handleClass: 'navigation-item',
             expandBtnHTML: `<button data-action="expand" class="dd-expand">
@@ -71,25 +69,29 @@ const Navigation = {
             return
         }
 
-        const response = await api(`/post-models?model=${smartType.value}`)
-
-        const taxonomies = await response.json()
-
         smartCondition.innerHTML = `<option value="">Filtre yok</option>`
 
-        taxonomies.forEach(taxonomy => {
-            smartCondition.innerHTML += `<option value="${taxonomy.name}">${taxonomy.singular_name}</option>`
-        })
+        try {
+            const taxonomies = await api(
+                `/post-models?model=${smartType.value}`,
+            )
 
-        document
-            .querySelector('[data-form-group="smart_limit"]')
-            .classList.remove('fd-hidden')
+            taxonomies.forEach(taxonomy => {
+                smartCondition.innerHTML += `<option value="${taxonomy.name}">${taxonomy.singular_name}</option>`
+            })
 
-        document
-            .querySelector('[data-form-group="smart_condition"]')
-            .classList.remove('fd-hidden')
+            document
+                .querySelector('[data-form-group="smart_limit"]')
+                .classList.remove('fd-hidden')
 
-        void Navigation.onSmartConditionChange()
+            document
+                .querySelector('[data-form-group="smart_condition"]')
+                .classList.remove('fd-hidden')
+
+            void Navigation.onSmartConditionChange()
+        } catch (err) {
+            //
+        }
     },
 
     onSmartConditionChange: async (filterValue = '') => {

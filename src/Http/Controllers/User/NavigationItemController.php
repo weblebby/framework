@@ -7,7 +7,6 @@ use Feadmin\Enums\NavigationTypeEnum;
 use Feadmin\Http\Requests\User\StoreNavigationItemRequest;
 use Feadmin\Models\Navigation;
 use Feadmin\Models\NavigationItem;
-use Feadmin\Services\TaxonomyService;
 use Illuminate\Http\RedirectResponse;
 
 class NavigationItemController extends Controller
@@ -35,10 +34,9 @@ class NavigationItemController extends Controller
 
     public function update(
         StoreNavigationItemRequest $request,
-        Navigation                 $navigation,
-        NavigationItem             $item
-    ): RedirectResponse
-    {
+        Navigation $navigation,
+        NavigationItem $item
+    ): RedirectResponse {
         abort_if($navigation->id !== $item->navigation_id, 404);
 
         $item->fill($request->safeWithCasts()->toArray());

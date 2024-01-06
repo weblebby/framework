@@ -30,7 +30,7 @@ class StoreTaxonomyRequest extends FormRequest
             'parent_id' => [
                 'nullable', 'integer',
                 Rule::exists('taxonomies', 'id')
-                    ->where('taxonomy', $this->taxonomy)
+                    ->where('taxonomy', $this->taxonomy),
             ],
         ];
     }

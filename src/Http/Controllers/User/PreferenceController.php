@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Feadmin\Facades\Preference;
 use Feadmin\Http\Requests\User\UpdatePreferenceRequest;
 use Feadmin\Items\Field\CodeEditorFieldItem;
-use Feadmin\Items\Field\Contracts\FieldInterface;
 use Feadmin\Services\FieldInputService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -44,11 +43,10 @@ class PreferenceController extends Controller
 
     public function update(
         UpdatePreferenceRequest $request,
-        FieldInputService       $fieldInputService,
-        string                  $namespace,
-        string                  $bag
-    ): RedirectResponse
-    {
+        FieldInputService $fieldInputService,
+        string $namespace,
+        string $bag
+    ): RedirectResponse {
         $fields = Preference::fields($namespace, $bag);
 
         $validatedFieldValues = $fieldInputService->getFieldValues($fields, $request->validated());

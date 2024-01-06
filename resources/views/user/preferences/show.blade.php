@@ -34,8 +34,8 @@
         </div>
     </x-feadmin::page>
     @if($isCodeEditorNeeded)
-        <x-slot:scripts>
+        @push('after_scripts')
             @vite('resources/js/code-editor.js', 'feadmin')
-        </x-slot:scripts>
+        @endpush
     @endif
 </x-feadmin::layouts.panel>

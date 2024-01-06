@@ -3,9 +3,7 @@
 namespace Feadmin\Http\Middleware;
 
 use Closure;
-use Feadmin\Facades\NavigationLinkable;
 use Feadmin\Facades\PostModels;
-use Feadmin\Facades\SmartMenu;
 use Feadmin\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
@@ -16,13 +14,13 @@ class Panel
     /**
      * Handle an incoming request.
      *
-     * @param \Closure(Request): (Response) $next
+     * @param  \Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
         /** @var User $user */
         $user = $request->user();
-        abort_if(is_null($user) || !$user->canAccessPanel(panel()->name()), 403);
+        abort_if(is_null($user) || ! $user->canAccessPanel(panel()->name()), 403);
 
         config([
             'app.name' => $siteName = preference('general->site_name'),

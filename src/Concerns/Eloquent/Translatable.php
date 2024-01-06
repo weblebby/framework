@@ -62,7 +62,7 @@ trait Translatable
         return parent::resolveRouteBindingQuery($query, $value, $field);
     }
 
-    public function getTranslation(string $locale = null, bool $withFallback = null): ?Model
+    public function getTranslation(?string $locale = null, ?bool $withFallback = null): ?Model
     {
         $configFallbackLocale = $this->getFallbackLocale();
         $locale = $locale ?: $this->locale();

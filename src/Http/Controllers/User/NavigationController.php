@@ -3,14 +3,11 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Http\Requests\User\SortNavigationRequest;
 use Feadmin\Http\Requests\User\StoreNavigationRequest;
 use Feadmin\Http\Requests\User\UpdateNavigationRequest;
 use Feadmin\Models\Navigation;
 use Feadmin\Services\NavigationService;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class NavigationController extends Controller

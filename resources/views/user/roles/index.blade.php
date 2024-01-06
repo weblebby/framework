@@ -1,7 +1,7 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
         <x-feadmin::page.head :back="panel_route('users.index')">
-            <x-slot name="actions">
+            <x-slot:actions>
                 @can('role:create')
                     <x-feadmin::button
                             as="a"
@@ -10,7 +10,7 @@
                             size="sm"
                     >@lang('Yeni rol')</x-feadmin::button>
                 @endcan
-            </x-slot>
+            </x-slot:actions>
             <x-feadmin::page.title>@lang('Kullanıcı rolleri')</x-feadmin::page.title>
             <x-feadmin::page.subtitle>@lang('Rolleri yönetin')</x-feadmin::page.subtitle>
         </x-feadmin::page.head>
@@ -19,7 +19,7 @@
                 <x-feadmin::table.head>
                     <x-feadmin::table.th>@lang('Rol')</x-feadmin::table.th>
                     <x-feadmin::table.th>@lang('Oluşturulma tarihi')</x-feadmin::table.th>
-                    <x-feadmin::table.th/>
+                    <x-feadmin::table.th />
                 </x-feadmin::table.head>
                 <x-feadmin::table.body>
                     @foreach ($roles as $role)

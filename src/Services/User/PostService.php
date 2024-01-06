@@ -16,7 +16,7 @@ class PostService
         return Theme::active()->templatesFor($postable::class);
     }
 
-    public function sections(PostInterface $postable, string $template = null): FieldSectionsItem
+    public function sections(PostInterface $postable, ?string $template = null): FieldSectionsItem
     {
         return $postable::getPostSections()->withTemplateSections($postable, $template);
     }
@@ -39,10 +39,9 @@ class PostService
 
     public function syncTaxonomies(
         PostInterface $postable,
-        array         $taxonomies,
-        int           $primaryTaxonomyId = null
-    ): array
-    {
+        array $taxonomies,
+        ?int $primaryTaxonomyId = null
+    ): array {
         /** @var TaxonomyService $taxonomyService */
         $taxonomyService = app(TaxonomyService::class);
 

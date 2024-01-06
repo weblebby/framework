@@ -1,7 +1,7 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page>
         <x-feadmin::page.head>
-            <x-slot name="actions">
+            <x-slot:actions>
                 @can($postable::getPostAbilityFor('create'))
                     <x-feadmin::button
                             as="a"
@@ -12,7 +12,7 @@
                         @lang('Yeni :name', ['name' => Str::lower($postable::getSingularName())])
                     </x-feadmin::button>
                 @endcan
-            </x-slot>
+            </x-slot:actions>
             <x-feadmin::page.title>{{ $postable::getPluralName() }}</x-feadmin::page.title>
         </x-feadmin::page.head>
         <div class="fd-space-y-3">

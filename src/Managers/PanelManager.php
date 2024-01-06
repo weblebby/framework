@@ -3,8 +3,8 @@
 namespace Feadmin\Managers;
 
 use Exception;
+use Feadmin\Exceptions\PanelNotFoundException;
 use Feadmin\Facades\Extension;
-use Feadmin\Items\ExtensionItem;
 use Feadmin\Items\PanelItem;
 use Illuminate\Support\Facades\Route;
 
@@ -60,8 +60,15 @@ class PanelManager
         return $this->find($this->extensionPanel);
     }
 
+    /**
+     * @throws PanelNotFoundException
+     */
     public function setExtensionPanel(string $panel): void
     {
+        if (! $this->find($panel)) {
+            throw new PanelNotFoundException($panel);
+        }
+
         $this->extensionPanel = $panel;
     }
 
@@ -83,28 +90,26 @@ class PanelManager
             }
 
             $route->group(function () use ($panel) {
-                require __DIR__ . '/../../routes/panel.php';
+                require __DIR__.'/../../routes/panel.php';
             });
         }
     }
 
     public function useExtensionRoutes(): void
     {
-        Extension::get()->each(function (ExtensionItem $extension) {
-            $extension->routes();
-        });
+        Extension::loadRoutes();
     }
 
-    public function useWebRoutes(array $middlewares = null): void
+    public function useWebRoutes(?array $middlewares = null): void
     {
-        Route::middleware($middlewares ?? 'web')->group(__DIR__ . '/../../routes/web.php');
+        Route::middleware($middlewares ?? 'web')->group(__DIR__.'/../../routes/web.php');
     }
 
-    public function useApiRoutes(array $middlewares = null): void
+    public function useApiRoutes(?array $middlewares = null): void
     {
         Route::middleware($middlewares ?? ['api', 'auth:sanctum'])
             ->as(self::API_ROUTE_NAME_PREFIX)
-            ->group(__DIR__ . '/../../routes/api.php');
+            ->group(__DIR__.'/../../routes/api.php');
     }
 
     public function useRoutes(): void

@@ -22,7 +22,7 @@ class MenuHook
         return $this;
     }
 
-    public function withCategory(string $category, string $title = null): self
+    public function withCategory(string $category, ?string $title = null): self
     {
         $this->currentCategory = $category;
 
@@ -42,8 +42,8 @@ class MenuHook
         $items = $this->menus[$this->currentBag][$this->currentCategory]['items'] ?? [];
 
         $this->menus[$this->currentBag][$this->currentCategory]['items'][] = [
-            'position' => count($items) * 10,
             ...$item,
+            'position' => $item['position'] ?? count($items) * 10,
         ];
 
         return $this;

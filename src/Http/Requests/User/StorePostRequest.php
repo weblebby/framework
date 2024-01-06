@@ -17,9 +17,9 @@ use Illuminate\Validation\Rules\Unique;
 
 class StorePostRequest extends FormRequest
 {
-    readonly public PostInterface $postable;
+    public readonly PostInterface $postable;
 
-    readonly public array $rulesAndAttributes;
+    public readonly array $rulesAndAttributes;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -49,7 +49,7 @@ class StorePostRequest extends FormRequest
                 'nullable', 'string', 'max:191',
                 (new Unique('posts'))
                     ->where('type', $this->postable::getModelName())
-                    ->when($this->route('post'), fn(Unique $query, $post) => $query->ignore($post)),
+                    ->when($this->route('post'), fn (Unique $query, $post) => $query->ignore($post)),
             ],
             'content' => ['nullable', 'string', 'max:65535'],
             'taxonomies' => ['nullable', 'array', 'max:5'],
@@ -131,13 +131,13 @@ class StorePostRequest extends FormRequest
 
     protected function transformDeletedFields(): void
     {
-        if (!$this->has('_deleted_fields')) {
+        if (! $this->has('_deleted_fields')) {
             return;
         }
 
         $this->merge([
             '_deleted_fields' => collect($this->input('_deleted_fields'))
-                ->map(fn($field) => Str::after($field, 'fields.'))
+                ->map(fn ($field) => Str::after($field, 'fields.'))
                 ->toArray(),
         ]);
     }

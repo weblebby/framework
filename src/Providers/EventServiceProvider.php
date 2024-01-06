@@ -2,10 +2,6 @@
 
 namespace Feadmin\Providers;
 
-use App\Models\User;
-use Feadmin\Listeners\UpdateLocale;
-use Feadmin\Observers\UserObserver;
-use Illuminate\Foundation\Events\LocaleUpdated;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -16,9 +12,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        LocaleUpdated::class => [
-            UpdateLocale::class,
-        ],
+        //
     ];
 
     /**
@@ -27,6 +21,6 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $observers = [
-        User::class => [UserObserver::class],
+        //
     ];
 }

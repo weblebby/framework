@@ -1,4 +1,4 @@
-export default function api(path, options = {}) {
+export default async function api(path, options = {}) {
     options.headers = options.headers || {}
 
     options.headers['Content-Type'] = 'application/json'
@@ -18,5 +18,13 @@ export default function api(path, options = {}) {
         url = `${window.Feadmin.API.baseUrl}/${path}`
     }
 
-    return fetch(url, options)
+    const response = await fetch(url, options)
+
+    if (!response.ok) {
+        const error = new Error()
+        error.response = response
+        throw error
+    }
+
+    return response.json()
 }

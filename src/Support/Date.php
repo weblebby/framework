@@ -43,7 +43,7 @@ class Date
         return self::format($args[0], $dateType, $args[1] ?? null);
     }
 
-    public static function format(DateTimeInterface|string|null $date, string|int $dateType, string|int $timeType = null): ?string
+    public static function format(DateTimeInterface|string|null $date, string|int $dateType, string|int|null $timeType = null): ?string
     {
         if (is_null($date)) {
             return null;

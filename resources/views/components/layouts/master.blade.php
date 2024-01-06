@@ -5,31 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @vite('resources/css/feadmin.css', 'feadmin')
     @seo
-    {{ $styles ?? '' }}
-    @stack('styles')
+    @stack('before_styles')
+    @vite('resources/css/feadmin.css', 'feadmin')
+    @stack('after_styles')
 </head>
 <body>
 {{ $slot }}
 <script>
   window.Feadmin = {};
 </script>
-@if (\Feadmin\Support\Features::enabled(\Feadmin\Support\Features::translations(), panel()))
-    <script>
-      window.Feadmin.Translation = {
-        routes: {
-          update: @json(panel_route('translations.store'))
-        },
-        list: @json(Localization::getTranslations())
-      };
-    </script>
-@endif
+@feinject(panel()->nameWith('after_js_feadmin_object'))
 <script>
   Feadmin.API = {
     baseUrl: @json('https://' . config('app.domains.api')),
   };
 </script>
+@stack('before_scripts')
 @vite('resources/js/feadmin.js', 'feadmin')
 @if (session()->has('message'))
     <script>
@@ -38,7 +30,6 @@
       });
     </script>
 @endif
-{{ $scripts ?? '' }}
-@stack('scripts')
+@stack('after_scripts')
 </body>
 </html>

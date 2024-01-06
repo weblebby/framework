@@ -15,7 +15,7 @@ class DatePeriod
     /**
      * @throws Exception
      */
-    public function __construct(string $duration, Carbon $startDate = null, int|Carbon $end = 1)
+    public function __construct(string $duration, ?Carbon $startDate = null, int|Carbon $end = 1)
     {
         $this->period = new BaseDatePeriod($startDate ?? now(), new DateInterval($duration), $end);
     }

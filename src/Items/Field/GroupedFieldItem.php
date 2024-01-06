@@ -14,7 +14,7 @@ class GroupedFieldItem extends FieldItem implements HasChildFieldInterface
 
     protected ?string $hint = null;
 
-    public function __construct(string $key = null)
+    public function __construct(?string $key = null)
     {
         parent::__construct($key);
 

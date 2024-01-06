@@ -44,7 +44,6 @@
       "aliases": {
         "Extension": "Feadmin\\Facades\\Extension",
         "Injection": "Feadmin\\Facades\\Injection",
-        "Localization": "Feadmin\\Facades\\Localization",
         "NavigationLinkable": "Feadmin\\Facades\\NavigationLinkable",
         "SmartMenu": "Feadmin\\Facades\\SmartMenu",
         "Panel": "Feadmin\\Facades\\Panel",

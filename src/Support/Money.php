@@ -50,7 +50,7 @@ class Money implements Castable
         };
     }
 
-    public static function of(?int $amount, CurrencyEnum $currency = null): Moneyable
+    public static function of(?int $amount, ?CurrencyEnum $currency = null): Moneyable
     {
         return new Moneyable($amount, $currency);
     }

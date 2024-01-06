@@ -10,7 +10,6 @@ Panel::create('admin')
     ->as('admin::')
     ->middleware(['web', 'auth'])
     ->features([
-        Features::translations(),
         Features::preferences(),
         Features::users(),
         Features::roles(),
@@ -47,7 +46,6 @@ kısımları "false" yaparak listeden kaldırabilirsiniz.
 ````
 panel()->permission()->defaults(
     preferences: true,
-    locales: true,
     users: true,
     roles: true,
     extensions: true,

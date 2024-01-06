@@ -6,7 +6,6 @@ use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Facades\Theme;
 use Feadmin\Items\Field\Collections\FieldCollection;
 use Feadmin\Items\Field\Contracts\FieldInterface;
-use Illuminate\Support\Collection;
 
 class FieldSectionsItem
 {
@@ -27,7 +26,7 @@ class FieldSectionsItem
         return $this;
     }
 
-    public function withTemplateSections(PostInterface $postable, string $template = null): self
+    public function withTemplateSections(PostInterface $postable, ?string $template = null): self
     {
         if (is_null($template)) {
             return $this;
@@ -46,7 +45,7 @@ class FieldSectionsItem
     public function allFields(): FieldCollection
     {
         return (new FieldCollection($this->sections))
-            ->map(fn($section) => $section['fields'])
+            ->map(fn ($section) => $section['fields'])
             ->flatten();
     }
 

@@ -15,33 +15,35 @@ class FormComponent
 
     public static function dottedToName(?string $name): ?string
     {
-        if (str_contains($name, '.')) {
-            $parts = explode('.', $name);
-            $result = '';
-
-            foreach ($parts as $index => $part) {
-                if ($index === 0) {
-                    $result .= $part;
-                    continue;
-                }
-
-                if ($part === '*') {
-                    $result .= '[]';
-                    continue;
-                }
-
-                $result .= "[{$part}]";
-            }
-
-            return $result;
+        if (is_null($name) || ! str_contains($name, '.')) {
+            return $name;
         }
 
-        return $name;
+        $parts = explode('.', $name);
+        $result = '';
+
+        foreach ($parts as $index => $part) {
+            if ($index === 0) {
+                $result .= $part;
+
+                continue;
+            }
+
+            if ($part === '*') {
+                $result .= '[]';
+
+                continue;
+            }
+
+            $result .= "[{$part}]";
+        }
+
+        return $result;
     }
 
     public static function nameToDotted(?string $name): ?string
     {
-        if (str_contains($name, '.')) {
+        if (is_null($name) || ! str_contains($name, '.')) {
             return $name;
         }
 
@@ -66,10 +68,10 @@ class FormComponent
         return $dottedName;
     }
 
-    public static function id(?string $id, string $bag = null): ?string
+    public static function id(?string $id, ?string $bag = null): ?string
     {
         if ($id) {
-            $shouldUseBag = $bag !== 'default' && !is_null($bag);
+            $shouldUseBag = $bag !== 'default' && ! is_null($bag);
 
             $id = str_replace('.', '_', self::nameToDotted($id));
             $id = str_replace('_*', '', $id);
@@ -98,7 +100,7 @@ class FormComponent
             $value = $value->toArray();
         }
 
-        return filled($value) && in_array((string)$attributes->get('value'), Arr::wrap($value));
+        return filled($value) && in_array((string) $attributes->get('value'), Arr::wrap($value));
     }
 
     public static function value(mixed $value): array|string|null

@@ -18,6 +18,8 @@ class MenuItem
 
     protected array $children = [];
 
+    protected ?int $position = null;
+
     public static function create(string $title): static
     {
         return new static($title);
@@ -70,6 +72,13 @@ class MenuItem
         return $this;
     }
 
+    public function withPosition(int $position): self
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
     public function activate(): self
     {
         $this->isActive = true;
@@ -93,6 +102,7 @@ class MenuItem
             'icon' => $this->icon,
             'badge' => $this->badge,
             'can' => $this->can,
+            'position' => $this->position,
             'children' => array_map(
                 fn ($child) => $child instanceof static ? $child->toArray() : $child,
                 $this->children,

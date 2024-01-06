@@ -11,7 +11,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
 
-class FieldItem implements FieldInterface, Arrayable, ArrayAccess, Jsonable, JsonSerializable
+class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, JsonSerializable
 {
     use HasArray;
 
@@ -103,7 +103,7 @@ class FieldItem implements FieldInterface, Arrayable, ArrayAccess, Jsonable, Jso
         return (new RadioFieldItem($key))->type(FieldTypeEnum::RADIO);
     }
 
-    public function __construct(string $key = null)
+    public function __construct(?string $key = null)
     {
         $this->key = FormComponent::nameToDotted($key);
     }

@@ -2,7 +2,6 @@
 
 namespace Feadmin\Models;
 
-use Feadmin\Items\Field\FieldItem;
 use Feadmin\Items\FieldSectionsItem;
 use Feadmin\Items\TaxonomyItem;
 

@@ -40,17 +40,6 @@ if (Features::enabled(Features::extensions(), $panel->name())) {
 }
 
 /**
- * Locales
- */
-if (Features::enabled(Features::translations(), $panel->name())) {
-    Route::post('translations', [User\TranslationController::class, 'store'])
-        ->name('translations.store');
-
-    Route::post('locales/sync', [User\LocaleController::class, 'sync'])->name('locales.sync');
-    Route::resource('locales', User\LocaleController::class);
-}
-
-/**
  * Preferences
  */
 if (Features::enabled(Features::preferences(), $panel->name())) {

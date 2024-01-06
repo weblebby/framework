@@ -80,7 +80,7 @@ class Post extends Model implements HasMedia, PostInterface
             ->select('type')
             ->where($column = $field ?? $this->getRouteKeyName(), $value)
             ->firstOrFail();
-        
+
         abort_unless(class_exists($post->type), 404);
 
         return $post->type::where($column, $value)->firstOrFail();
@@ -94,7 +94,7 @@ class Post extends Model implements HasMedia, PostInterface
     /**
      * @throws InvalidManipulation
      */
-    public function registerMediaConversions(Media $media = null): void
+    public function registerMediaConversions(?Media $media = null): void
     {
         $this->addMediaConversion('lg')->width(1920)->height(1080);
         $this->addMediaConversion('sm')->width(400)->height(225);
@@ -102,7 +102,7 @@ class Post extends Model implements HasMedia, PostInterface
 
     public function getMaxPosition(): int
     {
-        return (int)static::query()->max('position');
+        return (int) static::query()->max('position');
     }
 
     public static function getSingularName(): string

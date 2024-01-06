@@ -11,7 +11,7 @@ class Paginator
     public static function fromArray(
         array $items,
         int $perPage = 15,
-        int $page = null,
+        ?int $page = null,
         array $options = []
     ): LengthAwarePaginator {
         return self::fromCollection(collect($items), $perPage, $page, $options);
@@ -20,7 +20,7 @@ class Paginator
     public static function fromCollection(
         Collection $items,
         int $perPage = 15,
-        int $page = null,
+        ?int $page = null,
         array $options = []
     ): LengthAwarePaginator {
         $page ??= PaginationPaginator::resolveCurrentPage('page', 1);

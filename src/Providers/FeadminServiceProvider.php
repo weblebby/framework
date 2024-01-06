@@ -2,12 +2,11 @@
 
 namespace Feadmin\Providers;
 
-use Astrotomic\Translatable\Locales;
+use Feadmin\Abstracts\Extension\Extension as ExtensionAbstract;
 use Feadmin\Console\Commands\InstallFeadmin;
 use Feadmin\Console\Commands\MigrateExtension;
-use Feadmin\Facades\Localization;
+use Feadmin\Facades\Extension;
 use Feadmin\Facades\PostModels;
-use Feadmin\Facades\Preference;
 use Feadmin\Models\User;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
@@ -20,6 +19,7 @@ class FeadminServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->register(MacroServiceProvider::class);
         $this->app->register(EventServiceProvider::class);
         $this->app->register(FortifyServiceProvider::class);
         $this->app->register(PreferenceServiceProvider::class);
@@ -27,7 +27,6 @@ class FeadminServiceProvider extends ServiceProvider
         $singletons = [
             \Feadmin\Managers\ExtensionManager::class,
             \Feadmin\Managers\InjectionManager::class,
-            \Feadmin\Managers\LocalizationManager::class,
             \Feadmin\Managers\NavigationLinkableManager::class,
             \Feadmin\Managers\PreferenceManager::class,
             \Feadmin\Managers\ThemeManager::class,
@@ -48,31 +47,20 @@ class FeadminServiceProvider extends ServiceProvider
             $this->bootCommands();
         } else {
             $this->bootViews();
-            $this->bootLocalization();
             $this->bootGates();
             $this->bootPostModels();
+            $this->observeExtensions();
+            $this->setPathsForTranslationFinder();
         }
-
-        app(Locales::class)->load();
-        Preference::loadPreferences();
     }
 
     private function bootViews(): void
     {
-        $this->loadViewsFrom(dirname(__DIR__) . '/../resources/views', 'feadmin');
+        $this->loadViewsFrom(dirname(__DIR__).'/../resources/views', 'feadmin');
 
         Blade::directive('feinject', function ($expression) {
             return "<?php echo \Feadmin\Facades\Injection::render($expression); ?>";
         });
-    }
-
-    private function bootLocalization(): void
-    {
-        config([
-            'translatable.locales' => Localization::getSupportedLocales()->pluck('code')->toArray(),
-            'translatable.use_fallback' => true,
-            'translatable.fallback_locale' => null,
-        ]);
     }
 
     private function bootGates(): void
@@ -85,19 +73,19 @@ class FeadminServiceProvider extends ServiceProvider
     private function bootPublishes(): void
     {
         $this->publishes([
-            dirname(__DIR__) . '/../resources/views' => resource_path('views/vendor/feadmin'),
+            dirname(__DIR__).'/../resources/views' => resource_path('views/vendor/feadmin'),
         ], ['feadmin-views', 'views']);
 
         $this->publishes([
-            dirname(__DIR__) . '/../public' => public_path('vendor/feadmin'),
+            dirname(__DIR__).'/../public' => public_path('vendor/feadmin'),
         ], ['feadmin-public', 'public']);
 
         $this->publishes([
-            dirname(__DIR__) . '/../database/migrations' => database_path('migrations'),
+            dirname(__DIR__).'/../database/migrations' => database_path('migrations'),
         ], ['feadmin-migrations', 'migrations']);
     }
 
-    public function bootCommands(): void
+    private function bootCommands(): void
     {
         $this->commands([
             InstallFeadmin::class,
@@ -105,11 +93,29 @@ class FeadminServiceProvider extends ServiceProvider
         ]);
     }
 
-    public function bootPostModels(): void
+    private function bootPostModels(): void
     {
         PostModels::register([
             \Feadmin\Models\Post::class,
             \Feadmin\Models\Page::class,
         ]);
+    }
+
+    private function observeExtensions(): void
+    {
+        Extension::get()->each(function (ExtensionAbstract $extension) {
+            $extension->observer()?->boot();
+        });
+    }
+
+    private function setPathsForTranslationFinder(): void
+    {
+        if (Extension::has('multilingual')) {
+            \Weblebby\Extensions\Multilingual\Services\TranslationFinderService::addDirectories([
+                dirname(__DIR__),
+                dirname(__DIR__).'/../resources',
+                dirname(__DIR__).'/../routes',
+            ]);
+        }
     }
 }

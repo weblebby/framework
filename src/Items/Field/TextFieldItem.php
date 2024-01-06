@@ -21,7 +21,7 @@ class TextFieldItem extends FieldItem
 
     protected array $rules = [];
 
-    public function __construct(string $key = null)
+    public function __construct(?string $key = null)
     {
         parent::__construct($key);
 

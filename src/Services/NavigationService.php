@@ -2,9 +2,6 @@
 
 namespace Feadmin\Services;
 
-use Feadmin\Enums\ExtensionCategoryEnum;
-use Feadmin\Facades\Extension;
-use Feadmin\Items\ExtensionItem;
 use Feadmin\Models\Navigation;
 use Illuminate\Support\Collection;
 

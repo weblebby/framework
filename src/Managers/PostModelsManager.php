@@ -53,7 +53,7 @@ class PostModelsManager
     public function taxonomies(): array
     {
         return collect($this->models)
-            ->map(fn($model) => $model::getTaxonomies())
+            ->map(fn ($model) => $model::getTaxonomies())
             ->flatten()
             ->all();
     }
@@ -64,6 +64,6 @@ class PostModelsManager
             return null;
         }
 
-        return collect($this->taxonomies())->first(fn(TaxonomyItem $item) => $item->name() === $taxonomy);
+        return collect($this->taxonomies())->first(fn (TaxonomyItem $item) => $item->name() === $taxonomy);
     }
 }

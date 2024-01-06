@@ -89,7 +89,7 @@
             <x-feadmin::form.sticky-submit />
         </x-feadmin::form>
     </x-feadmin::page>
-    <x-slot:scripts>
+    @push('after_scripts')
         <x-feadmin::tabs.template />
         <script>
           window.Feadmin.Theme = {
@@ -100,5 +100,5 @@
         @if($isCodeEditorNeeded)
             @vite('resources/js/code-editor.js', 'feadmin')
         @endif
-    </x-slot:scripts>
+    @endpush
 </x-feadmin::layouts.panel>
