@@ -500,7 +500,7 @@
     "src": "node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js"
   },
   "resources/css/feadmin.css": {
-    "file": "assets/feadmin-fb3aec2d.css",
+    "file": "assets/feadmin-8f690e54.css",
     "isEntry": true,
     "src": "resources/css/feadmin.css"
   },
@@ -621,12 +621,12 @@
     "dynamicImports": [
       "resources/js/code-editor.js"
     ],
-    "file": "assets/feadmin-09374acc.js",
+    "file": "assets/feadmin-8902468d.js",
     "imports": [
       "__tagify-e2b6e389.js",
-      "__api-32e76925.js",
       "__conditional-field-f42e8e66.js",
-      "_preload-helper-edc1b5d6.js"
+      "_preload-helper-edc1b5d6.js",
+      "__api-32e76925.js"
     ],
     "isEntry": true,
     "src": "resources/js/feadmin.js"

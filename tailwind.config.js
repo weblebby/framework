@@ -3,9 +3,9 @@ module.exports = {
     prefix: 'fd-',
     content: [
         './resources/**/*.blade.php',
-        './resources/**/*.js',
+        './resources/**/*.{js,jsx,ts,tsx}',
         './src/**/*.blade.php',
-        './src/**/*.js',
+        './src/**/*.{js,jsx,ts,tsx}',
     ],
     theme: {
         extend: {},
