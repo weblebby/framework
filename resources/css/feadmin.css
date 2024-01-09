@@ -84,8 +84,16 @@
     }
 }
 
-#page .ck-editor__editable {
+.ck-editor {
+    width: 100% !important;
+}
+
+#post .ck-editor__editable {
     min-height: 600px;
+}
+
+.ck-editor__editable_inline {
+    min-height: 200px;
 }
 
 .loading {
@@ -104,10 +112,6 @@
     border: 6px solid #000;
     border-color: #000 transparent #000 transparent;
     animation: spin 1.2s linear infinite;
-}
-
-.ck-editor__editable_inline {
-    min-height: 200px;
 }
 
 .draggable-source--is-dragging {

@@ -3,6 +3,7 @@
 namespace Feadmin\Managers;
 
 use Feadmin\Contracts\Eloquent\PostInterface;
+use Feadmin\Exceptions\InvalidTaxonomyNameException;
 use Feadmin\Items\TaxonomyItem;
 
 class PostModelsManager
@@ -12,6 +13,10 @@ class PostModelsManager
      */
     protected array $models = [];
 
+    /**
+     * @param class-string<int, PostInterface>|array<class-string<int, PostInterface>> $model
+     * @throws InvalidTaxonomyNameException
+     */
     public function register(string|array $model): void
     {
         if (is_array($model)) {
@@ -20,6 +25,12 @@ class PostModelsManager
             }
 
             return;
+        }
+
+        foreach ($model::getTaxonomies() as $taxonomy) {
+            if (!str_starts_with($taxonomy->name(), sprintf('%s_', $model::getModelName()))) {
+                throw new InvalidTaxonomyNameException($model);
+            }
         }
 
         $this->models[$model::getModelName()] = new $model;
@@ -53,7 +64,7 @@ class PostModelsManager
     public function taxonomies(): array
     {
         return collect($this->models)
-            ->map(fn ($model) => $model::getTaxonomies())
+            ->map(fn($model) => $model::getTaxonomies())
             ->flatten()
             ->all();
     }
@@ -64,6 +75,6 @@ class PostModelsManager
             return null;
         }
 
-        return collect($this->taxonomies())->first(fn (TaxonomyItem $item) => $item->name() === $taxonomy);
+        return collect($this->taxonomies())->first(fn(TaxonomyItem $item) => $item->name() === $taxonomy);
     }
 }

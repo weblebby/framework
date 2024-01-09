@@ -4,6 +4,8 @@ namespace Feadmin\Items\Field;
 
 use Feadmin\Items\Field\Concerns\HasFieldName;
 use Illuminate\View\ComponentAttributeBag;
+use Feadmin\Facades\Extension;
+use Feadmin\Exceptions\MissingExtensionException;
 
 class TextFieldItem extends FieldItem
 {
@@ -58,6 +60,10 @@ class TextFieldItem extends FieldItem
 
     public function translatable(bool $translatable = true): self
     {
+        if (!Extension::has('multilingual')) {
+            return $this;
+        }
+
         $this->translatable = $translatable;
 
         return $this;

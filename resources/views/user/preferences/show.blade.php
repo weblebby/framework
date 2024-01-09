@@ -1,9 +1,9 @@
 <x-feadmin::layouts.panel>
     <x-feadmin::page>
-        <div>
+        <x-feadmin::page.head>
             <x-feadmin::page.title>@lang('Ayarlar')</x-feadmin::page.title>
             <x-feadmin::page.subtitle>@lang('Sitenizin tüm ayarlarını buradan yönetin')</x-feadmin::page.subtitle>
-        </div>
+        </x-feadmin::page.head>
         <div>
             <div class="fd-grid fd-grid-cols-5 fd-gap-3">
                 <div>
@@ -21,6 +21,7 @@
                     <x-feadmin::card padding>
                         <x-feadmin::form :action="panel_route('preferences.update', [$namespace, $selectedBagId])"
                                          method="PUT" enctype="multipart/form-data">
+                            @hook(panel()->nameWith('preference_form_fields'))
                             <div class="fd-space-y-3">
                                 @foreach ($fields as $field)
                                     <x-feadmin::form.field :field="$field" />
@@ -35,7 +36,7 @@
     </x-feadmin::page>
     @if($isCodeEditorNeeded)
         @push('after_scripts')
-            @vite('resources/js/code-editor.js', 'feadmin')
+            @vite('resources/js/code-editor.js', 'feadmin/build')
         @endpush
     @endif
 </x-feadmin::layouts.panel>

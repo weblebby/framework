@@ -200,7 +200,7 @@
     </x-feadmin::drawer>
 
     @push('after_scripts')
-        @vite('resources/js/navigation.js', 'feadmin')
+        @vite('resources/js/navigation.js', 'feadmin/build')
         <script>
             @if ($errors->item->any())
             document.addEventListener("DOMContentLoaded", function() {

@@ -9,6 +9,7 @@ use Feadmin\Facades\Extension;
 use Feadmin\Facades\PostModels;
 use Feadmin\Models\User;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -46,19 +47,21 @@ class FeadminServiceProvider extends ServiceProvider
             $this->bootPublishes();
             $this->bootCommands();
         } else {
+            $this->registerExtensions();
+            $this->ensureBuildDirectoryExists();
             $this->bootViews();
             $this->bootGates();
             $this->bootPostModels();
-            $this->observeExtensions();
             $this->setPathsForTranslationFinder();
+            $this->bootExtensions();
         }
     }
 
     private function bootViews(): void
     {
-        $this->loadViewsFrom(dirname(__DIR__).'/../resources/views', 'feadmin');
+        $this->loadViewsFrom(dirname(__DIR__) . '/../resources/views', 'feadmin');
 
-        Blade::directive('feinject', function ($expression) {
+        Blade::directive('hook', function ($expression) {
             return "<?php echo \Feadmin\Facades\Injection::render($expression); ?>";
         });
     }
@@ -73,15 +76,15 @@ class FeadminServiceProvider extends ServiceProvider
     private function bootPublishes(): void
     {
         $this->publishes([
-            dirname(__DIR__).'/../resources/views' => resource_path('views/vendor/feadmin'),
+            dirname(__DIR__) . '/../resources/views' => resource_path('views/vendor/feadmin'),
         ], ['feadmin-views', 'views']);
 
         $this->publishes([
-            dirname(__DIR__).'/../public' => public_path('vendor/feadmin'),
+            dirname(__DIR__) . '/../public' => public_path('vendor/feadmin'),
         ], ['feadmin-public', 'public']);
 
         $this->publishes([
-            dirname(__DIR__).'/../database/migrations' => database_path('migrations'),
+            dirname(__DIR__) . '/../database/migrations' => database_path('migrations'),
         ], ['feadmin-migrations', 'migrations']);
     }
 
@@ -101,7 +104,14 @@ class FeadminServiceProvider extends ServiceProvider
         ]);
     }
 
-    private function observeExtensions(): void
+    private function registerExtensions(): void
+    {
+        Extension::get()->each(function (ExtensionAbstract $extension) {
+            $extension->observer()?->register();
+        });
+    }
+
+    private function bootExtensions(): void
     {
         Extension::get()->each(function (ExtensionAbstract $extension) {
             $extension->observer()?->boot();
@@ -113,9 +123,18 @@ class FeadminServiceProvider extends ServiceProvider
         if (Extension::has('multilingual')) {
             \Weblebby\Extensions\Multilingual\Services\TranslationFinderService::addDirectories([
                 dirname(__DIR__),
-                dirname(__DIR__).'/../resources',
-                dirname(__DIR__).'/../routes',
+                dirname(__DIR__) . '/../resources',
+                dirname(__DIR__) . '/../routes',
             ]);
+        }
+    }
+
+    private function ensureBuildDirectoryExists(): void
+    {
+        $path = public_path('feadmin');
+
+        if (!File::isDirectory($path)) {
+            symlink(dirname(__DIR__) . '/../public', $path);
         }
     }
 }

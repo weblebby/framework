@@ -2,10 +2,12 @@
 
 namespace Feadmin\Http\Requests\User;
 
+use Feadmin\Facades\Extension;
 use Feadmin\Facades\Preference;
 use Feadmin\Services\FieldInputService;
 use Feadmin\Services\FieldValidationService;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\In;
 
 class UpdatePreferenceRequest extends FormRequest
 {
@@ -34,8 +36,13 @@ class UpdatePreferenceRequest extends FormRequest
 
     public function rules(): array
     {
+        if (Extension::has('multilingual')) {
+            $locales = \Weblebby\Extensions\Multilingual\Facades\Localization::getSupportedLocales()->pluck('code');
+        }
+
         return [
             ...$this->rulesAndAttributes['rules'],
+            '_locale' => ['sometimes', 'required', 'string', new In($locales ?? [])],
             '_deleted_fields' => ['nullable', 'array'],
             '_deleted_fields.*' => ['required', 'string', 'max:191'],
             '_reordered_fields' => ['nullable', 'array'],

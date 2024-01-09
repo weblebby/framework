@@ -14,7 +14,7 @@ trait Translatable
     {
         $query->with([
             'translations' => function (Relation $query) {
-                $column = $this->getTranslationsTable().'.'.$this->getLocaleKey();
+                $column = $this->getTranslationsTable() . '.' . $this->getLocaleKey();
 
                 if ($this->useFallback()) {
                     return $query->whereIn($column, $this->getLocalesHelper()->all());
@@ -64,8 +64,8 @@ trait Translatable
 
     public function getTranslation(?string $locale = null, ?bool $withFallback = null): ?Model
     {
-        $configFallbackLocale = $this->getFallbackLocale();
         $locale = $locale ?: $this->locale();
+        $configFallbackLocale = $this->getFallbackLocale($locale);
         $withFallback = $withFallback === null ? $this->useFallback() : $withFallback;
         $fallbackLocale = $this->getFallbackLocale($locale);
 
@@ -87,9 +87,9 @@ trait Translatable
             }
         }
 
-        if ($withFallback && $configFallbackLocale === null) {
+        if ($withFallback) {
             $configuredLocales = collect($this->getLocalesHelper()->all())
-                ->sortByDesc(fn ($value) => str_starts_with($value, $locale))
+                ->sortByDesc(fn($value) => str_starts_with($value, $locale))
                 ->toArray();
 
             foreach ($configuredLocales as $configuredLocale) {

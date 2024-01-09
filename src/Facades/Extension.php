@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void loadRoutes()
  * @method static bool has(string $name, bool $onlyEnabled = true)
  * @method static Collection<int, \Feadmin\Abstracts\Extension\Extension> get()
- * @method static Collection<int, \Feadmin\Abstracts\Extension\Extension> getAll()
+ * @method static Collection<int, \Feadmin\Abstracts\Extension\Extension> getWithDeactivated()
  * @method static \Feadmin\Abstracts\Extension\Extension|null findByName(string $name)
  * @method static \Feadmin\Abstracts\Extension\Extension findByNameOrFail(string $name)
  * @method static \Feadmin\Abstracts\Extension\Extension|null findByClass(string $class)

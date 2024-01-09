@@ -43,7 +43,7 @@ class FormComponent
 
     public static function nameToDotted(?string $name): ?string
     {
-        if (is_null($name) || ! str_contains($name, '.')) {
+        if (is_null($name) || str_contains($name, '.')) {
             return $name;
         }
 

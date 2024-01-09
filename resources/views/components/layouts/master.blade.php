@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @seo
     @stack('before_styles')
-    @vite('resources/css/feadmin.css', 'feadmin')
+    @vite('resources/css/feadmin.css', 'feadmin/build')
     @stack('after_styles')
 </head>
 <body>
@@ -15,14 +15,14 @@
 <script>
   window.Feadmin = {};
 </script>
-@feinject(panel()->nameWith('after_js_feadmin_object'))
+@hook(panel()->nameWith('after_js_feadmin_object'))
 <script>
   Feadmin.API = {
     baseUrl: @json('https://' . config('app.domains.api')),
   };
 </script>
 @stack('before_scripts')
-@vite('resources/js/feadmin.js', 'feadmin')
+@vite('resources/js/feadmin.js', 'feadmin/build')
 @if (session()->has('message'))
     <script>
       document.addEventListener("DOMContentLoaded", function() {

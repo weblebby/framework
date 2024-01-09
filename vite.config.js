@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import laravel from 'laravel-vite-plugin'
 
 export default defineConfig({
-    base: '/feadmin/',
     plugins: [
         laravel({
             input: [
@@ -12,7 +11,6 @@ export default defineConfig({
                 './resources/js/code-editor.js',
                 './resources/js/pages/post/post.js',
             ],
-            buildDirectory: '/../public',
             refresh: true,
         }),
     ],

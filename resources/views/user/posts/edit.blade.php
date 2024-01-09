@@ -117,9 +117,9 @@
             postFieldsUrl: @json(panel_route('themes.templates.post-fields', [':theme', ':template']))
           };
         </script>
-        @vite('resources/js/pages/post/post.js', 'feadmin')
+        @vite('resources/js/pages/post/post.js', 'feadmin/build')
         @if($isCodeEditorNeeded)
-            @vite('resources/js/code-editor.js', 'feadmin')
+            @vite('resources/js/code-editor.js', 'feadmin/build')
         @endif
     @endpush
 </x-feadmin::layouts.panel>

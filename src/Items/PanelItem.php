@@ -78,6 +78,13 @@ class PanelItem
         return route($this->as().$name, $parameters, $absolute);
     }
 
+    public function routeIs(...$patterns): bool
+    {
+        $patterns = array_map(fn($pattern) => $this->as().$pattern, $patterns);
+
+        return request()->routeIs(...$patterns);
+    }
+
     public function toRoute($route, $parameters = [], $status = 302, $headers = []): RedirectResponse
     {
         return to_route($this->as().$route, $parameters, $status, $headers);

@@ -13,6 +13,10 @@ use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Feadmin\Facades\Extension;
+
+// Dont forget to check the extension is installed before using it
+use Weblebby\Extensions\Multilingual\Facades\Localization;
 
 class Metafield extends Model implements HasMedia
 {
@@ -29,6 +33,16 @@ class Metafield extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
+        if (Extension::has('multilingual')) {
+            $locales = Localization::getSupportedLocales()->pluck('code');
+
+            foreach ($locales as $locale) {
+                $this->addMediaCollection($locale)->singleFile();
+            }
+
+            return;
+        }
+
         $this->addMediaCollection('default')->singleFile();
     }
 
@@ -46,14 +60,34 @@ class Metafield extends Model implements HasMedia
         return $this->morphTo();
     }
 
-    public function toValue(FieldInterface $field, mixed $default = null): mixed
+    public function toValue(FieldInterface $field, mixed $default = null, string $locale = null): mixed
     {
         if ($field instanceof UploadableFieldInterface) {
+            if (Extension::has('multilingual') && $field['translatable']) {
+                $locales = Localization::getSupportedLocales()
+                    ->pluck('code')
+                    ->prepend(config('translatable.fallback_locale'))
+                    ->prepend($locale)
+                    ->unique()
+                    ->filter()
+                    ->values();
+
+                foreach ($locales as $locale) {
+                    if ($this->hasMedia($locale)) {
+                        return $this->getFirstMediaUrl($locale);
+                    }
+                }
+            }
+
             return $this->getFirstMediaUrl();
         }
 
         if ($field instanceof TextFieldItem) {
-            return $this->value ?? $this->original_value;
+            if (Extension::has('multilingual') && $field['translatable']) {
+                return $this->translate($locale, withFallback: true)?->value;
+            }
+            
+            return $this->original_value;
         }
 
         return $default;

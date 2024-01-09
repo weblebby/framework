@@ -19,4 +19,5 @@
             {{ $actions ?? null }}
         </div>
     </div>
+    @hook(panel()->nameWith('after_page_actions'))
 </div>

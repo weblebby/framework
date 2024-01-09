@@ -70,7 +70,7 @@
     </template>
 </div>
 
-@push('scripts')
+@push('after_scripts')
     <script>
       document.addEventListener("DOMContentLoaded", () => {
           @foreach ($default as $index => $value)

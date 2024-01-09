@@ -6,8 +6,11 @@ use ArrayAccess;
 use Feadmin\Concerns\HasArray;
 use Feadmin\Enums\ExtensionCategoryEnum;
 use Feadmin\Facades\Panel;
+use Feadmin\Services\ExtensionFileService;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +19,8 @@ use JsonSerializable;
 abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {
     use HasArray;
+
+    protected ExtensionFileService $extensionFileService;
 
     protected ?ExtensionObserver $observerInstance = null;
 
@@ -33,6 +38,12 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
 
     abstract public function routes(): void;
 
+    public function __construct()
+    {
+        $this->extensionFileService = new ExtensionFileService();
+        $this->isActive = $this->extensionFileService->isExtensionActive($this);
+    }
+
     public function isActive(): bool
     {
         return $this->isActive;
@@ -40,12 +51,26 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
 
     public function activate(): void
     {
+        if ($this->isActive()) {
+            return;
+        }
+
         $this->isActive = true;
+        $this->extensionFileService->activateExtension($this);
+
+        $this->observer()?->activated();
     }
 
     public function deactivate(): void
     {
+        if (!$this->isActive()) {
+            return;
+        }
+
         $this->isActive = false;
+        $this->extensionFileService->deactivateExtension($this);
+
+        $this->observer()?->deactivated();
     }
 
     /**
@@ -70,7 +95,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
     {
         $filename = (new \ReflectionClass($this))->getFileName();
 
-        return dirname($filename).'/../';
+        return dirname($filename) . '/../';
     }
 
     public function path(?string $path = null): string
@@ -80,26 +105,28 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
         return rtrim($path, '/');
     }
 
-    public function view($view = null, $data = [], $mergeData = [])
+    public function view($view = null, $data = [], $mergeData = []): View
     {
         $mergeData = Arr::add($mergeData, 'extension', $this);
 
         return view($this->namespaceWith($view), $data, $mergeData);
     }
 
-    public function route($name, $parameters = [], $absolute = true)
+    public function route($name, $parameters = [], $absolute = true): string
     {
         return route($this->namespaceWith($name), $parameters, $absolute);
     }
 
-    public function toRoute($route, $parameters = [], $status = 302, $headers = [])
+    public function toRoute($route, $parameters = [], $status = 302, $headers = []): RedirectResponse
     {
         return redirect()->to($this->route($route, $parameters), $status, $headers);
     }
 
-    public function routeIs($name): bool
+    public function routeIs(...$patterns): bool
     {
-        return request()->routeIs($this->namespaceWith($name));
+        $patterns = array_map(fn($pattern) => $this->namespaceWith($pattern), $patterns);
+
+        return request()->routeIs(...$patterns);
     }
 
     public function migrate(bool $rollback = false): void
@@ -126,7 +153,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
     {
         $class = $this->observerClass();
 
-        if (is_null($class) || ! $this->isActive()) {
+        if (is_null($class) || !$this->isActive()) {
             return null;
         }
 
@@ -146,7 +173,6 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
             'description' => $this->description(),
             'category' => $this->category(),
             'path' => $this->path(),
-            'routes' => $this->routes(),
             'is_active' => $this->isActive(),
             'observer' => $this->observer(),
         ];

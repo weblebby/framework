@@ -58,7 +58,7 @@ class PreferenceBagHook
             return null;
         }
 
-        $field = head(array_filter($bag['fields'], fn ($field) => $field['key'] === $key));
+        $field = head(array_filter($bag['fields'], fn($field) => $field['key'] === $key));
 
         if ($field === false) {
             return null;
@@ -67,16 +67,16 @@ class PreferenceBagHook
         return $field;
     }
 
-    public function fields(string $bag): FieldCollection
+    public function fields(string $bag, string $locale = null): FieldCollection
     {
-        return (new FieldCollection($this->get()[$bag]['fields'] ?? []))
+        return (new FieldCollection($this->get($locale)[$bag]['fields'] ?? []))
             ->sortBy('position')
             ->values();
     }
 
     public function getAll(): array
     {
-        if (! $this->authorization) {
+        if (!$this->authorization) {
             return $this->namespaces;
         }
 
@@ -84,26 +84,32 @@ class PreferenceBagHook
             ->map(function ($preferences) {
                 return array_filter(
                     $preferences,
-                    fn ($item) => auth()->check() && auth()->user()->can($item['permission'])
+                    fn($item) => auth()->check() && auth()->user()->can($item['permission'])
                 );
             })
             ->toArray();
     }
 
-    public function get(): array
+    public function get(string $locale = null): array
     {
         return collect($this->getAll()[$this->currentNamespace])
             ->sortBy('position')
-            ->map(function ($preference, $bag) {
+            ->map(function ($preference, $bag) use ($locale) {
                 $bag = Preference::namespaces($this->currentNamespace)[$bag]['fields'] ?? null;
 
                 if (is_null($bag)) {
                     return null;
                 }
 
-                $bag = array_map(function (FieldInterface $field) {
+                $bag = array_map(function (FieldInterface $field) use ($locale) {
                     if (isset($field['name']) && method_exists($field, 'default')) {
-                        $field->default(preference($field['name'], $field['default'] ?? null));
+                        $field->default(
+                            preference(
+                                rawKey: $field['name'],
+                                default: $field['default'] ?? null,
+                                locale: $locale,
+                            )
+                        );
                     }
 
                     return $field;
@@ -119,7 +125,7 @@ class PreferenceBagHook
     {
         $map = function ($preferences, $namespace) {
             return collect($preferences)->mapWithKeys(
-                fn ($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
+                fn($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
             );
         };
 
@@ -128,13 +134,13 @@ class PreferenceBagHook
         }
 
         return collect($this->getAll())
-            ->map(fn ($preferences, $namespace) => $map($preferences, $namespace))
+            ->map(fn($preferences, $namespace) => $map($preferences, $namespace))
             ->collapse()
-            ->sortByDesc(fn ($_, $key) => str_starts_with($key, 'default.'));
+            ->sortByDesc(fn($_, $key) => str_starts_with($key, 'default.'));
     }
 
     public function toPermissions(): Collection
     {
-        return $this->toDotted()->keys()->map(fn ($bag) => "preference:{$bag}");
+        return $this->toDotted()->keys()->map(fn($bag) => "preference:{$bag}");
     }
 }
