@@ -21,7 +21,7 @@
                     <x-feadmin::card padding>
                         <x-feadmin::form :action="panel_route('preferences.update', [$namespace, $selectedBagId])"
                                          method="PUT" enctype="multipart/form-data">
-                            @hook(panel()->nameWith('preference_form_fields'))
+                            @hook(panel()->nameWith('preference:before_form_fields'))
                             <div class="fd-space-y-3">
                                 @foreach ($fields as $field)
                                     <x-feadmin::form.field :field="$field" />

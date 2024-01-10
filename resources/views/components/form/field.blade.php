@@ -39,52 +39,39 @@
                         :attributes="$field['attributes']"
                         :type="$field['type']->value"
                         :default="$default"
-                >
-                    @if ($field['translatable'] ?? false)
-                        <x-slot:prefix>
-                            <div title="@lang('Çevrilebilir alan')">
-                                <x-feadmin::icons.translate class="fd-w-4 fd-h-4 fd-text-zinc-600" />
-                            </div>
-                        </x-slot:prefix>
-                    @endif
-                </x-feadmin::form.input>
+                        :translatable="$field['translatable'] ?? false"
+                />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::RICH_TEXT)
-                <x-feadmin::form.textarea :attributes="$field['attributes']" :default="$default" data-ckeditor>
-                    @if ($field['translatable'] ?? false)
-                        <x-slot:prefix>
-                            <div title="@lang('Çevrilebilir alan')">
-                                <x-feadmin::icons.translate class="fd-w-4 fd-h-4 fd-text-zinc-600" />
-                            </div>
-                        </x-slot:prefix>
-                    @endif
-                </x-feadmin::form.textarea>
+                <x-feadmin::form.textarea
+                        :attributes="$field['attributes']"
+                        :default="$default"
+                        :translatable="$field['translatable'] ?? false"
+                        data-ckeditor
+                />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::CODE_EDITOR)
-                <x-feadmin::form.code-editor :attributes="$field['attributes']" :default="$default"
-                                             :data-code-editor="json_encode($field['editor'])" />
+                <x-feadmin::form.code-editor
+                        :attributes="$field['attributes']"
+                        :default="$default"
+                        :data-code-editor="json_encode($field['editor'])"
+                />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::IMAGE)
-                <x-feadmin::form.image :attributes="$field['attributes']" :image="$default">
-                    @if ($field['translatable'] ?? false)
-                        <x-slot:prefix>
-                            <div title="@lang('Çevrilebilir alan')">
-                                <x-feadmin::icons.translate class="fd-w-4 fd-h-4 fd-text-zinc-600" />
-                            </div>
-                        </x-slot:prefix>
-                    @endif
-                </x-feadmin::form.image>
+                <x-feadmin::form.image
+                        :attributes="$field['attributes']"
+                        :image="$default"
+                        :translatable="$field['translatable'] ?? false"
+                />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::TEXT_AREA)
-                <x-feadmin::form.textarea rows="4" :attributes="$field['attributes']" :default="$default" autofocus>
-                    @if ($field['translatable'] ?? false)
-                        <x-slot:prefix>
-                            <div title="@lang('Çevrilebilir alan')">
-                                <x-feadmin::icons.translate class="fd-w-4 fd-h-4 fd-text-zinc-600" />
-                            </div>
-                        </x-slot:prefix>
-                    @endif
-                </x-feadmin::form.textarea>
+                <x-feadmin::form.textarea
+                        rows="4"
+                        :attributes="$field['attributes']"
+                        :default="$default"
+                        :translatable="$field['translatable'] ?? false"
+                        autofocus
+                />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::CHECKBOX)
                 <x-feadmin::form.checkbox

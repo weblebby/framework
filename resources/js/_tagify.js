@@ -39,23 +39,24 @@ const Tagify = {
         tagify.settings.whitelist = []
         tagify.loading(true).dropdown.hide.call(tagify)
 
+        const url = new URL(options.source)
+
         const params = new URLSearchParams({
+            ...Object.fromEntries(url.searchParams),
             [options?.searchKey || 'term']: value,
         })
 
-        api(`${options.source}?${params}`)
-            .then(response => response.json())
-            .then(data => {
-                tagify.settings.whitelist = [
-                    ...data.map(item => ({
-                        value: item[options?.map?.value || 'value'],
-                        label: item[options?.map?.label || 'label'],
-                    })),
-                    ...tagify.value,
-                ]
+        api(`${url.origin}${url.pathname}?${params.toString()}`).then(data => {
+            tagify.settings.whitelist = [
+                ...data.map(item => ({
+                    value: item[options?.map?.value || 'value'],
+                    label: item[options?.map?.label || 'label'],
+                })),
+                ...tagify.value,
+            ]
 
-                tagify.loading(false).dropdown.show.call(tagify, value)
-            })
+            tagify.loading(false).dropdown.show.call(tagify, value)
+        })
     },
 
     handleHiddenInputs: (tagify, name, tags) => {

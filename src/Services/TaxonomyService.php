@@ -16,18 +16,23 @@ class TaxonomyService
         return $term;
     }
 
-    public function getOrCreateTerm(string|int $term): Term
+    public function getOrCreateTerm(string|int $term, ?string $locale = null): Term
     {
+        if (is_null($locale)) {
+            $locale = app()->getLocale();
+        }
+
         if (is_numeric($term)) {
             if ($foundTerm = $this->getTermById($term)) {
                 return $foundTerm;
             }
         }
 
-        /** @var Term $term */
-        $term = Term::query()->firstOrCreate(['title' => $term]);
+        /** @var Term $termModel */
+        $termModel = Term::query()->whereTranslation('title', $term)->first();
+        $termModel ??= Term::query()->create([$locale => ['title' => $term]]);
 
-        return $term;
+        return $termModel;
     }
 
     public function getTaxonomyById(int $id): ?Taxonomy
@@ -38,10 +43,15 @@ class TaxonomyService
         return $taxonomy;
     }
 
-    public function getOrCreateTaxonomy(string $taxonomy, Term|string|int $term, array $data = []): Taxonomy
+    public function getOrCreateTaxonomy(
+        string          $taxonomy,
+        Term|string|int $term,
+        array           $data = [],
+        ?string         $locale = null,
+    ): Taxonomy
     {
         if (is_string($term) || is_numeric($term)) {
-            $term = $this->getOrCreateTerm($term);
+            $term = $this->getOrCreateTerm($term, $locale);
         }
 
         $fillable = Arr::except($data, ['parent_id']);
@@ -63,7 +73,11 @@ class TaxonomyService
     /**
      * @return array<int, Term>
      */
-    public function createMissingTaxonomies(string $taxonomy, array $termsOrTaxonomyIds): array
+    public function createMissingTaxonomies(
+        string $taxonomy,
+        array  $termsOrTaxonomyIds,
+        string $locale = null,
+    ): array
     {
         $createdTerms = [];
 
@@ -72,7 +86,7 @@ class TaxonomyService
                 ? $this->getTaxonomyById($termOrTaxonomyId)?->term
                 : $termOrTaxonomyId;
 
-            $createdTerms[] = $this->getOrCreateTaxonomy($taxonomy, $term);
+            $createdTerms[] = $this->getOrCreateTaxonomy($taxonomy, $term, locale: $locale);
         }
 
         return $createdTerms;

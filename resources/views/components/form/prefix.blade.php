@@ -1,1 +1,1 @@
-<div {{ $attributes->class('fd-bg-white fd-border fd-border-gray-300 fd-p-1 fd-text-sm fd-font-medium')->merge(['data-form-prefix' => true]) }}>{{ $slot }}</div>
+<div {{ $attributes->class('fd-bg-white fd-border fd-border-gray-300 fd-p-1 fd-text-sm fd-font-medium fd-sticky fd-top-2')->merge(['data-form-prefix' => true]) }}>{{ $slot }}</div>

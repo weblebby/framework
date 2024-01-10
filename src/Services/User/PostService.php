@@ -21,7 +21,7 @@ class PostService
         return $postable::getPostSections()->withTemplateSections($postable, $template);
     }
 
-    public function taxonomies(PostInterface $postable, string $taxonomy): ?Collection
+    public function taxonomies(PostInterface $postable, string $taxonomy, ?string $locale = null): ?Collection
     {
         $taxonomy = $postable::getTaxonomyFor($taxonomy);
 
@@ -31,7 +31,7 @@ class PostService
 
         return Taxonomy::query()
             ->taxonomy($taxonomy->name())
-            ->with('term')
+            ->with(['term' => fn($query) => $query->select('id')->withTranslation()])
             ->onlyParents()
             ->withRecursiveChildren()
             ->get();
@@ -39,16 +39,22 @@ class PostService
 
     public function syncTaxonomies(
         PostInterface $postable,
-        array $taxonomies,
-        ?int $primaryTaxonomyId = null
-    ): array {
+        array         $taxonomies,
+        ?int          $primaryTaxonomyId = null,
+        ?string       $locale = null,
+    ): array
+    {
         /** @var TaxonomyService $taxonomyService */
         $taxonomyService = app(TaxonomyService::class);
 
         $terms = collect();
 
         foreach ($taxonomies as $taxonomy) {
-            $terms[] = $taxonomyService->createMissingTaxonomies($taxonomy['taxonomy'], $taxonomy['terms']);
+            $terms[] = $taxonomyService->createMissingTaxonomies(
+                $taxonomy['taxonomy'],
+                $taxonomy['terms'],
+                locale: $locale,
+            );
         }
 
         $termIds = $terms

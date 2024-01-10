@@ -1,3 +1,5 @@
+@props(['translatable' => false])
+
 @aware([
     'name' => null,
     'bag' => 'default',
@@ -14,8 +16,14 @@
 @php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
 <div class="fd-flex fd-items-center">
-    @if ($prefix)
-        <x-feadmin::form.prefix class="-fd-mr-[1px] fd-rounded-l">{{ $prefix }}</x-feadmin::form.prefix>
+    @if ($prefix || $translatable)
+        <x-feadmin::form.prefix class="-fd-mr-[1px] fd-rounded-l">
+            @if ($translatable)
+                <x-feadmin::form.prefix-translatable />
+            @else
+                {{ $prefix }}
+            @endif
+        </x-feadmin::form.prefix>
     @endif
     <input {{ $attributes
         ->merge([

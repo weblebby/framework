@@ -13,6 +13,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use JsonSerializable;
 
@@ -100,9 +101,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
 
     public function path(?string $path = null): string
     {
-        $path = sprintf('%s/%s', $this->basePath(), ltrim($path, '/'));
-
-        return rtrim($path, '/');
+        return rtrim($this->basePath() . ltrim($path, '/'), '/');
     }
 
     public function view($view = null, $data = [], $mergeData = []): View
@@ -133,6 +132,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
     {
         Artisan::call(sprintf('migrate%s', $rollback ? ':rollback' : ''), [
             '--path' => $this->path('database/migrations'),
+            '--realpath' => true,
             '--force' => true,
         ]);
     }

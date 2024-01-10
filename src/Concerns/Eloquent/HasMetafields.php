@@ -47,7 +47,7 @@ trait HasMetafields
         return $metafield;
     }
 
-    public function getMetafieldValues(?FieldCollection $fieldDefinitions = null): array
+    public function getMetafieldValues(?FieldCollection $fieldDefinitions = null, ?string $locale = null): array
     {
         $values = [];
 
@@ -79,7 +79,7 @@ trait HasMetafields
                 continue;
             }
 
-            $values[$metafield->key] = $metafield->toValue($field);
+            $values[$metafield->key] = $metafield->toValue($field, $locale);
         }
 
         return Arr::undot($values);

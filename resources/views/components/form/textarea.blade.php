@@ -1,13 +1,20 @@
+@props(['translatable' => false])
 @aware(['name', 'bind', 'bag' => 'default', 'prefix' => null, 'suffix' => null])
-@props(['type' => 'text', 'default' => $bind->$name ?? null])
+@props(['default' => $bind->$name ?? null])
 
 @php($id = \Feadmin\Support\FormComponent::id($name, $bag))
 @php($name = \Feadmin\Support\FormComponent::dottedToName($name))
 @php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
 <div class="fd-flex fd-items-start">
-    @if ($prefix)
-        <x-feadmin::form.prefix class="fd-mt-2 -fd-mr-[1px] fd-rounded-l">{{ $prefix }}</x-feadmin::form.prefix>
+    @if ($prefix || $translatable)
+        <x-feadmin::form.prefix class="fd-mt-2 -fd-mr-[1px] fd-rounded-l">
+            @if ($translatable)
+                <x-feadmin::form.prefix-translatable />
+            @else
+                {{ $prefix }}
+            @endif
+        </x-feadmin::form.prefix>
     @endif
     <textarea
             id="{{ $id }}"

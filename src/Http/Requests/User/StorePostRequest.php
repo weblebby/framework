@@ -4,10 +4,12 @@ namespace Feadmin\Http\Requests\User;
 
 use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Enums\PostStatusEnum;
+use Feadmin\Facades\Extension;
 use Feadmin\Facades\PostModels;
 use Feadmin\Facades\Theme;
 use Feadmin\Models\Post;
 use Feadmin\Services\User\PostFieldService;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
@@ -45,11 +47,13 @@ class StorePostRequest extends FormRequest
 
         $rules = [
             'title' => ['required', 'string', 'max:191'],
-            'slug' => [
+            'fields.slug' => [
                 'nullable', 'string', 'max:191',
-                (new Unique('posts'))
-                    ->where('type', $this->postable::getModelName())
-                    ->when($this->route('post'), fn (Unique $query, $post) => $query->ignore($post)),
+                (new Unique('post_translations', 'slug'))
+                    ->when(
+                        $this->route('post'),
+                        fn(Unique $unique, $post) => $unique->ignore($post->translate($this->input('_locale')))
+                    ),
             ],
             'content' => ['nullable', 'string', 'max:65535'],
             'taxonomies' => ['nullable', 'array', 'max:5'],
@@ -65,6 +69,12 @@ class StorePostRequest extends FormRequest
             '_reordered_fields' => ['nullable', 'array'],
             '_reordered_fields.*' => ['required', 'string', 'max:191'],
         ];
+
+        if (Extension::has('multilingual')) {
+            $locales = \Weblebby\Extensions\Multilingual\Facades\Localization::getSupportedLocales()->pluck('code');
+
+            $rules['_locale'] = ['sometimes', 'required', 'string', new In($locales ?? [])];
+        }
 
         if ($this->postable::doesSupportTemplates()) {
             $templates = Theme::active()->templatesFor($this->postable::class)->pluck('name');
@@ -131,13 +141,13 @@ class StorePostRequest extends FormRequest
 
     protected function transformDeletedFields(): void
     {
-        if (! $this->has('_deleted_fields')) {
+        if (!$this->has('_deleted_fields')) {
             return;
         }
 
         $this->merge([
             '_deleted_fields' => collect($this->input('_deleted_fields'))
-                ->map(fn ($field) => Str::after($field, 'fields.'))
+                ->map(fn($field) => Str::after($field, 'fields.'))
                 ->toArray(),
         ]);
     }

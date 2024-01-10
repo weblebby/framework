@@ -6,6 +6,7 @@ use Feadmin\Concerns\Eloquent\HasMetafields;
 use Feadmin\Concerns\Eloquent\HasOwner;
 use Feadmin\Concerns\Eloquent\HasPosition;
 use Feadmin\Concerns\Eloquent\HasPost;
+use Feadmin\Concerns\Eloquent\Translatable;
 use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Enums\HasOwnerEnum;
 use Feadmin\Enums\PostStatusEnum;
@@ -18,28 +19,32 @@ use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 
-class Post extends Model implements HasMedia, PostInterface
+class Post extends Model implements HasMedia, PostInterface, TranslatableContract
 {
     use HasFactory,
         HasMetafields,
         HasOwner,
         HasPosition,
         HasPost,
-        HasSlug,
-        InteractsWithMedia;
+        InteractsWithMedia,
+        Translatable;
 
     protected $table = 'posts';
 
+    public $translationForeignKey = 'post_id';
+
     protected $fillable = [
-        'title',
-        'slug',
-        'content',
         'status',
         'template',
         'position',
+    ];
+
+    public $translatedAttributes = [
+        'title',
+        'slug',
+        'content',
     ];
 
     protected $casts = [
@@ -102,7 +107,7 @@ class Post extends Model implements HasMedia, PostInterface
 
     public function getMaxPosition(): int
     {
-        return (int) static::query()->max('position');
+        return (int)static::query()->max('position');
     }
 
     public static function getSingularName(): string
@@ -126,14 +131,6 @@ class Post extends Model implements HasMedia, PostInterface
                 ->withSingularName(__('Yazı etiketi'))
                 ->withPluralName(__('Yazı etiketleri')),
         ];
-    }
-
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('title')
-            ->doNotGenerateSlugsOnUpdate()
-            ->saveSlugsTo('slug');
     }
 
     public function parent(): BelongsTo

@@ -36,7 +36,7 @@
     @endif
     <div class="fd-flex-1">
         <div>{{ $slot }}</div>
-        @if ($subtitle ?? false && $subtitle->isNotEmpty())
+        @if (($subtitle ?? false) && $subtitle->isNotEmpty())
             <div class="fd-text-sm fd-font-normal">{{ $subtitle }}</div>
         @endif
     </div>

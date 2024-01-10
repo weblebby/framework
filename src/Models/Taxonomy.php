@@ -40,13 +40,20 @@ class Taxonomy extends Model
         return $this->hasMany(Taxable::class);
     }
 
-    public function scopeSearch(Builder $query, ?string $term): Builder
+    public function scopeSearch(Builder $query, ?string $term, ?string $locale = null): Builder
     {
         if (blank($term)) {
             return $query;
         }
 
-        return $query->whereHas('term', fn (Builder $query) => $query->where('title', 'like', "%{$term}%"));
+        if (is_null($locale)) {
+            $locale = app()->getLocale();
+        }
+
+        return $query->whereHas(
+            'term',
+            fn(Builder $query) => $query->whereTranslationLike('title', "%{$term}%", $locale)
+        );
     }
 
     public function scopeTaxonomy(Builder $query, string $taxonomy): Builder
@@ -56,12 +63,12 @@ class Taxonomy extends Model
 
     public function scopeTerm(Builder $query, string $term): Builder
     {
-        return $query->whereHas('term', fn (Builder $query) => $query->where('slug', $term));
+        return $query->whereHas('term', fn(Builder $query) => $query->where('slug', $term));
     }
 
     public function scopeParent(Builder $query, string $parent): Builder
     {
-        return $query->whereHas('parent', fn (Builder $query) => $query->where('slug', $parent));
+        return $query->whereHas('parent', fn(Builder $query) => $query->where('slug', $parent));
     }
 
     public function scopeOnlyParents(Builder $query): Builder
@@ -71,11 +78,11 @@ class Taxonomy extends Model
 
     public function scopeWithRecursiveChildren(Builder $query): Builder
     {
-        return $query->with(['children' => fn (HasMany $query) => $query->withRecursiveChildren()]);
+        return $query->with(['children' => fn(HasMany $query) => $query->withRecursiveChildren()]);
     }
 
     protected function item(): Attribute
     {
-        return Attribute::get(fn () => PostModels::taxonomy($this->taxonomy));
+        return Attribute::get(fn() => PostModels::taxonomy($this->taxonomy));
     }
 }

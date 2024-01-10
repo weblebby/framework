@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -17,7 +16,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('navigation_id')->constrained()->cascadeOnDelete();
             $table->foreignId('parent_id')->nullable()->constrained('navigation_items')->nullOnDelete();
-            $table->string('title');
             $table->integer('position');
             $table->integer('type');
             $table->nullableMorphs('linkable');
@@ -31,6 +29,16 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
+
+        Schema::create('navigation_item_translations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('navigation_item_id')->constrained()->cascadeOnDelete();
+            $table->string('locale')->index();
+            $table->string('title');
+            $table->timestamps();
+
+            $table->unique(['navigation_item_id', 'locale']);
+        });
     }
 
     /**
@@ -40,6 +48,7 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('navigation_item_translations');
         Schema::dropIfExists('navigation_items');
     }
 };

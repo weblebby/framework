@@ -12,13 +12,14 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Feadmin\Facades\Extension;
 
 // Dont forget to check the extension is installed before using it
 use Weblebby\Extensions\Multilingual\Facades\Localization;
 
-class Metafield extends Model implements HasMedia
+class Metafield extends Model implements HasMedia, TranslatableContract
 {
     use HasFactory, InteractsWithMedia, Translatable;
 
@@ -86,7 +87,7 @@ class Metafield extends Model implements HasMedia
             if (Extension::has('multilingual') && $field['translatable']) {
                 return $this->translate($locale, withFallback: true)?->value;
             }
-            
+
             return $this->original_value;
         }
 

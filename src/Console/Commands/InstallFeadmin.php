@@ -4,10 +4,11 @@ namespace Feadmin\Console\Commands;
 
 use App\Models\User;
 use Feadmin\Database\Seeders\CreateDefaultRoles;
-use Feadmin\Models\Locale;
+use Feadmin\Facades\Extension;
 use Feadmin\Models\Role;
 use Feadmin\Providers\FeadminServiceProvider;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class InstallFeadmin extends Command
@@ -31,6 +32,8 @@ class InstallFeadmin extends Command
      */
     public function handle(): int
     {
+        $this->confirm('This action regenerate all your database!');
+
         $this->publishVendor();
         $this->migrate();
         $this->callSeeders();
@@ -51,7 +54,11 @@ class InstallFeadmin extends Command
 
     private function migrate(): void
     {
-        $this->call('migrate');
+        $this->call('migrate:fresh');
+
+        foreach (Extension::get() as $extension) {
+            $extension->migrate();
+        }
     }
 
     private function callSeeders(): void
@@ -71,11 +78,15 @@ class InstallFeadmin extends Command
 
     private function createLocales(): void
     {
-        $localeCodes = $this->ask('Enter locales (en, tr, ar, ru)', app()->getLocale());
-        $localeCodes = array_map('trim', explode(',', $localeCodes));
+        if (Extension::has('multilingual')) {
+            $localeCodes = $this->ask('Enter locales (en, tr, ar, ru)', app()->getLocale());
+            $localeCodes = array_map('trim', explode(',', $localeCodes));
+        } else {
+            $localeCodes = [app()->getLocale()];
+        }
 
         foreach ($localeCodes as $localeCode) {
-            Locale::query()->create([
+            DB::table('locales')->insert([
                 'code' => $localeCode,
                 'is_default' => $localeCode === $localeCodes[0],
             ]);
@@ -93,6 +104,7 @@ class InstallFeadmin extends Command
         $admin = User::query()->create([
             'name' => $name,
             'email' => $email,
+            'email_verified_at' => now(),
             'password' => Hash::make($password),
         ]);
 

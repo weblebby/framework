@@ -10,8 +10,19 @@ class InjectionManager
 {
     protected array $injections = [];
 
-    public function add(string $name, Closure $callable): void
+    /**
+     * @param string|array<int, string>
+     */
+    public function add(string|array $name, Closure $callable): void
     {
+        if (is_array($name)) {
+            foreach ($name as $item) {
+                $this->add($item, $callable);
+            }
+
+            return;
+        }
+
         $this->injections[$name] = [
             ...$this->injections[$name] ?? [],
             $callable,

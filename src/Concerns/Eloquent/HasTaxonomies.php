@@ -4,6 +4,7 @@ namespace Feadmin\Concerns\Eloquent;
 
 use Feadmin\Models\Taxable;
 use Feadmin\Models\Taxonomy;
+use Feadmin\Models\Term;
 use Feadmin\Services\TaxonomyService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -44,13 +45,21 @@ trait HasTaxonomies
 
     public function scopeWithTaxonomies(Builder $query): Builder
     {
-        return $query->with(['taxonomies:id,term_id,taxonomy' => [
-            'term:id,title',
-        ]]);
+        return $query->with([
+            'taxonomies' => fn($q) => $q
+                ->with(['term' => fn($q) => $q->select('terms.id')->withTranslation()])
+                ->select('taxonomies.id', 'taxonomies.term_id', 'taxonomies.taxonomy'),
+        ]);
     }
 
-    public function getTaxonomiesFor(string $taxonomy): Collection
+    public function getTaxonomiesFor(string $taxonomy, ?string $locale = null): Collection
     {
+        $this->loadMissing([
+            'taxonomies' => fn($q) => $q
+                ->with(['term' => fn($q) => $q->select('terms.id')->withTranslation()])
+                ->select('taxonomies.id', 'taxonomies.term_id', 'taxonomies.taxonomy'),
+        ]);
+
         return $this->taxonomies->where('taxonomy', static::getTaxonomyFor($taxonomy)->name());
     }
 

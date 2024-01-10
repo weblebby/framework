@@ -4,14 +4,24 @@
             <x-feadmin::page.title>@lang(':name oluşturun', ['name' => $postable::getSingularName()])</x-feadmin::page.title>
         </x-feadmin::page.head>
         <x-feadmin::form :action="panel_route('posts.store')" enctype="multipart/form-data">
+            @hook(panel()->nameWith('post:create:before_form_fields'))
+            @hook(panel()->nameWith('post:before_form_fields'))
             <input type="hidden" name="postable" value="{{ $postable::getModelName() }}">
             <div class="fd-flex fd-gap-3">
                 <div class="fd-w-2/3 fd-space-y-2">
                     <x-feadmin::form.group name="title">
-                        <x-feadmin::form.input :placeholder="__('Başlık')" autofocus />
+                        <x-feadmin::form.input
+                                :placeholder="__('Başlık')"
+                                :translatable="$isTranslatable"
+                                autofocus
+                        />
                     </x-feadmin::form.group>
                     <x-feadmin::form.group name="content">
-                        <x-feadmin::form.textarea :placeholder="__('İçerik')" data-ckeditor />
+                        <x-feadmin::form.textarea
+                                :placeholder="__('İçerik')"
+                                :translatable="$isTranslatable"
+                                data-ckeditor
+                        />
                     </x-feadmin::form.group>
                     <x-feadmin::tabs container="post" :default="array_keys($sections)[0] ?? null">
                         <x-feadmin::tabs.header>

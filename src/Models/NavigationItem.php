@@ -2,6 +2,8 @@
 
 namespace Feadmin\Models;
 
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Feadmin\Concerns\Eloquent\Translatable;
 use Feadmin\Enums\NavigationTypeEnum;
 use Feadmin\Services\TaxonomyService;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,12 +14,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class NavigationItem extends Model
+class NavigationItem extends Model implements TranslatableContract
 {
-    use HasFactory;
+    use HasFactory, Translatable;
 
     protected $fillable = [
-        'title',
         'position',
         'type',
         'linkable_id',
@@ -30,6 +31,10 @@ class NavigationItem extends Model
         'smart_view_all',
         'open_in_new_tab',
         'is_active',
+    ];
+
+    public $translatedAttributes = [
+        'title',
     ];
 
     protected $casts = [

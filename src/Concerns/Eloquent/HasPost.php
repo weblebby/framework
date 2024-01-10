@@ -19,7 +19,7 @@ trait HasPost
     public function scopeSearch(Builder $builder, array $filters = []): Builder
     {
         if (filled($filters['term'] ?? null)) {
-            $builder->where('title', 'like', "%{$filters['term']}%");
+            $builder->whereTranslation('title', 'like', "%{$filters['term']}%");
         }
 
         if (filled($filters['status'] ?? null)) {
@@ -31,7 +31,7 @@ trait HasPost
 
     public function url(): Attribute
     {
-        return Attribute::get(fn () => route('posts.show', $this->slug));
+        return Attribute::get(fn() => route('posts.show', $this->slug));
     }
 
     public function register(): void
@@ -65,7 +65,7 @@ trait HasPost
                     ->translatable()
                     ->label(__('URL'))
                     ->attributes([
-                        'prefix' => route('posts.show', '').'/',
+                        'prefix' => route('posts.show', '') . '/',
                     ])
                     ->rules(['nullable', 'string', 'max:191']),
 
@@ -136,12 +136,12 @@ trait HasPost
 
     public static function getTaxonomyFor(string $taxonomy): ?TaxonomyItem
     {
-        if (! str_starts_with($taxonomy, static::getModelName().'_')) {
+        if (!str_starts_with($taxonomy, static::getModelName() . '_')) {
             $taxonomy = sprintf('%s_%s', static::getModelName(), $taxonomy);
         }
 
         return array_values(
-            array_filter(static::getTaxonomies(), fn (TaxonomyItem $taxonomyItem) => $taxonomyItem->name() === $taxonomy)
+            array_filter(static::getTaxonomies(), fn(TaxonomyItem $taxonomyItem) => $taxonomyItem->name() === $taxonomy)
         )[0] ?? null;
     }
 
@@ -151,7 +151,8 @@ trait HasPost
             ->setName(static::getModelName())
             ->setTitle(static::getPluralName())
             ->setModel(static::class)
-            ->setLinks(static::query()->select('id', 'title')->take(15)->get());
+            // TODO: Add select() to title from translation
+            ->setLinks(static::query()->select('id')->take(15)->get());
     }
 
     public static function getSmartMenu(): SmartMenuItem

@@ -9,13 +9,25 @@
                 method="PUT"
                 enctype="multipart/form-data"
         >
+            @hook(panel()->nameWith('post:edit:before_form_fields'))
+            @hook(panel()->nameWith('post:before_form_fields'))
             <div class="fd-flex fd-gap-3">
                 <div class="fd-w-2/3 fd-space-y-2">
                     <x-feadmin::form.group name="title">
-                        <x-feadmin::form.input :placeholder="__('Başlık')" autofocus />
+                        <x-feadmin::form.input
+                                :default="$translatedPost->title"
+                                :placeholder="__('Başlık')"
+                                :translatable="$isTranslatable"
+                                autofocus
+                        />
                     </x-feadmin::form.group>
                     <x-feadmin::form.group name="content">
-                        <x-feadmin::form.textarea :placeholder="__('İçerik')" data-ckeditor />
+                        <x-feadmin::form.textarea
+                                :default="new \Illuminate\Support\HtmlString($translatedPost->content)"
+                                :placeholder="__('İçerik')"
+                                :translatable="$isTranslatable"
+                                data-ckeditor
+                        />
                     </x-feadmin::form.group>
                     <x-feadmin::tabs container="post" :default="array_keys($sections)[0] ?? null">
                         <x-feadmin::tabs.header>
@@ -68,7 +80,7 @@
                             <x-feadmin::form.tagify
                                     :value="$post->getTaxonomiesFor($tagTax->name())->pluck('term.title')"
                                     :options="[
-                                        'source' => panel_api_route('taxonomies.index', $tagTax->name()),
+                                        'source' => panel_api_route('taxonomies.index', [$tagTax->name(), '_locale' => request('_locale', app()->getLocale())]),
                                         'map' => ['value' => 'taxonomy_id', 'label' => 'title'],
                                         'name' => sprintf('taxonomies[%s][]', $tagTax->name()),
                                     ]"

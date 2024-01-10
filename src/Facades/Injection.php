@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\HtmlString;
 
 /**
- * @method static void add(string $name, callable $callable)
+ * @method static void add(string|array $name, callable $callable)
  * @method static HtmlString render(string $name)
  *
  * @see InjectionManager

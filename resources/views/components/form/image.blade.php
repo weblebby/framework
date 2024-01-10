@@ -1,3 +1,4 @@
+@props(['translatable' => false])
 @aware(['name', 'bind' => null, 'bag' => 'default', 'prefix' => null, 'suffix' => null])
 @props(['name', 'image'])
 
@@ -12,8 +13,14 @@
 @endif
 
 <div class="fd-flex fd-items-start">
-    @if ($prefix)
-        <x-feadmin::form.prefix class="fd-mt-2 -fd-mr-[1px] fd-rounded-l">{{ $prefix }}</x-feadmin::form.prefix>
+    @if ($prefix || $translatable)
+        <x-feadmin::form.prefix class="fd-mt-2 -fd-mr-[1px] fd-rounded-l">
+            @if ($translatable)
+                <x-feadmin::form.prefix-translatable />
+            @else
+                {{ $prefix }}
+            @endif
+        </x-feadmin::form.prefix>
     @endif
     <label class="fd-flex-1 fd-rounded-lg fd-overflow-hidden fd-block fd-cursor-pointer fd-relative" data-form-image>
         <input type="file" id="{{ $id }}" name="{{ $name }}" class="fd-hidden" accept="image/*">
