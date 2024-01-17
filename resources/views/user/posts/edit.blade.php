@@ -21,9 +21,9 @@
                                 autofocus
                         />
                     </x-feadmin::form.group>
-                    <x-feadmin::form.group name="content">
+                    <x-feadmin::form.group class="ck-editor--xl" name="content">
                         <x-feadmin::form.textarea
-                                :default="new \Illuminate\Support\HtmlString($translatedPost->content)"
+                                :default="$translatedPost->content"
                                 :placeholder="__('İçerik')"
                                 :translatable="$isTranslatable"
                                 data-ckeditor
@@ -78,9 +78,9 @@
                         <x-feadmin::card padding>
                             <x-feadmin::card.title>@lang('Etiketler')</x-feadmin::card.title>
                             <x-feadmin::form.tagify
-                                    :value="$post->getTaxonomiesFor($tagTax->name())->pluck('term.title')"
+                                    :value="$post->getTaxonomiesFor($tagTax->name(), $locale)->pluck('term.title')"
                                     :options="[
-                                        'source' => panel_api_route('taxonomies.index', [$tagTax->name(), '_locale' => request('_locale', app()->getLocale())]),
+                                        'source' => panel_api_route('taxonomies.index', [$tagTax->name(), '_locale' => $locale]),
                                         'map' => ['value' => 'taxonomy_id', 'label' => 'title'],
                                         'name' => sprintf('taxonomies[%s][]', $tagTax->name()),
                                     ]"

@@ -20,7 +20,7 @@ class FieldValidationService
         $attributes = [];
 
         foreach ($fields as $field) {
-            if (! isset($field['name'])) {
+            if (!isset($field['name'])) {
                 continue;
             }
 
@@ -33,7 +33,7 @@ class FieldValidationService
 
     protected function validate(FieldInterface $field, ?FieldValueItem $fieldValueItem, array &$rules, array &$attributes): void
     {
-        if (! isset($field['name'])) {
+        if (!isset($field['name'])) {
             return;
         }
 
@@ -85,11 +85,12 @@ class FieldValidationService
     }
 
     protected function validateConditionalField(
-        FieldInterface $field,
+        FieldInterface  $field,
         ?FieldValueItem $fieldValueItem,
-        array &$rules,
-        array &$attributes
-    ): void {
+        array           &$rules,
+        array           &$attributes
+    ): void
+    {
         foreach ($fieldValueItem?->value() ?? [] as $value) {
             /*// FIXME: $value'yu loopa alınca preference tarafı çalışıyor fakat post tarafı çalışmıyor.
             // FIXME: Checkbox'a javascript ile true false değeri ver.
@@ -110,13 +111,13 @@ class FieldValidationService
                 $conditionIdentifier = sprintf('%s.value', $condition['key']);
                 $inputValue = Arr::get($value, $conditionIdentifier);
 
-                if (! $this->validateCondition($condition['operator'], $inputValue, $condition['value'])) {
+                if (!$this->validateCondition($condition['operator'], $inputValue, $condition['value'])) {
                     $allConditionsPassed = false;
                     break;
                 }
             }
 
-            if (! $allConditionsPassed) {
+            if (!$allConditionsPassed) {
                 foreach ($value as $childValue) {
                     if ($childValue->field() instanceof HasChildFieldInterface) {
                         $this->validate($childValue->field(), $childValue, $rules, $attributes);
@@ -147,8 +148,16 @@ class FieldValidationService
         }
     }
 
+    /**
+     * Make sure to this method to sync with compare method of _conditional-field.js
+     */
     protected function validateCondition(string $operator, mixed $value, mixed $conditionValue): bool
     {
+        if (is_array($conditionValue)) {
+            $value = (string)$value;
+            $conditionValue = array_map(fn($v) => (string)$v, $conditionValue);
+        }
+
         return match ($operator) {
             '===' => $value === $conditionValue,
             '!==' => $value !== $conditionValue,
@@ -159,15 +168,15 @@ class FieldValidationService
             '<' => $value < $conditionValue,
             '<=' => $value <= $conditionValue,
             'in' => in_array($value, $conditionValue),
-            'not_in' => ! in_array($value, $conditionValue),
+            'not_in' => !in_array($value, $conditionValue),
             'between' => $value >= $conditionValue[0] && $value <= $conditionValue[1],
             'not_between' => $value < $conditionValue[0] || $value > $conditionValue[1],
             'contains' => Str::contains($value, $conditionValue),
-            'not_contains' => ! Str::contains($value, $conditionValue),
+            'not_contains' => !Str::contains($value, $conditionValue),
             'starts_with' => Str::startsWith($value, $conditionValue),
             'ends_with' => Str::endsWith($value, $conditionValue),
             'regex' => preg_match($conditionValue, $value),
-            'not_regex' => ! preg_match($conditionValue, $value),
+            'not_regex' => !preg_match($conditionValue, $value),
             default => false,
         };
     }

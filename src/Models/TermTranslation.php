@@ -19,6 +19,7 @@ class TermTranslation extends Model
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
+            ->doNotGenerateSlugsOnUpdate()
             ->generateSlugsFrom('title')
             ->saveSlugsTo('slug');
     }

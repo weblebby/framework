@@ -7,7 +7,7 @@
 ))
 
 <div
-        class="fd-border fd-rounded fd-p-3 fd-space-y-3"
+        class="fd-p-3 fd-bg-white fd-border fd-rounded fd-space-y-3"
         data-repeated-field-item="{{ $fieldItemName }}"
         data-max-row="{{ $field['max'] ?? -1 }}"
 >

@@ -3,19 +3,42 @@
 namespace Feadmin\Http\Requests\User;
 
 use Feadmin\Facades\PostModels;
+use Feadmin\Facades\Preference;
+use Feadmin\Items\TaxonomyItem;
+use Feadmin\Services\FieldInputService;
+use Feadmin\Services\FieldValidationService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Unique;
 
 class StoreTaxonomyRequest extends FormRequest
 {
+    public readonly array $rulesAndAttributes;
+
+    public readonly ?TaxonomyItem $taxonomyItem;
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $taxonomy = PostModels::taxonomy($this->taxonomy);
+        return $this->taxonomyItem &&
+            $this->user()->can($this->taxonomyItem->abilityFor('create'));
+    }
 
-        return $taxonomy && $this->user()->can($taxonomy->abilityFor('create'));
+    protected function prepareForValidation(): void
+    {
+        $this->taxonomyItem = PostModels::taxonomy($this->taxonomy);
+
+        $fields = $this->taxonomyItem->fieldSections()->allFields();
+
+        /** @var FieldInputService $fieldInputService */
+        $fieldInputService = app(FieldInputService::class);
+        /** @var FieldValidationService $fieldValidationService */
+        $fieldValidationService = app(FieldValidationService::class);
+
+        $fieldValues = $fieldInputService->getFieldValues($fields, $this->all());
+        $this->rulesAndAttributes = $fieldValidationService->get($fields, $fieldValues);
     }
 
     /**
@@ -24,14 +47,40 @@ class StoreTaxonomyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:191'],
-            'slug' => ['nullable', 'string', 'max:191', Rule::unique('terms')],
-            'description' => ['nullable', 'string', 'max:65535'],
+            'title' => [
+                'required', 'string', 'max:191',
+                (new Unique('term_translations'))
+                    ->when(
+                        $this->route('taxonomy'),
+                        fn(Unique $unique, $taxonomy) => $unique->ignore($taxonomy->term->translate($this->input('_locale')))
+                    ),
+            ],
+            'slug' => [
+                'nullable', 'string', 'max:191',
+                (new Unique('term_translations'))
+                    ->when(
+                        $this->route('taxonomy'),
+                        fn(Unique $unique, $taxonomy) => $unique->ignore($taxonomy->term->translate($this->input('_locale')))
+                    ),
+            ],
             'parent_id' => [
                 'nullable', 'integer',
                 Rule::exists('taxonomies', 'id')
                     ->where('taxonomy', $this->taxonomy),
             ],
+            '_locale' => ['nullable', 'string', 'max:4'],
+            ...$this->rulesAndAttributes['rules'],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'title' => __('Başlık'),
+            'slug' => __('URL'),
+            'parent_id' => __('Üst :taxonomy', ['taxonomy' => $this->taxonomyItem->singularName()]),
+            '_locale' => __('Dil'),
+            ...$this->rulesAndAttributes['attributes'],
         ];
     }
 }

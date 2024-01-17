@@ -1,5 +1,5 @@
 <x-feadmin::layouts.master {{ $attributes }}>
-    <main class="fd-flex fd-flex-1">
+    <main class="fd-flex fd-flex-1 fd-h-full">
         <section
                 class="fd-fixed fd-inset-y-0 fd-z-30 fd-hidden md:fd-flex fd-flex-col fd-w-60 fd-h-full fd-gap-8 fd-bg-zinc-200 fd-border-r fd-border-zinc-300">
             <div class="fd-flex fd-flex-col">

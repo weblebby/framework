@@ -15,7 +15,7 @@
 @php($name = \Feadmin\Support\FormComponent::dottedToName($name))
 @php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
-<div class="fd-flex fd-items-center">
+<div class="fd-flex fd-items-center fd-relative">
     @if ($prefix || $translatable)
         <x-feadmin::form.prefix class="-fd-mr-[1px] fd-rounded-l">
             @if ($translatable)
@@ -45,6 +45,6 @@
             read-only:fd-bg-zinc-200
             fd-transition') }}>
     @if ($suffix)
-        <x-feadmin::form.prefix class="-fd-ml-[1px] fd-rounded-r">{{ $suffix }}</x-feadmin::form.prefix>
+        <x-feadmin::form.prefix class="-fd-ml-[1px] fd-rounded-r" :suffix="true">{{ $suffix }}</x-feadmin::form.prefix>
     @endif
 </div>

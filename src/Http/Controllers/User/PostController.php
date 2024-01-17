@@ -41,9 +41,11 @@ class PostController extends Controller
         $postable = PostModels::findOrFail($request->input('type', Post::getModelName()));
         $this->authorize($postable::getPostAbilityFor('create'));
 
+        $locale = $request->input('_locale', app()->getLocale());
+
         $templates = $postService->templates($postable);
         $sections = $postService->sections($postable, old('template'));
-        $categories = $postService->taxonomies($postable, 'category');
+        $categories = $postService->taxonomies($postable, taxonomy: 'category', locale: $locale);
 
         $isCodeEditorNeeded = $sections->allFields()->hasAnyTypeOf(CodeEditorFieldItem::class);
         $isTranslatable = Extension::has('multilingual');
@@ -115,12 +117,12 @@ class PostController extends Controller
     {
         $this->authorize($post::getPostAbilityFor('update'));
 
-        $locale = $request->input('_locale');
+        $locale = $request->input('_locale', app()->getLocale());
         $translatedPost = $post->translate($locale, withFallback: true);
 
         $templates = $postService->templates($post);
         $sections = $postService->sections($post, old('template', $post->template));
-        $categories = $postService->taxonomies($post, 'category');
+        $categories = $postService->taxonomies($post, taxonomy: 'category', locale: $locale);
         $metafields = $post->getMetafieldValues(locale: $locale);
         $metafields['slug'] = $translatedPost->slug;
 
@@ -134,6 +136,7 @@ class PostController extends Controller
         return view('feadmin::user.posts.edit', compact(
             'post',
             'translatedPost',
+            'locale',
             'templates',
             'sections',
             'categories',

@@ -3,10 +3,12 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Feadmin\Facades\Extension;
 use Feadmin\Http\Requests\User\StoreNavigationRequest;
 use Feadmin\Http\Requests\User\UpdateNavigationRequest;
 use Feadmin\Models\Navigation;
 use Feadmin\Services\NavigationService;
+use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -37,11 +39,12 @@ class NavigationController extends Controller
             ->with('message', __(':navigation oluşturuldu.', ['navigation' => $navigation->title]));
     }
 
-    public function show(Navigation $navigation, NavigationService $navigationService): View
+    public function show(Request $request, Navigation $navigation, NavigationService $navigationService): View
     {
         $this->authorize('navigation:read');
 
-        seo()->title($navigation->title);
+        $isTranslatable = Extension::has('multilingual');
+        $locale = $request->string('_locale', app()->getLocale())->toString();
 
         $navigation->load(['items' => function ($query) {
             $query
@@ -50,9 +53,15 @@ class NavigationController extends Controller
                 ->oldest('position');
         }]);
 
+        $navigation->items->setDefaultLocale($locale, 'children');
+
+        seo()->title($navigation->title);
+
         return view('feadmin::user.navigations.index', [
             'navigations' => $navigationService->getForListing(),
             'selectedNavigation' => $navigation,
+            'isTranslatable' => $isTranslatable,
+            'locale' => $locale,
         ]);
     }
 

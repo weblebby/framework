@@ -116,4 +116,6 @@ document.querySelectorAll(Form.checkboxSelector).forEach(element => {
     Form.handleCheckbox(element)
 })
 
+window.Feadmin.Form = Form
+
 export default Form

@@ -18,6 +18,8 @@ class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 
     protected ?string $pluralName = null;
 
+    protected ?FieldSectionsItem $fieldSections = null;
+
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -49,6 +51,13 @@ class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
         return $this;
     }
 
+    public function withFieldSections(FieldSectionsItem $fieldSections): self
+    {
+        $this->fieldSections = $fieldSections;
+
+        return $this;
+    }
+
     public function name(): string
     {
         return $this->name;
@@ -62,6 +71,11 @@ class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
     public function pluralName(): string
     {
         return $this->pluralName ?? str($this->name)->title()->plural()->toString();
+    }
+
+    public function fieldSections(): ?FieldSectionsItem
+    {
+        return $this->fieldSections;
     }
 
     public function abilities(): array
@@ -86,6 +100,7 @@ class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
             'singular_name' => $this->singularName(),
             'plural_name' => $this->pluralName(),
             'abilities' => $this->abilities(),
+            'field_sections' => $this->fieldSections?->toArray(),
         ];
     }
 }

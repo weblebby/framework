@@ -54,7 +54,7 @@ class PermissionHook
         return collect($this->get())
             ->map(function ($group, $groupKey) {
                 return collect($group['permissions'])
-                    ->map(fn ($_, $permKey) => "{$groupKey}:{$permKey}")
+                    ->map(fn($_, $permKey) => "{$groupKey}:{$permKey}")
                     ->values();
             })
             ->collapse()
@@ -62,12 +62,26 @@ class PermissionHook
     }
 
     public function defaults(
-        bool $preferences = true,
-        bool $users = true,
-        bool $roles = true,
-        bool $extensions = true,
         bool $navigations = true,
-    ): void {
+        bool $users = true,
+        bool $extensions = true,
+        bool $appearance = true,
+        bool $preferences = true,
+        bool $roles = true,
+    ): void
+    {
+        if ($navigations) {
+            $this
+                ->withGroup('navigation')
+                ->withTitle(__('Navigasyonlar'))
+                ->withPermissions([
+                    'create' => __('Navigasyon oluşturabilir'),
+                    'read' => __('Navigasyonları görüntüleyebilir'),
+                    'update' => __('Navigasyonları düzenleyebilir'),
+                    'delete' => __('Navigasyonları silebilir'),
+                ]);
+        }
+
         if ($users) {
             $this
                 ->withGroup('user')
@@ -77,6 +91,27 @@ class PermissionHook
                     'read' => __('Kullanıcıları görüntüleyebilir'),
                     'update' => __('Kullanıcıları düzenleyebilir'),
                     'delete' => __('Kullanıcıları silebilir'),
+                ]);
+        }
+
+        if ($extensions) {
+            $this
+                ->withGroup('extension')
+                ->withTitle(__('Eklentiler'))
+                ->withPermissions([
+                    'read' => __('Eklentileri görüntüleyebilir'),
+                    'update' => __('Eklentileri düzenleyebilir'),
+                    'delete' => __('Eklentileri silebilir'),
+                ]);
+        }
+
+        if ($appearance) {
+            $this
+                ->withGroup('appearance:editor')
+                ->withTitle(__('Tema editörü'))
+                ->withPermissions([
+                    'read' => __('Tema kodlarını görüntüleyebilir'),
+                    'update' => __('Tema kodlarını düzenleyebilir'),
                 ]);
         }
 
@@ -105,29 +140,6 @@ class PermissionHook
                     'read' => __('Kullanıcı rollerini görüntüleyebilir'),
                     'update' => __('Kullanıcı rollerini düzenleyebilir'),
                     'delete' => __('Kullanıcı rollerini silebilir'),
-                ]);
-        }
-
-        if ($extensions) {
-            $this
-                ->withGroup('extension')
-                ->withTitle(__('Eklentiler'))
-                ->withPermissions([
-                    'read' => __('Eklentileri görüntüleyebilir'),
-                    'update' => __('Eklentileri düzenleyebilir'),
-                    'delete' => __('Eklentileri silebilir'),
-                ]);
-        }
-
-        if ($navigations) {
-            $this
-                ->withGroup('navigation')
-                ->withTitle(__('Navigasyonlar'))
-                ->withPermissions([
-                    'create' => __('Navigasyon oluşturabilir'),
-                    'read' => __('Navigasyonları görüntüleyebilir'),
-                    'update' => __('Navigasyonları düzenleyebilir'),
-                    'delete' => __('Navigasyonları silebilir'),
                 ]);
         }
     }

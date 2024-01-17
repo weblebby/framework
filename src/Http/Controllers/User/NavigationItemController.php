@@ -13,7 +13,7 @@ class NavigationItemController extends Controller
 {
     public function store(StoreNavigationItemRequest $request, Navigation $navigation): RedirectResponse
     {
-        $item = new NavigationItem($request->safeWithCasts()->toArray());
+        $item = new NavigationItem($request->safeWithCasts());
         $item->navigation()->associate($navigation);
 
         $item->position = $navigation->items()->max('position') + 1;
@@ -34,12 +34,13 @@ class NavigationItemController extends Controller
 
     public function update(
         StoreNavigationItemRequest $request,
-        Navigation $navigation,
-        NavigationItem $item
-    ): RedirectResponse {
+        Navigation                 $navigation,
+        NavigationItem             $item
+    ): RedirectResponse
+    {
         abort_if($navigation->id !== $item->navigation_id, 404);
 
-        $item->fill($request->safeWithCasts()->toArray());
+        $item->fill($request->safeWithCasts());
         $item->type = $request->type;
 
         if ($item->type === NavigationTypeEnum::LINKABLE) {

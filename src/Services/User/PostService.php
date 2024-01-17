@@ -34,7 +34,12 @@ class PostService
             ->with(['term' => fn($query) => $query->select('id')->withTranslation()])
             ->onlyParents()
             ->withRecursiveChildren()
-            ->get();
+            ->get()
+            ->map(function (Taxonomy $taxonomy) use ($locale) {
+                $taxonomy->term->setDefaultLocale($locale);
+
+                return $taxonomy;
+            });
     }
 
     public function syncTaxonomies(

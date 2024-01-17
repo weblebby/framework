@@ -125,7 +125,7 @@ class FeadminServiceProvider extends ServiceProvider
                 dirname(__DIR__),
                 dirname(__DIR__) . '/../resources',
                 dirname(__DIR__) . '/../routes',
-            ]);
+            ], panel());
         }
     }
 

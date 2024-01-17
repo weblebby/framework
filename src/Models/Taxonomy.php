@@ -2,6 +2,7 @@
 
 namespace Feadmin\Models;
 
+use Feadmin\Concerns\Eloquent\HasMetafields;
 use Feadmin\Facades\PostModels;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -12,12 +13,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Taxonomy extends Model
 {
-    use HasFactory;
+    use HasFactory, HasMetafields;
 
     protected $fillable = [
         'term_id',
         'taxonomy',
-        'description',
     ];
 
     public function term(): BelongsTo

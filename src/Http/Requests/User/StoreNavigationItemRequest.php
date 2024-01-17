@@ -9,7 +9,6 @@ use Feadmin\Facades\SmartMenu;
 use Feadmin\Models\NavigationItem;
 use Feadmin\Services\TaxonomyService;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\ValidatedInput;
 use Illuminate\Validation\Rule;
 
 class StoreNavigationItemRequest extends FormRequest
@@ -32,22 +31,31 @@ class StoreNavigationItemRequest extends FormRequest
     /**
      * Get validated data with casts.
      */
-    public function safeWithCasts(): ValidatedInput
+    public function safeWithCasts(): array
     {
         if ($this->type === NavigationTypeEnum::SMART->value && $this->smart_condition) {
             /** @var TaxonomyService $taxonomyService */
             $taxonomyService = app(TaxonomyService::class);
 
-            $smartFilterValues = array_map(fn ($filter) => $filter['value'], $this->smart_filters);
+            $smartFilterValues = array_map(fn($filter) => $filter['value'], $this->smart_filters);
             $terms = $taxonomyService->createMissingTaxonomies($this->smart_condition, $smartFilterValues);
 
             $data['smart_filters'] = collect($terms)
                 ->groupBy('taxonomy')
-                ->map(fn ($terms) => $terms->pluck('id')->unique()->values())
+                ->map(fn($terms) => $terms->pluck('id')->unique()->values())
                 ->toArray();
         }
 
-        return $this->safe()->merge($data ?? []);
+        $locale = $this->string('_locale', app()->getLocale())->toString();
+
+        return $this->safe()
+            ->merge([
+                ...$data ?? [],
+                $locale => [
+                    'title' => $this->title,
+                ]
+            ])
+            ->except('title');
     }
 
     /**
@@ -123,6 +131,7 @@ class StoreNavigationItemRequest extends FormRequest
             'is_smart_menu' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
             'open_in_new_tab' => ['nullable', 'boolean'],
+            '_locale' => ['sometimes', 'required', 'string', 'max:4'],
         ];
 
         if ($this->type === NavigationTypeEnum::LINKABLE->value) {

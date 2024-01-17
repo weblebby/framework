@@ -4,14 +4,12 @@ namespace Feadmin\Abstracts\Extension;
 
 use ArrayAccess;
 use Feadmin\Concerns\HasArray;
+use Feadmin\Concerns\HasViewAndRoutes;
 use Feadmin\Enums\ExtensionCategoryEnum;
 use Feadmin\Facades\Panel;
 use Feadmin\Services\ExtensionFileService;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
-use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -19,7 +17,7 @@ use JsonSerializable;
 
 abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {
-    use HasArray;
+    use HasArray, HasViewAndRoutes;
 
     protected ExtensionFileService $extensionFileService;
 
@@ -87,47 +85,6 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
         return sprintf('ext-%s', $this->name());
     }
 
-    public function namespaceWith(string $append = ''): string
-    {
-        return sprintf('%s::%s', $this->namespace(), $append);
-    }
-
-    public function basePath(): string
-    {
-        $filename = (new \ReflectionClass($this))->getFileName();
-
-        return dirname($filename) . '/../';
-    }
-
-    public function path(?string $path = null): string
-    {
-        return rtrim($this->basePath() . ltrim($path, '/'), '/');
-    }
-
-    public function view($view = null, $data = [], $mergeData = []): View
-    {
-        $mergeData = Arr::add($mergeData, 'extension', $this);
-
-        return view($this->namespaceWith($view), $data, $mergeData);
-    }
-
-    public function route($name, $parameters = [], $absolute = true): string
-    {
-        return route($this->namespaceWith($name), $parameters, $absolute);
-    }
-
-    public function toRoute($route, $parameters = [], $status = 302, $headers = []): RedirectResponse
-    {
-        return redirect()->to($this->route($route, $parameters), $status, $headers);
-    }
-
-    public function routeIs(...$patterns): bool
-    {
-        $patterns = array_map(fn($pattern) => $this->namespaceWith($pattern), $patterns);
-
-        return request()->routeIs(...$patterns);
-    }
-
     public function migrate(bool $rollback = false): void
     {
         Artisan::call(sprintf('migrate%s', $rollback ? ':rollback' : ''), [
@@ -137,13 +94,36 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
         ]);
     }
 
+    public function publish(): void
+    {
+        if (File::exists($targetPath = public_path("extensions/{$this->name()}"))) {
+            return;
+        }
+
+        $sourcePath = $this->path('public');
+
+        if (!File::exists($sourcePath)) {
+            return;
+        }
+
+        // create extensions directory if not exists
+        File::ensureDirectoryExists(public_path('extensions'));
+
+        if (File::exists($targetPath)) {
+            // delete symlink
+            unlink($targetPath);
+        }
+
+        symlink($sourcePath, $targetPath);
+    }
+
     public function registerRoute(string $route): void
     {
         $panel = Panel::getExtensionPanel();
         $path = $this->path(sprintf('routes/%s.php', $route));
 
         Route::middleware($panel->middleware())
-            ->prefix($panel->prefix())
+            ->prefix($panel->prefix() . '/ext/' . $this->name())
             ->domain($panel->domain())
             ->as($this->namespaceWith())
             ->group($path);

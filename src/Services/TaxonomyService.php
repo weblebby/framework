@@ -16,16 +16,29 @@ class TaxonomyService
         return $term;
     }
 
-    public function getOrCreateTerm(string|int $term, ?string $locale = null): Term
+    public function getOrCreateTerm(Term|string|int $term, array $data = [], ?string $locale = null): Term
     {
         if (is_null($locale)) {
             $locale = app()->getLocale();
         }
 
-        if (is_numeric($term)) {
-            if ($foundTerm = $this->getTermById($term)) {
-                return $foundTerm;
+        if (is_numeric($term) && ($foundTerm = $this->getTermById($term))) {
+            return $foundTerm;
+        }
+
+        if ($term instanceof Term) {
+            $translatedTerm = $term->translate($locale);
+
+            if (is_null($translatedTerm) || $translatedTerm->title !== $data['title'] || $translatedTerm->slug !== ($data['slug'] ?? null)) {
+                $term->update([
+                    $locale => [
+                        'title' => $data['title'],
+                        'slug' => $data['slug'] ?? null,
+                    ],
+                ]);
             }
+
+            return $term;
         }
 
         /** @var Term $termModel */
@@ -50,17 +63,17 @@ class TaxonomyService
         ?string         $locale = null,
     ): Taxonomy
     {
-        if (is_string($term) || is_numeric($term)) {
-            $term = $this->getOrCreateTerm($term, $locale);
+        if (is_null($locale)) {
+            $locale = app()->getLocale();
         }
 
-        $fillable = Arr::except($data, ['parent_id']);
+        $term = $this->getOrCreateTerm($term, $data, $locale);
 
         /** @var Taxonomy $taxonomy */
-        $taxonomy = Taxonomy::query()->updateOrCreate([
+        $taxonomy = Taxonomy::query()->firstOrCreate([
             'term_id' => $term->getKey(),
             'taxonomy' => $taxonomy,
-        ], $fillable);
+        ]);
 
         if (array_key_exists('parent_id', $data)) {
             $taxonomy->parent()->associate($data['parent_id']);

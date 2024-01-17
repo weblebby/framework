@@ -48,7 +48,15 @@ const ConditionalField = {
         }
     },
 
+    /**
+     * Make sure to this method to sync with validateCondition method of FieldValidationService.php
+     */
     compare(value, conditionValue, operator) {
+        if (Array.isArray(conditionValue)) {
+            value = value.toString()
+            conditionValue = conditionValue.map(v => v.toString())
+        }
+
         switch (operator) {
             case '===':
                 return value === conditionValue

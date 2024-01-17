@@ -88,7 +88,7 @@
     width: 100% !important;
 }
 
-#post .ck-editor__editable {
+.ck-editor--xl .ck-editor__editable {
     min-height: 600px;
 }
 
@@ -128,6 +128,18 @@
 
 .monaco-editor, .monaco-editor .overflow-guard {
     @apply fd-rounded-md;
+}
+
+#appearance-editor :is(.monaco-editor, .monaco-editor .overflow-guard) {
+    @apply fd-rounded-none;
+}
+
+[data-collapsible][aria-expanded="false"] > [data-collapse-content] {
+    @apply fd-hidden;
+}
+
+[data-collapsible][aria-expanded="true"] > [data-collapse-toggle] > [data-collapse-icon] {
+    @apply fd-rotate-90;
 }
 
 @keyframes spin {

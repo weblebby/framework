@@ -60,7 +60,9 @@ trait HasTaxonomies
                 ->select('taxonomies.id', 'taxonomies.term_id', 'taxonomies.taxonomy'),
         ]);
 
-        return $this->taxonomies->where('taxonomy', static::getTaxonomyFor($taxonomy)->name());
+        return $this->taxonomies
+            ->where('taxonomy', static::getTaxonomyFor($taxonomy)->name())
+            ->each(fn(Taxonomy $taxonomy) => collect([$taxonomy->term])->setDefaultLocale($locale));
     }
 
     public function addTaxonomy(string $taxonomy, array|string $terms): void

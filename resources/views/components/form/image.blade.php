@@ -12,7 +12,7 @@
     @php($image = $bind->getFirstMediaUrl(head($dottedNameParts)))
 @endif
 
-<div class="fd-flex fd-items-start">
+<div class="fd-flex fd-items-start fd-relative">
     @if ($prefix || $translatable)
         <x-feadmin::form.prefix class="fd-mt-2 -fd-mr-[1px] fd-rounded-l">
             @if ($translatable)
@@ -35,6 +35,7 @@
         </div>
     </label>
     @if ($suffix)
-        <x-feadmin::form.prefix class="fd-mt-2 -fd-ml-[1px] fd-rounded-r">{{ $suffix }}</x-feadmin::form.prefix>
+        <x-feadmin::form.prefix class="fd-mt-2 -fd-ml-[1px] fd-rounded-r"
+                                :suffix="true">{{ $suffix }}</x-feadmin::form.prefix>
     @endif
 </div>

@@ -28,7 +28,7 @@ class TaxonomyController extends Controller
             ->get()
             ->map(fn(Taxonomy $taxonomy) => [
                 'taxonomy_id' => $taxonomy->id,
-                'title' => $taxonomy->term->title,
+                'title' => $taxonomy->term->setDefaultLocale($validated['_locale'])->title,
             ]);
 
         return response()->json($taxonomies);

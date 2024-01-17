@@ -73,9 +73,9 @@ class Metafield extends Model implements HasMedia, TranslatableContract
                     ->filter()
                     ->values();
 
-                foreach ($locales as $locale) {
-                    if ($this->hasMedia($locale)) {
-                        return $this->getFirstMediaUrl($locale);
+                foreach ($locales as $localeAsCollection) {
+                    if ($this->hasMedia($localeAsCollection)) {
+                        return $this->getFirstMediaUrl($localeAsCollection);
                     }
                 }
             }
@@ -85,10 +85,10 @@ class Metafield extends Model implements HasMedia, TranslatableContract
 
         if ($field instanceof TextFieldItem) {
             if (Extension::has('multilingual') && $field['translatable']) {
-                return $this->translate($locale, withFallback: true)?->value;
+                return $this->translate($locale, withFallback: true)?->value ?? $default;
             }
 
-            return $this->original_value;
+            return $this->original_value ?? $default;
         }
 
         return $default;

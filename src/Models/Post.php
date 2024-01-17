@@ -10,6 +10,8 @@ use Feadmin\Concerns\Eloquent\Translatable;
 use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Enums\HasOwnerEnum;
 use Feadmin\Enums\PostStatusEnum;
+use Feadmin\Items\Field\FieldItem;
+use Feadmin\Items\FieldSectionsItem;
 use Feadmin\Items\TaxonomyItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -125,11 +127,35 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
         return [
             TaxonomyItem::make('post_category')
                 ->withSingularName(__('Yazı kategorisi'))
-                ->withPluralName(__('Yazı kategorileri')),
+                ->withPluralName(__('Yazı kategorileri'))
+                ->withFieldSections(
+                    FieldSectionsItem::make()
+                        ->add('default', 'Genel', [
+                            FieldItem::richText('description')
+                                ->translatable()
+                                ->label(__('Açıklama'))
+                                ->hint(__('Kategori açıklaması'))
+                                ->rules(['nullable', 'string', 'max:50000']),
+
+                            FieldItem::image('image')
+                                ->label(__('Resim'))
+                                ->hint(__('Kategori resmi'))
+                                ->rules(['nullable', 'image']),
+                        ])
+                ),
 
             TaxonomyItem::make('post_tag')
                 ->withSingularName(__('Yazı etiketi'))
-                ->withPluralName(__('Yazı etiketleri')),
+                ->withPluralName(__('Yazı etiketleri'))
+                ->withFieldSections(
+                    FieldSectionsItem::make()
+                        ->add('default', 'Genel', [
+                            FieldItem::richText('description')
+                                ->translatable()
+                                ->label(__('Açıklama'))
+                                ->hint(__('Kategori açıklaması')),
+                        ])
+                ),
         ];
     }
 

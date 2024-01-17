@@ -32,20 +32,4 @@ abstract class ExtensionObserver
     {
         //
     }
-
-    protected function publishBuildAssets(): void
-    {
-        $sourcePath = $this->extension->path('public');
-        $targetPath = public_path("extensions/{$this->extension->name()}");
-
-        // create extensions directory if not exists
-        File::ensureDirectoryExists(public_path('extensions'));
-
-        if (File::exists($targetPath)) {
-            // delete symlink
-            unlink($targetPath);
-        }
-
-        symlink($sourcePath, $targetPath);
-    }
 }

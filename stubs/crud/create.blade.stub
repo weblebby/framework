@@ -1,5 +1,5 @@
 <x-feadmin::layouts.panel>
-    <x-feadmin::page class="lg:w-2/3 fd-mx-auto">
+    <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
         <x-feadmin::page.head :back="route('{{ panel }}::{{ view }}.index')">
             <x-feadmin::page.title>@lang('Oluştur: {{ modelSpace }}')</x-feadmin::page.title>
         </x-feadmin::page.head>

@@ -20,7 +20,7 @@ class ThemeManager
     /**
      * @throws Exception
      */
-    public function register(Theme|string $theme): self
+    public function register(Theme|string $theme): Theme
     {
         if (is_string($theme)) {
             $theme = new $theme();
@@ -32,7 +32,7 @@ class ThemeManager
 
         $this->themes->push($theme);
 
-        return $this;
+        return $theme;
     }
 
     public function activate(string $themeName): self

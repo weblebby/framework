@@ -16,7 +16,7 @@
                                 autofocus
                         />
                     </x-feadmin::form.group>
-                    <x-feadmin::form.group name="content">
+                    <x-feadmin::form.group class="ck-editor--xl" name="content">
                         <x-feadmin::form.textarea
                                 :placeholder="__('İçerik')"
                                 :translatable="$isTranslatable"

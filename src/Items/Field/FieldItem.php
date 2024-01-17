@@ -33,12 +33,37 @@ class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, Jso
         return new GroupedFieldItem($key);
     }
 
-    public static function conditional(string $key, string $value, array $fields): ConditionalFieldItem
+    public static function conditional(
+        string $key,
+        string $operator,
+        string|array|Arrayable|\UnitEnum $value,
+        ?array $fields = null
+    ): ConditionalFieldItem
     {
+        if (is_null($fields)) {
+            $value = $operator;
+            $operator = '===';
+            $fields = $value;
+        }
+
+        if (is_array($value) || $value instanceof Arrayable) {
+            $value = array_map(function ($item) {
+                if ($item instanceof \UnitEnum) {
+                    return $item->value;
+                }
+
+                return $item;
+            }, $value);
+        }
+
+        if ($value instanceof \UnitEnum) {
+            $value = $value->value;
+        }
+
         $conditions = [
             'key' => $key,
             'value' => $value,
-            'operator' => '===',
+            'operator' => $operator,
         ];
 
         return (new ConditionalFieldItem())

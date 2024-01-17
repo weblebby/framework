@@ -8,6 +8,7 @@ use Feadmin\Items\Field\FieldValueItem;
 use Feadmin\Models\Metafield;
 use Feadmin\Models\Post;
 use Feadmin\Models\Preference;
+use Feadmin\Models\Taxonomy;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -55,15 +56,21 @@ trait HasMetafields
             $fieldDefinitions = $this::getPostSections()->withTemplateSections($this, $this->template)->allFields();
         }
 
+        if ($this instanceof Taxonomy && is_null($fieldDefinitions)) {
+            $fieldDefinitions = $this->item->fieldSections()?->allFields();
+        }
+
+        if (is_null($fieldDefinitions)) {
+            return [];
+        }
+
         /**
          * @var Collection<int, Metafield> $metafields
          */
         $metafields = $this->metafields->sortBy('key')->values();
 
         foreach ($metafields as $metafield) {
-            if ($metafield->metafieldable instanceof Post) {
-                $field = $fieldDefinitions->findByName(sprintf('fields.%s', $metafield->key));
-            } elseif ($metafield->metafieldable instanceof Preference) {
+            if ($metafield->metafieldable instanceof Preference) {
                 $field = $fieldDefinitions->findByName(
                     sprintf(
                         'fields.%s->%s',
@@ -72,14 +79,14 @@ trait HasMetafields
                     )
                 );
             } else {
-                $field = null;
+                $field = $fieldDefinitions->findByName(sprintf('fields.%s', $metafield->key));
             }
 
             if (is_null($field)) {
                 continue;
             }
 
-            $values[$metafield->key] = $metafield->toValue($field, $locale);
+            $values[$metafield->key] = $metafield->toValue($field, locale: $locale);
         }
 
         return Arr::undot($values);
@@ -140,7 +147,7 @@ trait HasMetafields
 
         if (isset($uploadedFile)) {
             $metafield->addMedia($uploadedFile)->toMediaCollection(
-                ($field['translatable'] ?? false) ? $locale : null,
+                ($field['translatable'] ?? false) ? $locale : 'default',
             );
         }
 
@@ -177,6 +184,8 @@ trait HasMetafields
 
         $field = $fieldValue->field();
         $value = $fieldValue->value();
+
+        $key = Str::after($key, 'fields.');
 
         return $this->setMetafield(
             key: $key,

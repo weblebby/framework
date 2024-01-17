@@ -102,10 +102,11 @@
                     class="fd-space-y-3"
                     :data-edit-action="panel_route('navigations.items.update', [$selectedNavigation, ':id'])"
             >
+                <input type="hidden" name="_locale" value="{{ $locale }}">
                 <input type="hidden" name="parent_id" value={{ old('parent_id') }}>
                 <x-feadmin::form.group name="title">
                     <x-feadmin::form.label>@lang('Menü başlığı')</x-feadmin::form.label>
-                    <x-feadmin::form.input data-drawer-focus />
+                    <x-feadmin::form.input data-drawer-focus :translatable="$isTranslatable" />
                 </x-feadmin::form.group>
                 <x-feadmin::form.group name="is_smart_menu">
                     <x-feadmin::form.checkbox :label="__('Otomatik menü')" value="1" />

@@ -14,7 +14,7 @@ class UserTaxonomyService
     {
         return Taxonomy::query()
             ->taxonomy($taxonomy->name())
-            ->with('term:id,title');
+            ->with(['term' => fn($q) => $q->withTranslation()->select('id')]);
     }
 
     public function getAllTaxonomies(TaxonomyItem $taxonomy): Collection
@@ -22,8 +22,41 @@ class UserTaxonomyService
         return $this->getTaxonomiesBuilder($taxonomy)->get();
     }
 
-    public function getPaginatedTaxonomies(TaxonomyItem $taxonomy): LengthAwarePaginator
+    public function getPaginatedTaxonomies(TaxonomyItem $taxonomy, ?string $locale = null): LengthAwarePaginator
     {
-        return $this->getTaxonomiesBuilder($taxonomy)->paginate();
+        $paginator = $this->getTaxonomiesBuilder($taxonomy)->paginate();
+
+        if ($locale) {
+            $paginator->getCollection()->transform(function (Taxonomy $taxonomy) use ($locale) {
+                $taxonomy->term->setDefaultLocale($locale);
+
+                if ($taxonomy->parent) {
+                    $taxonomy->parent->term->setDefaultLocale($locale);
+                }
+
+                return $taxonomy;
+            });
+        }
+
+        return $paginator;
+    }
+
+    public function getTaxonomiesForParentSelect(TaxonomyItem $taxonomy, Taxonomy|int|null $ignore = null, ?string $locale = null): Collection
+    {
+        if ($ignore instanceof Taxonomy) {
+            $ignore = $ignore->id;
+        }
+
+        return $this->getTaxonomiesBuilder($taxonomy)
+            ->when($ignore, fn(Builder $q) => $q->where('id', '!=', $ignore))
+            ->get()
+            ->when(
+                $locale,
+                fn(Collection $taxonomies) => $taxonomies->transform(function (Taxonomy $taxonomy) use ($locale) {
+                    $taxonomy->term->setDefaultLocale($locale);
+
+                    return $taxonomy;
+                })
+            );
     }
 }

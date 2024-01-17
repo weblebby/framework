@@ -2,13 +2,20 @@
 
 namespace Feadmin\Items;
 
+use ArrayAccess;
+use Feadmin\Concerns\HasArray;
 use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Facades\Theme;
 use Feadmin\Items\Field\Collections\FieldCollection;
 use Feadmin\Items\Field\Contracts\FieldInterface;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use JsonSerializable;
 
-class FieldSectionsItem
+class FieldSectionsItem implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
 {
+    use HasArray;
+
     protected array $sections = [];
 
     public static function make(): self
@@ -45,7 +52,7 @@ class FieldSectionsItem
     public function allFields(): FieldCollection
     {
         return (new FieldCollection($this->sections))
-            ->map(fn ($section) => $section['fields'])
+            ->map(fn($section) => $section['fields'])
             ->flatten();
     }
 

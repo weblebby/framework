@@ -1,5 +1,5 @@
 <x-feadmin::layouts.panel>
-    <x-feadmin::page class="lg:w-2/3 fd-mx-auto">
+    <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
         <x-feadmin::page.head :back="panel_route('users.index')">
             <x-feadmin::page.title>@lang('Kullanıcı oluşturun')</x-feadmin::page.title>
             <x-feadmin::page.subtitle>@lang('Yeni bir kullanıcı oluşturun')</x-feadmin::page.subtitle>

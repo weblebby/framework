@@ -13,7 +13,7 @@
     @php($value = \Feadmin\Support\FormComponent::value(old($dottedName, $default)))
 @endif
 
-<div class="fd-flex fd-items-center" data-tagify-container>
+<div class="fd-flex fd-items-center fd-relative" data-tagify-container>
     @if ($prefix)
         <x-feadmin::form.prefix class="-fd-mr-[1px] fd-rounded-l">{{ $prefix }}</x-feadmin::form.prefix>
     @endif
@@ -34,6 +34,6 @@
             'fd-transition'
         ]) }}>
     @if ($suffix)
-        <x-feadmin::form.prefix class="-fd-ml-[1px] fd-rounded-r">{{ $suffix }}</x-feadmin::form.prefix>
+        <x-feadmin::form.prefix class="-fd-ml-[1px] fd-rounded-r" :suffix="true">{{ $suffix }}</x-feadmin::form.prefix>
     @endif
 </div>

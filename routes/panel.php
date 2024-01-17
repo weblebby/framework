@@ -40,6 +40,14 @@ if (Features::enabled(Features::extensions(), $panel->name())) {
 }
 
 /**
+ * Appearance
+ */
+if (Features::enabled(Features::appearance(), $panel->name())) {
+    Route::get('appearance/editor', [User\Apperance\EditorController::class, 'index'])->name('appearance.editor.index');
+    Route::put('appearance/editor', [User\Apperance\EditorController::class, 'update'])->name('appearance.editor.update');
+}
+
+/**
  * Preferences
  */
 if (Features::enabled(Features::preferences(), $panel->name())) {

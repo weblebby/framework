@@ -55,6 +55,7 @@
                         :attributes="$field['attributes']"
                         :default="$default"
                         :data-code-editor="json_encode($field['editor'])"
+                        class="fd-h-60"
                 />
                 @break
             @case(\Feadmin\Enums\FieldTypeEnum::IMAGE)

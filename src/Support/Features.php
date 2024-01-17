@@ -54,4 +54,9 @@ class Features
     {
         return 'themes';
     }
+
+    public static function appearance(): string
+    {
+        return 'appearance';
+    }
 }
