@@ -2,14 +2,15 @@
 
 namespace Feadmin\Http\Requests\User;
 
+use Feadmin\Facades\Extension;
 use Feadmin\Facades\PostModels;
-use Feadmin\Facades\Preference;
 use Feadmin\Items\TaxonomyItem;
 use Feadmin\Services\FieldInputService;
 use Feadmin\Services\FieldValidationService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
+use Weblebby\Extensions\Multilingual\Support\LocaleRules;
 
 class StoreTaxonomyRequest extends FormRequest
 {
@@ -46,6 +47,12 @@ class StoreTaxonomyRequest extends FormRequest
      */
     public function rules(): array
     {
+        $additionalRules = [];
+
+        if (Extension::has('multilingual')) {
+            $additionalRules['_locale'] = LocaleRules::get();
+        }
+
         return [
             'title' => [
                 'required', 'string', 'max:191',
@@ -68,7 +75,7 @@ class StoreTaxonomyRequest extends FormRequest
                 Rule::exists('taxonomies', 'id')
                     ->where('taxonomy', $this->taxonomy),
             ],
-            '_locale' => ['nullable', 'string', 'max:4'],
+            ...$additionalRules,
             ...$this->rulesAndAttributes['rules'],
         ];
     }

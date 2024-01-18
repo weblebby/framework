@@ -7,5 +7,7 @@
         @csrf
         @method($method)
     @endif
+    @hook(panel()->nameWith('before_form_fields'))
     {{ $slot }}
+    @hook(panel()->nameWith('after_form_fields'))
 </form>

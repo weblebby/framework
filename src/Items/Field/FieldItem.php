@@ -10,6 +10,7 @@ use Feadmin\Support\FormComponent;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
+use UnitEnum;
 
 class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, JsonSerializable
 {
@@ -34,30 +35,34 @@ class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, Jso
     }
 
     public static function conditional(
-        string $key,
-        string $operator,
-        string|array|Arrayable|\UnitEnum $value,
-        ?array $fields = null
+        string                          $key,
+        string                          $operator,
+        string|array|Arrayable|UnitEnum $value,
+        array|Arrayable|null            $fields = null
     ): ConditionalFieldItem
     {
-        if (is_null($fields)) {
+        if (count(func_get_args()) === 3) {
+            $fields = $value;
             $value = $operator;
             $operator = '===';
-            $fields = $value;
         }
 
-        if (is_array($value) || $value instanceof Arrayable) {
+        if ($value instanceof UnitEnum) {
+            $value = $value->value;
+        }
+
+        if ($value instanceof Arrayable) {
+            $value = $value->toArray();
+        }
+
+        if (is_array($value)) {
             $value = array_map(function ($item) {
-                if ($item instanceof \UnitEnum) {
+                if ($item instanceof UnitEnum) {
                     return $item->value;
                 }
 
                 return $item;
             }, $value);
-        }
-
-        if ($value instanceof \UnitEnum) {
-            $value = $value->value;
         }
 
         $conditions = [
@@ -76,6 +81,11 @@ class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, Jso
         return (new InformationalFieldItem())
             ->type(FieldTypeEnum::PARAGRAPH)
             ->body($text);
+    }
+
+    public static function hidden(string $key): TextFieldItem
+    {
+        return (new TextFieldItem($key))->type(FieldTypeEnum::HIDDEN);
     }
 
     public static function text(string $key): TextFieldItem

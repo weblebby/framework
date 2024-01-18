@@ -23,6 +23,8 @@ class EditorController extends Controller
             abort(404);
         }
 
+        seo()->title(__(':path - Tema Editörü', ['path' => $filePath]));
+
         return view('feadmin::user.appearance.editor.index', compact(
             'files',
             'filePath',

@@ -19,6 +19,7 @@
             :name="$field['name'] ?? null"
             :data-form-field-key="$field['key']"
             :with-errors="$withErrors"
+            :hidden="$field['type']->isHidden()"
     >
         <div>
             @if (!$field['type']->isLabelFree())
@@ -32,6 +33,7 @@
             @case(\Feadmin\Enums\FieldTypeEnum::PARAGRAPH)
                 <p class="fd-text-zinc-600">{{ $field['body'] }}</p>
                 @break
+            @case(\Feadmin\Enums\FieldTypeEnum::HIDDEN)
             @case(\Feadmin\Enums\FieldTypeEnum::TEXT)
             @case(\Feadmin\Enums\FieldTypeEnum::TEL)
             @case(\Feadmin\Enums\FieldTypeEnum::NUMBER)

@@ -3,6 +3,7 @@
 namespace Feadmin\Http\Requests\User;
 
 use Feadmin\Enums\NavigationTypeEnum;
+use Feadmin\Facades\Extension;
 use Feadmin\Facades\NavigationLinkable;
 use Feadmin\Facades\PostModels;
 use Feadmin\Facades\SmartMenu;
@@ -10,6 +11,7 @@ use Feadmin\Models\NavigationItem;
 use Feadmin\Services\TaxonomyService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Weblebby\Extensions\Multilingual\Support\LocaleRules;
 
 class StoreNavigationItemRequest extends FormRequest
 {
@@ -131,8 +133,11 @@ class StoreNavigationItemRequest extends FormRequest
             'is_smart_menu' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
             'open_in_new_tab' => ['nullable', 'boolean'],
-            '_locale' => ['sometimes', 'required', 'string', 'max:4'],
         ];
+
+        if (Extension::has('multilingual')) {
+            $rules['_locale'] = LocaleRules::get();
+        }
 
         if ($this->type === NavigationTypeEnum::LINKABLE->value) {
             $linkableModels = NavigationLinkable::linkables()->pluck('model');

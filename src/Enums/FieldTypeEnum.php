@@ -9,6 +9,7 @@ enum FieldTypeEnum: string
     case CONDITIONAL = 'conditional';
     case PARAGRAPH = 'paragraph';
     case TEXT = 'text';
+    case HIDDEN = 'hidden';
     case TEL = 'tel';
     case NUMBER = 'number';
     case SELECT = 'select';
@@ -96,5 +97,10 @@ enum FieldTypeEnum: string
     public function isValueless(): bool
     {
         return $this->isInformational() || $this->isUploadable();
+    }
+
+    public function isHidden(): bool
+    {
+        return $this === self::HIDDEN;
     }
 }

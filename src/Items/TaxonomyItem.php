@@ -23,6 +23,7 @@ class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
     public function __construct(string $name)
     {
         $this->name = $name;
+        $this->fieldSections = new FieldSectionsItem();
     }
 
     public static function make(string $name): self

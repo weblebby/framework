@@ -605,8 +605,11 @@ const RowIteration = {
 
         const filteredFormGroups = Array.from(formGroups).filter(formGroup => {
             return (
+                // Do not add input[type="hidden"] to this condition.
+                // Because we may need to show iteration label for hidden input.
                 !formGroup.querySelector('input[type="checkbox"]') &&
-                !formGroup.querySelector('input[type="radio"]')
+                !formGroup.querySelector('input[type="radio"]') &&
+                !formGroup.hasAttribute('hidden')
             )
         })
 

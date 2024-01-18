@@ -31,7 +31,7 @@
                                                 :translatable="$isTranslatable"
                                         />
                                     </x-feadmin::form.group>
-                                    <x-feadmin::form.group name="slug" :label="__('Slug')">
+                                    <x-feadmin::form.group name="slug" :label="__('Sabit URL')">
                                         <x-feadmin::form.input
                                                 :default="$taxonomy?->term?->slug"
                                                 :translatable="$isTranslatable"

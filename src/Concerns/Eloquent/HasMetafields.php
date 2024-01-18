@@ -4,6 +4,7 @@ namespace Feadmin\Concerns\Eloquent;
 
 use Feadmin\Enums\FieldTypeEnum;
 use Feadmin\Items\Field\Collections\FieldCollection;
+use Feadmin\Items\Field\FieldItem;
 use Feadmin\Items\Field\FieldValueItem;
 use Feadmin\Models\Metafield;
 use Feadmin\Models\Post;
@@ -43,12 +44,15 @@ trait HasMetafields
     public function getMetafield(string $key): ?Metafield
     {
         /** @var ?Metafield $metafield */
-        $metafield = $this->metafields()->where('key', $key)->first();
+        $metafield = $this->metafields->where('key', $key)->first();
 
         return $metafield;
     }
 
-    public function getMetafieldValues(?FieldCollection $fieldDefinitions = null, ?string $locale = null): array
+    public function getMetafieldValues(
+        ?FieldCollection $fieldDefinitions = null,
+        ?string $locale = null
+    ): array
     {
         $values = [];
 
@@ -90,6 +94,26 @@ trait HasMetafields
         }
 
         return Arr::undot($values);
+    }
+
+    public function getMetafieldValue(
+        string $key,
+        ?string $default = null,
+        ?FieldItem $fieldDefinition = null,
+        ?string $locale = null,
+    ): mixed
+    {
+        $metafield = $this->getMetafield($key);
+
+        if (is_null($metafield)) {
+            return $default;
+        }
+
+        if (is_null($fieldDefinition)) {
+            return $metafield->original_value ?? $default;
+        }
+
+        return $metafield->toValue($fieldDefinition, $default, $locale ?? app()->getLocale());
     }
 
     /**
