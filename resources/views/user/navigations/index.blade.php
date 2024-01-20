@@ -22,6 +22,27 @@
         @endif
         <div>
             <div class="fd-grid fd-grid-cols-9 fd-gap-3">
+                <div class="fd-col-span-2 fd-space-y-3">
+                    @if ($navigations->isNotEmpty())
+                        <x-feadmin::link-card>
+                            @foreach ($navigations as $navigation)
+                                <x-feadmin::link-card.item
+                                        :href="panel_route('navigations.show', $navigation)"
+                                        :active="$navigation->id === ($selectedNavigation->id ?? null)"
+                                >{{ $navigation->title }}</x-feadmin::link-card.item>
+                            @endforeach
+                        </x-feadmin::link-card>
+                    @endif
+                    @can('navigation:create')
+                        <x-feadmin::link-card>
+                            <x-feadmin::link-card.item
+                                    as="button"
+                                    icon="plus"
+                                    data-drawer="#drawer-create-navigation"
+                            >@lang('Yeni menü')</x-feadmin::link-card.item>
+                        </x-feadmin::link-card>
+                    @endcan
+                </div>
                 @if ($selectedNavigation ?? null)
                     @can('navigation:update')
                         <x-feadmin::form class="fd-col-span-3"
@@ -69,27 +90,6 @@
                         />
                     </div>
                 @endif
-                <div class="fd-col-span-2 fd-space-y-3">
-                    @if ($navigations->isNotEmpty())
-                        <x-feadmin::link-card>
-                            @foreach ($navigations as $navigation)
-                                <x-feadmin::link-card.item
-                                        :href="panel_route('navigations.show', $navigation)"
-                                        :active="$navigation->id === ($selectedNavigation->id ?? null)"
-                                >{{ $navigation->title }}</x-feadmin::link-card.item>
-                            @endforeach
-                        </x-feadmin::link-card>
-                    @endif
-                    @can('navigation:create')
-                        <x-feadmin::link-card>
-                            <x-feadmin::link-card.item
-                                    as="button"
-                                    icon="plus"
-                                    data-drawer="#drawer-create-navigation"
-                            >@lang('Yeni menü')</x-feadmin::link-card.item>
-                        </x-feadmin::link-card>
-                    @endcan
-                </div>
             </div>
         </div>
     </x-feadmin::page>
