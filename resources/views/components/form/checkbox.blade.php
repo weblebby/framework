@@ -5,6 +5,7 @@
 @php($name = \Feadmin\Support\FormComponent::dottedToName($name))
 @php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
 
+@php($attributes = $attributes->merge(['value' => $default]))
 @php($default = filled(old()) ? old($dottedName, $default) : $default)
 @php($checked = \Feadmin\Support\FormComponent::selected($dottedName, $default, $attributes))
 

@@ -44,6 +44,13 @@
                         :translatable="$field['translatable'] ?? false"
                 />
                 @break
+            @case(\Feadmin\Enums\FieldTypeEnum::FILE)
+                <x-feadmin::form.file
+                        :attributes="$field['attributes']"
+                        :default="$default"
+                        :translatable="$field['translatable'] ?? false"
+                />
+                @break
             @case(\Feadmin\Enums\FieldTypeEnum::RICH_TEXT)
                 <x-feadmin::form.textarea
                         :attributes="$field['attributes']"

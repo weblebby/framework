@@ -5,7 +5,14 @@
     'prefix' => null,
     'suffix' => null,
     'default' => null,
+    'bind',
 ])
+
+@aware(['default' => $bind->$name ?? null])
+
+@unless(isset($options['name']))
+    @php($options['name'] = $name)
+@endunless
 
 @if (isset($options['name']))
     @php($visualizedName = 'visualized_' . $options['name'] ?? null)
@@ -27,6 +34,7 @@
         ])
         ->class([
             'fd-block',
+            'fd-bg-white',
             'fd-w-full',
             'fd-rounded-md',
             'fd-border-gray-300',

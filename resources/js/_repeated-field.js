@@ -255,6 +255,28 @@ const RepeatedField = {
                         input.checked = !!value
                     }
                 }
+
+                if (input.type === 'file') {
+                    const template = document.querySelector(
+                        Form.fileDefaultTemplateSelector,
+                    )
+
+                    input.after(template.cloneNode(true).content)
+                    const fileInfoEl = formGroup.querySelector(
+                        Form.fileInfoSelector,
+                    )
+                    const fileAnchorEl = fileInfoEl.querySelector('a')
+                    const deleteFileEl = fileInfoEl.querySelector(
+                        Form.deleteFileSelector,
+                    )
+
+                    fileAnchorEl.setAttribute('href', value)
+                    fileAnchorEl.textContent = value
+
+                    deleteFileEl.addEventListener('click', () => {
+                        Form.onRemoveFile(fileInfoEl)
+                    })
+                }
             }
 
             if (
@@ -720,3 +742,5 @@ document.addEventListener('click', e => {
 })
 
 window.Feadmin.RepeatedField = RepeatedField
+
+export default RepeatedField

@@ -70,7 +70,10 @@
     </template>
 </div>
 
-@push('after_scripts')
+@pushonce('after_scripts')
+    <template data-file-default-template>
+        <x-feadmin::form.file-default :default="''" />
+    </template>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
           @foreach ($default as $index => $value)
@@ -84,4 +87,4 @@
           @endforeach
       });
     </script>
-@endpush
+@endpushonce

@@ -4,7 +4,6 @@ namespace Feadmin\Services;
 
 use Feadmin\Models\Taxonomy;
 use Feadmin\Models\Term;
-use Illuminate\Support\Arr;
 
 class TaxonomyService
 {
@@ -29,7 +28,11 @@ class TaxonomyService
         if ($term instanceof Term) {
             $translatedTerm = $term->translate($locale);
 
-            if (is_null($translatedTerm) || $translatedTerm->title !== $data['title'] || $translatedTerm->slug !== ($data['slug'] ?? null)) {
+            if (
+                is_null($translatedTerm) ||
+                (filled($data['title'] ?? null) && $translatedTerm->title !== ($data['title'] ?? null)) ||
+                (filled($data['slug'] ?? null) && $translatedTerm->slug !== ($data['slug'] ?? null))
+            ) {
                 $term->update([
                     $locale => [
                         'title' => $data['title'],
@@ -57,12 +60,11 @@ class TaxonomyService
     }
 
     public function getOrCreateTaxonomy(
-        string          $taxonomy,
+        string $taxonomy,
         Term|string|int $term,
-        array           $data = [],
-        ?string         $locale = null,
-    ): Taxonomy
-    {
+        array $data = [],
+        ?string $locale = null,
+    ): Taxonomy {
         if (is_null($locale)) {
             $locale = app()->getLocale();
         }
@@ -88,10 +90,9 @@ class TaxonomyService
      */
     public function createMissingTaxonomies(
         string $taxonomy,
-        array  $termsOrTaxonomyIds,
-        string $locale = null,
-    ): array
-    {
+        array $termsOrTaxonomyIds,
+        ?string $locale = null,
+    ): array {
         $createdTerms = [];
 
         foreach ($termsOrTaxonomyIds as $termOrTaxonomyId) {

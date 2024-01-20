@@ -35,12 +35,11 @@ class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, Jso
     }
 
     public static function conditional(
-        string                          $key,
-        string                          $operator,
+        string $key,
+        string $operator,
         string|array|Arrayable|UnitEnum $value,
-        array|Arrayable|null            $fields = null
-    ): ConditionalFieldItem
-    {
+        array|Arrayable|null $fields = null
+    ): ConditionalFieldItem {
         if (count(func_get_args()) === 3) {
             $fields = $value;
             $value = $operator;
@@ -101,6 +100,11 @@ class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, Jso
     public static function number(string $key): TextFieldItem
     {
         return (new TextFieldItem($key))->type(FieldTypeEnum::NUMBER);
+    }
+
+    public static function file(string $key): FileFieldItem
+    {
+        return (new FileFieldItem($key))->type(FieldTypeEnum::FILE);
     }
 
     public static function textarea(string $key): TextFieldItem

@@ -1,7 +1,12 @@
+import RepeatedField from './_repeated-field.js'
+
 const Form = {
     imageSelector: '[data-form-image]',
     formGroupSelector: '[data-form-group]',
     checkboxSelector: 'input[type="checkbox"]',
+    deleteFileSelector: '[data-delete-file]',
+    fileInfoSelector: '[data-file-info]',
+    fileDefaultTemplateSelector: '[data-file-default-template]',
 
     handleSubmitters: form => {
         const buttons = form.querySelectorAll('[type="submit"]')
@@ -94,6 +99,22 @@ const Form = {
             hidden.dispatchEvent(new Event('change'))
         })
     },
+
+    onRemoveFile: fileInfoEl => {
+        if (!fileInfoEl) return
+
+        const container = fileInfoEl.closest('form')
+        const formGroup = fileInfoEl.closest(Form.formGroupSelector)
+
+        if (container && formGroup) {
+            RepeatedField.addToRemoveList(
+                container,
+                formGroup.dataset.formGroup,
+            )
+        }
+
+        fileInfoEl.remove()
+    },
 }
 
 document.querySelectorAll('form').forEach(form => {
@@ -110,6 +131,12 @@ document.querySelectorAll('[data-like-submit]').forEach(button => {
 
 document.querySelectorAll(Form.imageSelector).forEach(element => {
     Form.handleImageInput(element.querySelector('input[type="file"]'))
+})
+
+document.querySelectorAll(Form.deleteFileSelector).forEach(element => {
+    element.addEventListener('click', () => {
+        Form.onRemoveFile(element.closest(Form.fileInfoSelector))
+    })
 })
 
 document.querySelectorAll(Form.checkboxSelector).forEach(element => {

@@ -4,6 +4,7 @@ namespace Feadmin\Managers;
 
 use Feadmin\Contracts\Eloquent\PostInterface;
 use Feadmin\Exceptions\InvalidTaxonomyNameException;
+use Feadmin\Exceptions\PostTypeAlreadyRegisteredException;
 use Feadmin\Items\TaxonomyItem;
 
 class PostModelsManager
@@ -14,8 +15,10 @@ class PostModelsManager
     protected array $models = [];
 
     /**
-     * @param class-string<int, PostInterface>|array<class-string<int, PostInterface>> $model
+     * @param  class-string<int, PostInterface>|array<class-string<int, PostInterface>>  $model
+     *
      * @throws InvalidTaxonomyNameException
+     * @throws PostTypeAlreadyRegisteredException
      */
     public function register(string|array $model): void
     {
@@ -27,13 +30,19 @@ class PostModelsManager
             return;
         }
 
+        $key = $model::getModelName();
+
+        if (isset($this->models[$key])) {
+            throw new PostTypeAlreadyRegisteredException($model::getModelName());
+        }
+
         foreach ($model::getTaxonomies() as $taxonomy) {
-            if (!str_starts_with($taxonomy->name(), sprintf('%s_', $model::getModelName()))) {
+            if (! str_starts_with($taxonomy->name(), sprintf('%s_', $model::getModelName()))) {
                 throw new InvalidTaxonomyNameException($model);
             }
         }
 
-        $this->models[$model::getModelName()] = new $model;
+        $this->models[$key] = new $model;
     }
 
     /**
@@ -64,7 +73,7 @@ class PostModelsManager
     public function taxonomies(): array
     {
         return collect($this->models)
-            ->map(fn($model) => $model::getTaxonomies())
+            ->map(fn ($model) => $model::getTaxonomies())
             ->flatten()
             ->all();
     }
@@ -75,6 +84,6 @@ class PostModelsManager
             return null;
         }
 
-        return collect($this->taxonomies())->first(fn(TaxonomyItem $item) => $item->name() === $taxonomy);
+        return collect($this->taxonomies())->first(fn (TaxonomyItem $item) => $item->name() === $taxonomy);
     }
 }

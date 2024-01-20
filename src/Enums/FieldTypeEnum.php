@@ -19,6 +19,7 @@ enum FieldTypeEnum: string
     case CODE_EDITOR = 'code_editor';
     case RICH_TEXT = 'rich_text';
     case IMAGE = 'image';
+    case FILE = 'file';
 
     public static function translatables(): array
     {
@@ -54,6 +55,7 @@ enum FieldTypeEnum: string
     {
         return [
             self::IMAGE,
+            self::FILE,
         ];
     }
 

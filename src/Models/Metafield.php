@@ -2,7 +2,9 @@
 
 namespace Feadmin\Models;
 
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Feadmin\Concerns\Eloquent\Translatable;
+use Feadmin\Facades\Extension;
 use Feadmin\Items\Field\Contracts\FieldInterface;
 use Feadmin\Items\Field\Contracts\UploadableFieldInterface;
 use Feadmin\Items\Field\TextFieldItem;
@@ -12,10 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Feadmin\Facades\Extension;
-
 // Dont forget to check the extension is installed before using it
 use Weblebby\Extensions\Multilingual\Facades\Localization;
 
@@ -40,8 +39,6 @@ class Metafield extends Model implements HasMedia, TranslatableContract
             foreach ($locales as $locale) {
                 $this->addMediaCollection($locale)->singleFile();
             }
-
-            return;
         }
 
         $this->addMediaCollection('default')->singleFile();
@@ -61,7 +58,7 @@ class Metafield extends Model implements HasMedia, TranslatableContract
         return $this->morphTo();
     }
 
-    public function toValue(FieldInterface $field, mixed $default = null, string $locale = null): mixed
+    public function toValue(FieldInterface $field, mixed $default = null, ?string $locale = null): mixed
     {
         if ($field instanceof UploadableFieldInterface) {
             if (Extension::has('multilingual') && $field['translatable']) {

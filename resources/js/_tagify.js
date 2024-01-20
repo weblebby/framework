@@ -36,6 +36,8 @@ const Tagify = {
     },
 
     onInput: (value, tagify, options) => {
+        if (!options.source) return
+
         tagify.settings.whitelist = []
         tagify.loading(true).dropdown.hide.call(tagify)
 
@@ -82,7 +84,18 @@ const Tagify = {
 }
 
 document.querySelectorAll(Tagify.selector).forEach(input => {
-    const options = JSON.parse(input.dataset.tagify)
+    let options = {}
+
+    try {
+        options = JSON.parse(input.dataset.tagify)
+    } catch (e) {
+        //
+    }
+
+    if (!options.name) {
+        options.name = input.name
+    }
+
     Tagify.init(input, options)
 })
 

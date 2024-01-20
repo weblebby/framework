@@ -100,6 +100,11 @@ class FormComponent
             $value = $value->toArray();
         }
 
+        // TODO: Check this block breaks anything
+        if ($value === false) {
+            return false;
+        }
+
         return filled($value) && in_array((string) $attributes->get('value'), Arr::wrap($value));
     }
 
