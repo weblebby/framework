@@ -76,7 +76,9 @@ class MenuHook
     private function canDisplay(array $item): bool
     {
         if (isset($item['can'])) {
-            if (auth()->user()->hasRole('Super Admin')) {
+            $user = auth()->user();
+
+            if ($user->hasRole('Super Admin')) {
                 return true;
             }
 
@@ -87,7 +89,7 @@ class MenuHook
                     return false;
                 }
 
-                if (is_callable($value) && ! $value()) {
+                if (is_callable($value) && ! $value($user)) {
                     return false;
                 }
             }

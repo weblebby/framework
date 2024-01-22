@@ -1,7 +1,7 @@
-@props(['fixed' => true])
+@props(['fixed' => true, 'margin' => true, 'label' => __('Değişiklikleri kaydet')])
 
 <div>
-    @if ($fixed)
+    @if ($fixed && $margin)
         <div class="fd-mt-20 md:fd-mt-14"></div>
     @endif
     <div {{ $attributes->class([
@@ -9,7 +9,7 @@
         'fd-fixed fd-bottom-0 fd-left-0 md:fd-left-60 fd-right-0' => $fixed,
     ]) }}>
         <div class="fd-flex fd-justify-center md:fd-justify-end">
-            <x-feadmin::button type="submit">@lang('Değişiklikleri kaydet')</x-feadmin::button>
+            <x-feadmin::button type="submit">{{ $label }}</x-feadmin::button>
         </div>
     </div>
 </div>

@@ -3,7 +3,6 @@
 namespace Feadmin\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\Extension;
 use Feadmin\Facades\Preference;
 use Feadmin\Http\Requests\User\UpdatePreferenceRequest;
 use Feadmin\Items\Field\CodeEditorFieldItem;
@@ -14,19 +13,19 @@ use Illuminate\View\View;
 
 class PreferenceController extends Controller
 {
-    const NAMESPACE = 'default';
+    public static string $namespace = 'default';
 
     public function index(): RedirectResponse
     {
         return to_panel_route(
             'preferences.show',
-            key(panel()->preference(self::NAMESPACE)->get())
+            key(panel()->preference(self::$namespace)->get())
         );
     }
 
     public function show(Request $request, string $bag): View
     {
-        $bagHook = panel()->preference(self::NAMESPACE);
+        $bagHook = panel()->preference(self::$namespace);
         $bags = $bagHook->get();
 
         abort_if(is_null($selectedBag = $bags[$bag] ?? null), 404);
@@ -39,17 +38,16 @@ class PreferenceController extends Controller
         return view('feadmin::user.preferences.show', [
             ...compact('bags', 'fields', 'isCodeEditorNeeded'),
             'selectedBagId' => $bag,
-            'namespace' => self::NAMESPACE,
+            'namespace' => self::$namespace,
         ]);
     }
 
     public function update(
         UpdatePreferenceRequest $request,
-        FieldInputService       $fieldInputService,
-        string                  $namespace,
-        string                  $bag
-    ): RedirectResponse
-    {
+        FieldInputService $fieldInputService,
+        string $namespace,
+        string $bag
+    ): RedirectResponse {
         $fields = Preference::fields($namespace, $bag);
 
         $validatedFieldValues = $fieldInputService->getFieldValues($fields, $validated = $request->validated());

@@ -10,6 +10,7 @@ use Feadmin\Models\Metafield;
 use Feadmin\Models\Preference;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class PreferenceManager
@@ -24,13 +25,17 @@ class PreferenceManager
 
     public function __construct()
     {
-        $this->loadPreferences();
+        if (Schema::hasTable('preferences')) {
+            $this->loadPreferences();
+        } else {
+            $this->preferences = collect();
+        }
     }
 
     public function loadPreferences(): self
     {
         $this->preferences = Preference::query()
-            ->with(['metafields' => fn(MorphMany $builder) => $builder->withTranslation()->oldest('key')])
+            ->with(['metafields' => fn (MorphMany $builder) => $builder->withTranslation()->oldest('key')])
             ->get();
 
         return $this;
@@ -66,7 +71,7 @@ class PreferenceManager
     {
         $this->setFieldName($field);
 
-        if (!is_array($field)) {
+        if (! is_array($field)) {
             $field->position(count($this->getCurrentFields()) * 10);
         }
 
@@ -99,7 +104,7 @@ class PreferenceManager
     /**
      * @throws Exception
      */
-    public function get(string $rawKey, mixed $default = null, string $locale = null): mixed
+    public function get(string $rawKey, mixed $default = null, ?string $locale = null): mixed
     {
         if (str_starts_with($rawKey, 'fields.')) {
             $rawKey = Str::replaceFirst('fields.', '', $rawKey);
@@ -233,9 +238,9 @@ class PreferenceManager
         $metafields = $this->preferences
             ->where('namespace', $namespace)
             ->where('bag', $bag)
-            ->map(fn(Preference $preference) => $preference->metafields)
+            ->map(fn (Preference $preference) => $preference->metafields)
             ->flatten()
-            ->filter(fn(Metafield $metafield) => str_contains($metafield->key, $key))
+            ->filter(fn (Metafield $metafield) => str_contains($metafield->key, $key))
             ->mapWithKeys(function (Metafield $metafield) use ($rawKey) {
                 $fullKey = "{$metafield->metafieldable->getNamespaceAndBag()}->{$metafield->key}";
 
@@ -256,7 +261,7 @@ class PreferenceManager
      */
     public function field(string $rawKey): ?FieldInterface
     {
-        if (!str_starts_with($rawKey, 'fields.')) {
+        if (! str_starts_with($rawKey, 'fields.')) {
             $rawKey = "fields.{$rawKey}";
         }
 
@@ -289,7 +294,7 @@ class PreferenceManager
 
     protected function findFieldByKey(array $fields, string $key): ?FieldInterface
     {
-        $field = head(array_filter($fields, fn($field) => $field['key'] === $key));
+        $field = head(array_filter($fields, fn ($field) => $field['key'] === $key));
 
         if ($field === false) {
             return null;
@@ -304,7 +309,7 @@ class PreferenceManager
             $rawKeyToWildcard = preg_replace('/\.\d+\./', '.*.', $rawKey);
 
             if (str_contains($rawKeyToWildcard, $field['name'])) {
-                $index = str_replace($field['name'] . '.', '', $rawKeyToWildcard);
+                $index = str_replace($field['name'].'.', '', $rawKeyToWildcard);
 
                 if (is_numeric($index) || $rawKeyToWildcard === $field['name']) {
                     return $field;
@@ -328,7 +333,7 @@ class PreferenceManager
 
     protected function addMissingNamespaceToRawKey(string $rawKey): string
     {
-        if (!str_contains($rawKey, '::')) {
+        if (! str_contains($rawKey, '::')) {
             $rawKey = "{$this->currentNamespace}::{$rawKey}";
         }
 
@@ -340,7 +345,7 @@ class PreferenceManager
      */
     protected function parseRawKey(string $rawKey): array
     {
-        if (!str_contains($rawKey, '->')) {
+        if (! str_contains($rawKey, '->')) {
             throw new Exception(
                 sprintf('Invalid preference key [%s]. Please use the following format: namespace::bag->key', $rawKey)
             );

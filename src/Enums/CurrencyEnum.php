@@ -3,6 +3,7 @@
 namespace Feadmin\Enums;
 
 use Feadmin\Support\Currency;
+use Feadmin\Support\CurrencyRate;
 use Symfony\Component\Intl\Currencies;
 
 enum CurrencyEnum: string
@@ -41,5 +42,10 @@ enum CurrencyEnum: string
             self::USD => __('cent'),
             self::TRY => __('penny'),
         };
+    }
+
+    public function rate(): ?int
+    {
+        return app(CurrencyRate::class)->find($this)?->rate;
     }
 }

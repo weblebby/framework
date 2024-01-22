@@ -38,3 +38,12 @@ function to_panel_route($route, $parameters = [], $status = 302, $headers = []):
 {
     return panel()->toRoute($route, $parameters, $status, $headers);
 }
+
+function domain(): ?\Weblebby\Core\Models\Domain
+{
+    if (class_exists(\Weblebby\Core\Facades\Domain::class)) {
+        return \Weblebby\Core\Facades\Domain::getDomain();
+    }
+
+    return null;
+}

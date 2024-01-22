@@ -27,6 +27,8 @@ class PanelItem
 
     protected string|array|null $middleware = null;
 
+    protected array $routePaths = [];
+
     public function __construct(string $name)
     {
         $this->name = $name;
@@ -80,7 +82,7 @@ class PanelItem
 
     public function routeIs(...$patterns): bool
     {
-        $patterns = array_map(fn($pattern) => $this->as().$pattern, $patterns);
+        $patterns = array_map(fn ($pattern) => $this->as().$pattern, $patterns);
 
         return request()->routeIs(...$patterns);
     }
@@ -143,5 +145,17 @@ class PanelItem
         $this->middleware = $middleware;
 
         return $this;
+    }
+
+    public function loadRoutesFrom(string $path): self
+    {
+        $this->routePaths[] = $path;
+
+        return $this;
+    }
+
+    public function routePaths(): array
+    {
+        return $this->routePaths;
     }
 }

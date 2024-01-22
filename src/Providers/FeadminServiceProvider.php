@@ -3,8 +3,8 @@
 namespace Feadmin\Providers;
 
 use Feadmin\Abstracts\Extension\Extension as ExtensionAbstract;
+use Feadmin\Console\Commands\FetchCurrencyRates;
 use Feadmin\Console\Commands\InstallFeadmin;
-use Feadmin\Console\Commands\MigrateExtension;
 use Feadmin\Facades\Extension;
 use Feadmin\Facades\PostModels;
 use Feadmin\Models\User;
@@ -31,6 +31,8 @@ class FeadminServiceProvider extends ServiceProvider
             \Feadmin\Managers\NavigationLinkableManager::class,
             \Feadmin\Managers\PreferenceManager::class,
             \Feadmin\Managers\ThemeManager::class,
+            \Feadmin\Managers\LogManager::class,
+            \Feadmin\Support\CurrencyRate::class,
         ];
 
         foreach ($singletons as $singleton) {
@@ -44,7 +46,6 @@ class FeadminServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $this->bootPublishes();
             $this->bootCommands();
         } else {
             $this->registerExtensions();
@@ -55,11 +56,13 @@ class FeadminServiceProvider extends ServiceProvider
             $this->setPathsForTranslationFinder();
             $this->bootExtensions();
         }
+
+        $this->loadMigrationsFrom(dirname(__DIR__).'/../database/migrations');
     }
 
     private function bootViews(): void
     {
-        $this->loadViewsFrom(dirname(__DIR__) . '/../resources/views', 'feadmin');
+        $this->loadViewsFrom(dirname(__DIR__).'/../resources/views', 'feadmin');
 
         Blade::directive('hook', function ($expression) {
             return "<?php echo \Feadmin\Facades\Injection::render($expression); ?>";
@@ -73,26 +76,11 @@ class FeadminServiceProvider extends ServiceProvider
         });
     }
 
-    private function bootPublishes(): void
-    {
-        $this->publishes([
-            dirname(__DIR__) . '/../resources/views' => resource_path('views/vendor/feadmin'),
-        ], ['feadmin-views', 'views']);
-
-        $this->publishes([
-            dirname(__DIR__) . '/../public' => public_path('vendor/feadmin'),
-        ], ['feadmin-public', 'public']);
-
-        $this->publishes([
-            dirname(__DIR__) . '/../database/migrations' => database_path('migrations'),
-        ], ['feadmin-migrations', 'migrations']);
-    }
-
     private function bootCommands(): void
     {
         $this->commands([
             InstallFeadmin::class,
-            MigrateExtension::class,
+            FetchCurrencyRates::class,
         ]);
     }
 
@@ -123,8 +111,8 @@ class FeadminServiceProvider extends ServiceProvider
         if (Extension::has('multilingual')) {
             \Weblebby\Extensions\Multilingual\Services\TranslationFinderService::addDirectories([
                 dirname(__DIR__),
-                dirname(__DIR__) . '/../resources',
-                dirname(__DIR__) . '/../routes',
+                dirname(__DIR__).'/../resources',
+                dirname(__DIR__).'/../routes',
             ], panel());
         }
     }
@@ -133,8 +121,8 @@ class FeadminServiceProvider extends ServiceProvider
     {
         $path = public_path('feadmin');
 
-        if (!File::isDirectory($path)) {
-            symlink(dirname(__DIR__) . '/../public', $path);
+        if (! File::isDirectory($path)) {
+            symlink(dirname(__DIR__).'/../public', $path);
         }
     }
 }

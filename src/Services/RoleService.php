@@ -2,8 +2,8 @@
 
 namespace Feadmin\Services;
 
-use App\Models\User;
 use Feadmin\Models\Role;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -30,7 +30,7 @@ class RoleService
         );
     }
 
-    public function getAssignableRolesFor(User $user): Collection
+    public function getAssignableRolesFor(Authenticatable $user): Collection
     {
         return Role::query()
             ->when(! $user->hasRole('Super Admin'), function ($query) {

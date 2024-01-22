@@ -75,23 +75,30 @@ class PanelManager
     public function usePanelRoutes(): void
     {
         foreach ($this->get() as $panel) {
-            $route = Route::middleware($panel->middleware());
+            $routePaths = [
+                __DIR__.'/../../routes/panel.php',
+                ...$panel->routePaths(),
+            ];
 
-            if ($panel->prefix()) {
-                $route->prefix($panel->prefix());
+            foreach ($routePaths as $routePath) {
+                $route = Route::middleware($panel->middleware());
+
+                if ($panel->prefix()) {
+                    $route->prefix($panel->prefix());
+                }
+
+                if ($panel->as()) {
+                    $route->as($panel->as());
+                }
+
+                if ($panel->domain()) {
+                    $route->domain($panel->domain());
+                }
+
+                $route->group(function () use ($panel, $routePath) {
+                    require $routePath;
+                });
             }
-
-            if ($panel->as()) {
-                $route->as($panel->as());
-            }
-
-            if ($panel->domain()) {
-                $route->domain($panel->domain());
-            }
-
-            $route->group(function () use ($panel) {
-                require __DIR__.'/../../routes/panel.php';
-            });
         }
     }
 
