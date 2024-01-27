@@ -18,7 +18,7 @@ class Moneyable implements DeferringDisplayableValue, Jsonable, JsonSerializable
     public function __construct($amount, ?CurrencyEnum $currency = null)
     {
         $this->amount = $amount ?: 0;
-        $this->currency = $currency ?: Currency::current();
+        $this->currency = $currency ?: Currency::primary();
     }
 
     public function currency(): ?CurrencyEnum

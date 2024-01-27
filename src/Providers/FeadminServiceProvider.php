@@ -33,6 +33,7 @@ class FeadminServiceProvider extends ServiceProvider
             \Feadmin\Managers\ThemeManager::class,
             \Feadmin\Managers\LogManager::class,
             \Feadmin\Support\CurrencyRate::class,
+            \Feadmin\Support\HtmlSanitizer::class,
         ];
 
         foreach ($singletons as $singleton) {

@@ -30,7 +30,8 @@
     "spatie/laravel-sluggable": "^3.3",
     "feadbox/laravel-seo": "^2.0",
     "symfony/intl": "^6.1",
-    "propaganistas/laravel-phone": "^5.1"
+    "propaganistas/laravel-phone": "^5.1",
+    "symfony/html-sanitizer": "^7.0"
   },
   "require-dev": {
     "laravel/pint": "^1.13",

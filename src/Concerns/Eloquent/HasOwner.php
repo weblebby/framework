@@ -12,11 +12,11 @@ trait HasOwner
     protected static function bootHasOwner(): void
     {
         self::creating(function (Model $model) {
-            if ($model->isLogging(HasOwnerEnum::CREATED_BY) && auth()->check() && is_null($model->created_by_id)) {
+            if ($model->isLogging(HasOwnerEnum::CREATED_BY) && auth()->check() && is_null($model->getAttribute($model->createdByIdColumn()))) {
                 $model->createdBy()->associate(auth()->user());
             }
 
-            if ($model->isLogging(HasOwnerEnum::UPDATED_BY) && auth()->check() && is_null($model->updated_by_id)) {
+            if ($model->isLogging(HasOwnerEnum::UPDATED_BY) && auth()->check() && is_null($model->getAttribute($model->deletedByIdColumn()))) {
                 $model->updatedBy()->associate(auth()->user());
             }
         });
@@ -36,17 +36,32 @@ trait HasOwner
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by_id');
+        return $this->belongsTo(User::class, $this->createdByIdColumn());
     }
 
     public function updatedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by_id');
+        return $this->belongsTo(User::class, $this->updatedByIdColumn());
     }
 
     public function deletedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'deleted_by_id');
+        return $this->belongsTo(User::class, $this->deletedByIdColumn());
+    }
+
+    public function createdByIdColumn(): string
+    {
+        return 'created_by_id';
+    }
+
+    public function updatedByIdColumn(): string
+    {
+        return 'updated_by_id';
+    }
+
+    public function deletedByIdColumn(): string
+    {
+        return 'deleted_by_id';
     }
 
     public function isLogging(HasOwnerEnum $logType): bool
