@@ -3,7 +3,7 @@
         <x-feadmin::alert color="green">{{ session('status') }}</x-feadmin::alert>
     @endif
     <x-feadmin::card padding>
-        <x-feadmin::form :action="route('password.email')">
+        <x-feadmin::form :action="panel()->route('password.email')">
             <div class="fd-space-y-3">
                 <h3 class="fd-text-xl">@lang('Parolamı unuttum')</h3>
                 <x-feadmin::form.group name="email">
@@ -15,8 +15,8 @@
     </x-feadmin::card>
     <div>
         <x-feadmin::link
-            :href="route('login')"
-            icon="chevron-left"
+                :href="panel()->route('login')"
+                icon="chevron-left"
         >@lang('Geri dön')</x-feadmin::link>
     </div>
 </x-feadmin::layouts.auth>

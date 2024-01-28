@@ -1,7 +1,6 @@
 @props([
     'name' => null,
-    'bag' =>
-    'default',
+    'bag' => 'default',
     'withErrors' => true,
     'label' => null,
     'attributes' => $attributes,

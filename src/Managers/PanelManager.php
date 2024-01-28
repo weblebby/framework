@@ -18,6 +18,11 @@ class PanelManager
 
     private ?string $extensionPanel = null;
 
+    public function version(): string
+    {
+        return '1.0.0';
+    }
+
     /**
      * @throws Exception
      */
@@ -40,6 +45,9 @@ class PanelManager
         return $this->find($panel) ?? abort(404);
     }
 
+    /**
+     * @return array<int, PanelItem>
+     */
     public function get(): array
     {
         return $this->panels;
@@ -81,24 +89,23 @@ class PanelManager
             ];
 
             foreach ($routePaths as $routePath) {
-                $route = Route::middleware($panel->middleware());
-
-                if ($panel->prefix()) {
-                    $route->prefix($panel->prefix());
-                }
-
-                if ($panel->as()) {
-                    $route->as($panel->as());
-                }
-
-                if ($panel->domain()) {
-                    $route->domain($panel->domain());
-                }
-
-                $route->group(function () use ($panel, $routePath) {
-                    require $routePath;
-                });
+                $this->loadRoutesFrom(
+                    path: $routePath,
+                    panel: $panel,
+                    middleware: $panel->middlewareForPanel(),
+                );
             }
+        }
+    }
+
+    public function useFortifyRoutes(): void
+    {
+        foreach ($this->get() as $panel) {
+            $this->loadRoutesFrom(
+                path: __DIR__.'/../../routes/fortify.php',
+                panel: $panel,
+                middleware: $panel->middlewareForFortify(),
+            );
         }
     }
 
@@ -107,12 +114,12 @@ class PanelManager
         Extension::loadRoutes();
     }
 
-    public function useWebRoutes(?array $middlewares = null): void
+    public function useWebRoute(?array $middlewares = null): void
     {
         Route::middleware($middlewares ?? 'web')->group(__DIR__.'/../../routes/web.php');
     }
 
-    public function useApiRoutes(?array $middlewares = null): void
+    public function useApiRoute(?array $middlewares = null): void
     {
         Route::middleware($middlewares ?? ['api', 'auth:sanctum'])
             ->as(self::API_ROUTE_NAME_PREFIX)
@@ -123,12 +130,31 @@ class PanelManager
     {
         $this->usePanelRoutes();
         $this->useExtensionRoutes();
-        $this->useWebRoutes();
-        $this->useApiRoutes();
+        $this->useWebRoute();
+        $this->useApiRoute();
     }
 
-    public function version(): string
-    {
-        return '1.0.0';
+    protected function loadRoutesFrom(
+        string $path,
+        PanelItem $panel,
+        string|array|null $middleware = null
+    ): void {
+        $route = Route::middleware($middleware ?? $panel->middlewareForPanel());
+
+        if ($panel->prefix()) {
+            $route->prefix($panel->prefix());
+        }
+
+        if ($panel->as()) {
+            $route->as($panel->as());
+        }
+
+        if ($panel->domain()) {
+            $route->domain($panel->domain());
+        }
+
+        $route->group(function () use ($panel, $path) {
+            require $path;
+        });
     }
 }

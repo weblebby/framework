@@ -3,7 +3,7 @@
         <x-feadmin::alert color="green">{{ session('status') }}</x-feadmin::alert>
     @endif
     <x-feadmin::card padding>
-        <x-feadmin::form :action="route('password.update')">
+        <x-feadmin::form :action="panel()->route('password.update')">
             <input type="hidden" name="token" value="{{ request()->route('token') }}">
             <input type="hidden" name="email" value="{{ request('email') }}">
             <div class="fd-space-y-3">

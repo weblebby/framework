@@ -4,7 +4,7 @@ namespace Feadmin\Http\Middleware;
 
 use Closure;
 use Feadmin\Facades\PostModels;
-use Feadmin\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,10 +18,6 @@ class Panel
      */
     public function handle(Request $request, Closure $next): Response
     {
-        /** @var User $user */
-        $user = $request->user();
-        abort_if(is_null($user) || ! $user->canAccessPanel(panel()->name()), 403);
-
         config([
             'app.name' => $siteName = preference('general->site_name'),
             'seo.app.name' => $siteName,
@@ -33,6 +29,13 @@ class Panel
         foreach (PostModels::get() as $model) {
             $model->register();
         }
+
+        ResetPassword::$createUrlCallback = function ($notifiable, $token) {
+            return url(panel()->route('password.reset', [
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ], false));
+        };
 
         return $next($request);
     }

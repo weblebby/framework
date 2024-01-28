@@ -5,8 +5,11 @@ namespace Feadmin\Items;
 use Feadmin\Hooks\MenuHook;
 use Feadmin\Hooks\PermissionHook;
 use Feadmin\Hooks\PreferenceBagHook;
+use Feadmin\Http\Middleware\CanUserAccessPanel;
+use Feadmin\Http\Middleware\Panel;
 use Feadmin\Support\Features;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Arr;
 
 class PanelItem
 {
@@ -26,7 +29,9 @@ class PanelItem
 
     protected ?string $domain = null;
 
-    protected string|array|null $middleware = null;
+    protected string|array|null $middlewareForPanel = null;
+
+    protected string|array|null $middlewareForFortify = null;
 
     protected array $routePaths = [];
 
@@ -137,13 +142,42 @@ class PanelItem
         return $this;
     }
 
-    public function middleware(string|array|null $middleware = null): self|string|array|null
+    public function middleware(string|array $middleware): self
+    {
+        $this->middlewareForPanel($middleware);
+        $this->middlewareForFortify($middleware);
+
+        return $this;
+    }
+
+    public function middlewareForPanel(string|array|null $middleware = null): self|array|null
     {
         if (is_null($middleware)) {
-            return $this->middleware;
+            return [
+                'web',
+                'auth',
+                ...Arr::wrap($this->middlewareForPanel),
+                Panel::class,
+                CanUserAccessPanel::class,
+            ];
         }
 
-        $this->middleware = $middleware;
+        $this->middlewareForPanel = $middleware;
+
+        return $this;
+    }
+
+    public function middlewareForFortify(string|array|null $middleware = null): self|array|null
+    {
+        if (is_null($middleware)) {
+            return [
+                'web',
+                ...Arr::wrap($this->middlewareForFortify),
+                Panel::class,
+            ];
+        }
+
+        $this->middlewareForFortify = $middleware;
 
         return $this;
     }

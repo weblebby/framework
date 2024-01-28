@@ -27,7 +27,7 @@
         'icon' => 'fd-p-2',
         'sm' => 'fd-px-3 fd-py-1',
         'lg' => 'fd-px-5 fd-py-3',
-        'full' => 'fd-px-4 fd-py-2 fd-w-full',
+        'full' => 'fd-px-4 fd-py-2 fd-w-full fd-justify-center',
         'none' => '',
         default => 'fd-px-4 fd-py-2',
     };

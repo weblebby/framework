@@ -7,6 +7,7 @@ use Feadmin\Managers\PanelManager;
 use Illuminate\Support\Facades\Facade;
 
 /**
+ * @method static string version()
  * @method static PanelItem create(string $panel)
  * @method static PanelItem find(string $panel)
  * @method static PanelItem findOrFail(string $panel)
@@ -16,11 +17,11 @@ use Illuminate\Support\Facades\Facade;
  * @method static PanelItem getExtensionPanel()
  * @method static void setExtensionPanel(string $panel)
  * @method static void usePanelRoutes()
+ * @method static void useFortifyRoutes()
  * @method static void useExtensionRoutes()
- * @method static void useWebRoutes(array $middlewares = null)
- * @method static void useApiRoutes(array $middlewares = null)
+ * @method static void useWebRoute(array $middlewares = null)
+ * @method static void useApiRoute(array $middlewares = null)
  * @method static void useRoutes()
- * @method static string version()
  *
  * @see PanelManager
  */

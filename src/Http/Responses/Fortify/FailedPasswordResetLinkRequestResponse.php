@@ -2,35 +2,22 @@
 
 namespace Feadmin\Http\Responses\Fortify;
 
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Laravel\Fortify\Contracts\FailedPasswordResetLinkRequestResponse as FailedPasswordResetLinkRequestResponseContract;
+use Laravel\Fortify\Contracts\FailedPasswordResetLinkRequestResponse as Contract;
+use Laravel\Fortify\Http\Responses\FailedPasswordResetLinkRequestResponse as Base;
+use Symfony\Component\HttpFoundation\Response;
 
-class FailedPasswordResetLinkRequestResponse implements FailedPasswordResetLinkRequestResponseContract
+class FailedPasswordResetLinkRequestResponse extends Base implements Contract
 {
-    /**
-     * The response status language key.
-     *
-     * @var string
-     */
-    protected $status;
-
-    /**
-     * Create a new response instance.
-     *
-     * @return void
-     */
-    public function __construct(string $status)
-    {
-        $this->status = $status;
-    }
-
     /**
      * Create an HTTP response that represents the object.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param  Request  $request
+     *
+     * @throws ValidationException
      */
-    public function toResponse($request)
+    public function toResponse($request): Response
     {
         if ($request->wantsJson()) {
             throw ValidationException::withMessages([

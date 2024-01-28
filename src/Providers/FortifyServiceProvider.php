@@ -15,16 +15,9 @@ class FortifyServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
-        $this->app->bind(
-            \Laravel\Fortify\Actions\AttemptToAuthenticate::class,
-            \Feadmin\Actions\Fortify\AttemptToAuthenticate::class,
-        );
-
         $this->app->bind(
             \Laravel\Fortify\Http\Controllers\PasswordResetLinkController::class,
             \Feadmin\Http\Controllers\Fortify\PasswordResetLinkController::class,
@@ -39,6 +32,8 @@ class FortifyServiceProvider extends ServiceProvider
             \Laravel\Fortify\Http\Responses\VerifyEmailResponse::class,
             \Feadmin\Http\Responses\Fortify\VerifyEmailResponse::class,
         );
+
+        Fortify::$registersRoutes = false;
     }
 
     /**
@@ -69,6 +64,12 @@ class FortifyServiceProvider extends ServiceProvider
             seo()->title(__('Oturum açın'));
 
             return view('feadmin::guest.login');
+        });
+
+        Fortify::registerView(function () {
+            seo()->title(__('Hesap oluşturun'));
+
+            return view('feadmin::guest.register');
         });
 
         Fortify::resetPasswordView(function () {

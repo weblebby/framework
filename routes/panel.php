@@ -4,17 +4,8 @@ use Feadmin\Http\Controllers\User;
 use Feadmin\Items\PanelItem;
 use Feadmin\Support\Features;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
-use Laravel\Fortify\RoutePath;
 
 /** @var PanelItem $panel */
-
-/**
- * Fortify Login
- */
-Route::get(RoutePath::for('login', '/login'), [AuthenticatedSessionController::class, 'create'])
-    ->middleware(['guest:'.config('fortify.guard')])
-    ->name('login');
 
 /**
  * Dashboard
@@ -24,7 +15,7 @@ Route::get('/', [User\DashboardController::class, 'index'])->name('dashboard');
 /**
  * Navigations
  */
-if (Features::enabled(Features::navigations(), $panel->name())) {
+if ($panel->supports(Features::navigations())) {
     Route::resource('navigations.items', User\NavigationItemController::class)
         ->only('store', 'update', 'destroy');
 
@@ -35,7 +26,7 @@ if (Features::enabled(Features::navigations(), $panel->name())) {
 /**
  * Extensions
  */
-if (Features::enabled(Features::extensions(), $panel->name())) {
+if ($panel->supports(Features::extensions())) {
     Route::controller(User\ExtensionController::class)
         ->prefix('extensions/{extensions}')
         ->name('extensions.')
@@ -51,7 +42,7 @@ if (Features::enabled(Features::extensions(), $panel->name())) {
 /**
  * Appearance
  */
-if (Features::enabled(Features::appearance(), $panel->name())) {
+if ($panel->supports(Features::appearance())) {
     Route::get('appearance/editor', [User\Apperance\EditorController::class, 'index'])->name('appearance.editor.index');
     Route::put('appearance/editor', [User\Apperance\EditorController::class, 'update'])->name('appearance.editor.update');
 }
@@ -59,7 +50,7 @@ if (Features::enabled(Features::appearance(), $panel->name())) {
 /**
  * Preferences
  */
-if (Features::enabled(Features::preferences(), $panel->name())) {
+if ($panel->supports(Features::preferences())) {
     Route::prefix('preferences')
         ->name('preferences.')
         ->controller(User\PreferenceController::class)
@@ -73,21 +64,21 @@ if (Features::enabled(Features::preferences(), $panel->name())) {
 /**
  * Roles
  */
-if (Features::enabled(Features::roles(), $panel->name())) {
+if ($panel->supports(Features::roles())) {
     Route::resource('roles', User\RoleController::class)->except('show');
 }
 
 /**
  * Users
  */
-if (Features::enabled(Features::users(), $panel->name())) {
+if ($panel->supports(Features::users())) {
     Route::resource('users', User\UserController::class);
 }
 
 /**
  * Posts
  */
-if (Features::enabled(Features::posts(), $panel->name())) {
+if ($panel->supports(Features::posts())) {
     Route::resource('posts', User\PostController::class)->except('show');
     Route::resource('taxonomies', User\TaxonomyController::class);
 }
@@ -95,7 +86,7 @@ if (Features::enabled(Features::posts(), $panel->name())) {
 /**
  * Themes
  */
-if (Features::enabled(Features::themes(), $panel->name())) {
+if ($panel->supports(Features::themes())) {
     Route::get('themes/{theme}/templates/{template}/post-fields', User\ThemeTemplatePostFieldController::class)
         ->name('themes.templates.post-fields');
 }

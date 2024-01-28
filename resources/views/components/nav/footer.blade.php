@@ -15,7 +15,7 @@
             <a href="https://www.weblebby.com" target="_blank" class="fd-text-xs">@lang('powered by weblebby')</a>
         @endif
     </div>
-    <x-feadmin::form :action="route('logout')" class="fd-text-sm fd-mt-4">
+    <x-feadmin::form :action="panel()->route('logout')" class="fd-text-sm fd-mt-4">
         <x-feadmin::button
                 type="submit"
                 variant="outline-light"

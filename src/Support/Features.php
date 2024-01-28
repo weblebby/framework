@@ -59,4 +59,9 @@ class Features
     {
         return 'appearance';
     }
+
+    public static function registration(): string
+    {
+        return 'registration';
+    }
 }

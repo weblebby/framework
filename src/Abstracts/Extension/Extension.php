@@ -62,7 +62,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
 
     public function deactivate(): void
     {
-        if (!$this->isActive()) {
+        if (! $this->isActive()) {
             return;
         }
 
@@ -102,7 +102,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
 
         $sourcePath = $this->path('public');
 
-        if (!File::exists($sourcePath)) {
+        if (! File::exists($sourcePath)) {
             return;
         }
 
@@ -122,8 +122,8 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
         $panel = Panel::getExtensionPanel();
         $path = $this->path(sprintf('routes/%s.php', $route));
 
-        Route::middleware($panel->middleware())
-            ->prefix($panel->prefix() . '/ext/' . $this->name())
+        Route::middleware($panel->middlewareForPanel())
+            ->prefix($panel->prefix().'/ext/'.$this->name())
             ->domain($panel->domain())
             ->as($this->namespaceWith())
             ->group($path);
@@ -133,7 +133,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
     {
         $class = $this->observerClass();
 
-        if (is_null($class) || !$this->isActive()) {
+        if (is_null($class) || ! $this->isActive()) {
             return null;
         }
 
