@@ -641,7 +641,7 @@
     "src": "resources/js/navigation.js"
   },
   "resources/js/pages/post/post.js": {
-    "file": "assets/post-d9f52344.js",
+    "file": "assets/post-19e8a4c5.js",
     "imports": [
       "__api-32e76925.js",
       "__tab-2f4e71a8.js"
