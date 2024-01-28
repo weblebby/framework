@@ -85,14 +85,28 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
 
     public function resolveRouteBinding($value, $field = null): Model
     {
+        $isTranslatableField = is_string($field) && $this->isTranslationAttribute($field);
+        $column = $field ?? $this->getRouteKeyName();
+
         $post = $this->newQueryWithoutScopes()
-            ->select('type')
-            ->where($column = $field ?? $this->getRouteKeyName(), $value)
+            ->select('id', 'type')
+            ->when(! $isTranslatableField, fn ($q) => $q->where($column, $value))
+            ->when($isTranslatableField, fn ($q) => $q->whereTranslation($column, $value))
             ->firstOrFail();
 
         abort_unless(class_exists($post->type), 404);
 
-        return $post->type::where($column, $value)->firstOrFail();
+        if ($isTranslatableField) {
+            $firstBindingKey = head(array_keys(request()->route()->bindingFields()));
+            $route = $this->translatedRoute($post, $value, $column, $firstBindingKey);
+
+            abort_if($route, redirect()->to($route));
+        }
+
+        return $post->type::query()
+            ->when(! $isTranslatableField, fn ($q) => $q->where($column, $value))
+            ->when($isTranslatableField, fn ($q) => $q->whereTranslation($column, $value))
+            ->firstOrFail();
     }
 
     public function registerMediaCollections(): void

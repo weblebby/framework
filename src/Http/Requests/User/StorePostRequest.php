@@ -33,6 +33,7 @@ class StorePostRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $this->transformSlug();
         $this->loadRulesAndAttributes();
         $this->transformTaxonomies();
         $this->transformDeletedFields();
@@ -109,6 +110,18 @@ class StorePostRequest extends FormRequest
         ];
 
         return array_merge($this->rulesAndAttributes['attributes'], $attributes);
+    }
+
+    protected function transformSlug(): void
+    {
+        if ($this->has('fields.slug')) {
+            $this->merge([
+                'fields' => [
+                    ...$this->input('fields', []),
+                    'slug' => Str::slug($this->input('fields.slug')),
+                ],
+            ]);
+        }
     }
 
     protected function loadRulesAndAttributes(): void

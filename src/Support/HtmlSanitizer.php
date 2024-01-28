@@ -21,6 +21,7 @@ class HtmlSanitizer
             ->allowSafeElements()
             ->allowStaticElements()
             ->forceAttribute('a', 'rel', 'noopener noreferrer')
+            ->allowElement('oembed', ['url', 'maxwidth', 'maxheight', 'format'])
             ->allowLinkSchemes(['https', 'http', 'mailto', 'tel'])
             ->allowMediaSchemes(['https', 'http'])
             ->allowRelativeMedias();

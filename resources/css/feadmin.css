@@ -93,6 +93,8 @@
 }
 
 .ck-editor__editable_inline {
+    @apply fd-prose fd-max-w-[unset];
+
     min-height: 200px;
 }
 

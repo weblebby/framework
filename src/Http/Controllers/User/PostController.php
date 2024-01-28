@@ -70,10 +70,9 @@ class PostController extends Controller
      */
     public function store(
         StorePostRequest $request,
-        PostService      $postService,
+        PostService $postService,
         PostFieldService $postFieldService,
-    ): RedirectResponse
-    {
+    ): RedirectResponse {
         $validated = $request->validated();
         $locale = request('_locale', app()->getLocale());
 
@@ -110,7 +109,7 @@ class PostController extends Controller
         }
 
         return to_panel_route('posts.edit', [$post, 'locale' => $locale])
-            ->with('message', __('Yazı oluşturuldu'));
+            ->with('message', __(':name oluşturuldu', ['name' => $post::getModelName()]));
     }
 
     public function edit(Request $request, Post $post, PostService $postService): View
@@ -129,7 +128,7 @@ class PostController extends Controller
         $isCodeEditorNeeded = $sections->allFields()->hasAnyTypeOf(CodeEditorFieldItem::class);
         $isTranslatable = Extension::has('multilingual');
 
-        seo()->title(__('Yazıyı [:post] düzenle', ['post' => $post->title]));
+        seo()->title(__('[:post]: Düzenle', ['post' => $post->title]));
 
         $sections = $sections->toArray();
 
@@ -153,11 +152,10 @@ class PostController extends Controller
      */
     public function update(
         StorePostRequest $request,
-        PostService      $postService,
+        PostService $postService,
         PostFieldService $postFieldService,
-        Post             $post
-    ): RedirectResponse
-    {
+        Post $post
+    ): RedirectResponse {
         $validated = $request->validated();
         $locale = request('_locale', app()->getLocale());
 
@@ -194,7 +192,7 @@ class PostController extends Controller
         }
 
         return to_panel_route('posts.edit', [$post, 'locale' => $locale])
-            ->with('message', __('Yazı :post güncellendi', ['post' => $post->title]));
+            ->with('message', __(':post güncellendi', ['post' => $post->title]));
     }
 
     public function destroy(Post $post): RedirectResponse
