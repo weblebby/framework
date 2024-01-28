@@ -74,7 +74,7 @@
                             ]" />
                         </x-feadmin::card>
                     @endif
-                    @if ($postable::doesSupportTemplates())
+                    @if ($postable::doesSupportTemplates() && panel()->supports(\Feadmin\Support\Features::themes()))
                         <x-feadmin::card padding>
                             <x-feadmin::card.title>@lang('Şablon')</x-feadmin::card.title>
                             <x-feadmin::form.group name="template">
@@ -101,11 +101,13 @@
     </x-feadmin::page>
     @push('after_scripts')
         <x-feadmin::tabs.template />
-        <script>
-          window.Feadmin.Theme = {
-            postFieldsUrl: @json(panel_route('themes.templates.post-fields', [':theme', ':template']))
-          };
-        </script>
+        @if (panel()->supports(\Feadmin\Support\Features::themes()))
+            <script>
+              window.Feadmin.Theme = {
+                postFieldsUrl: @json(panel_route('themes.templates.post-fields', [':theme', ':template']))
+              };
+            </script>
+        @endif
         @vite('resources/js/pages/post/post.js', 'feadmin/build')
         @if($isCodeEditorNeeded)
             @vite('resources/js/code-editor.js', 'feadmin/build')

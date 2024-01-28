@@ -5,6 +5,7 @@ namespace Feadmin\Items;
 use Feadmin\Hooks\MenuHook;
 use Feadmin\Hooks\PermissionHook;
 use Feadmin\Hooks\PreferenceBagHook;
+use Feadmin\Support\Features;
 use Illuminate\Http\RedirectResponse;
 
 class PanelItem
@@ -157,5 +158,10 @@ class PanelItem
     public function routePaths(): array
     {
         return $this->routePaths;
+    }
+
+    public function supports(string $feature): bool
+    {
+        return Features::enabled($feature, $this);
     }
 }
