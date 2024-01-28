@@ -14,7 +14,7 @@ trait Translatable
     {
         $query->with([
             'translations' => function (Relation $query) {
-                $column = $this->getTranslationsTable() . '.' . $this->getLocaleKey();
+                $column = $this->getTranslationsTable().'.'.$this->getLocaleKey();
 
                 if ($this->useFallback()) {
                     return $query->whereIn($column, $this->getLocalesHelper()->all());
@@ -32,7 +32,7 @@ trait Translatable
         if ($model && is_string($field) && $this->isTranslationAttribute($field)) {
             $firstBindingKey = head(array_keys(request()->route()->bindingFields()));
 
-            if ($route = $this->translatedRoute($model, $value, $field, $firstBindingKey)) {
+            if ($route = $this->translatedRoute($model->translate(app()->getLocale(), withFallback: true), $value, $field, $firstBindingKey)) {
                 abort(redirect()->to($route));
             }
         }
@@ -89,7 +89,7 @@ trait Translatable
 
         if ($withFallback) {
             $configuredLocales = collect($this->getLocalesHelper()->all())
-                ->sortByDesc(fn($value) => str_starts_with($value, $locale))
+                ->sortByDesc(fn ($value) => str_starts_with($value, $locale))
                 ->toArray();
 
             foreach ($configuredLocales as $configuredLocale) {

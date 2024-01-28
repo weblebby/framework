@@ -4,8 +4,17 @@ use Feadmin\Http\Controllers\User;
 use Feadmin\Items\PanelItem;
 use Feadmin\Support\Features;
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+use Laravel\Fortify\RoutePath;
 
 /** @var PanelItem $panel */
+
+/**
+ * Fortify Login
+ */
+Route::get(RoutePath::for('login', '/login'), [AuthenticatedSessionController::class, 'create'])
+    ->middleware(['guest:'.config('fortify.guard')])
+    ->name('login');
 
 /**
  * Dashboard

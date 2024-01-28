@@ -8,6 +8,7 @@ use Feadmin\Items\Field\Contracts\HasChildFieldInterface;
 use Feadmin\Items\Field\FieldValueItem;
 use Feadmin\Models\Metafield;
 use Feadmin\Models\Preference;
+use Feadmin\Services\MetafieldService;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
@@ -128,7 +129,8 @@ class PreferenceManager
             return $metafield->map($map)->toArray();
         }
 
-        return $metafield?->toValue($field, $default, $locale) ?? $default;
+        return $metafield?->toValue($field, $default, $locale)
+            ?? $this->toValue($field, $default, $locale);
     }
 
     /**
@@ -375,5 +377,15 @@ class PreferenceManager
                 $this->setFieldName($child, $field['name']);
             });
         }
+    }
+
+    protected function toValue(FieldInterface $field, mixed $default = null, ?string $locale = null): mixed
+    {
+        /** @var MetafieldService $metafieldService */
+        $metafieldService = app(MetafieldService::class);
+
+        $default ??= $field['default'];
+
+        return $metafieldService->toValue($field, $default, $locale);
     }
 }

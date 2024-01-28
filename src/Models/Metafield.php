@@ -6,8 +6,7 @@ use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Feadmin\Concerns\Eloquent\Translatable;
 use Feadmin\Facades\Extension;
 use Feadmin\Items\Field\Contracts\FieldInterface;
-use Feadmin\Items\Field\Contracts\UploadableFieldInterface;
-use Feadmin\Items\Field\TextFieldItem;
+use Feadmin\Services\MetafieldService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -60,34 +59,9 @@ class Metafield extends Model implements HasMedia, TranslatableContract
 
     public function toValue(FieldInterface $field, mixed $default = null, ?string $locale = null): mixed
     {
-        if ($field instanceof UploadableFieldInterface) {
-            if (Extension::has('multilingual') && $field['translatable']) {
-                $locales = Localization::getSupportedLocales()
-                    ->pluck('code')
-                    ->prepend(config('translatable.fallback_locale'))
-                    ->prepend($locale)
-                    ->unique()
-                    ->filter()
-                    ->values();
+        /** @var MetafieldService $metafieldService */
+        $metafieldService = app(MetafieldService::class);
 
-                foreach ($locales as $localeAsCollection) {
-                    if ($this->hasMedia($localeAsCollection)) {
-                        return $this->getFirstMediaUrl($localeAsCollection);
-                    }
-                }
-            }
-
-            return $this->getFirstMediaUrl();
-        }
-
-        if ($field instanceof TextFieldItem) {
-            if (Extension::has('multilingual') && $field['translatable']) {
-                return $this->translate($locale, withFallback: true)?->value ?? $default;
-            }
-
-            return $this->original_value ?? $default;
-        }
-
-        return $default;
+        return $metafieldService->toValue($field, $default, $locale, $this);
     }
 }
