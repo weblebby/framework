@@ -13,7 +13,7 @@ class PostService
 {
     public function templates(PostInterface $postable): Collection
     {
-        return Theme::active()->templatesFor($postable::class);
+        return Theme::active()?->templatesFor($postable::class) ?? collect();
     }
 
     public function sections(PostInterface $postable, ?string $template = null): FieldSectionsItem
@@ -31,7 +31,7 @@ class PostService
 
         return Taxonomy::query()
             ->taxonomy($taxonomy->name())
-            ->with(['term' => fn($query) => $query->select('id')->withTranslation()])
+            ->with(['term' => fn ($query) => $query->select('id')->withTranslation()])
             ->onlyParents()
             ->withRecursiveChildren()
             ->get()
@@ -44,11 +44,10 @@ class PostService
 
     public function syncTaxonomies(
         PostInterface $postable,
-        array         $taxonomies,
-        ?int          $primaryTaxonomyId = null,
-        ?string       $locale = null,
-    ): array
-    {
+        array $taxonomies,
+        ?int $primaryTaxonomyId = null,
+        ?string $locale = null,
+    ): array {
         /** @var TaxonomyService $taxonomyService */
         $taxonomyService = app(TaxonomyService::class);
 

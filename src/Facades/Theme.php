@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static ThemeManager activate(string $themeName)
  * @method static Collection<int, \Feadmin\Abstracts\Theme\Theme> get()
  * @method static \Feadmin\Abstracts\Theme\Theme find(string $themeName)
- * @method static \Feadmin\Abstracts\Theme\Theme active()
+ * @method static \Feadmin\Abstracts\Theme\Theme|null active()
  *
  * @see ThemeManager
  */
