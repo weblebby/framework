@@ -10,7 +10,7 @@ class ThemeManager
 {
     protected Collection $themes;
 
-    protected string $activeThemeName;
+    protected ?string $activeThemeName = null;
 
     public function __construct()
     {
@@ -35,6 +35,9 @@ class ThemeManager
         return $theme;
     }
 
+    /**
+     * @throws Exception
+     */
     public function activate(string $themeName): self
     {
         if ($this->themes->where('name', $themeName)->isEmpty()) {
