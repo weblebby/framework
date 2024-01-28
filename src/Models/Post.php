@@ -2,6 +2,7 @@
 
 namespace Feadmin\Models;
 
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Feadmin\Concerns\Eloquent\HasMetafields;
 use Feadmin\Concerns\Eloquent\HasOwner;
 use Feadmin\Concerns\Eloquent\HasPosition;
@@ -13,7 +14,9 @@ use Feadmin\Enums\PostStatusEnum;
 use Feadmin\Items\Field\FieldItem;
 use Feadmin\Items\FieldSectionsItem;
 use Feadmin\Items\TaxonomyItem;
+use Feadmin\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,7 +24,6 @@ use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 
 class Post extends Model implements HasMedia, PostInterface, TranslatableContract
 {
@@ -109,7 +111,7 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
 
     public function getMaxPosition(): int
     {
-        return (int)static::query()->max('position');
+        return (int) static::query()->max('position');
     }
 
     public static function getSingularName(): string
@@ -167,5 +169,10 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
     public function scopeTyped(Builder $query, string $type): Builder
     {
         return $query->where('type', $type);
+    }
+
+    protected function htmlContent(): Attribute
+    {
+        return Attribute::get(fn () => app(HtmlSanitizer::class)->sanitizeToHtml($this->content));
     }
 }

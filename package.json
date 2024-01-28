@@ -22,6 +22,7 @@
     "laravel-vite-plugin": "^0.8.1",
     "lint-staged": "^15.1.0",
     "postcss-import": "^15.1.0",
+    "postcss-nesting": "^12.0.2",
     "prettier": "^3.0.3",
     "sweetalert2": "^11.9.0",
     "tailwind-scrollbar-hide": "^1.1.7",
@@ -30,6 +31,7 @@
     "vite-plugin-monaco-editor": "^1.1.0"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-html-support": "^41.0.0",
     "@shopify/draggable": "^1.1.3",
     "@yaireo/tagify": "^4.17.9",
     "monaco-editor": "^0.45.0"

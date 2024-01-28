@@ -1,11 +1,14 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { GeneralHtmlSupport } from '@ckeditor/ckeditor5-html-support'
 
 const TextEditor = {
     selector: '[data-ckeditor]',
     basicSelector: '[data-basic-ckeditor]',
 
     init: element => {
-        element._CKEDITOR = ClassicEditor.create(element)
+        element._CKEDITOR = ClassicEditor.create(element, {
+            plugins: [GeneralHtmlSupport],
+        })
     },
 
     initBasic: element => {

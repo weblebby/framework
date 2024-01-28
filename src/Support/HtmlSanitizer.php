@@ -32,4 +32,9 @@ class HtmlSanitizer
 
         return $sanitizer->sanitize($input);
     }
+
+    public function sanitizeToHtml(string|HtmlString $input): HtmlString
+    {
+        return new HtmlString($this->sanitize($input));
+    }
 }
