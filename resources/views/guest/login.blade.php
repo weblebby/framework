@@ -23,5 +23,15 @@
             </div>
         </x-feadmin::form>
     </x-feadmin::card>
-    <a href="{{ route('home') }}" class="fd-block fd-text-zinc-600">{{ preference('general->site_name') }}</a>
+    @if (panel()->supports(\Feadmin\Support\Features::registration()))
+        <x-feadmin::button
+                as="a"
+                variant="link"
+                :href="panel()->route('register')"
+                size="full"
+        >@lang('Yeni hesap oluştur')</x-feadmin::button>
+    @endif
+    <a href="{{ route('home') }}" class="fd-block fd-text-zinc-600 fd-text-center">
+        {{ preference('general->site_name') }}
+    </a>
 </x-feadmin::layouts.auth>

@@ -22,9 +22,12 @@
         </x-feadmin::form>
     </x-feadmin::card>
     <x-feadmin::button
-        as="a"
-        variant="link"
-        size="full"
-        :href="panel()->route('login')"
+            as="a"
+            variant="link"
+            size="full"
+            :href="panel()->route('login')"
     >@lang('Oturum açma ekranına dön')</x-feadmin::button>
+    <a href="{{ route('home') }}" class="fd-block fd-text-zinc-600 fd-text-center">
+        {{ preference('general->site_name') }}
+    </a>
 </x-feadmin::layouts.auth>

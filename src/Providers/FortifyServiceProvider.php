@@ -33,6 +33,11 @@ class FortifyServiceProvider extends ServiceProvider
             \Feadmin\Http\Responses\Fortify\VerifyEmailResponse::class,
         );
 
+        $this->app->bind(
+            \Laravel\Fortify\Http\Responses\PasswordResetResponse::class,
+            \Feadmin\Http\Responses\Fortify\PasswordResetResponse::class,
+        );
+
         Fortify::$registersRoutes = false;
     }
 
@@ -42,20 +47,15 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->views();
+        $this->actions();
+        $this->rateLimiters();
+    }
 
+    private function actions(): void
+    {
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
-
-        RateLimiter::for('login', function (Request $request) {
-            $email = (string) $request->email;
-
-            return Limit::perMinute(5)->by($email.$request->ip());
-        });
-
-        RateLimiter::for('two-factor', function (Request $request) {
-            return Limit::perMinute(5)->by($request->session()->get('login.id'));
-        });
     }
 
     private function views(): void
@@ -88,6 +88,19 @@ class FortifyServiceProvider extends ServiceProvider
             seo()->title(__('e-Posta adresinizi doğrulayın'));
 
             return view('feadmin::user.verify.email');
+        });
+    }
+
+    private function rateLimiters(): void
+    {
+        RateLimiter::for('login', function (Request $request) {
+            $email = (string) $request->email;
+
+            return Limit::perMinute(5)->by($email.$request->ip());
+        });
+
+        RateLimiter::for('two-factor', function (Request $request) {
+            return Limit::perMinute(5)->by($request->session()->get('login.id'));
         });
     }
 }

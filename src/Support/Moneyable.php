@@ -149,6 +149,13 @@ class Moneyable implements DeferringDisplayableValue, Jsonable, JsonSerializable
         return new static(abs($this->amount), $this->currency);
     }
 
+    public function diff(Moneyable $second): int
+    {
+        $first = new static($this->amount, $this->currency);
+
+        return $first->sub($second)->div($first->fromInt())->mul(100)->get();
+    }
+
     public function jsonSerialize(): array
     {
         return $this->toArray();
