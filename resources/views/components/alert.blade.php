@@ -32,7 +32,7 @@
     ->class($colorClasses)
     ->class($typeClasses) }}>
     @if ($icon ?? null)
-        <x-dynamic-component component="feadmin::icons.{{ $icon }}" class="fd-w-5 fd-h-5" />
+        <x-dynamic-component component="weblebby::icons.{{ $icon }}" class="fd-w-5 fd-h-5" />
     @endif
     <div class="fd-flex-1">
         <div>{{ $slot }}</div>

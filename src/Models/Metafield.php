@@ -1,12 +1,8 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Feadmin\Concerns\Eloquent\Translatable;
-use Feadmin\Facades\Extension;
-use Feadmin\Items\Field\Contracts\FieldInterface;
-use Feadmin\Services\MetafieldService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -14,8 +10,12 @@ use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-// Dont forget to check the extension is installed before using it
 use Weblebby\Extensions\Multilingual\Facades\Localization;
+use Weblebby\Framework\Concerns\Eloquent\Translatable;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
+// Dont forget to check the extension is installed before using it
+use Weblebby\Framework\Services\MetafieldService;
 
 class Metafield extends Model implements HasMedia, TranslatableContract
 {

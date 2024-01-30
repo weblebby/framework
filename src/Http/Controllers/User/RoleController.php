@@ -1,14 +1,14 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Http\Requests\User\StoreRoleRequest;
-use Feadmin\Http\Requests\User\UpdateRoleRequest;
-use Feadmin\Models\Role;
-use Feadmin\Services\RoleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Weblebby\Framework\Http\Requests\User\StoreRoleRequest;
+use Weblebby\Framework\Http\Requests\User\UpdateRoleRequest;
+use Weblebby\Framework\Models\Role;
+use Weblebby\Framework\Services\RoleService;
 
 class RoleController extends Controller
 {
@@ -20,7 +20,7 @@ class RoleController extends Controller
 
         seo()->title(__('Kullanıcı rolleri'));
 
-        return view('feadmin::user.roles.index', compact('roles'));
+        return view('weblebby::user.roles.index', compact('roles'));
     }
 
     public function create(): View
@@ -29,7 +29,7 @@ class RoleController extends Controller
 
         seo()->title(__('Kullanıcı rolü oluştur'));
 
-        return view('feadmin::user.roles.create');
+        return view('weblebby::user.roles.create');
     }
 
     public function store(StoreRoleRequest $request, RoleService $roleService): RedirectResponse
@@ -52,7 +52,7 @@ class RoleController extends Controller
 
         seo()->title($role->name);
 
-        return view('feadmin::user.roles.edit', compact('role'));
+        return view('weblebby::user.roles.edit', compact('role'));
     }
 
     public function update(UpdateRoleRequest $request, Role $role, RoleService $roleService): RedirectResponse

@@ -9,7 +9,7 @@
         'fd-fixed fd-bottom-0 fd-left-0 md:fd-left-60 fd-right-0' => $fixed,
     ]) }}>
         <div class="fd-flex fd-justify-center md:fd-justify-end">
-            <x-feadmin::button type="submit">{{ $label }}</x-feadmin::button>
+            <x-weblebby::button type="submit">{{ $label }}</x-weblebby::button>
         </div>
     </div>
 </div>

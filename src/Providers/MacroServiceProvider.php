@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Providers;
+namespace Weblebby\Framework\Providers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;

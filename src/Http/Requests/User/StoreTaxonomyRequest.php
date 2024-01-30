@@ -1,16 +1,16 @@
 <?php
 
-namespace Feadmin\Http\Requests\User;
+namespace Weblebby\Framework\Http\Requests\User;
 
-use Feadmin\Facades\Extension;
-use Feadmin\Facades\PostModels;
-use Feadmin\Items\TaxonomyItem;
-use Feadmin\Services\FieldInputService;
-use Feadmin\Services\FieldValidationService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
 use Weblebby\Extensions\Multilingual\Support\LocaleRules;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Facades\PostModels;
+use Weblebby\Framework\Items\TaxonomyItem;
+use Weblebby\Framework\Services\FieldInputService;
+use Weblebby\Framework\Services\FieldValidationService;
 
 class StoreTaxonomyRequest extends FormRequest
 {
@@ -59,7 +59,7 @@ class StoreTaxonomyRequest extends FormRequest
                 (new Unique('term_translations'))
                     ->when(
                         $this->route('taxonomy'),
-                        fn(Unique $unique, $taxonomy) => $unique->ignore($taxonomy->term->translate($this->input('_locale')))
+                        fn (Unique $unique, $taxonomy) => $unique->ignore($taxonomy->term->translate($this->input('_locale')))
                     ),
             ],
             'slug' => [
@@ -67,7 +67,7 @@ class StoreTaxonomyRequest extends FormRequest
                 (new Unique('term_translations'))
                     ->when(
                         $this->route('taxonomy'),
-                        fn(Unique $unique, $taxonomy) => $unique->ignore($taxonomy->term->translate($this->input('_locale')))
+                        fn (Unique $unique, $taxonomy) => $unique->ignore($taxonomy->term->translate($this->input('_locale')))
                     ),
             ],
             'parent_id' => [

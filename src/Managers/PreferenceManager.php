@@ -1,18 +1,18 @@
 <?php
 
-namespace Feadmin\Managers;
+namespace Weblebby\Framework\Managers;
 
 use Exception;
-use Feadmin\Items\Field\Contracts\FieldInterface;
-use Feadmin\Items\Field\Contracts\HasChildFieldInterface;
-use Feadmin\Items\Field\FieldValueItem;
-use Feadmin\Models\Metafield;
-use Feadmin\Models\Preference;
-use Feadmin\Services\MetafieldService;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
+use Weblebby\Framework\Items\Field\Contracts\HasChildFieldInterface;
+use Weblebby\Framework\Items\Field\FieldValueItem;
+use Weblebby\Framework\Models\Metafield;
+use Weblebby\Framework\Models\Preference;
+use Weblebby\Framework\Services\MetafieldService;
 
 class PreferenceManager
 {

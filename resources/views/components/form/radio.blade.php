@@ -1,9 +1,9 @@
 @aware(['name', 'bind', 'label', 'bag' => 'default'])
 @aware(['default' => $bind->$name ?? null])
 
-@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
-@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
-@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
+@php($id = \Weblebby\Framework\Support\FormComponent::id($name, $bag))
+@php($name = \Weblebby\Framework\Support\FormComponent::dottedToName($name))
+@php($dottedName = \Weblebby\Framework\Support\FormComponent::nameToDotted($name))
 
 <label class="fd-inline-flex fd-items-center">
     <input
@@ -12,7 +12,7 @@
             {{ $attributes
                 ->merge([
                     'type' => 'radio',
-                    'checked' => \Feadmin\Support\FormComponent::selected($dottedName, $default, $attributes),
+                    'checked' => \Weblebby\Framework\Support\FormComponent::selected($dottedName, $default, $attributes),
                 ])
                 ->class('fd-w-6
                         fd-h-6

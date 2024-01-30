@@ -1,17 +1,17 @@
 <?php
 
-namespace Feadmin\Facades;
+namespace Weblebby\Framework\Facades;
 
-use Feadmin\Managers\ThemeManager;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Weblebby\Framework\Managers\ThemeManager;
 
 /**
- * @method static \Feadmin\Abstracts\Theme\Theme register(\Feadmin\Abstracts\Theme\Theme|string $theme)
+ * @method static \Weblebby\Framework\Abstracts\Theme\Theme register(\Weblebby\Framework\Abstracts\Theme\Theme|string $theme)
  * @method static ThemeManager activate(string $themeName)
- * @method static Collection<int, \Feadmin\Abstracts\Theme\Theme> get()
- * @method static \Feadmin\Abstracts\Theme\Theme find(string $themeName)
- * @method static \Feadmin\Abstracts\Theme\Theme|null active()
+ * @method static Collection<int, \Weblebby\Framework\Abstracts\Theme\Theme> get()
+ * @method static \Weblebby\Framework\Abstracts\Theme\Theme find(string $themeName)
+ * @method static \Weblebby\Framework\Abstracts\Theme\Theme|null active()
  *
  * @see ThemeManager
  */

@@ -1,9 +1,9 @@
 <?php
 
-use Feadmin\Http\Controllers\User;
-use Feadmin\Items\PanelItem;
-use Feadmin\Support\Features;
 use Illuminate\Support\Facades\Route;
+use Weblebby\Framework\Http\Controllers\User;
+use Weblebby\Framework\Items\PanelItem;
+use Weblebby\Framework\Support\Features;
 
 /** @var PanelItem $panel */
 

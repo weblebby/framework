@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Feadmin\Concerns\Eloquent\Translatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Weblebby\Framework\Concerns\Eloquent\Translatable;
 
 class Term extends Model implements TranslatableContract
 {

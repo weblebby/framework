@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
-use Feadmin\Concerns\Eloquent\HasPosition;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Weblebby\Framework\Concerns\Eloquent\HasPosition;
 
 class Taxable extends Model
 {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\Theme;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Weblebby\Framework\Facades\Theme;
 
 class ThemeTemplatePostFieldController extends Controller
 {
@@ -22,7 +22,7 @@ class ThemeTemplatePostFieldController extends Controller
                 return [
                     'id' => $tab,
                     'title' => $section['title'],
-                    'fields' => view('feadmin::user.themes.templates.post-fields', ['fields' => $section['fields']])->render(),
+                    'fields' => view('weblebby::user.themes.templates.post-fields', ['fields' => $section['fields']])->render(),
                 ];
             })
             ->values()

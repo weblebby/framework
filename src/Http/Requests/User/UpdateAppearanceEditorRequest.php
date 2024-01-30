@@ -1,10 +1,9 @@
 <?php
 
-namespace Feadmin\Http\Requests\User;
+namespace Weblebby\Framework\Http\Requests\User;
 
-use Feadmin\Services\User\AppearanceEditorService;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\File;
+use Weblebby\Framework\Services\User\AppearanceEditorService;
 
 class UpdateAppearanceEditorRequest extends FormRequest
 {

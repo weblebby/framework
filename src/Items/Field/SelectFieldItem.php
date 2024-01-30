@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Items\Field;
+namespace Weblebby\Framework\Items\Field;
 
 use Illuminate\Validation\Rule;
 

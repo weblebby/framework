@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Concerns;
+namespace Weblebby\Framework\Concerns;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -17,7 +17,7 @@ trait HasViewAndRoutes
     {
         $filename = (new \ReflectionClass($this))->getFileName();
 
-        return dirname($filename) . '/../';
+        return dirname($filename).'/../';
     }
 
     public function path(?string $path = null): string
@@ -50,7 +50,7 @@ trait HasViewAndRoutes
 
     public function routeIs(...$patterns): bool
     {
-        $patterns = array_map(fn($pattern) => $this->namespaceWith($pattern), $patterns);
+        $patterns = array_map(fn ($pattern) => $this->namespaceWith($pattern), $patterns);
 
         return request()->routeIs(...$patterns);
     }

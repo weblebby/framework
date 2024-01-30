@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Items;
+namespace Weblebby\Framework\Items;
 
-use Feadmin\Concerns\HasArray;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use Weblebby\Framework\Concerns\HasArray;
 
 class NavigationLinkableItem implements \ArrayAccess, Arrayable, Jsonable, JsonSerializable
 {

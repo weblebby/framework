@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\Extension;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Weblebby\Framework\Facades\Extension;
 
 class ExtensionPreferenceController extends Controller
 {
@@ -28,7 +28,7 @@ class ExtensionPreferenceController extends Controller
 
         seo()->title("{$extension->pluralTitle()}: {$foundBag['title']}");
 
-        return view('feadmin::user.extensions.preferences.show', [
+        return view('weblebby::user.extensions.preferences.show', [
             'extension' => $extension,
             'selectedBag' => $bag,
             'preferences' => $preferences,

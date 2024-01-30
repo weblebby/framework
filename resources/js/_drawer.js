@@ -9,7 +9,7 @@ const Drawer = {
         element.dispatchEvent(
             new CustomEvent('drawer.open', {
                 detail,
-            })
+            }),
         )
     },
 
@@ -22,7 +22,7 @@ const Drawer = {
         element.dispatchEvent(
             new CustomEvent('drawer.hide', {
                 detail,
-            })
+            }),
         )
 
         setTimeout(() => {
@@ -31,7 +31,7 @@ const Drawer = {
             element.dispatchEvent(
                 new CustomEvent('drawer.hidden', {
                     detail,
-                })
+                }),
             )
         }, 300)
     },
@@ -78,4 +78,4 @@ document.querySelectorAll('[data-drawer-close]').forEach(button => {
     })
 })
 
-window.Feadmin.Drawer = Drawer
+window.Weblebby.Drawer = Drawer

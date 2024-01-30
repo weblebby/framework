@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User\API;
+namespace Weblebby\Framework\Http\Controllers\User\API;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\PostModels;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Weblebby\Framework\Facades\PostModels;
 
 class PostModelController extends Controller
 {

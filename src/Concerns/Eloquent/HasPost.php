@@ -1,16 +1,16 @@
 <?php
 
-namespace Feadmin\Concerns\Eloquent;
+namespace Weblebby\Framework\Concerns\Eloquent;
 
-use Feadmin\Facades\NavigationLinkable;
-use Feadmin\Facades\SmartMenu;
-use Feadmin\Items\Field\FieldItem;
-use Feadmin\Items\FieldSectionsItem;
-use Feadmin\Items\NavigationLinkableItem;
-use Feadmin\Items\SmartMenuItem;
-use Feadmin\Items\TaxonomyItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Weblebby\Framework\Facades\NavigationLinkable;
+use Weblebby\Framework\Facades\SmartMenu;
+use Weblebby\Framework\Items\Field\FieldItem;
+use Weblebby\Framework\Items\FieldSectionsItem;
+use Weblebby\Framework\Items\NavigationLinkableItem;
+use Weblebby\Framework\Items\SmartMenuItem;
+use Weblebby\Framework\Items\TaxonomyItem;
 
 trait HasPost
 {
@@ -31,7 +31,7 @@ trait HasPost
 
     public function url(): Attribute
     {
-        return Attribute::get(fn() => route('posts.show', $this->slug));
+        return Attribute::get(fn () => route('posts.show', $this->slug));
     }
 
     public function register(): void
@@ -65,7 +65,7 @@ trait HasPost
                     ->translatable()
                     ->label(__('URL'))
                     ->attributes([
-                        'prefix' => route('posts.show', '') . '/',
+                        'prefix' => route('posts.show', '').'/',
                     ])
                     ->rules(['nullable', 'string', 'max:191']),
 
@@ -136,12 +136,12 @@ trait HasPost
 
     public static function getTaxonomyFor(string $taxonomy): ?TaxonomyItem
     {
-        if (!str_starts_with($taxonomy, static::getModelName() . '_')) {
+        if (! str_starts_with($taxonomy, static::getModelName().'_')) {
             $taxonomy = sprintf('%s_%s', static::getModelName(), $taxonomy);
         }
 
         return array_values(
-            array_filter(static::getTaxonomies(), fn(TaxonomyItem $taxonomyItem) => $taxonomyItem->name() === $taxonomy)
+            array_filter(static::getTaxonomies(), fn (TaxonomyItem $taxonomyItem) => $taxonomyItem->name() === $taxonomy)
         )[0] ?? null;
     }
 

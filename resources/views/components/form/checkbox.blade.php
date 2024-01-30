@@ -1,13 +1,13 @@
 @aware(['name', 'bind', 'label', 'bag' => 'default', 'useHiddenInput' => false])
 @aware(['default' => $bind->$name ?? null])
 
-@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
-@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
-@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
+@php($id = \Weblebby\Framework\Support\FormComponent::id($name, $bag))
+@php($name = \Weblebby\Framework\Support\FormComponent::dottedToName($name))
+@php($dottedName = \Weblebby\Framework\Support\FormComponent::nameToDotted($name))
 
 @php($attributes = $attributes->merge(['value' => $default]))
 @php($default = filled(old()) ? old($dottedName, $default) : $default)
-@php($checked = \Feadmin\Support\FormComponent::selected($dottedName, $default, $attributes))
+@php($checked = \Weblebby\Framework\Support\FormComponent::selected($dottedName, $default, $attributes))
 
 @if ($useHiddenInput)
     <input type="hidden" id="{{ $id }}" name="{{ $name }}" value="{{ $checked ? '1' : '0' }}">

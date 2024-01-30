@@ -1,8 +1,8 @@
-<x-feadmin::layouts.panel>
-    <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
-        <x-feadmin::page.head :back="route('{{ panel }}::{{ view }}.index')">
-            <x-feadmin::page.title>{{ ${{ modelVariable }}->name }}</x-feadmin::page.title>
-        </x-feadmin::page.head>
-        <x-feadmin::card class="fd-space-y-3" padding></x-feadmin::card>
-    </x-feadmin::page>
-</x-feadmin::layouts.panel>
+<x-weblebby::layouts.panel>
+    <x-weblebby::page class="lg:fd-w-2/3 fd-mx-auto">
+        <x-weblebby::page.head :back="route('{{ panel }}::{{ view }}.index')">
+            <x-weblebby::page.title>{{ ${{ modelVariable }}->name }}</x-weblebby::page.title>
+        </x-weblebby::page.head>
+        <x-weblebby::card class="fd-space-y-3" padding></x-weblebby::card>
+    </x-weblebby::page>
+</x-weblebby::layouts.panel>

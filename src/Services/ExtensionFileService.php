@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Services;
+namespace Weblebby\Framework\Services;
 
-use Feadmin\Abstracts\Extension\Extension as ExtensionAbstract;
-use Feadmin\Facades\Extension;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
+use Weblebby\Framework\Abstracts\Extension\Extension as ExtensionAbstract;
+use Weblebby\Framework\Facades\Extension;
 
 class ExtensionFileService
 {

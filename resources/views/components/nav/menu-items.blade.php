@@ -1,10 +1,10 @@
 @foreach (panel()->menu('sidebar')->get() as $category)
-    <x-feadmin::nav class="fd-pr-3">
+    <x-weblebby::nav class="fd-pr-3">
         @if ($category['title'])
-            <x-feadmin::nav.title>{{ $category['title'] }}</x-feadmin::nav.title>
+            <x-weblebby::nav.title>{{ $category['title'] }}</x-weblebby::nav.title>
         @endif
         @foreach ($category['items'] as $item)
-            <x-feadmin::nav.item
+            <x-weblebby::nav.item
                     :icon="$item['icon'] ?? null"
                     :badge="$item['badge'] ?? null"
                     :href="$item['url']"
@@ -13,15 +13,15 @@
                 @if ($item['children'])
                     <x-slot:children>
                         @foreach ($item['children'] as $child)
-                            <x-feadmin::nav.sub-item
+                            <x-weblebby::nav.sub-item
                                     :href="$child['url']"
                                     :active="$child['is_active']"
-                            >{{ $child['title'] }}</x-feadmin::nav.sub-item>
+                            >{{ $child['title'] }}</x-weblebby::nav.sub-item>
                         @endforeach
                     </x-slot:children>
                 @endif
                 {{ $item['title'] }}
-            </x-feadmin::nav.item>
+            </x-weblebby::nav.item>
         @endforeach
-    </x-feadmin::nav>
+    </x-weblebby::nav>
 @endforeach

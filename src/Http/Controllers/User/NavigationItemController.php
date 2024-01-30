@@ -1,13 +1,13 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Enums\NavigationTypeEnum;
-use Feadmin\Http\Requests\User\StoreNavigationItemRequest;
-use Feadmin\Models\Navigation;
-use Feadmin\Models\NavigationItem;
 use Illuminate\Http\RedirectResponse;
+use Weblebby\Framework\Enums\NavigationTypeEnum;
+use Weblebby\Framework\Http\Requests\User\StoreNavigationItemRequest;
+use Weblebby\Framework\Models\Navigation;
+use Weblebby\Framework\Models\NavigationItem;
 
 class NavigationItemController extends Controller
 {
@@ -34,10 +34,9 @@ class NavigationItemController extends Controller
 
     public function update(
         StoreNavigationItemRequest $request,
-        Navigation                 $navigation,
-        NavigationItem             $item
-    ): RedirectResponse
-    {
+        Navigation $navigation,
+        NavigationItem $item
+    ): RedirectResponse {
         abort_if($navigation->id !== $item->navigation_id, 404);
 
         $item->fill($request->safeWithCasts());

@@ -1,15 +1,15 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\Preference;
-use Feadmin\Http\Requests\User\UpdatePreferenceRequest;
-use Feadmin\Items\Field\CodeEditorFieldItem;
-use Feadmin\Services\FieldInputService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Weblebby\Framework\Facades\Preference;
+use Weblebby\Framework\Http\Requests\User\UpdatePreferenceRequest;
+use Weblebby\Framework\Items\Field\CodeEditorFieldItem;
+use Weblebby\Framework\Services\FieldInputService;
 
 class PreferenceController extends Controller
 {
@@ -35,7 +35,7 @@ class PreferenceController extends Controller
 
         seo()->title($selectedBag['title']);
 
-        return view('feadmin::user.preferences.show', [
+        return view('weblebby::user.preferences.show', [
             ...compact('bags', 'fields', 'isCodeEditorNeeded'),
             'selectedBagId' => $bag,
             'namespace' => self::$namespace,

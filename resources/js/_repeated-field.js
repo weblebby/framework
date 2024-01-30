@@ -741,6 +741,6 @@ document.addEventListener('click', e => {
     })
 })
 
-window.Feadmin.RepeatedField = RepeatedField
+window.Weblebby.RepeatedField = RepeatedField
 
 export default RepeatedField

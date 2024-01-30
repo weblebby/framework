@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Items\Field\Contracts;
+namespace Weblebby\Framework\Items\Field\Contracts;
 
 interface UploadableFieldInterface
 {

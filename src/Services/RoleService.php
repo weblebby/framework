@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Services;
+namespace Weblebby\Framework\Services;
 
-use Feadmin\Models\Role;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Weblebby\Framework\Models\Role;
 
 class RoleService
 {

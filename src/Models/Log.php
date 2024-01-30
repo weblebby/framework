@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

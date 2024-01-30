@@ -1,13 +1,13 @@
 <?php
 
-namespace Feadmin\Items\Field;
+namespace Weblebby\Framework\Items\Field;
 
 use ArrayAccess;
-use Feadmin\Concerns\HasArray;
-use Feadmin\Items\Field\Contracts\FieldInterface;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
+use Weblebby\Framework\Concerns\HasArray;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
 
 class FieldValueItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {

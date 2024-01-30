@@ -40,6 +40,6 @@ const Toastr = {
 
 Toastr.init()
 
-window.Feadmin.Toastr = Toastr
+window.Weblebby.Toastr = Toastr
 
 export default Toastr

@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Items\Field;
+namespace Weblebby\Framework\Items\Field;
 
 class InformationalFieldItem extends FieldItem
 {

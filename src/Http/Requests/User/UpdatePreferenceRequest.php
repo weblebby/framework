@@ -1,13 +1,13 @@
 <?php
 
-namespace Feadmin\Http\Requests\User;
+namespace Weblebby\Framework\Http\Requests\User;
 
-use Feadmin\Facades\Extension;
-use Feadmin\Facades\Preference;
-use Feadmin\Services\FieldInputService;
-use Feadmin\Services\FieldValidationService;
 use Illuminate\Foundation\Http\FormRequest;
 use Weblebby\Extensions\Multilingual\Support\LocaleRules;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Facades\Preference;
+use Weblebby\Framework\Services\FieldInputService;
+use Weblebby\Framework\Services\FieldValidationService;
 
 class UpdatePreferenceRequest extends FormRequest
 {

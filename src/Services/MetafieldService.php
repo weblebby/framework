@@ -1,15 +1,15 @@
 <?php
 
-namespace Feadmin\Services;
+namespace Weblebby\Framework\Services;
 
-use Feadmin\Enums\FieldTypeEnum;
-use Feadmin\Facades\Extension;
-use Feadmin\Items\Field\Contracts\FieldInterface;
-use Feadmin\Items\Field\Contracts\UploadableFieldInterface;
-use Feadmin\Items\Field\TextFieldItem;
-// Dont forget to check the extension is installed before using it
-use Feadmin\Models\Metafield;
 use Weblebby\Extensions\Multilingual\Facades\Localization;
+use Weblebby\Framework\Enums\FieldTypeEnum;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
+use Weblebby\Framework\Items\Field\Contracts\UploadableFieldInterface;
+// Dont forget to check the extension is installed before using it
+use Weblebby\Framework\Items\Field\TextFieldItem;
+use Weblebby\Framework\Models\Metafield;
 
 class MetafieldService
 {

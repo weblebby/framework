@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
-use Feadmin\Concerns\Eloquent\HasMetafields;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Weblebby\Framework\Concerns\Eloquent\HasMetafields;
 
 class Preference extends Model
 {

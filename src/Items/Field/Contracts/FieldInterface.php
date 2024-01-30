@@ -1,8 +1,8 @@
 <?php
 
-namespace Feadmin\Items\Field\Contracts;
+namespace Weblebby\Framework\Items\Field\Contracts;
 
-use Feadmin\Enums\FieldTypeEnum;
+use Weblebby\Framework\Enums\FieldTypeEnum;
 
 interface FieldInterface
 {

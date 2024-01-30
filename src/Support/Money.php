@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Support;
+namespace Weblebby\Framework\Support;
 
-use Feadmin\Enums\CurrencyEnum;
 use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use JetBrains\PhpStorm\ArrayShape;
 use NumberFormatter;
+use Weblebby\Framework\Enums\CurrencyEnum;
 
 class Money implements Castable
 {

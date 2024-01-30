@@ -1,8 +1,7 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
-use Feadmin\Concerns\Eloquent\HasRelation;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,6 +10,7 @@ use Illuminate\Support\Str;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
+use Weblebby\Framework\Concerns\Eloquent\HasRelation;
 
 abstract class User extends Authenticatable implements HasMedia
 {

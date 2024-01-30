@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Facades;
+namespace Weblebby\Framework\Facades;
 
-use Feadmin\Contracts\Eloquent\PostInterface;
-use Feadmin\Items\TaxonomyItem;
-use Feadmin\Managers\PostModelsManager;
 use Illuminate\Support\Facades\Facade;
+use Weblebby\Framework\Contracts\Eloquent\PostInterface;
+use Weblebby\Framework\Items\TaxonomyItem;
+use Weblebby\Framework\Managers\PostModelsManager;
 
 /**
  * @method static void register(string|array $model)

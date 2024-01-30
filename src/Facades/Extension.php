@@ -1,22 +1,22 @@
 <?php
 
-namespace Feadmin\Facades;
+namespace Weblebby\Framework\Facades;
 
-use Feadmin\Managers\ExtensionManager;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Weblebby\Framework\Managers\ExtensionManager;
 
 /**
- * @method static \Feadmin\Abstracts\Extension\Extension register(string $extension)
- * @method static \Feadmin\Abstracts\Extension\Extension|null unregister(string $name)
+ * @method static \Weblebby\Framework\Abstracts\Extension\Extension register(string $extension)
+ * @method static \Weblebby\Framework\Abstracts\Extension\Extension|null unregister(string $name)
  * @method static void loadRoutes()
  * @method static bool has(string $name, bool $onlyEnabled = true)
- * @method static Collection<int, \Feadmin\Abstracts\Extension\Extension> get()
- * @method static Collection<int, \Feadmin\Abstracts\Extension\Extension> getWithDeactivated()
- * @method static \Feadmin\Abstracts\Extension\Extension|null findByName(string $name)
- * @method static \Feadmin\Abstracts\Extension\Extension findByNameOrFail(string $name)
- * @method static \Feadmin\Abstracts\Extension\Extension|null findByClass(string $class)
- * @method static \Feadmin\Abstracts\Extension\Extension findByClassOrFail(string $class)
+ * @method static Collection<int, \Weblebby\Framework\Abstracts\Extension\Extension> get()
+ * @method static Collection<int, \Weblebby\Framework\Abstracts\Extension\Extension> getWithDeactivated()
+ * @method static \Weblebby\Framework\Abstracts\Extension\Extension|null findByName(string $name)
+ * @method static \Weblebby\Framework\Abstracts\Extension\Extension findByNameOrFail(string $name)
+ * @method static \Weblebby\Framework\Abstracts\Extension\Extension|null findByClass(string $class)
+ * @method static \Weblebby\Framework\Abstracts\Extension\Extension findByClassOrFail(string $class)
  *
  * @see ExtensionManager
  */

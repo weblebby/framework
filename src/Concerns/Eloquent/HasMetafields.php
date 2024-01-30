@@ -1,15 +1,7 @@
 <?php
 
-namespace Feadmin\Concerns\Eloquent;
+namespace Weblebby\Framework\Concerns\Eloquent;
 
-use Feadmin\Enums\FieldTypeEnum;
-use Feadmin\Items\Field\Collections\FieldCollection;
-use Feadmin\Items\Field\FieldItem;
-use Feadmin\Items\Field\FieldValueItem;
-use Feadmin\Models\Metafield;
-use Feadmin\Models\Post;
-use Feadmin\Models\Preference;
-use Feadmin\Models\Taxonomy;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -21,13 +13,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Weblebby\Framework\Enums\FieldTypeEnum;
+use Weblebby\Framework\Items\Field\Collections\FieldCollection;
+use Weblebby\Framework\Items\Field\FieldItem;
+use Weblebby\Framework\Items\Field\FieldValueItem;
+use Weblebby\Framework\Models\Metafield;
+use Weblebby\Framework\Models\Post;
+use Weblebby\Framework\Models\Preference;
+use Weblebby\Framework\Models\Taxonomy;
 
 trait HasMetafields
 {
     protected static function bootHasMetafields(): void
     {
         static::deleting(function (self $model) {
-            $model->metafields()->cursor()->each(fn(Metafield $metafield) => $metafield->delete());
+            $model->metafields()->cursor()->each(fn (Metafield $metafield) => $metafield->delete());
         });
     }
 
@@ -38,7 +38,7 @@ trait HasMetafields
 
     public function scopeByMetafield(Builder $builder, string $key, mixed $value): Builder
     {
-        return $builder->whereHas('metafields', fn($q) => $q->where('key', $key)->where('value', $value));
+        return $builder->whereHas('metafields', fn ($q) => $q->where('key', $key)->where('value', $value));
     }
 
     public function getMetafield(string $key): ?Metafield
@@ -52,8 +52,7 @@ trait HasMetafields
     public function getMetafieldValues(
         ?FieldCollection $fieldDefinitions = null,
         ?string $locale = null
-    ): array
-    {
+    ): array {
         $values = [];
 
         if ($this instanceof Post && is_null($fieldDefinitions)) {
@@ -101,8 +100,7 @@ trait HasMetafields
         ?string $default = null,
         ?FieldItem $fieldDefinition = null,
         ?string $locale = null,
-    ): mixed
-    {
+    ): mixed {
         $metafield = $this->getMetafield($key);
 
         if (is_null($metafield)) {
@@ -140,7 +138,7 @@ trait HasMetafields
 
         if (($field['type'] ?? null) === FieldTypeEnum::TEL) {
             $phoneRule = collect($field['rules'])
-                ->filter(fn($rule) => is_string($rule) && str_starts_with($rule, 'phone:'))
+                ->filter(fn ($rule) => is_string($rule) && str_starts_with($rule, 'phone:'))
                 ->first();
 
             $phoneCountries = str($phoneRule)
@@ -160,7 +158,7 @@ trait HasMetafields
             return null;
         }
 
-        $data = ['original_value' => !$isTranslatable ? $value : null];
+        $data = ['original_value' => ! $isTranslatable ? $value : null];
 
         if ($isTranslatable) {
             $data[$locale ?? app()->getLocale()]['value'] = $value;
@@ -184,10 +182,9 @@ trait HasMetafields
      */
     public function setMetafieldWithSchema(
         string|array|Arrayable $key,
-        ?FieldValueItem        $fieldValue = null,
-        ?string                $locale = null
-    ): array|Metafield|null
-    {
+        ?FieldValueItem $fieldValue = null,
+        ?string $locale = null
+    ): array|Metafield|null {
         if ($key instanceof Enumerable) {
             $key = $key->all();
         } elseif ($key instanceof Arrayable) {
@@ -225,8 +222,7 @@ trait HasMetafields
     public function deleteMetafields(
         array|string|null $startsWith = null,
         array|string|null $equals = null,
-    ): Collection
-    {
+    ): Collection {
         $deleted = collect();
 
         if (is_string($startsWith)) {
@@ -240,7 +236,7 @@ trait HasMetafields
         if ($startsWith) {
             $metafields = $this->metafields()->where(function (Builder $builder) use ($startsWith) {
                 foreach ($startsWith as $value) {
-                    $builder->orWhere('key', 'like', $value . '%');
+                    $builder->orWhere('key', 'like', $value.'%');
                 }
             })->get();
 
@@ -276,13 +272,13 @@ trait HasMetafields
 
             $metafields = $this->metafields()
                 ->get()
-                ->mapWithKeys(fn(Metafield $metafield) => [$metafield->key => $metafield])
+                ->mapWithKeys(fn (Metafield $metafield) => [$metafield->key => $metafield])
                 ->undot();
 
             $map = function ($metafield) use (&$map) {
-                if (is_array($metafield) && collect($metafield)->keys()->every(fn($key) => is_numeric($key))) {
+                if (is_array($metafield) && collect($metafield)->keys()->every(fn ($key) => is_numeric($key))) {
                     return collect($metafield)->map($map)
-                        ->sortBy(fn($value, $key) => $key)
+                        ->sortBy(fn ($value, $key) => $key)
                         ->values()
                         ->all();
                 }
@@ -323,7 +319,7 @@ trait HasMetafields
 
             // Get reordered field keys from request and remove "fields." prefix.
             $reorderedFieldKeys = collect($reorderedFields)
-                ->map(fn($value, $key) => str_replace('fields.', '', $key))
+                ->map(fn ($value, $key) => str_replace('fields.', '', $key))
                 ->values()
                 ->toArray();
 
@@ -338,7 +334,7 @@ trait HasMetafields
 
             // Firstly, we update new keys with "fields." prefix for avoid key conflicts.
             foreach ($reorderedFields as $key => $value) {
-                if (!str_starts_with($value, 'fields.')) {
+                if (! str_starts_with($value, 'fields.')) {
                     $value = "fields.{$value}";
                 }
 

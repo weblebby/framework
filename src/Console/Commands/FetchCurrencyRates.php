@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Console\Commands;
+namespace Weblebby\Framework\Console\Commands;
 
-use Feadmin\Support\CurrencyRate;
 use Illuminate\Console\Command;
+use Weblebby\Framework\Support\CurrencyRate;
 
 class FetchCurrencyRates extends Command
 {
@@ -12,7 +12,7 @@ class FetchCurrencyRates extends Command
      *
      * @var string
      */
-    protected $signature = 'feadmin:fetch-currencies';
+    protected $signature = 'weblebby:fetch-currencies';
 
     /**
      * The console command description.

@@ -1,31 +1,31 @@
 <?php
 
-namespace Feadmin\Console\Commands;
+namespace Weblebby\Framework\Console\Commands;
 
 use App\Models\User;
-use Feadmin\Database\Seeders\CreateDefaultRoles;
-use Feadmin\Facades\Extension;
-use Feadmin\Models\Role;
-use Feadmin\Providers\FeadminServiceProvider;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Weblebby\Framework\Database\Seeders\CreateDefaultRoles;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Models\Role;
+use Weblebby\Framework\Providers\WeblebbyServiceProvider;
 
-class InstallFeadmin extends Command
+class InstallWeblebby extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'feadmin:install';
+    protected $signature = 'weblebby:install';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Setup feadmin panel.';
+    protected $description = 'Setup weblebby panel.';
 
     /**
      * Execute the console command.
@@ -40,7 +40,7 @@ class InstallFeadmin extends Command
         $this->createLocales();
         $this->createAdmin();
 
-        $this->info('Feadmin installed successfully.');
+        $this->info('Weblebby installed successfully.');
 
         return static::SUCCESS;
     }
@@ -48,7 +48,7 @@ class InstallFeadmin extends Command
     private function publishVendor(): void
     {
         $this->call('vendor:publish', [
-            '--provider' => FeadminServiceProvider::class,
+            '--provider' => WeblebbyServiceProvider::class,
         ]);
     }
 

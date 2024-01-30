@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Items\Field\Collections;
+namespace Weblebby\Framework\Items\Field\Collections;
 
-use Feadmin\Items\Field\Contracts\FieldInterface;
-use Feadmin\Items\Field\Contracts\HasChildFieldInterface;
 use Illuminate\Support\Collection;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
+use Weblebby\Framework\Items\Field\Contracts\HasChildFieldInterface;
 
 class FieldCollection extends Collection
 {

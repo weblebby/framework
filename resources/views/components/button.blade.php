@@ -49,7 +49,7 @@
     ->class($sizeClasses)
     ->class($variantClasses) }}>
 @if ($icon ?? null)
-    <x-dynamic-component component="feadmin::icons.{{ $icon }}" class="fd-w-4 fd-h-4" />
+    <x-dynamic-component component="weblebby::icons.{{ $icon }}" class="fd-w-4 fd-h-4" />
 @endif
 <div data-spinner>
     <svg class="fd-animate-spin fd-h-5 fd-w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

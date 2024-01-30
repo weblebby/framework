@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Facades;
+namespace Weblebby\Framework\Facades;
 
-use Feadmin\Items\SmartMenuItem;
-use Feadmin\Managers\SmartMenuManager;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Weblebby\Framework\Items\SmartMenuItem;
+use Weblebby\Framework\Managers\SmartMenuManager;
 
 /**
  * @method static SmartMenuManager add(SmartMenuItem $data)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Items\Field\Concerns;
+namespace Weblebby\Framework\Items\Field\Concerns;
 
 use Illuminate\Support\Str;
 

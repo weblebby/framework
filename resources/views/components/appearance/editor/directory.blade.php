@@ -9,7 +9,7 @@
 @php($isDirectory = is_array($files) || $files instanceof \Illuminate\Contracts\Support\Arrayable)
 
 @if ($isDirectory)
-    <x-feadmin::collapsible
+    <x-weblebby::collapsible
             class="fd-space-y-1"
             data-relative="{{ $recursiveDirectory }}"
             :expanded="$directory === '' || str_starts_with($requestedFile->getRelativePathname(), $recursiveDirectory)"
@@ -19,24 +19,24 @@
                     class="fd-w-full fd-flex fd-items-center fd-gap-2 fd-p-1 fd-text-sm fd-rounded fd-text-zinc-400 hover:fd-bg-[#323232] fd-transition-colors"
                     data-collapse-toggle
             >
-                <x-feadmin::icons.caret-right-fill
+                <x-weblebby::icons.caret-right-fill
                         class="fd-w-4 fd-h-4 fd-transition-transform"
                         data-collapse-icon
                 />
                 <span>{{ $directory }}</span>
             </button>
         @endif
-        <x-feadmin::collapsible.content class="fd-space-y-1 {{ $directory !== '' ? 'fd-ms-4' : '' }}">
+        <x-weblebby::collapsible.content class="fd-space-y-1 {{ $directory !== '' ? 'fd-ms-4' : '' }}">
             @foreach ($files as $directory => $childFiles)
-                <x-feadmin::appearance.editor.directory
+                <x-weblebby::appearance.editor.directory
                         :directory="$directory"
                         :recursiveDirectory="sprintf('%s/%s', $recursiveDirectory, $directory)"
                         :files="$childFiles"
                         :requestedFile="$requestedFile"
                 />
             @endforeach
-        </x-feadmin::collapsible.content>
-    </x-feadmin::collapsible>
+        </x-weblebby::collapsible.content>
+    </x-weblebby::collapsible>
 @else
     <a
             href="{{ panel_route('appearance.editor.index', ['file' => $files->getRelativePathname()]) }}"

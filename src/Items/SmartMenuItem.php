@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Items;
+namespace Weblebby\Framework\Items;
 
-use Feadmin\Concerns\HasArray;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
+use Weblebby\Framework\Concerns\HasArray;
 
 class SmartMenuItem implements \ArrayAccess, Arrayable, Jsonable, JsonSerializable
 {

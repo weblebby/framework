@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Services\User;
+namespace Weblebby\Framework\Services\User;
 
-use Feadmin\Items\TaxonomyItem;
-use Feadmin\Models\Taxonomy;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Weblebby\Framework\Items\TaxonomyItem;
+use Weblebby\Framework\Models\Taxonomy;
 
 class UserTaxonomyService
 {
@@ -14,7 +14,7 @@ class UserTaxonomyService
     {
         return Taxonomy::query()
             ->taxonomy($taxonomy->name())
-            ->with(['term' => fn($q) => $q->withTranslation()->select('id')]);
+            ->with(['term' => fn ($q) => $q->withTranslation()->select('id')]);
     }
 
     public function getAllTaxonomies(TaxonomyItem $taxonomy): Collection
@@ -48,11 +48,11 @@ class UserTaxonomyService
         }
 
         return $this->getTaxonomiesBuilder($taxonomy)
-            ->when($ignore, fn(Builder $q) => $q->where('id', '!=', $ignore))
+            ->when($ignore, fn (Builder $q) => $q->where('id', '!=', $ignore))
             ->get()
             ->when(
                 $locale,
-                fn(Collection $taxonomies) => $taxonomies->transform(function (Taxonomy $taxonomy) use ($locale) {
+                fn (Collection $taxonomies) => $taxonomies->transform(function (Taxonomy $taxonomy) use ($locale) {
                     $taxonomy->term->setDefaultLocale($locale);
 
                     return $taxonomy;

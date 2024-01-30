@@ -1,19 +1,19 @@
 <?php
 
-namespace Feadmin\Abstracts\Extension;
+namespace Weblebby\Framework\Abstracts\Extension;
 
 use ArrayAccess;
-use Feadmin\Concerns\HasArray;
-use Feadmin\Concerns\HasViewAndRoutes;
-use Feadmin\Enums\ExtensionCategoryEnum;
-use Feadmin\Facades\Panel;
-use Feadmin\Services\ExtensionFileService;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use JsonSerializable;
+use Weblebby\Framework\Concerns\HasArray;
+use Weblebby\Framework\Concerns\HasViewAndRoutes;
+use Weblebby\Framework\Enums\ExtensionCategoryEnum;
+use Weblebby\Framework\Facades\Panel;
+use Weblebby\Framework\Services\ExtensionFileService;
 
 abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {

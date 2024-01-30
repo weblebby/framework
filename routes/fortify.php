@@ -1,6 +1,5 @@
 <?php
 
-use Feadmin\Items\PanelItem;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -21,6 +20,7 @@ use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
 use Laravel\Fortify\Http\Controllers\TwoFactorSecretKeyController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 use Laravel\Fortify\RoutePath;
+use Weblebby\Framework\Items\PanelItem;
 
 /** @var PanelItem $panel */
 Route::group(['middleware' => config('fortify.middleware', ['web'])], function () use ($panel) {
@@ -68,7 +68,7 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
     }
 
     // Registration...
-    if (Features::enabled(Features::registration()) && $panel->supports(\Feadmin\Support\Features::registration())) {
+    if (Features::enabled(Features::registration()) && $panel->supports(\Weblebby\Framework\Support\Features::registration())) {
         if ($enableViews) {
             Route::get(RoutePath::for('register', '/register'), [RegisteredUserController::class, 'create'])
                 ->middleware(['guest:'.config('fortify.guard')])

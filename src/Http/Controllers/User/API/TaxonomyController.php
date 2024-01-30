@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User\API;
+namespace Weblebby\Framework\Http\Controllers\User\API;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Models\Taxonomy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Weblebby\Framework\Models\Taxonomy;
 
 class TaxonomyController extends Controller
 {
@@ -21,12 +21,12 @@ class TaxonomyController extends Controller
         $taxonomies = Taxonomy::query()
             ->select('id', 'term_id')
             ->with([
-                'term' => fn($q) => $q->select('id')->withTranslation(),
+                'term' => fn ($q) => $q->select('id')->withTranslation(),
             ])
             ->search($validated['term'], $validated['_locale'])
             ->taxonomy($taxonomy)
             ->get()
-            ->map(fn(Taxonomy $taxonomy) => [
+            ->map(fn (Taxonomy $taxonomy) => [
                 'taxonomy_id' => $taxonomy->id,
                 'title' => $taxonomy->term->setDefaultLocale($validated['_locale'])->title,
             ]);

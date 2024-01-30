@@ -1,6 +1,6 @@
 1. Şu komutu yazın.
 
-```$ php artisan feadmin:install```
+```$ php artisan weblebby:install```
 
 2. AppServiceProvider içine şunu yazın.
 
@@ -30,11 +30,12 @@ $this->routes(function () {
 
 4. User modelinin extendini değiştirin.
 
-```use Illuminate\Foundation\Auth\User as Authenticatable;``` yerine ```use Feadmin\Models\User as Authenticatable;```
+```use Illuminate\Foundation\Auth\User as Authenticatable;```
+yerine ```use Weblebby\Framework\Models\User as Authenticatable;```
 
 5. Middleware
 
-'web' grubu içerisine \Feadmin\Http\Middleware\Panel::class middleware ını ekleyin.
+'web' grubu içerisine \Weblebby\Framework\Http\Middleware\Panel::class middleware ını ekleyin.
 
 6. Yetikler
 

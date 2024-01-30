@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Providers;
+namespace Weblebby\Framework\Providers;
 
-use Feadmin\Facades\Preference;
-use Feadmin\Items\Field\FieldItem;
 use Illuminate\Support\ServiceProvider;
+use Weblebby\Framework\Facades\Preference;
+use Weblebby\Framework\Items\Field\FieldItem;
 
 class PreferenceServiceProvider extends ServiceProvider
 {

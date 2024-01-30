@@ -1,8 +1,8 @@
 <?php
 
-namespace Feadmin\Hooks;
+namespace Weblebby\Framework\Hooks;
 
-use Feadmin\Items\PanelItem;
+use Weblebby\Framework\Items\PanelItem;
 
 class PermissionHook
 {
@@ -54,7 +54,7 @@ class PermissionHook
         return collect($this->get())
             ->map(function ($group, $groupKey) {
                 return collect($group['permissions'])
-                    ->map(fn($_, $permKey) => "{$groupKey}:{$permKey}")
+                    ->map(fn ($_, $permKey) => "{$groupKey}:{$permKey}")
                     ->values();
             })
             ->collapse()
@@ -68,8 +68,7 @@ class PermissionHook
         bool $appearance = true,
         bool $preferences = true,
         bool $roles = true,
-    ): void
-    {
+    ): void {
         if ($navigations) {
             $this
                 ->withGroup('navigation')

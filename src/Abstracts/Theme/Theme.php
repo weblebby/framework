@@ -1,15 +1,15 @@
 <?php
 
-namespace Feadmin\Abstracts\Theme;
+namespace Weblebby\Framework\Abstracts\Theme;
 
 use ArrayAccess;
-use Feadmin\Concerns\HasArray;
-use Feadmin\Concerns\HasViewAndRoutes;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use JsonSerializable;
+use Weblebby\Framework\Concerns\HasArray;
+use Weblebby\Framework\Concerns\HasViewAndRoutes;
 
 abstract class Theme implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {
@@ -27,14 +27,14 @@ abstract class Theme implements Arrayable, ArrayAccess, Jsonable, JsonSerializab
     abstract public function templates(): array;
 
     /**
-     * @param class-string $postType
+     * @param  class-string  $postType
      * @return Collection<int, Template>
      */
     public function templatesFor(string $postType): Collection
     {
         return collect($this->templates())
-            ->map(fn(string $template) => new $template())
-            ->filter(fn(Template $template) => in_array($postType, Arr::wrap($template->postTypes())))
+            ->map(fn (string $template) => new $template())
+            ->filter(fn (Template $template) => in_array($postType, Arr::wrap($template->postTypes())))
             ->values();
     }
 

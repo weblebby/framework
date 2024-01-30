@@ -1,8 +1,8 @@
 <?php
 
-namespace Feadmin\Items\Field;
+namespace Weblebby\Framework\Items\Field;
 
-use Feadmin\Items\Field\Enums\CodeEditorLanguageEnum;
+use Weblebby\Framework\Items\Field\Enums\CodeEditorLanguageEnum;
 
 class CodeEditorFieldItem extends TextFieldItem
 {

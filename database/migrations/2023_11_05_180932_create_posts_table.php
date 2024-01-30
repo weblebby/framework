@@ -1,11 +1,12 @@
 <?php
 
-use Feadmin\Enums\PostStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Weblebby\Framework\Enums\PostStatusEnum;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */

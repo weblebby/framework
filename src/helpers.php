@@ -1,10 +1,10 @@
 <?php
 
-use Feadmin\Facades\Panel;
-use Feadmin\Facades\Preference;
-use Feadmin\Items\PanelItem;
-use Feadmin\Managers\PanelManager;
 use Illuminate\Http\RedirectResponse;
+use Weblebby\Framework\Facades\Panel;
+use Weblebby\Framework\Facades\Preference;
+use Weblebby\Framework\Items\PanelItem;
+use Weblebby\Framework\Managers\PanelManager;
 
 function panel(?string $panel = null): ?PanelItem
 {

@@ -7,17 +7,17 @@
     'hidden' => false,
 ])
 
-@php($dottedName = \Feadmin\Support\FormComponent::nameToDottedWithoutEmptyWildcard($name))
+@php($dottedName = \Weblebby\Framework\Support\FormComponent::nameToDottedWithoutEmptyWildcard($name))
 
 <div {{ $attributes
     ->merge(['data-form-group' => $dottedName, 'data-original-form-group' => $dottedName, 'hidden' => $hidden])
     ->class(['fd-flex fd-flex-col fd-space-y-1', 'fd-hidden' => $hidden])
     ->class($dottedName && $errors->{$bag}->has($dottedName) && $withErrors ? 'fd-has-error' : '') }}>
     @if ($label)
-        <x-feadmin::form.label>{{ $label }}</x-feadmin::form.label>
+        <x-weblebby::form.label>{{ $label }}</x-weblebby::form.label>
     @endif
     {{ $slot }}
     @if ($withErrors)
-        <x-feadmin::form.errors />
+        <x-weblebby::form.errors />
     @endif
 </div>

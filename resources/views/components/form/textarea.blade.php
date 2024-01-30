@@ -2,9 +2,9 @@
 @aware(['name', 'bind', 'bag' => 'default', 'prefix' => null, 'suffix' => null])
 @props(['default' => $bind->$name ?? null])
 
-@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
-@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
-@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
+@php($id = \Weblebby\Framework\Support\FormComponent::id($name, $bag))
+@php($name = \Weblebby\Framework\Support\FormComponent::dottedToName($name))
+@php($dottedName = \Weblebby\Framework\Support\FormComponent::nameToDotted($name))
 @php($value = old($dottedName, $default))
 
 @if ($attributes->has('data-ckeditor'))
@@ -13,13 +13,13 @@
 
 <div class="fd-flex fd-items-start fd-relative">
     @if ($prefix || $translatable)
-        <x-feadmin::form.prefix class="fd-mt-2 -fd-mr-[1px] fd-rounded-l">
+        <x-weblebby::form.prefix class="fd-mt-2 -fd-mr-[1px] fd-rounded-l">
             @if ($translatable)
-                <x-feadmin::form.prefix-translatable />
+                <x-weblebby::form.prefix-translatable />
             @else
                 {{ $prefix }}
             @endif
-        </x-feadmin::form.prefix>
+        </x-weblebby::form.prefix>
     @endif
     <textarea
             id="{{ $id }}"
@@ -27,7 +27,7 @@
             {{ $attributes->class('fd-block fd-w-full fd-rounded-md fd-border-gray-300 fd-shadow-sm focus:fd-border-sky-300 focus:fd-ring focus:fd-ring-sky-200 focus:fd-ring-opacity-50') }}
     >{{ $value }}</textarea>
     @if ($suffix)
-        <x-feadmin::form.prefix class="fd-mt-2 -fd-ml-[1px] fd-rounded-r"
-                                :suffix="true">{{ $suffix }}</x-feadmin::form.prefix>
+        <x-weblebby::form.prefix class="fd-mt-2 -fd-ml-[1px] fd-rounded-r"
+                                 :suffix="true">{{ $suffix }}</x-weblebby::form.prefix>
     @endif
 </div>

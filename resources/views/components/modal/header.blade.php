@@ -7,5 +7,5 @@
             <div class="fd-text-zinc-500 fd-font-medium">{{ $subtitle }}</div>
         @endif
     </div>
-    <x-feadmin::button icon="x" data-modal-close />
+    <x-weblebby::button icon="x" data-modal-close />
 </div>

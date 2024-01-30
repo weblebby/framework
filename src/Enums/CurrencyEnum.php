@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Enums;
+namespace Weblebby\Framework\Enums;
 
-use Feadmin\Support\Currency;
-use Feadmin\Support\CurrencyRate;
 use Symfony\Component\Intl\Currencies;
+use Weblebby\Framework\Support\Currency;
+use Weblebby\Framework\Support\CurrencyRate;
 
 enum CurrencyEnum: string
 {

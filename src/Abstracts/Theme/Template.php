@@ -1,13 +1,13 @@
 <?php
 
-namespace Feadmin\Abstracts\Theme;
+namespace Weblebby\Framework\Abstracts\Theme;
 
 use ArrayAccess;
-use Feadmin\Concerns\HasArray;
-use Feadmin\Items\FieldSectionsItem;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
+use Weblebby\Framework\Concerns\HasArray;
+use Weblebby\Framework\Items\FieldSectionsItem;
 
 abstract class Template implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {

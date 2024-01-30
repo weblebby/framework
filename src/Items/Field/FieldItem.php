@@ -1,16 +1,16 @@
 <?php
 
-namespace Feadmin\Items\Field;
+namespace Weblebby\Framework\Items\Field;
 
 use ArrayAccess;
-use Feadmin\Concerns\HasArray;
-use Feadmin\Enums\FieldTypeEnum;
-use Feadmin\Items\Field\Contracts\FieldInterface;
-use Feadmin\Support\FormComponent;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
 use UnitEnum;
+use Weblebby\Framework\Concerns\HasArray;
+use Weblebby\Framework\Enums\FieldTypeEnum;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
+use Weblebby\Framework\Support\FormComponent;
 
 class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, JsonSerializable
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace Feadmin\Http\Middleware;
+namespace Weblebby\Framework\Http\Middleware;
 
 use Closure;
-use Feadmin\Facades\PostModels;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Response;
+use Weblebby\Framework\Facades\PostModels;
 
 class Panel
 {
@@ -23,8 +23,8 @@ class Panel
             'seo.app.name' => $siteName,
         ]);
 
-        Paginator::defaultView('feadmin::vendor.pagination.tailwind');
-        Paginator::defaultSimpleView('feadmin::vendor.pagination.simple-tailwind');
+        Paginator::defaultView('weblebby::vendor.pagination.tailwind');
+        Paginator::defaultSimpleView('weblebby::vendor.pagination.simple-tailwind');
 
         foreach (PostModels::get() as $model) {
             $model->register();

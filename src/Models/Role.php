@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Permission\Models\Role as Model;

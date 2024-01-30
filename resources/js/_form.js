@@ -31,7 +31,7 @@ const Form = {
             reader.readAsDataURL(file)
 
             if (!file.type.match('image.*')) {
-                window.Feadmin.Toastr.add('Please select an image file.')
+                window.Weblebby.Toastr.add('Please select an image file.')
             }
 
             reader.onload = () => {
@@ -143,6 +143,6 @@ document.querySelectorAll(Form.checkboxSelector).forEach(element => {
     Form.handleCheckbox(element)
 })
 
-window.Feadmin.Form = Form
+window.Weblebby.Form = Form
 
 export default Form

@@ -1,11 +1,8 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Feadmin\Concerns\Eloquent\Translatable;
-use Feadmin\Enums\NavigationTypeEnum;
-use Feadmin\Services\TaxonomyService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,6 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Weblebby\Framework\Concerns\Eloquent\Translatable;
+use Weblebby\Framework\Enums\NavigationTypeEnum;
+use Weblebby\Framework\Services\TaxonomyService;
 
 class NavigationItem extends Model implements TranslatableContract
 {

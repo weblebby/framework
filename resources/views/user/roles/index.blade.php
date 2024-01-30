@@ -1,62 +1,62 @@
-<x-feadmin::layouts.panel>
-    <x-feadmin::page class="lg:fd-w-2/3 fd-mx-auto">
-        <x-feadmin::page.head :back="panel_route('users.index')">
+<x-weblebby::layouts.panel>
+    <x-weblebby::page class="lg:fd-w-2/3 fd-mx-auto">
+        <x-weblebby::page.head :back="panel_route('users.index')">
             <x-slot:actions>
                 @can('role:create')
-                    <x-feadmin::button
+                    <x-weblebby::button
                             as="a"
                             :href="panel_route('roles.create')"
                             icon="plus"
                             size="sm"
-                    >@lang('Yeni rol')</x-feadmin::button>
+                    >@lang('Yeni rol')</x-weblebby::button>
                 @endcan
             </x-slot:actions>
-            <x-feadmin::page.title>@lang('Kullanıcı rolleri')</x-feadmin::page.title>
-            <x-feadmin::page.subtitle>@lang('Rolleri yönetin')</x-feadmin::page.subtitle>
-        </x-feadmin::page.head>
+            <x-weblebby::page.title>@lang('Kullanıcı rolleri')</x-weblebby::page.title>
+            <x-weblebby::page.subtitle>@lang('Rolleri yönetin')</x-weblebby::page.subtitle>
+        </x-weblebby::page.head>
         <div class="fd-space-y-3">
-            <x-feadmin::table>
-                <x-feadmin::table.head>
-                    <x-feadmin::table.th>@lang('Rol')</x-feadmin::table.th>
-                    <x-feadmin::table.th>@lang('Oluşturulma tarihi')</x-feadmin::table.th>
-                    <x-feadmin::table.th />
-                </x-feadmin::table.head>
-                <x-feadmin::table.body>
+            <x-weblebby::table>
+                <x-weblebby::table.head>
+                    <x-weblebby::table.th>@lang('Rol')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Oluşturulma tarihi')</x-weblebby::table.th>
+                    <x-weblebby::table.th />
+                </x-weblebby::table.head>
+                <x-weblebby::table.body>
                     @foreach ($roles as $role)
                         <tr>
-                            <x-feadmin::table.td class="fd-font-medium fd-text-lg">
+                            <x-weblebby::table.td class="fd-font-medium fd-text-lg">
                                 @can('role:update')
                                     <a href="{{ panel_route('roles.edit', $role) }}">{{ $role->name }}</a>
                                 @else
                                     <span>{{ $role->name }}</span>
                                 @endcan
-                            </x-feadmin::table.td>
-                            <x-feadmin::table.td>{{ Date::short($role->created_at) }}</x-feadmin::table.td>
-                            <x-feadmin::table.td>
+                            </x-weblebby::table.td>
+                            <x-weblebby::table.td>{{ Date::short($role->created_at) }}</x-weblebby::table.td>
+                            <x-weblebby::table.td>
                                 @unless ($role->is_default)
                                     <div class="fd-ml-auto">
                                         @can('role:delete')
-                                            <x-feadmin::button
+                                            <x-weblebby::button
                                                     size="sm"
                                                     variant="red"
                                                     data-modal-open="#modal-delete-role"
                                                     :data-action="panel_route('roles.destroy', $role)"
-                                            >@lang('Sil')</x-feadmin::button>
+                                            >@lang('Sil')</x-weblebby::button>
                                         @endcan
                                     </div>
                                 @endif
-                            </x-feadmin::table.td>
+                            </x-weblebby::table.td>
                         </tr>
                     @endforeach
-                </x-feadmin::table.body>
-            </x-feadmin::table>
+                </x-weblebby::table.body>
+            </x-weblebby::table>
             {{ $roles->links() }}
         </div>
-    </x-feadmin::page>
+    </x-weblebby::page>
     @can('role:delete')
-        <x-feadmin::modal.destroy
+        <x-weblebby::modal.destroy
                 id="modal-delete-role"
                 :title="__('Rolü sil')"
         />
     @endcan
-</x-feadmin::layouts.panel>
+</x-weblebby::layouts.panel>

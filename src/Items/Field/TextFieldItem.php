@@ -1,11 +1,10 @@
 <?php
 
-namespace Feadmin\Items\Field;
+namespace Weblebby\Framework\Items\Field;
 
-use Feadmin\Items\Field\Concerns\HasFieldName;
 use Illuminate\View\ComponentAttributeBag;
-use Feadmin\Facades\Extension;
-use Feadmin\Exceptions\MissingExtensionException;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Items\Field\Concerns\HasFieldName;
 
 class TextFieldItem extends FieldItem
 {
@@ -60,7 +59,7 @@ class TextFieldItem extends FieldItem
 
     public function translatable(bool $translatable = true): self
     {
-        if (!Extension::has('multilingual')) {
+        if (! Extension::has('multilingual')) {
             return $this;
         }
 

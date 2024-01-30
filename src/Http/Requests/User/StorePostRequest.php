@@ -1,21 +1,21 @@
 <?php
 
-namespace Feadmin\Http\Requests\User;
+namespace Weblebby\Framework\Http\Requests\User;
 
-use Feadmin\Contracts\Eloquent\PostInterface;
-use Feadmin\Enums\PostStatusEnum;
-use Feadmin\Facades\Extension;
-use Feadmin\Facades\PostModels;
-use Feadmin\Facades\Theme;
-use Feadmin\Models\Post;
-use Feadmin\Services\User\PostFieldService;
-use Feadmin\Support\Features;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Exists;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Validation\Rules\Unique;
+use Weblebby\Framework\Contracts\Eloquent\PostInterface;
+use Weblebby\Framework\Enums\PostStatusEnum;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Facades\PostModels;
+use Weblebby\Framework\Facades\Theme;
+use Weblebby\Framework\Models\Post;
+use Weblebby\Framework\Services\User\PostFieldService;
+use Weblebby\Framework\Support\Features;
 
 class StorePostRequest extends FormRequest
 {

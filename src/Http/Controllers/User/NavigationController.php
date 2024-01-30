@@ -1,16 +1,16 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\Extension;
-use Feadmin\Http\Requests\User\StoreNavigationRequest;
-use Feadmin\Http\Requests\User\UpdateNavigationRequest;
-use Feadmin\Models\Navigation;
-use Feadmin\Services\NavigationService;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Http\Requests\User\StoreNavigationRequest;
+use Weblebby\Framework\Http\Requests\User\UpdateNavigationRequest;
+use Weblebby\Framework\Models\Navigation;
+use Weblebby\Framework\Services\NavigationService;
 
 class NavigationController extends Controller
 {
@@ -26,7 +26,7 @@ class NavigationController extends Controller
             return to_panel_route('navigations.show', $firstNavigation);
         }
 
-        return view('feadmin::user.navigations.index', [
+        return view('weblebby::user.navigations.index', [
             'navigations' => $navigationService->getForListing(),
         ]);
     }
@@ -57,7 +57,7 @@ class NavigationController extends Controller
 
         seo()->title($navigation->title);
 
-        return view('feadmin::user.navigations.index', [
+        return view('weblebby::user.navigations.index', [
             'navigations' => $navigationService->getForListing(),
             'selectedNavigation' => $navigation,
             'isTranslatable' => $isTranslatable,

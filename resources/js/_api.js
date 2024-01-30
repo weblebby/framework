@@ -15,7 +15,7 @@ export default async function api(path, options = {}) {
         url = path
     } else {
         path = path.replace(/^\/+/g, '')
-        url = `${window.Feadmin.API.baseUrl}/${path}`
+        url = `${window.Weblebby.API.baseUrl}/${path}`
     }
 
     const response = await fetch(url, options)

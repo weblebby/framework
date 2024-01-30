@@ -1,8 +1,6 @@
 <?php
 
-namespace Feadmin\Abstracts\Extension;
-
-use Illuminate\Support\Facades\File;
+namespace Weblebby\Framework\Abstracts\Extension;
 
 abstract class ExtensionObserver
 {

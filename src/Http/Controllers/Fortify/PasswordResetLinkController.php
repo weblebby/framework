@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Http\Controllers\Fortify;
+namespace Weblebby\Framework\Http\Controllers\Fortify;
 
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Http\Request;

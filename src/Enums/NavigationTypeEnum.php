@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Enums;
+namespace Weblebby\Framework\Enums;
 
 enum NavigationTypeEnum: int
 {

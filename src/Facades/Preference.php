@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Facades;
+namespace Weblebby\Framework\Facades;
 
-use Feadmin\Items\Field\Contracts\FieldInterface;
-use Feadmin\Managers\PreferenceManager;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
+use Weblebby\Framework\Managers\PreferenceManager;
 
 /**
  * @method static PreferenceManager loadPreferences()

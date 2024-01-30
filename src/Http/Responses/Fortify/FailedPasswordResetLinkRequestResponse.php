@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Http\Responses\Fortify;
+namespace Weblebby\Framework\Http\Responses\Fortify;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

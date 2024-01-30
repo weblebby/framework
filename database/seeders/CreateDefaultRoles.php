@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Database\Seeders;
+namespace Weblebby\Framework\Database\Seeders;
 
-use Feadmin\Models\Role;
 use Illuminate\Database\Seeder;
+use Weblebby\Framework\Models\Role;
 
 class CreateDefaultRoles extends Seeder
 {

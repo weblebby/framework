@@ -1,21 +1,21 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\Extension;
-use Feadmin\Facades\PostModels;
-use Feadmin\Http\Requests\User\StorePostRequest;
-use Feadmin\Items\Field\CodeEditorFieldItem;
-use Feadmin\Models\Post;
-use Feadmin\Services\User\PostFieldService;
-use Feadmin\Services\User\PostService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Facades\PostModels;
+use Weblebby\Framework\Http\Requests\User\StorePostRequest;
+use Weblebby\Framework\Items\Field\CodeEditorFieldItem;
+use Weblebby\Framework\Models\Post;
+use Weblebby\Framework\Services\User\PostFieldService;
+use Weblebby\Framework\Services\User\PostService;
 
 class PostController extends Controller
 {
@@ -33,7 +33,7 @@ class PostController extends Controller
 
         seo()->title($postable::getPluralName());
 
-        return view('feadmin::user.posts.index', compact('posts', 'postable'));
+        return view('weblebby::user.posts.index', compact('posts', 'postable'));
     }
 
     public function create(Request $request, PostService $postService): View
@@ -54,7 +54,7 @@ class PostController extends Controller
 
         $sections = $sections->toArray();
 
-        return view('feadmin::user.posts.create', compact(
+        return view('weblebby::user.posts.create', compact(
             'templates',
             'sections',
             'categories',
@@ -109,7 +109,7 @@ class PostController extends Controller
         }
 
         return to_panel_route('posts.edit', [$post, 'locale' => $locale])
-            ->with('message', __(':name oluşturuldu', ['name' => $post::getModelName()]));
+            ->with('message', __(':name oluşturuldu', ['name' => $post::getSingularName()]));
     }
 
     public function edit(Request $request, Post $post, PostService $postService): View
@@ -132,7 +132,7 @@ class PostController extends Controller
 
         $sections = $sections->toArray();
 
-        return view('feadmin::user.posts.edit', compact(
+        return view('weblebby::user.posts.edit', compact(
             'post',
             'translatedPost',
             'locale',

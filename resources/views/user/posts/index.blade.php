@@ -1,72 +1,72 @@
-<x-feadmin::layouts.panel>
-    <x-feadmin::page>
-        <x-feadmin::page.head>
+<x-weblebby::layouts.panel>
+    <x-weblebby::page>
+        <x-weblebby::page.head>
             <x-slot:actions>
                 @can($postable::getPostAbilityFor('create'))
-                    <x-feadmin::button
+                    <x-weblebby::button
                             as="a"
                             :href="panel_route('posts.create', ['type' => $postable::getModelName()])"
                             icon="plus"
                             size="sm"
                     >
                         @lang('Yeni :name', ['name' => Str::lower($postable::getSingularName())])
-                    </x-feadmin::button>
+                    </x-weblebby::button>
                 @endcan
             </x-slot:actions>
-            <x-feadmin::page.title>{{ $postable::getPluralName() }}</x-feadmin::page.title>
-        </x-feadmin::page.head>
+            <x-weblebby::page.title>{{ $postable::getPluralName() }}</x-weblebby::page.title>
+        </x-weblebby::page.head>
         <div class="fd-space-y-3">
             <form class="fd-flex fd-items-center fd-gap-2" method="GET">
                 <input type="hidden" name="type" value="{{ $postable::getModelName() }}">
-                <x-feadmin::form.group name="term" class="fd-flex-[3]">
-                    <x-feadmin::form.input type="search" :placeholder="__('Ara')" />
-                </x-feadmin::form.group>
-                <x-feadmin::form.group name="status" class="fd-flex-1">
-                    <x-feadmin::form.select onchange="this.form.submit()">
-                        <x-feadmin::form.option value="">@lang('Tümü')</x-feadmin::form.option>
-                        @foreach(\Feadmin\Enums\PostStatusEnum::cases() as $status)
-                            <x-feadmin::form.option :value="$status->value">
+                <x-weblebby::form.group name="term" class="fd-flex-[3]">
+                    <x-weblebby::form.input type="search" :placeholder="__('Ara')" />
+                </x-weblebby::form.group>
+                <x-weblebby::form.group name="status" class="fd-flex-1">
+                    <x-weblebby::form.select onchange="this.form.submit()">
+                        <x-weblebby::form.option value="">@lang('Tümü')</x-weblebby::form.option>
+                        @foreach(\Weblebby\Framework\Enums\PostStatusEnum::cases() as $status)
+                            <x-weblebby::form.option :value="$status->value">
                                 {{ $status->label() }}
-                            </x-feadmin::form.option>
+                            </x-weblebby::form.option>
                         @endforeach
-                    </x-feadmin::form.select>
-                </x-feadmin::form.group>
+                    </x-weblebby::form.select>
+                </x-weblebby::form.group>
             </form>
-            <x-feadmin::table>
-                <x-feadmin::table.head>
-                    <x-feadmin::table.th>@lang('Başlık')</x-feadmin::table.th>
-                    <x-feadmin::table.th>@lang('Kategoriler')</x-feadmin::table.th>
-                    <x-feadmin::table.th>@lang('Etiketler')</x-feadmin::table.th>
-                    <x-feadmin::table.th>@lang('Yayında')</x-feadmin::table.th>
-                    <x-feadmin::table.th>@lang('Değişiklik tarihi')</x-feadmin::table.th>
-                    <x-feadmin::table.th />
-                </x-feadmin::table.head>
-                <x-feadmin::table.body>
+            <x-weblebby::table>
+                <x-weblebby::table.head>
+                    <x-weblebby::table.th>@lang('Başlık')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Kategoriler')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Etiketler')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Yayında')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Değişiklik tarihi')</x-weblebby::table.th>
+                    <x-weblebby::table.th />
+                </x-weblebby::table.head>
+                <x-weblebby::table.body>
                     @foreach ($posts as $post)
                         <tr>
-                            <x-feadmin::table.td class="fd-font-medium fd-text-lg">
+                            <x-weblebby::table.td class="fd-font-medium fd-text-lg">
                                 @can($postable::getPostAbilityFor('update'))
                                     <a href="{{ panel_route('posts.edit', $post) }}">{{ $post->title }}</a>
                                 @else
                                     <span>{{ $post->title }}</span>
                                 @endcan
-                            </x-feadmin::table.td>
-                            <x-feadmin::table.td>
+                            </x-weblebby::table.td>
+                            <x-weblebby::table.td>
                                 {{ Str::limit($post->getTaxonomiesFor('category')->implode('term.title', ', '), 30) ?: '-' }}
-                            </x-feadmin::table.td>
-                            <x-feadmin::table.td>
+                            </x-weblebby::table.td>
+                            <x-weblebby::table.td>
                                 {{ Str::limit($post->getTaxonomiesFor('tag')->implode('term.title', ', '), 30) ?: '-' }}
-                            </x-feadmin::table.td>
-                            <x-feadmin::table.td>
+                            </x-weblebby::table.td>
+                            <x-weblebby::table.td>
                                 {{ $post->published_at?->isPast() ? __('Evet') : __('Hayır') }}
-                            </x-feadmin::table.td>
-                            <x-feadmin::table.td>
+                            </x-weblebby::table.td>
+                            <x-weblebby::table.td>
                                 {{ Date::short($post->updated_at) }}
-                            </x-feadmin::table.td>
-                            <x-feadmin::table.td>
+                            </x-weblebby::table.td>
+                            <x-weblebby::table.td>
                                 <div class="fd-flex fd-items-center fd-gap-2 fd-ml-auto">
                                     @can($postable::getPostAbilityFor('update'))
-                                        <x-feadmin::button
+                                        <x-weblebby::button
                                                 as="a"
                                                 variant="light"
                                                 :href="panel_route('posts.edit', $post)"
@@ -74,7 +74,7 @@
                                         />
                                     @endcan
                                     @can($postable::getPostAbilityFor('delete'))
-                                        <x-feadmin::button
+                                        <x-weblebby::button
                                                 variant="red"
                                                 icon="trash"
                                                 data-modal-open="#modal-delete-post"
@@ -82,16 +82,16 @@
                                         />
                                     @endcan
                                 </div>
-                            </x-feadmin::table.td>
+                            </x-weblebby::table.td>
                         </tr>
                     @endforeach
-                </x-feadmin::table.body>
-            </x-feadmin::table>
+                </x-weblebby::table.body>
+            </x-weblebby::table>
             {{ $posts->links() }}
         </div>
-    </x-feadmin::page>
+    </x-weblebby::page>
     @can($postable::getPostAbilityFor('delete'))
-        <x-feadmin::modal.destroy id="modal-delete-post"
-                                  :title="__(':name siliyorsunuz', ['name' => $postable::getSingularName()])" />
+        <x-weblebby::modal.destroy id="modal-delete-post"
+                                   :title="__(':name siliyorsunuz', ['name' => $postable::getSingularName()])" />
     @endcan
-</x-feadmin::layouts.panel>
+</x-weblebby::layouts.panel>

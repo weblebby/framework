@@ -1,7 +1,7 @@
 @props(['icon', 'badge', 'active' => false, 'children'])
 
 @if (!str_contains($icon, '::') && isset($icon))
-    @php($icon = "feadmin::icons.{$icon}")
+    @php($icon = "weblebby::icons.{$icon}")
 @endif
 
 <div>

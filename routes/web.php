@@ -1,7 +1,7 @@
 <?php
 
-use Feadmin\Http\Controllers;
 use Illuminate\Support\Facades\Route;
+use Weblebby\Framework\Http\Controllers;
 
 /**
  * Post

@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Providers;
+namespace Weblebby\Framework\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 

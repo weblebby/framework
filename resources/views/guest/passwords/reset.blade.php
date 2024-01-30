@@ -1,30 +1,30 @@
-<x-feadmin::layouts.auth>
+<x-weblebby::layouts.auth>
     @if (session('status'))
-        <x-feadmin::alert color="green">{{ session('status') }}</x-feadmin::alert>
+        <x-weblebby::alert color="green">{{ session('status') }}</x-weblebby::alert>
     @endif
     @error('email')
-    <x-feadmin::alert color="red">{{ $message  }}</x-feadmin::alert>
+    <x-weblebby::alert color="red">{{ $message  }}</x-weblebby::alert>
     @enderror
-    <x-feadmin::card padding>
-        <x-feadmin::form :action="panel()->route('password.update')">
+    <x-weblebby::card padding>
+        <x-weblebby::form :action="panel()->route('password.update')">
             <input type="hidden" name="token" value="{{ request()->route('token') }}">
             <input type="hidden" name="email" value="{{ request('email') }}">
             <div class="fd-space-y-3">
                 <h3 class="fd-text-xl">@lang('Yeni parolanızı girin')</h3>
-                <x-feadmin::form.group name="password">
-                    <x-feadmin::form.input type="password" :placeholder="__('Yeni parolanız')" autofocus />
-                </x-feadmin::form.group>
-                <x-feadmin::form.group name="password_confirmation">
-                    <x-feadmin::form.input type="password" :placeholder="__('Parolanızı onaylayın')" />
-                </x-feadmin::form.group>
-                <x-feadmin::button type="submit">@lang('Parolamı sıfırla')</x-feadmin::button>
+                <x-weblebby::form.group name="password">
+                    <x-weblebby::form.input type="password" :placeholder="__('Yeni parolanız')" autofocus />
+                </x-weblebby::form.group>
+                <x-weblebby::form.group name="password_confirmation">
+                    <x-weblebby::form.input type="password" :placeholder="__('Parolanızı onaylayın')" />
+                </x-weblebby::form.group>
+                <x-weblebby::button type="submit">@lang('Parolamı sıfırla')</x-weblebby::button>
             </div>
-        </x-feadmin::form>
-    </x-feadmin::card>
-    <x-feadmin::button
-        as="a"
-        variant="link"
-        size="full"
-        :href="panel()->route('login')"
-    >@lang('Oturum açma ekranına dön')</x-feadmin::button>
-</x-feadmin::layouts.auth>
+        </x-weblebby::form>
+    </x-weblebby::card>
+    <x-weblebby::button
+            as="a"
+            variant="link"
+            size="full"
+            :href="panel()->route('login')"
+    >@lang('Oturum açma ekranına dön')</x-weblebby::button>
+</x-weblebby::layouts.auth>

@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Services;
+namespace Weblebby\Framework\Services;
 
-use Feadmin\Models\Taxonomy;
-use Feadmin\Models\Term;
+use Weblebby\Framework\Models\Taxonomy;
+use Weblebby\Framework\Models\Term;
 
 class TaxonomyService
 {

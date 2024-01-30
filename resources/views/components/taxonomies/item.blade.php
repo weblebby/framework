@@ -2,7 +2,7 @@
 @props(['name', 'taxonomy'])
 
 <div class="fd-text-sm">
-    <x-feadmin::form.checkbox
+    <x-weblebby::form.checkbox
             :name="$name"
             :value="$taxonomy->id"
             :default="$bind?->taxonomies?->pluck('id')"
@@ -12,7 +12,7 @@
     @if ($taxonomy->children->isNotEmpty())
         <div class="fd-ml-8 fd-space-y-1">
             @foreach ($taxonomy->children as $child)
-                <x-feadmin::taxonomies.item :name="$name" :taxonomy="$child" />
+                <x-weblebby::taxonomies.item :name="$name" :taxonomy="$child" />
             @endforeach
         </div>
     @endif

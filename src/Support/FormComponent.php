@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Support;
+namespace Weblebby\Framework\Support;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;

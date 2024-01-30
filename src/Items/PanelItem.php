@@ -1,15 +1,15 @@
 <?php
 
-namespace Feadmin\Items;
+namespace Weblebby\Framework\Items;
 
-use Feadmin\Hooks\MenuHook;
-use Feadmin\Hooks\PermissionHook;
-use Feadmin\Hooks\PreferenceBagHook;
-use Feadmin\Http\Middleware\CanUserAccessPanel;
-use Feadmin\Http\Middleware\Panel;
-use Feadmin\Support\Features;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
+use Weblebby\Framework\Hooks\MenuHook;
+use Weblebby\Framework\Hooks\PermissionHook;
+use Weblebby\Framework\Hooks\PreferenceBagHook;
+use Weblebby\Framework\Http\Middleware\CanUserAccessPanel;
+use Weblebby\Framework\Http\Middleware\Panel;
+use Weblebby\Framework\Support\Features;
 
 class PanelItem
 {

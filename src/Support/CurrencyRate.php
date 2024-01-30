@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Support;
+namespace Weblebby\Framework\Support;
 
-use Feadmin\Enums\CurrencyEnum;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Weblebby\Framework\Enums\CurrencyEnum;
 
 class CurrencyRate
 {

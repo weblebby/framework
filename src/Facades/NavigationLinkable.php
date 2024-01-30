@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Facades;
+namespace Weblebby\Framework\Facades;
 
-use Feadmin\Items\NavigationLinkableItem;
-use Feadmin\Managers\NavigationLinkableManager;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Weblebby\Framework\Items\NavigationLinkableItem;
+use Weblebby\Framework\Managers\NavigationLinkableManager;
 
 /**
  * @method static NavigationLinkableManager add(NavigationLinkableItem $data)

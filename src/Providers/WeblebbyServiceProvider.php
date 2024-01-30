@@ -1,19 +1,19 @@
 <?php
 
-namespace Feadmin\Providers;
+namespace Weblebby\Framework\Providers;
 
-use Feadmin\Abstracts\Extension\Extension as ExtensionAbstract;
-use Feadmin\Console\Commands\FetchCurrencyRates;
-use Feadmin\Console\Commands\InstallFeadmin;
-use Feadmin\Facades\Extension;
-use Feadmin\Facades\PostModels;
-use Feadmin\Models\User;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Weblebby\Framework\Abstracts\Extension\Extension as ExtensionAbstract;
+use Weblebby\Framework\Console\Commands\FetchCurrencyRates;
+use Weblebby\Framework\Console\Commands\InstallWeblebby;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Facades\PostModels;
+use Weblebby\Framework\Models\User;
 
-class FeadminServiceProvider extends ServiceProvider
+class WeblebbyServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
@@ -26,14 +26,14 @@ class FeadminServiceProvider extends ServiceProvider
         $this->app->register(PreferenceServiceProvider::class);
 
         $singletons = [
-            \Feadmin\Managers\ExtensionManager::class,
-            \Feadmin\Managers\InjectionManager::class,
-            \Feadmin\Managers\NavigationLinkableManager::class,
-            \Feadmin\Managers\PreferenceManager::class,
-            \Feadmin\Managers\ThemeManager::class,
-            \Feadmin\Managers\LogManager::class,
-            \Feadmin\Support\CurrencyRate::class,
-            \Feadmin\Support\HtmlSanitizer::class,
+            \Weblebby\Framework\Managers\ExtensionManager::class,
+            \Weblebby\Framework\Managers\InjectionManager::class,
+            \Weblebby\Framework\Managers\NavigationLinkableManager::class,
+            \Weblebby\Framework\Managers\PreferenceManager::class,
+            \Weblebby\Framework\Managers\ThemeManager::class,
+            \Weblebby\Framework\Managers\LogManager::class,
+            \Weblebby\Framework\Support\CurrencyRate::class,
+            \Weblebby\Framework\Support\HtmlSanitizer::class,
         ];
 
         foreach ($singletons as $singleton) {
@@ -63,10 +63,10 @@ class FeadminServiceProvider extends ServiceProvider
 
     private function bootViews(): void
     {
-        $this->loadViewsFrom(dirname(__DIR__).'/../resources/views', 'feadmin');
+        $this->loadViewsFrom(dirname(__DIR__).'/../resources/views', 'weblebby');
 
         Blade::directive('hook', function ($expression) {
-            return "<?php echo \Feadmin\Facades\Injection::render($expression); ?>";
+            return "<?php echo \Weblebby\Framework\Facades\Injection::render($expression); ?>";
         });
     }
 
@@ -80,7 +80,7 @@ class FeadminServiceProvider extends ServiceProvider
     private function bootCommands(): void
     {
         $this->commands([
-            InstallFeadmin::class,
+            InstallWeblebby::class,
             FetchCurrencyRates::class,
         ]);
     }
@@ -88,8 +88,8 @@ class FeadminServiceProvider extends ServiceProvider
     private function bootPostModels(): void
     {
         PostModels::register([
-            \Feadmin\Models\Post::class,
-            \Feadmin\Models\Page::class,
+            \Weblebby\Framework\Models\Post::class,
+            \Weblebby\Framework\Models\Page::class,
         ]);
     }
 
@@ -120,7 +120,7 @@ class FeadminServiceProvider extends ServiceProvider
 
     private function ensureBuildDirectoryExists(): void
     {
-        $path = public_path('feadmin');
+        $path = public_path('weblebby');
 
         if (! File::isDirectory($path)) {
             symlink(dirname(__DIR__).'/../public', $path);

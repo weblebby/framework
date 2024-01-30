@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Managers;
+namespace Weblebby\Framework\Managers;
 
-use Feadmin\Abstracts\Extension\Extension;
 use Illuminate\Support\Collection;
+use Weblebby\Framework\Abstracts\Extension\Extension;
 
 class ExtensionManager
 {

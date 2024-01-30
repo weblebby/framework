@@ -4,7 +4,7 @@
     <div class="fd-w-full fd-flex fd-items-center fd-justify-between fd-gap-2">
         <div class="fd-flex fd-items-center fd-gap-3">
             @if (isset($back))
-                <x-feadmin::button
+                <x-weblebby::button
                         as="a"
                         :href="$back"
                         variant="outline-light"

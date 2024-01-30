@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Http\Requests\User;
+namespace Weblebby\Framework\Http\Requests\User;
 
-use Feadmin\Models\Navigation;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Weblebby\Framework\Models\Navigation;
 
 class StoreNavigationRequest extends FormRequest
 {

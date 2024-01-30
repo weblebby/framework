@@ -157,4 +157,4 @@ document.querySelectorAll(Tab.containerSelector).forEach(container => {
     }, 250)
 })
 
-window.Feadmin.Tab = Tab
+window.Weblebby.Tab = Tab

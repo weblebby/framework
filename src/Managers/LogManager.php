@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Managers;
+namespace Weblebby\Framework\Managers;
 
 use App\Models\User;
-use Feadmin\Models\Log;
 use Illuminate\Database\Eloquent\Model;
+use Weblebby\Framework\Models\Log;
 
 class LogManager
 {

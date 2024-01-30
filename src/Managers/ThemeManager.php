@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Managers;
+namespace Weblebby\Framework\Managers;
 
 use Exception;
-use Feadmin\Abstracts\Theme\Theme;
 use Illuminate\Support\Collection;
+use Weblebby\Framework\Abstracts\Theme\Theme;
 
 class ThemeManager
 {

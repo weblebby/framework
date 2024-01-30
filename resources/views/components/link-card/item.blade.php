@@ -20,17 +20,17 @@
         ->class($active ? 'fd-bg-zinc-100 fd-text-zinc-700 fd-font-medium' : 'hover:fd-bg-zinc-100 fd-transition-colors')
         ->class($as !== 'div' ? 'fd-cursor-pointer' : '') }}
     >
-        @if ($icon ?? null)
-            <x-dynamic-component
-                component="feadmin::icons.{{ $icon }}"
+    @if ($icon ?? null)
+        <x-dynamic-component
+                component="weblebby::icons.{{ $icon }}"
                 class="fd-w-6 fd-h-6 fd-rounded-full fd-p-1 {{ $iconColorClass }}"
-            />
-        @endif
-        {{ $slot }}
-    </{{ $as }}>
-    @if ($actions ?? null)
-        <div class="fd-absolute fd-right-4 fd-top-0 fd-bottom-0 fd-flex fd-items-center fd-gap-1 {{ !$active ? 'fd-opacity-0 group-hover:fd-opacity-100 fd-transition-opacity' : '' }}">
-            {{ $actions }}
-        </div>
+        />
     @endif
-</div>
+    {{ $slot }}
+</{{ $as }}>
+@if ($actions ?? null)
+    <div class="fd-absolute fd-right-4 fd-top-0 fd-bottom-0 fd-flex fd-items-center fd-gap-1 {{ !$active ? 'fd-opacity-0 group-hover:fd-opacity-100 fd-transition-opacity' : '' }}">
+        {{ $actions }}
+    </div>
+    @endif
+    </div>

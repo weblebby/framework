@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Hooks;
+namespace Weblebby\Framework\Hooks;
 
-use Feadmin\Items\MenuItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Weblebby\Framework\Items\MenuItem;
 
 class MenuHook
 {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Feadmin\Exceptions;
+namespace Weblebby\Framework\Exceptions;
 
 use Exception;
-use Feadmin\Contracts\Eloquent\PostInterface;
 use Throwable;
+use Weblebby\Framework\Contracts\Eloquent\PostInterface;
 
 class InvalidTaxonomyNameException extends Exception
 {
     /**
-     * @param class-string<int, PostInterface> $model
+     * @param  class-string<int, PostInterface>  $model
      */
     public function __construct(string $model, int $code = 0, ?Throwable $previous = null)
     {

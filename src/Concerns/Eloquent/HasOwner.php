@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Concerns\Eloquent;
+namespace Weblebby\Framework\Concerns\Eloquent;
 
 use App\Models\User;
-use Feadmin\Enums\HasOwnerEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Weblebby\Framework\Enums\HasOwnerEnum;
 
 trait HasOwner
 {

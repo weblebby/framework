@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Support;
+namespace Weblebby\Framework\Support;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator as PaginationPaginator;

@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Services\User;
+namespace Weblebby\Framework\Services\User;
 
-use Feadmin\Contracts\Eloquent\PostInterface;
-use Feadmin\Items\Field\FieldValueItem;
-use Feadmin\Services\FieldInputService;
-use Feadmin\Services\FieldValidationService;
 use Illuminate\Support\Str;
+use Weblebby\Framework\Contracts\Eloquent\PostInterface;
+use Weblebby\Framework\Items\Field\FieldValueItem;
+use Weblebby\Framework\Services\FieldInputService;
+use Weblebby\Framework\Services\FieldValidationService;
 
 class PostFieldService
 {

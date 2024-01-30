@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Concerns\Eloquent;
+namespace Weblebby\Framework\Concerns\Eloquent;
 
 trait HasPosition
 {

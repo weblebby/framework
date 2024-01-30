@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Items;
+namespace Weblebby\Framework\Items;
 
 class MenuItem
 {

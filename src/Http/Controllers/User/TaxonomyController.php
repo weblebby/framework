@@ -1,22 +1,22 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\Extension;
-use Feadmin\Facades\PostModels;
-use Feadmin\Http\Requests\User\StoreTaxonomyRequest;
-use Feadmin\Items\TaxonomyItem;
-use Feadmin\Models\Taxonomy;
-use Feadmin\Services\FieldInputService;
-use Feadmin\Services\TaxonomyService;
-use Feadmin\Services\User\UserTaxonomyService;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Facades\PostModels;
+use Weblebby\Framework\Http\Requests\User\StoreTaxonomyRequest;
+use Weblebby\Framework\Items\TaxonomyItem;
+use Weblebby\Framework\Models\Taxonomy;
+use Weblebby\Framework\Services\FieldInputService;
+use Weblebby\Framework\Services\TaxonomyService;
+use Weblebby\Framework\Services\User\UserTaxonomyService;
 
 class TaxonomyController extends Controller
 {
@@ -33,7 +33,7 @@ class TaxonomyController extends Controller
 
         seo()->title($taxonomyItem->pluralName());
 
-        return view('feadmin::user.taxonomies.index', compact(
+        return view('weblebby::user.taxonomies.index', compact(
             'locale',
             'taxonomy',
             'taxonomies',
@@ -51,10 +51,9 @@ class TaxonomyController extends Controller
      */
     public function store(
         StoreTaxonomyRequest $request,
-        TaxonomyService      $taxonomyService,
-        FieldInputService    $fieldInputService,
-    ): RedirectResponse
-    {
+        TaxonomyService $taxonomyService,
+        FieldInputService $fieldInputService,
+    ): RedirectResponse {
         $taxonomyItem = $this->taxonomy($request->string('taxonomy'), 'create');
         $validated = $request->validated();
 
@@ -93,7 +92,7 @@ class TaxonomyController extends Controller
 
         seo()->title(__(':taxonomy düzenle', ['taxonomy' => $taxonomyItem->singularName()]));
 
-        return view('feadmin::user.taxonomies.index', compact(
+        return view('weblebby::user.taxonomies.index', compact(
             'locale',
             'taxonomy',
             'taxonomies',
@@ -111,11 +110,10 @@ class TaxonomyController extends Controller
      */
     public function update(
         StoreTaxonomyRequest $request,
-        Taxonomy             $taxonomy,
-        TaxonomyService      $taxonomyService,
-        FieldInputService    $fieldInputService,
-    ): RedirectResponse
-    {
+        Taxonomy $taxonomy,
+        TaxonomyService $taxonomyService,
+        FieldInputService $fieldInputService,
+    ): RedirectResponse {
         $validated = $request->validated();
 
         $taxonomy = $taxonomyService->getOrCreateTaxonomy(
@@ -154,7 +152,7 @@ class TaxonomyController extends Controller
      */
     protected function taxonomy(TaxonomyItem|string $taxonomy, string $ability): TaxonomyItem
     {
-        if (!($taxonomy instanceof TaxonomyItem)) {
+        if (! ($taxonomy instanceof TaxonomyItem)) {
             $taxonomyItem = PostModels::taxonomy($taxonomy);
         } else {
             $taxonomyItem = $taxonomy;

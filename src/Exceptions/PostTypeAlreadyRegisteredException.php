@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Exceptions;
+namespace Weblebby\Framework\Exceptions;
 
 use Exception;
 use Throwable;

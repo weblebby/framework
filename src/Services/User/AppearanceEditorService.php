@@ -1,13 +1,12 @@
 <?php
 
-namespace Feadmin\Services\User;
+namespace Weblebby\Framework\Services\User;
 
-use Feadmin\Facades\Theme;
-use Feadmin\Abstracts\Theme\Theme as ThemeAbstract;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\HtmlString;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Weblebby\Framework\Abstracts\Theme\Theme as ThemeAbstract;
+use Weblebby\Framework\Facades\Theme;
 
 class AppearanceEditorService
 {
@@ -23,14 +22,14 @@ class AppearanceEditorService
         $finder = (new Finder())
             ->in($this->onlyExistingDirectories([
                 $this->theme->path('resources/views'),
-                $this->theme->vendorPath()
+                $this->theme->vendorPath(),
             ]))
             ->ignoreVCSIgnored(true);
 
         return collect([...$finder->files()->getIterator()])
-            ->unique(fn(SplFileInfo $file) => $file->getRelativePathname())
-            ->groupBy(fn(SplFileInfo $file) => str_replace('/', '.', $file->getRelativePath()) . '.')
-            ->sortByDesc(fn($_, string $path) => $path)
+            ->unique(fn (SplFileInfo $file) => $file->getRelativePathname())
+            ->groupBy(fn (SplFileInfo $file) => str_replace('/', '.', $file->getRelativePath()).'.')
+            ->sortByDesc(fn ($_, string $path) => $path)
             ->undot()
             ->toArray();
     }
@@ -39,11 +38,11 @@ class AppearanceEditorService
     {
         $path = $this->theme->vendorPath($file);
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             $path = $this->theme->path("resources/views/{$file}");
         }
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             return null;
         }
 
@@ -59,6 +58,6 @@ class AppearanceEditorService
 
     public function onlyExistingDirectories(array $directories): array
     {
-        return array_filter($directories, fn(string $directory) => file_exists($directory));
+        return array_filter($directories, fn (string $directory) => file_exists($directory));
     }
 }

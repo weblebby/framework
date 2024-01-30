@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Managers;
+namespace Weblebby\Framework\Managers;
 
-use Feadmin\Items\SmartMenuItem;
 use Illuminate\Support\Collection;
+use Weblebby\Framework\Items\SmartMenuItem;
 
 class SmartMenuManager
 {

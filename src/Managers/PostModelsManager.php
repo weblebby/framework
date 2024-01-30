@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Managers;
+namespace Weblebby\Framework\Managers;
 
-use Feadmin\Contracts\Eloquent\PostInterface;
-use Feadmin\Exceptions\InvalidTaxonomyNameException;
-use Feadmin\Exceptions\PostTypeAlreadyRegisteredException;
-use Feadmin\Items\TaxonomyItem;
+use Weblebby\Framework\Contracts\Eloquent\PostInterface;
+use Weblebby\Framework\Exceptions\InvalidTaxonomyNameException;
+use Weblebby\Framework\Exceptions\PostTypeAlreadyRegisteredException;
+use Weblebby\Framework\Items\TaxonomyItem;
 
 class PostModelsManager
 {

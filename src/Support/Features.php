@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Support;
+namespace Weblebby\Framework\Support;
 
-use Feadmin\Facades\Panel;
-use Feadmin\Items\PanelItem;
+use Weblebby\Framework\Facades\Panel;
+use Weblebby\Framework\Items\PanelItem;
 
 class Features
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Concerns;
+namespace Weblebby\Framework\Concerns;
 
 trait HasArray
 {

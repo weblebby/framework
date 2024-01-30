@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Items;
+namespace Weblebby\Framework\Items;
 
 use ArrayAccess;
-use Feadmin\Concerns\HasArray;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
+use Weblebby\Framework\Concerns\HasArray;
 
 class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {

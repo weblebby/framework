@@ -9,7 +9,7 @@ import ConditionalField from '../../_conditional-field.js'
     const templateOptions = templateSelect.querySelectorAll('option')
 
     const fetchPostFields = async (postType, template) => {
-        const url = window.Feadmin.Theme.postFieldsUrl
+        const url = window.Weblebby.Theme.postFieldsUrl
             .replace(':theme', '__ACTIVE')
             .replace(':template', template)
 

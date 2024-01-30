@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Managers;
+namespace Weblebby\Framework\Managers;
 
-use Feadmin\Items\NavigationLinkableItem;
 use Illuminate\Support\Collection;
+use Weblebby\Framework\Items\NavigationLinkableItem;
 
 class NavigationLinkableManager
 {

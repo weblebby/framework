@@ -1,12 +1,12 @@
 <?php
 
-namespace Feadmin\Managers;
+namespace Weblebby\Framework\Managers;
 
 use Exception;
-use Feadmin\Exceptions\PanelNotFoundException;
-use Feadmin\Facades\Extension;
-use Feadmin\Items\PanelItem;
 use Illuminate\Support\Facades\Route;
+use Weblebby\Framework\Exceptions\PanelNotFoundException;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Items\PanelItem;
 
 class PanelManager
 {

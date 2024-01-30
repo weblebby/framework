@@ -1,20 +1,8 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Feadmin\Concerns\Eloquent\HasMetafields;
-use Feadmin\Concerns\Eloquent\HasOwner;
-use Feadmin\Concerns\Eloquent\HasPosition;
-use Feadmin\Concerns\Eloquent\HasPost;
-use Feadmin\Concerns\Eloquent\Translatable;
-use Feadmin\Contracts\Eloquent\PostInterface;
-use Feadmin\Enums\HasOwnerEnum;
-use Feadmin\Enums\PostStatusEnum;
-use Feadmin\Items\Field\FieldItem;
-use Feadmin\Items\FieldSectionsItem;
-use Feadmin\Items\TaxonomyItem;
-use Feadmin\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,6 +12,18 @@ use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Weblebby\Framework\Concerns\Eloquent\HasMetafields;
+use Weblebby\Framework\Concerns\Eloquent\HasOwner;
+use Weblebby\Framework\Concerns\Eloquent\HasPosition;
+use Weblebby\Framework\Concerns\Eloquent\HasPost;
+use Weblebby\Framework\Concerns\Eloquent\Translatable;
+use Weblebby\Framework\Contracts\Eloquent\PostInterface;
+use Weblebby\Framework\Enums\HasOwnerEnum;
+use Weblebby\Framework\Enums\PostStatusEnum;
+use Weblebby\Framework\Items\Field\FieldItem;
+use Weblebby\Framework\Items\FieldSectionsItem;
+use Weblebby\Framework\Items\TaxonomyItem;
+use Weblebby\Framework\Support\HtmlSanitizer;
 
 class Post extends Model implements HasMedia, PostInterface, TranslatableContract
 {

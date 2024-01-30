@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Hooks;
+namespace Weblebby\Framework\Hooks;
 
-use Feadmin\Facades\Preference;
-use Feadmin\Items\Field\Collections\FieldCollection;
-use Feadmin\Items\Field\Contracts\FieldInterface;
 use Illuminate\Support\Collection;
+use Weblebby\Framework\Facades\Preference;
+use Weblebby\Framework\Items\Field\Collections\FieldCollection;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
 
 class PreferenceBagHook
 {
@@ -58,7 +58,7 @@ class PreferenceBagHook
             return null;
         }
 
-        $field = head(array_filter($bag['fields'], fn($field) => $field['key'] === $key));
+        $field = head(array_filter($bag['fields'], fn ($field) => $field['key'] === $key));
 
         if ($field === false) {
             return null;
@@ -67,7 +67,7 @@ class PreferenceBagHook
         return $field;
     }
 
-    public function fields(string $bag, string $locale = null): FieldCollection
+    public function fields(string $bag, ?string $locale = null): FieldCollection
     {
         return (new FieldCollection($this->get($locale)[$bag]['fields'] ?? []))
             ->sortBy('position')
@@ -76,7 +76,7 @@ class PreferenceBagHook
 
     public function getAll(): array
     {
-        if (!$this->authorization) {
+        if (! $this->authorization) {
             return $this->namespaces;
         }
 
@@ -84,13 +84,13 @@ class PreferenceBagHook
             ->map(function ($preferences) {
                 return array_filter(
                     $preferences,
-                    fn($item) => auth()->check() && auth()->user()->can($item['permission'])
+                    fn ($item) => auth()->check() && auth()->user()->can($item['permission'])
                 );
             })
             ->toArray();
     }
 
-    public function get(string $locale = null): array
+    public function get(?string $locale = null): array
     {
         return collect($this->getAll()[$this->currentNamespace])
             ->sortBy('position')
@@ -125,7 +125,7 @@ class PreferenceBagHook
     {
         $map = function ($preferences, $namespace) {
             return collect($preferences)->mapWithKeys(
-                fn($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
+                fn ($preference, $key) => ["{$namespace}.{$key}" => $preference['title']]
             );
         };
 
@@ -134,13 +134,13 @@ class PreferenceBagHook
         }
 
         return collect($this->getAll())
-            ->map(fn($preferences, $namespace) => $map($preferences, $namespace))
+            ->map(fn ($preferences, $namespace) => $map($preferences, $namespace))
             ->collapse()
-            ->sortByDesc(fn($_, $key) => str_starts_with($key, 'default.'));
+            ->sortByDesc(fn ($_, $key) => str_starts_with($key, 'default.'));
     }
 
     public function toPermissions(): Collection
     {
-        return $this->toDotted()->keys()->map(fn($bag) => "preference:{$bag}");
+        return $this->toDotted()->keys()->map(fn ($bag) => "preference:{$bag}");
     }
 }

@@ -1,8 +1,8 @@
 <?php
 
-namespace Feadmin\Items\Field;
+namespace Weblebby\Framework\Items\Field;
 
-use Feadmin\Items\Field\Contracts\UploadableFieldInterface;
+use Weblebby\Framework\Items\Field\Contracts\UploadableFieldInterface;
 
 class ImageFieldItem extends TextFieldItem implements UploadableFieldInterface
 {

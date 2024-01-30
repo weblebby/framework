@@ -5,8 +5,8 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Feadmin\\": "src/",
-      "Feadmin\\Database\\Seeders\\": "database/seeders/",
+      "Weblebby\\Framework\\": "src/",
+      "Weblebby\\Framework\\Database\\Seeders\\": "database/seeders/",
       "App\\": "workbench/app/"
     },
     "files": [
@@ -40,17 +40,17 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Feadmin\\Providers\\FeadminServiceProvider"
+        "Weblebby\\Framework\\Providers\\WeblebbyServiceProvider"
       ],
       "aliases": {
-        "Extension": "Feadmin\\Facades\\Extension",
-        "Injection": "Feadmin\\Facades\\Injection",
-        "NavigationLinkable": "Feadmin\\Facades\\NavigationLinkable",
-        "SmartMenu": "Feadmin\\Facades\\SmartMenu",
-        "Panel": "Feadmin\\Facades\\Panel",
-        "Preference": "Feadmin\\Facades\\Preference",
-        "FormComponent": "Feadmin\\Support\\FormComponent",
-        "Date": "Feadmin\\Support\\Date"
+        "Extension": "Weblebby\\Framework\\Facades\\Extension",
+        "Injection": "Weblebby\\Framework\\Facades\\Injection",
+        "NavigationLinkable": "Weblebby\\Framework\\Facades\\NavigationLinkable",
+        "SmartMenu": "Weblebby\\Framework\\Facades\\SmartMenu",
+        "Panel": "Weblebby\\Framework\\Facades\\Panel",
+        "Preference": "Weblebby\\Framework\\Facades\\Preference",
+        "FormComponent": "Weblebby\\Framework\\Support\\FormComponent",
+        "Date": "Weblebby\\Framework\\Support\\Date"
       }
     }
   }

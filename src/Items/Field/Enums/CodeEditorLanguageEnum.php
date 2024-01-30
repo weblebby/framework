@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Items\Field\Enums;
+namespace Weblebby\Framework\Items\Field\Enums;
 
 enum CodeEditorLanguageEnum: string
 {

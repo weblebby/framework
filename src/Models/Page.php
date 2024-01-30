@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
-use Feadmin\Items\FieldSectionsItem;
-use Feadmin\Items\TaxonomyItem;
+use Weblebby\Framework\Items\FieldSectionsItem;
+use Weblebby\Framework\Items\TaxonomyItem;
 
 class Page extends Post
 {

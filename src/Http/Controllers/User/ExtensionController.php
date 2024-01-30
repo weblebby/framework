@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Facades\Extension;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Weblebby\Framework\Facades\Extension;
 
 class ExtensionController extends Controller
 {
@@ -15,7 +15,7 @@ class ExtensionController extends Controller
 
         seo()->title(__('Yüklü Eklentiler'));
 
-        return view('feadmin::user.extensions.index');
+        return view('weblebby::user.extensions.index');
     }
 
     public function enable(string $name): RedirectResponse

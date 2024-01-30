@@ -5,9 +5,9 @@
     <a href="{{ $default }}" target="_blank"
        class="fd-flex fd-items-center fd-gap-2 fd-text-sm fd-text-sky-600 hover:fd-text-sky-700">
         {{ $label ?? $default }}
-        <x-feadmin::icons.box-arrow-up-right class="fd-w-4 fd-h-4" />
+        <x-weblebby::icons.box-arrow-up-right class="fd-w-4 fd-h-4" />
     </a>
     @if ($deleteable)
-        <x-feadmin::button type="button" icon="x" variant="red" size="none" class="fd-p-1" data-delete-file />
+        <x-weblebby::button type="button" icon="x" variant="red" size="none" class="fd-p-1" data-delete-file />
     @endif
 </div>

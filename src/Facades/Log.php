@@ -1,14 +1,14 @@
 <?php
 
-namespace Feadmin\Facades;
+namespace Weblebby\Framework\Facades;
 
 use App\Models\User;
-use Feadmin\Managers\LogManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Facade;
+use Weblebby\Framework\Managers\LogManager;
 
 /**
- * @method static \Feadmin\Models\Log store(string $action, array $payload = [], Model $loggable = null, User $user = null)
+ * @method static \Weblebby\Framework\Models\Log store(string $action, array $payload = [], Model $loggable = null, User $user = null)
  *
  * @see LogManager
  */

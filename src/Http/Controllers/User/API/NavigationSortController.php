@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User\API;
+namespace Weblebby\Framework\Http\Controllers\User\API;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Http\Requests\User\SortNavigationRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Weblebby\Framework\Http\Requests\User\SortNavigationRequest;
 
 class NavigationSortController extends Controller
 {

@@ -1,11 +1,11 @@
-<x-feadmin::layouts.panel>
-    <x-feadmin::page>
-        <x-feadmin::page.head
+<x-weblebby::layouts.panel>
+    <x-weblebby::page>
+        <x-weblebby::page.head
                 :back="$taxonomy ? panel_route('taxonomies.index', ['taxonomy' => $taxonomyItem->name()]) : null">
-            <x-feadmin::page.title>
+            <x-weblebby::page.title>
                 {{ $taxonomy ? __('Düzenle: :term', ['term' => $taxonomy->term->title]) : $taxonomyItem->pluralName() }}
-            </x-feadmin::page.title>
-        </x-feadmin::page.head>
+            </x-weblebby::page.title>
+        </x-weblebby::page.head>
         <div @class([
             'fd-grid fd-gap-3',
             'fd-grid-cols-5' => auth()->user()->can($taxonomyItem->abilityFor('create')),
@@ -13,7 +13,7 @@
         ])>
             @can($taxonomyItem->abilityFor('create'))
                 <div class="fd-col-span-2">
-                    <x-feadmin::form
+                    <x-weblebby::form
                             :action="$taxonomy ? panel_route('taxonomies.update', $taxonomy) : panel_route('taxonomies.store')"
                             :method="$taxonomy ? 'PUT' : 'POST'"
                             :bind="$taxonomy ?? null"
@@ -22,82 +22,82 @@
                         <input type="hidden" name="taxonomy" value="{{ $taxonomyItem->name() }}">
                         <input type="hidden" name="_locale" value="{{ $locale }}">
                         <div class="fd-space-y-3">
-                            <x-feadmin::card padding>
-                                <x-feadmin::card.title>@lang('Yeni :taxonomy', ['taxonomy' => Str::lower($taxonomyItem->singularName())])</x-feadmin::card.title>
+                            <x-weblebby::card padding>
+                                <x-weblebby::card.title>@lang('Yeni :taxonomy', ['taxonomy' => Str::lower($taxonomyItem->singularName())])</x-weblebby::card.title>
                                 <div class="fd-space-y-3">
-                                    <x-feadmin::form.group name="title" :label="__('Başlık')">
-                                        <x-feadmin::form.input
+                                    <x-weblebby::form.group name="title" :label="__('Başlık')">
+                                        <x-weblebby::form.input
                                                 :default="$taxonomy?->term?->title"
                                                 :translatable="$isTranslatable"
                                         />
-                                    </x-feadmin::form.group>
-                                    <x-feadmin::form.group name="slug" :label="__('Sabit URL')">
-                                        <x-feadmin::form.input
+                                    </x-weblebby::form.group>
+                                    <x-weblebby::form.group name="slug" :label="__('Sabit URL')">
+                                        <x-weblebby::form.input
                                                 :default="$taxonomy?->term?->slug"
                                                 :translatable="$isTranslatable"
                                         />
-                                    </x-feadmin::form.group>
-                                    <x-feadmin::form.group name="parent_id"
-                                                           :label="__('Üst :taxonomy', ['taxonomy' => Str::lower($taxonomyItem->singularName())])">
-                                        <x-feadmin::form.select>
+                                    </x-weblebby::form.group>
+                                    <x-weblebby::form.group name="parent_id"
+                                                            :label="__('Üst :taxonomy', ['taxonomy' => Str::lower($taxonomyItem->singularName())])">
+                                        <x-weblebby::form.select>
                                             <option value="">@lang('Yok')</option>
                                             @foreach ($taxonomiesForParentSelect as $taxonomyValue)
-                                                <x-feadmin::form.option
-                                                        value="{{ $taxonomyValue->id }}">{{ $taxonomyValue->term->title }}</x-feadmin::form.option>
+                                                <x-weblebby::form.option
+                                                        value="{{ $taxonomyValue->id }}">{{ $taxonomyValue->term->title }}</x-weblebby::form.option>
                                             @endforeach
-                                        </x-feadmin::form.select>
-                                    </x-feadmin::form.group>
+                                        </x-weblebby::form.select>
+                                    </x-weblebby::form.group>
                                 </div>
-                            </x-feadmin::card>
-                            <x-feadmin::tabs container="taxonomy" :default="array_keys($fieldSections)[0] ?? null">
-                                <x-feadmin::tabs.header>
+                            </x-weblebby::card>
+                            <x-weblebby::tabs container="taxonomy" :default="array_keys($fieldSections)[0] ?? null">
+                                <x-weblebby::tabs.header>
                                     @foreach ($fieldSections as $id => $section)
-                                        <x-feadmin::tabs.button
-                                                :id="$id">{{ $section['title'] }}</x-feadmin::tabs.button>
+                                        <x-weblebby::tabs.button
+                                                :id="$id">{{ $section['title'] }}</x-weblebby::tabs.button>
                                     @endforeach
-                                </x-feadmin::tabs.header>
+                                </x-weblebby::tabs.header>
                                 @foreach($fieldSections as $id => $section)
-                                    <x-feadmin::tabs.content :for="$id">
+                                    <x-weblebby::tabs.content :for="$id">
                                         <div class="fd-space-y-3">
                                             @foreach ($section['fields'] as $field)
-                                                <x-feadmin::form.field
+                                                <x-weblebby::form.field
                                                         :field="$field"
                                                         :default="$metafields[$field['key']] ?? null"
                                                 />
                                             @endforeach
                                         </div>
-                                    </x-feadmin::tabs.content>
+                                    </x-weblebby::tabs.content>
                                 @endforeach
-                            </x-feadmin::tabs>
-                            <x-feadmin::card padding>
-                                <x-feadmin::button type="submit">
+                            </x-weblebby::tabs>
+                            <x-weblebby::card padding>
+                                <x-weblebby::button type="submit">
                                     {{ $taxonomy ? __('Güncelle') : __('Oluştur') }}
-                                </x-feadmin::button>
-                            </x-feadmin::card>
+                                </x-weblebby::button>
+                            </x-weblebby::card>
                         </div>
-                        <x-feadmin::form.sticky-submit />
-                    </x-feadmin::form>
+                        <x-weblebby::form.sticky-submit />
+                    </x-weblebby::form>
                 </div>
             @endcan
             <div class="fd-space-y-3 fd-col-span-3">
-                <x-feadmin::table>
-                    <x-feadmin::table.head>
-                        <x-feadmin::table.th>@lang('Başlık')</x-feadmin::table.th>
-                        <x-feadmin::table.th>@lang('Üst :taxonomy', ['taxonomy' => $taxonomyItem->singularName()])</x-feadmin::table.th>
-                        <x-feadmin::table.th>@lang('Değişiklik tarihi')</x-feadmin::table.th>
-                        <x-feadmin::table.th />
-                    </x-feadmin::table.head>
-                    <x-feadmin::table.body>
+                <x-weblebby::table>
+                    <x-weblebby::table.head>
+                        <x-weblebby::table.th>@lang('Başlık')</x-weblebby::table.th>
+                        <x-weblebby::table.th>@lang('Üst :taxonomy', ['taxonomy' => $taxonomyItem->singularName()])</x-weblebby::table.th>
+                        <x-weblebby::table.th>@lang('Değişiklik tarihi')</x-weblebby::table.th>
+                        <x-weblebby::table.th />
+                    </x-weblebby::table.head>
+                    <x-weblebby::table.body>
                         @foreach ($taxonomies as $taxonomyValue)
                             <tr>
-                                <x-feadmin::table.td class="fd-font-medium fd-text-lg">
+                                <x-weblebby::table.td class="fd-font-medium fd-text-lg">
                                     @can($taxonomyItem->abilityFor('update'))
                                         <a href="{{ panel_route('taxonomies.edit', $taxonomyValue) }}">{{ $taxonomyValue->term->title }}</a>
                                     @else
                                         <span>{{ $taxonomyValue->term->title }}</span>
                                     @endcan
-                                </x-feadmin::table.td>
-                                <x-feadmin::table.td>
+                                </x-weblebby::table.td>
+                                <x-weblebby::table.td>
                                     @if ($taxonomyValue->parent)
                                         @can($taxonomyItem->abilityFor('update'))
                                             <a href="{{ panel_route('taxonomies.edit', $taxonomyValue->parent) }}">{{ $taxonomyValue->parent->term->title }}</a>
@@ -107,36 +107,36 @@
                                     @else
                                         <span class="fd-text-zinc-400">-</span>
                                     @endif
-                                </x-feadmin::table.td>
-                                <x-feadmin::table.td>
+                                </x-weblebby::table.td>
+                                <x-weblebby::table.td>
                                     {{ Date::short($taxonomyValue->updated_at) }}
-                                </x-feadmin::table.td>
-                                <x-feadmin::table.td>
+                                </x-weblebby::table.td>
+                                <x-weblebby::table.td>
                                     <div class="fd-ml-auto">
                                         @can($taxonomyItem->abilityFor('delete'))
-                                            <x-feadmin::button
+                                            <x-weblebby::button
                                                     size="sm"
                                                     variant="red"
                                                     data-modal-open="#modal-delete-taxonomy"
                                                     :data-action="panel_route('taxonomies.destroy', $taxonomyValue)"
                                             >
                                                 @lang('Sil')
-                                            </x-feadmin::button>
+                                            </x-weblebby::button>
                                         @endcan
                                     </div>
-                                </x-feadmin::table.td>
+                                </x-weblebby::table.td>
                             </tr>
                         @endforeach
-                    </x-feadmin::table.body>
-                </x-feadmin::table>
+                    </x-weblebby::table.body>
+                </x-weblebby::table>
                 {{ $taxonomies->links() }}
             </div>
         </div>
-    </x-feadmin::page>
+    </x-weblebby::page>
     @can($taxonomyItem->abilityFor('delete'))
-        <x-feadmin::modal.destroy
+        <x-weblebby::modal.destroy
                 id="modal-delete-taxonomy"
                 :title="__(':name siliyorsunuz', ['name' => $taxonomyItem->singularName()])"
         />
     @endcan
-</x-feadmin::layouts.panel>
+</x-weblebby::layouts.panel>

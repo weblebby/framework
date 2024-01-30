@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Models;
+namespace Weblebby\Framework\Models;
 
 class PageTranslation extends PostTranslation
 {

@@ -1,7 +1,7 @@
 <template data-tab-button-template>
-    <x-feadmin::tabs.button id=":id" />
+    <x-weblebby::tabs.button id=":id" />
 </template>
 
 <template data-tab-content-template>
-    <x-feadmin::tabs.content for=":for" />
+    <x-weblebby::tabs.content for=":for" />
 </template>

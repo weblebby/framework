@@ -1,9 +1,9 @@
 @aware(['name', 'bind', 'bag' => 'default'])
 @props(['type' => 'text', 'default' => $bind->$name ?? null])
 
-@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
-@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
-@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
+@php($id = \Weblebby\Framework\Support\FormComponent::id($name, $bag))
+@php($name = \Weblebby\Framework\Support\FormComponent::dottedToName($name))
+@php($dottedName = \Weblebby\Framework\Support\FormComponent::nameToDotted($name))
 
 <div class="fd-p-3 fd-bg-zinc-100 fd-rounded fd-space-y-2">
     <input
@@ -22,6 +22,6 @@
                     fd-transition') }}
     >
     @if ($default)
-        <x-feadmin::form.file-default :default="$default" />
+        <x-weblebby::form.file-default :default="$default" />
     @endif
 </div>

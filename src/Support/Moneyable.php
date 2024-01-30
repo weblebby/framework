@@ -1,13 +1,13 @@
 <?php
 
-namespace Feadmin\Support;
+namespace Weblebby\Framework\Support;
 
-use Feadmin\Enums\CurrencyEnum;
 use Illuminate\Contracts\Support\DeferringDisplayableValue;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Database\Eloquent\JsonEncodingException;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
+use Weblebby\Framework\Enums\CurrencyEnum;
 
 class Moneyable implements DeferringDisplayableValue, Jsonable, JsonSerializable
 {

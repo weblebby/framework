@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Services;
+namespace Weblebby\Framework\Services;
 
-use Feadmin\Models\Navigation;
 use Illuminate\Support\Collection;
+use Weblebby\Framework\Models\Navigation;
 
 class NavigationService
 {

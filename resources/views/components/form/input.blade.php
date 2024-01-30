@@ -11,19 +11,19 @@
 
 @aware(['default' => $bind->$name ?? request($name)])
 
-@php($id = \Feadmin\Support\FormComponent::id($name, $bag))
-@php($name = \Feadmin\Support\FormComponent::dottedToName($name))
-@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($name))
+@php($id = \Weblebby\Framework\Support\FormComponent::id($name, $bag))
+@php($name = \Weblebby\Framework\Support\FormComponent::dottedToName($name))
+@php($dottedName = \Weblebby\Framework\Support\FormComponent::nameToDotted($name))
 
 <div class="fd-flex fd-items-center fd-relative">
     @if ($prefix || $translatable)
-        <x-feadmin::form.prefix class="-fd-mr-[1px] fd-rounded-l">
+        <x-weblebby::form.prefix class="-fd-mr-[1px] fd-rounded-l">
             @if ($translatable)
-                <x-feadmin::form.prefix-translatable />
+                <x-weblebby::form.prefix-translatable />
             @else
                 {{ $prefix }}
             @endif
-        </x-feadmin::form.prefix>
+        </x-weblebby::form.prefix>
     @endif
     <input {{ $attributes
         ->merge([
@@ -45,6 +45,7 @@
             read-only:fd-bg-zinc-200
             fd-transition') }}>
     @if ($suffix)
-        <x-feadmin::form.prefix class="-fd-ml-[1px] fd-rounded-r" :suffix="true">{{ $suffix }}</x-feadmin::form.prefix>
+        <x-weblebby::form.prefix class="-fd-ml-[1px] fd-rounded-r"
+                                 :suffix="true">{{ $suffix }}</x-weblebby::form.prefix>
     @endif
 </div>

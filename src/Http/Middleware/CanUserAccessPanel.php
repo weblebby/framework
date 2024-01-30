@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Http\Middleware;
+namespace Weblebby\Framework\Http\Middleware;
 
 use Closure;
-use Feadmin\Models\User;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Weblebby\Framework\Models\User;
 
 class CanUserAccessPanel
 {

@@ -62,4 +62,4 @@ overlay?.addEventListener('click', e => {
     }
 })
 
-window.Feadmin.Modal = Modal
+window.Weblebby.Modal = Modal

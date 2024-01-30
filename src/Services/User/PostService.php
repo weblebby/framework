@@ -1,13 +1,13 @@
 <?php
 
-namespace Feadmin\Services\User;
+namespace Weblebby\Framework\Services\User;
 
-use Feadmin\Contracts\Eloquent\PostInterface;
-use Feadmin\Facades\Theme;
-use Feadmin\Items\FieldSectionsItem;
-use Feadmin\Models\Taxonomy;
-use Feadmin\Services\TaxonomyService;
 use Illuminate\Support\Collection;
+use Weblebby\Framework\Contracts\Eloquent\PostInterface;
+use Weblebby\Framework\Facades\Theme;
+use Weblebby\Framework\Items\FieldSectionsItem;
+use Weblebby\Framework\Models\Taxonomy;
+use Weblebby\Framework\Services\TaxonomyService;
 
 class PostService
 {

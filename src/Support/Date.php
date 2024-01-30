@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Support;
+namespace Weblebby\Framework\Support;
 
 use BadMethodCallException;
 use DateTimeInterface;

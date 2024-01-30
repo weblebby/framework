@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Managers;
+namespace Weblebby\Framework\Managers;
 
 use Closure;
 use Illuminate\Support\HtmlString;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Feadmin\Items\Field\Concerns;
+namespace Weblebby\Framework\Items\Field\Concerns;
 
-use Feadmin\Items\Field\Contracts\FieldInterface;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
 
 trait HasChildFields
 {

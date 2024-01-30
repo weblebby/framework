@@ -1,18 +1,18 @@
 <?php
 
-namespace Feadmin\Items;
+namespace Weblebby\Framework\Items;
 
 use ArrayAccess;
-use Feadmin\Concerns\HasArray;
-use Feadmin\Contracts\Eloquent\PostInterface;
-use Feadmin\Facades\Theme;
-use Feadmin\Items\Field\Collections\FieldCollection;
-use Feadmin\Items\Field\Contracts\FieldInterface;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
+use Weblebby\Framework\Concerns\HasArray;
+use Weblebby\Framework\Contracts\Eloquent\PostInterface;
+use Weblebby\Framework\Facades\Theme;
+use Weblebby\Framework\Items\Field\Collections\FieldCollection;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
 
-class FieldSectionsItem implements ArrayAccess, Arrayable, Jsonable, JsonSerializable
+class FieldSectionsItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {
     use HasArray;
 
@@ -52,7 +52,7 @@ class FieldSectionsItem implements ArrayAccess, Arrayable, Jsonable, JsonSeriali
     public function allFields(): FieldCollection
     {
         return (new FieldCollection($this->sections))
-            ->map(fn($section) => $section['fields'])
+            ->map(fn ($section) => $section['fields'])
             ->flatten();
     }
 

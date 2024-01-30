@@ -1,11 +1,11 @@
 <?php
 
-namespace Feadmin\Contracts\Eloquent;
+namespace Weblebby\Framework\Contracts\Eloquent;
 
-use Feadmin\Items\FieldSectionsItem;
-use Feadmin\Items\NavigationLinkableItem;
-use Feadmin\Items\SmartMenuItem;
-use Feadmin\Items\TaxonomyItem;
+use Weblebby\Framework\Items\FieldSectionsItem;
+use Weblebby\Framework\Items\NavigationLinkableItem;
+use Weblebby\Framework\Items\SmartMenuItem;
+use Weblebby\Framework\Items\TaxonomyItem;
 
 interface PostInterface
 {

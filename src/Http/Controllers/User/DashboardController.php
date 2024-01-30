@@ -1,6 +1,6 @@
 <?php
 
-namespace Feadmin\Http\Controllers\User;
+namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
@@ -11,6 +11,6 @@ class DashboardController extends Controller
     {
         seo()->title(__('Panel'));
 
-        return view('feadmin::user.dashboard');
+        return view('weblebby::user.dashboard');
     }
 }

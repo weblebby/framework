@@ -7,26 +7,26 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @seo
     @stack('before_styles')
-    @vite('resources/css/feadmin.css', 'feadmin/build')
+    @vite('resources/css/weblebby.css', 'weblebby/build')
     @stack('after_styles')
 </head>
 <body>
 {{ $slot }}
 <script>
-  window.Feadmin = {};
+  window.Weblebby = {};
 </script>
-@hook(panel()->nameWith('after_js_feadmin_object'))
+@hook(panel()->nameWith('after_js_weblebby_object'))
 <script>
-  Feadmin.API = {
+  Weblebby.API = {
     baseUrl: @json('https://' . config('app.domains.api')),
   };
 </script>
 @stack('before_scripts')
-@vite('resources/js/feadmin.js', 'feadmin/build')
+@vite('resources/js/weblebby.js', 'weblebby/build')
 @if (session()->has('message'))
     <script>
       document.addEventListener("DOMContentLoaded", function() {
-        Feadmin.Toastr.add('{{ session()->get('message') }}');
+        Weblebby.Toastr.add('{{ session()->get('message') }}');
       });
     </script>
 @endif

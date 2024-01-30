@@ -1,9 +1,9 @@
 <?php
 
-namespace Feadmin\Http\Controllers;
+namespace Weblebby\Framework\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Feadmin\Models\Post;
+use Weblebby\Framework\Models\Post;
 
 class PostController extends Controller
 {

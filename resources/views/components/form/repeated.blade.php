@@ -1,7 +1,7 @@
 @props(['field', 'default' => null])
 
-@php($dottedName = \Feadmin\Support\FormComponent::nameToDotted($field['name']))
-@php($fieldItemName = \Feadmin\Support\FormComponent::nameToDottedWithoutEmptyWildcard($field['name']))
+@php($dottedName = \Weblebby\Framework\Support\FormComponent::nameToDotted($field['name']))
+@php($fieldItemName = \Weblebby\Framework\Support\FormComponent::nameToDottedWithoutEmptyWildcard($field['name']))
 @php ($default = array_values(
     array_replace_recursive($default ?? [], $field['default'], old($dottedName, []) ?? [])
 ))
@@ -18,11 +18,11 @@
                     <h3 class="fd-font-medium fd-text-lg">{{ $field['label'] }}</h3>
                 @endif
                 @if (filled($field['hint']))
-                    <x-feadmin::form.hint>{{ $field['hint'] }}</x-feadmin::form.hint>
+                    <x-weblebby::form.hint>{{ $field['hint'] }}</x-weblebby::form.hint>
                 @endif
             </div>
         @endif
-        <x-feadmin::button
+        <x-weblebby::button
                 type="button"
                 variant="light"
                 icon="plus"
@@ -30,21 +30,21 @@
                 :data-repeated-field-add-row="true"
         >
             @lang('Yeni satır')
-        </x-feadmin::button>
+        </x-weblebby::button>
     </div>
     <div class="fd-hidden fd-space-y-3" data-repeated-field-rows></div>
     <template data-repeated-field-template>
         <div class="fd-bg-white fd-border fd-rounded fd-p-3 fd-relative fd-space-y-3" data-repeated-field-row>
             <div class="fd-flex fd-items-center fd-justify-between fd-gap-2">
                 <div class="fd-flex fd-items-center fd-gap-1">
-                    <x-feadmin::button
+                    <x-weblebby::button
                             type="button"
                             icon="caret-right-fill"
                             class="fd-transition-transform"
                             data-repeated-field-collapse-row="true"
                     >
-                    </x-feadmin::button>
-                    <x-feadmin::button
+                    </x-weblebby::button>
+                    <x-weblebby::button
                             type="button"
                             variant="light"
                             icon="grip-horizontal"
@@ -56,7 +56,7 @@
                         <div data-repeated-field-row-iteration-label></div>
                     </div>
                 </div>
-                <x-feadmin::button
+                <x-weblebby::button
                         type="button"
                         variant="red"
                         icon="x"
@@ -72,7 +72,7 @@
 
 @pushonce('after_scripts')
     <template data-file-default-template>
-        <x-feadmin::form.file-default :default="''" />
+        <x-weblebby::form.file-default :default="''" />
     </template>
 @endpushonce
 
@@ -80,7 +80,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", () => {
           @foreach ($default as $index => $value)
-          window.Feadmin.RepeatedField.addRow({
+          window.Weblebby.RepeatedField.addRow({
             itemContainer: @json($fieldItemName),
             fields: @json($value),
             errors: @json($errors->get(sprintf('%s.%d.*', $dottedName, $index))),

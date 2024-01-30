@@ -1,10 +1,10 @@
 <?php
 
-namespace Feadmin\Facades;
+namespace Weblebby\Framework\Facades;
 
-use Feadmin\Managers\InjectionManager;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\HtmlString;
+use Weblebby\Framework\Managers\InjectionManager;
 
 /**
  * @method static void add(string|array $name, callable $callable)

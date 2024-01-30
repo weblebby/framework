@@ -22,7 +22,7 @@ const Navigation = {
                         }),
                     })
 
-                    Feadmin.Toastr.add(response.message)
+                    Weblebby.Toastr.add(response.message)
                 } catch (err) {}
             },
             handleClass: 'navigation-item',
@@ -242,11 +242,11 @@ dd.querySelectorAll('[data-toggle="edit"]').forEach(button => {
     button.addEventListener('click', () => {
         const item = JSON.parse(button.dataset.item)
 
-        Feadmin.Drawer.open(drawer, {
+        Weblebby.Drawer.open(drawer, {
             item,
             isEdit: true,
         })
     })
 })
 
-window.Feadmin.Navigation = Navigation
+window.Weblebby.Navigation = Navigation

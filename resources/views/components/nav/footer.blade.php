@@ -15,11 +15,11 @@
             <a href="https://www.weblebby.com" target="_blank" class="fd-text-xs">@lang('powered by weblebby')</a>
         @endif
     </div>
-    <x-feadmin::form :action="panel()->route('logout')" class="fd-text-sm fd-mt-4">
-        <x-feadmin::button
+    <x-weblebby::form :action="panel()->route('logout')" class="fd-text-sm fd-mt-4">
+        <x-weblebby::button
                 type="submit"
                 variant="outline-light"
                 size="sm"
-        >@lang('Oturumu kapat')</x-feadmin::button>
-    </x-feadmin::form>
+        >@lang('Oturumu kapat')</x-weblebby::button>
+    </x-weblebby::form>
 </div>

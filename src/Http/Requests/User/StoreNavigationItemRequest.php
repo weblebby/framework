@@ -1,17 +1,17 @@
 <?php
 
-namespace Feadmin\Http\Requests\User;
+namespace Weblebby\Framework\Http\Requests\User;
 
-use Feadmin\Enums\NavigationTypeEnum;
-use Feadmin\Facades\Extension;
-use Feadmin\Facades\NavigationLinkable;
-use Feadmin\Facades\PostModels;
-use Feadmin\Facades\SmartMenu;
-use Feadmin\Models\NavigationItem;
-use Feadmin\Services\TaxonomyService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Weblebby\Extensions\Multilingual\Support\LocaleRules;
+use Weblebby\Framework\Enums\NavigationTypeEnum;
+use Weblebby\Framework\Facades\Extension;
+use Weblebby\Framework\Facades\NavigationLinkable;
+use Weblebby\Framework\Facades\PostModels;
+use Weblebby\Framework\Facades\SmartMenu;
+use Weblebby\Framework\Models\NavigationItem;
+use Weblebby\Framework\Services\TaxonomyService;
 
 class StoreNavigationItemRequest extends FormRequest
 {
@@ -39,12 +39,12 @@ class StoreNavigationItemRequest extends FormRequest
             /** @var TaxonomyService $taxonomyService */
             $taxonomyService = app(TaxonomyService::class);
 
-            $smartFilterValues = array_map(fn($filter) => $filter['value'], $this->smart_filters);
+            $smartFilterValues = array_map(fn ($filter) => $filter['value'], $this->smart_filters);
             $terms = $taxonomyService->createMissingTaxonomies($this->smart_condition, $smartFilterValues);
 
             $data['smart_filters'] = collect($terms)
                 ->groupBy('taxonomy')
-                ->map(fn($terms) => $terms->pluck('id')->unique()->values())
+                ->map(fn ($terms) => $terms->pluck('id')->unique()->values())
                 ->toArray();
         }
 
@@ -55,7 +55,7 @@ class StoreNavigationItemRequest extends FormRequest
                 ...$data ?? [],
                 $locale => [
                     'title' => $this->title,
-                ]
+                ],
             ])
             ->except('title');
     }
