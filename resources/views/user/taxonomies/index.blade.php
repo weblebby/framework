@@ -23,7 +23,23 @@
                         <input type="hidden" name="_locale" value="{{ $locale }}">
                         <div class="fd-space-y-3">
                             <x-weblebby::card padding>
-                                <x-weblebby::card.title>@lang('Yeni :taxonomy', ['taxonomy' => Str::lower($taxonomyItem->singularName())])</x-weblebby::card.title>
+                                @if ($taxonomy)
+                                    <div class="fd-flex fd-items-center fd-justify-between fd-mb-3">
+                                        <x-weblebby::card.title class="!fd-mb-0">
+                                            @lang('Güncelle: :term', ['term' => $taxonomy->term->title])
+                                        </x-weblebby::card.title>
+                                        <x-weblebby::button
+                                                as="a"
+                                                :href="panel_route('taxonomies.index', ['taxonomy' => $taxonomyItem->name(), 'locale' => request('locale')])"
+                                                size="sm"
+                                                variant="red"
+                                                icon="x"
+                                                class="fd-shrink-0"
+                                        />
+                                    </div>
+                                @else
+                                    <x-weblebby::card.title>@lang('Yeni :taxonomy', ['taxonomy' => Str::lower($taxonomyItem->singularName())])</x-weblebby::card.title>
+                                @endif
                                 <div class="fd-space-y-3">
                                     <x-weblebby::form.group name="title" :label="__('Başlık')">
                                         <x-weblebby::form.input
@@ -92,7 +108,7 @@
                             <tr>
                                 <x-weblebby::table.td class="fd-font-medium fd-text-lg">
                                     @can($taxonomyItem->abilityFor('update'))
-                                        <a href="{{ panel_route('taxonomies.edit', $taxonomyValue) }}">{{ $taxonomyValue->term->title }}</a>
+                                        <a href="{{ panel_route('taxonomies.edit', [$taxonomyValue, 'locale' => request('locale')]) }}">{{ $taxonomyValue->term->title }}</a>
                                     @else
                                         <span>{{ $taxonomyValue->term->title }}</span>
                                     @endcan
@@ -100,7 +116,7 @@
                                 <x-weblebby::table.td>
                                     @if ($taxonomyValue->parent)
                                         @can($taxonomyItem->abilityFor('update'))
-                                            <a href="{{ panel_route('taxonomies.edit', $taxonomyValue->parent) }}">{{ $taxonomyValue->parent->term->title }}</a>
+                                            <a href="{{ panel_route('taxonomies.edit', [$taxonomyValue->parent, 'locale' => request('locale')]) }}">{{ $taxonomyValue->parent->term->title }}</a>
                                         @else
                                             <span>{{ $taxonomyValue->parent->term->title }}</span>
                                         @endcan
@@ -112,7 +128,17 @@
                                     {{ Date::short($taxonomyValue->updated_at) }}
                                 </x-weblebby::table.td>
                                 <x-weblebby::table.td>
-                                    <div class="fd-ml-auto">
+                                    <div class="fd-flex fd-items-center fd-gap-2 fd-ml-auto">
+                                        @can($taxonomyItem->abilityFor('update'))
+                                            <x-weblebby::button
+                                                    as="a"
+                                                    :href="panel_route('taxonomies.edit', [$taxonomyValue, 'locale' => request('locale')])"
+                                                    size="sm"
+                                                    variant="light"
+                                            >
+                                                @lang('Düzenle')
+                                            </x-weblebby::button>
+                                        @endcan
                                         @can($taxonomyItem->abilityFor('delete'))
                                             <x-weblebby::button
                                                     size="sm"

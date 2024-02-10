@@ -131,9 +131,9 @@
               };
             </script>
         @endif
-        @vite('resources/js/pages/post/post.js', 'weblebby/build')
+        @vite('resources/js/pages/post/post.js', panel_build_path())
         @if($isCodeEditorNeeded)
-            @vite('resources/js/code-editor.js', 'weblebby/build')
+            @vite('resources/js/code-editor.js', panel_build_path())
         @endif
     @endpush
 </x-weblebby::layouts.panel>

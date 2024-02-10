@@ -30,7 +30,7 @@
         </x-weblebby::form>
     </div>
     @push('after_scripts')
-        @vite('resources/js/code-editor.js', 'weblebby/build')
+        @vite('resources/js/code-editor.js', panel_build_path())
         @if ($errors->any())
             <script>
               document.addEventListener("DOMContentLoaded", function() {

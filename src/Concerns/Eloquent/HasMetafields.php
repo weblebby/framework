@@ -41,6 +41,28 @@ trait HasMetafields
         return $builder->whereHas('metafields', fn ($q) => $q->where('key', $key)->where('value', $value));
     }
 
+    public function metafieldRelations(): array
+    {
+        return [
+            'metafields' => fn ($q) => $q
+                ->with([
+                    'metafieldable',
+                    'media',
+                ])
+                ->withTranslation(),
+        ];
+    }
+
+    public function scopeWithMetafields(Builder $builder): Builder
+    {
+        return $builder->with($this->metafieldRelations());
+    }
+
+    public function loadMetafields(): void
+    {
+        $this->load($this->metafieldRelations());
+    }
+
     public function getMetafield(string $key): ?Metafield
     {
         /** @var ?Metafield $metafield */
@@ -98,20 +120,25 @@ trait HasMetafields
     public function getMetafieldValue(
         string $key,
         ?string $default = null,
-        ?FieldItem $fieldDefinition = null,
+        // ?FieldItem $fieldDefinition = null,
         ?string $locale = null,
     ): mixed {
-        $metafield = $this->getMetafield($key);
+        return data_get($this->getMetafieldValues(locale: $locale), $key, $default);
+        /*$metafield = $this->getMetafield($key);
 
         if (is_null($metafield)) {
             return $default;
+        }
+
+        if (is_null($fieldDefinition) && method_exists($this, 'getPostSections')) {
+            $fieldDefinition = $this::getPostSections()->allFields()->findByName($key);
         }
 
         if (is_null($fieldDefinition)) {
             return $metafield->original_value ?? $default;
         }
 
-        return $metafield->toValue($fieldDefinition, $default, $locale ?? app()->getLocale());
+        return $metafield->toValue($fieldDefinition, $default, $locale ?? app()->getLocale());*/
     }
 
     /**

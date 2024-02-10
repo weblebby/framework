@@ -41,7 +41,8 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
         ->middleware(array_filter([
             'guest:'.config('fortify.guard'),
             $limiter ? 'throttle:'.$limiter : null,
-        ]));
+        ]))
+        ->name('login.store');
 
     Route::post(RoutePath::for('logout', '/logout'), [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
@@ -76,7 +77,8 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
         }
 
         Route::post(RoutePath::for('register', '/register'), [RegisteredUserController::class, 'store'])
-            ->middleware(['guest:'.config('fortify.guard')]);
+            ->middleware(['guest:'.config('fortify.guard')])
+            ->name('register.store');
     }
 
     // Email Verification...
@@ -113,7 +115,8 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
     // Password Confirmation...
     if ($enableViews) {
         Route::get(RoutePath::for('password.confirm', '/user/confirm-password'), [ConfirmablePasswordController::class, 'show'])
-            ->middleware([config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')]);
+            ->middleware([config('fortify.auth_middleware', 'auth').':'.config('fortify.guard')])
+            ->name('password.confirm.show');
     }
 
     Route::get(RoutePath::for('password.confirmation', '/user/confirmed-password-status'), [ConfirmedPasswordStatusController::class, 'show'])
@@ -136,7 +139,8 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
             ->middleware(array_filter([
                 'guest:'.config('fortify.guard'),
                 $twoFactorLimiter ? 'throttle:'.$twoFactorLimiter : null,
-            ]));
+            ]))
+            ->name('two-factor.login.store');
 
         $twoFactorMiddleware = Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')
             ? [config('fortify.auth_middleware', 'auth').':'.config('fortify.guard'), 'password.confirm']
@@ -167,6 +171,7 @@ Route::group(['middleware' => config('fortify.middleware', ['web'])], function (
             ->name('two-factor.recovery-codes');
 
         Route::post(RoutePath::for('two-factor.recovery-codes', '/user/two-factor-recovery-codes'), [RecoveryCodeController::class, 'store'])
-            ->middleware($twoFactorMiddleware);
+            ->middleware($twoFactorMiddleware)
+            ->name('two-factor.recovery-codes.store');
     }
 });

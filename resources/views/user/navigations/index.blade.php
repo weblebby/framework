@@ -201,7 +201,7 @@
     </x-weblebby::drawer>
 
     @push('after_scripts')
-        @vite('resources/js/navigation.js', 'weblebby/build')
+        @vite('resources/js/navigation.js', panel_build_path())
         <script>
             @if ($errors->item->any())
             document.addEventListener("DOMContentLoaded", function() {

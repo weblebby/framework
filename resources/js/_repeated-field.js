@@ -107,6 +107,11 @@ const RepeatedField = {
                 ? RepeatedField.findContainer(options.itemContainer)
                 : options.itemContainer
 
+        if (!itemContainer) {
+            console.error('Item container not found', options)
+            return
+        }
+
         const rowsEl = RepeatedField.getRowsElement(itemContainer)
         const maxRow = RepeatedField.getMaxRow(itemContainer)
 
@@ -128,19 +133,32 @@ const RepeatedField = {
             const value = options?.fields?.[key]
 
             if (Array.isArray(value)) {
-                value.forEach((value, index) => {
-                    const childItemContainers = itemContainer.querySelectorAll(
-                        RepeatedField.singleItemSelector.replace(
-                            ':id',
-                            `${options?.dottedName}.*.${key}`,
-                        ),
+                const selector = RepeatedField.singleItemSelector.replace(
+                    ':id',
+                    `${options?.dottedName}.*.${key}`,
+                )
+
+                const childItemContainers = row.querySelectorAll(selector)
+                const activeChildItemContainers = []
+
+                childItemContainers.forEach(container => {
+                    const conditional = container.closest(
+                        ConditionalField.containerSelector,
                     )
 
-                    const childItemContainer =
-                        childItemContainers[options.index]
+                    if (
+                        conditional &&
+                        conditional.hasAttribute('data-active')
+                    ) {
+                        activeChildItemContainers.push(container)
+                    } else if (!conditional) {
+                        activeChildItemContainers.push(container)
+                    }
+                })
 
+                value.forEach((value, index) => {
                     RepeatedField.addRow({
-                        itemContainer: childItemContainer,
+                        itemContainer: activeChildItemContainers[0],
                         fields: value,
                         errors: options?.errors,
                         dottedName: `${options?.dottedName}.*.${key}`,
@@ -221,8 +239,11 @@ const RepeatedField = {
 
             if (value) {
                 input.setAttribute('value', value)
-                input?._CKEDITOR?.then(editor => {
-                    editor.setData(value)
+
+                input.addEventListener('ckeditor:load', e => {
+                    e.detail.editor.then(editor => {
+                        editor.setData(value)
+                    })
                 })
 
                 const imageWrapperEl = formGroup.querySelector(
@@ -256,7 +277,10 @@ const RepeatedField = {
                     }
                 }
 
-                if (input.type === 'file') {
+                if (
+                    input.type === 'file' &&
+                    input.dataset.hasOwnProperty('fileInput')
+                ) {
                     const template = document.querySelector(
                         Form.fileDefaultTemplateSelector,
                     )

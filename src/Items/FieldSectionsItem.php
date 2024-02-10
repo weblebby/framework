@@ -23,8 +23,17 @@ class FieldSectionsItem implements Arrayable, ArrayAccess, Jsonable, JsonSeriali
         return new static();
     }
 
-    public function add(string $name, string $title, array $fields): self
+    public function add(string $name, string $title, array $fields, bool $prepend = false): self
     {
+        if ($prepend === true) {
+            foreach ($fields as $field) {
+                if (method_exists($field, 'name')) {
+                    $field->key("{$name}.{$field['key']}");
+                    $field->name($field['key']);
+                }
+            }
+        }
+
         $this->sections[$name] = [
             'title' => $title,
             'fields' => $fields,
@@ -49,6 +58,9 @@ class FieldSectionsItem implements Arrayable, ArrayAccess, Jsonable, JsonSeriali
         return $this;
     }
 
+    /**
+     * @return FieldCollection<int, FieldInterface>
+     */
     public function allFields(): FieldCollection
     {
         return (new FieldCollection($this->sections))

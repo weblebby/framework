@@ -6,8 +6,7 @@
   "autoload": {
     "psr-4": {
       "Weblebby\\Framework\\": "src/",
-      "Weblebby\\Framework\\Database\\Seeders\\": "database/seeders/",
-      "App\\": "workbench/app/"
+      "Weblebby\\Framework\\Database\\Seeders\\": "database/seeders/"
     },
     "files": [
       "src/helpers.php"
@@ -35,8 +34,15 @@
   },
   "require-dev": {
     "laravel/pint": "^1.13",
-    "laravel/framework": "^10.34"
+    "laravel/framework": "^10.34",
+    "weblebby/core": "dev-main"
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../core"
+    }
+  ],
   "extra": {
     "laravel": {
       "providers": [

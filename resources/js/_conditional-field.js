@@ -1,5 +1,8 @@
 const ConditionalField = {
     containerSelector: '[data-conditional-field-item]',
+    activeContainerSelector: '[data-conditional-field-item][data-active="1"]',
+    hiddenContainerSelector:
+        '[data-conditional-field-item]:not([data-active="1"])',
 
     init(container) {
         const conditions = ConditionalField.parseConditions(container)
@@ -30,6 +33,8 @@ const ConditionalField = {
             const show = ConditionalField.compare(input.value, value, operator)
             ConditionalField.toggle(container, show)
         })
+
+        ConditionalField.clearHiddenInputs(container)
     },
 
     listen(container) {
@@ -43,8 +48,10 @@ const ConditionalField = {
     toggle(container, show) {
         if (show) {
             container.classList.remove('fd-hidden')
+            container.dataset.active = '1'
         } else {
             container.classList.add('fd-hidden')
+            delete container.dataset.active
         }
     },
 
@@ -107,6 +114,20 @@ const ConditionalField = {
         }
 
         return JSON.parse(conditions)
+    },
+
+    clearHiddenInputs(container) {
+        const form = container.closest('form')
+
+        form.addEventListener('submit', e => {
+            const hiddenConditionalFields = form.querySelectorAll(
+                ConditionalField.hiddenContainerSelector,
+            )
+
+            hiddenConditionalFields.forEach(field => {
+                field.remove()
+            })
+        })
     },
 }
 

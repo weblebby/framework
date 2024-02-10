@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Weblebby\Framework\Items\Field\Collections\FieldCollection;
 use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
 use Weblebby\Framework\Items\Field\Contracts\HasChildFieldInterface;
 use Weblebby\Framework\Items\Field\FieldValueItem;
@@ -287,9 +288,17 @@ class PreferenceManager
         return $this->findFieldByKey($bag['fields'], $key);
     }
 
+    public function allFieldsIn(string $namespace): FieldCollection
+    {
+        return FieldCollection::make($this->namespaces($namespace))
+            ->map(fn ($bag) => $bag['fields'])
+            ->flatten()
+            ->values();
+    }
+
     public function fields(string $namespace, string $bag): Collection
     {
-        return collect($this->namespaces($namespace)[$bag]['fields'])
+        return FieldCollection::make($this->namespaces($namespace)[$bag]['fields'])
             ->sortBy('position')
             ->values();
     }
@@ -379,8 +388,12 @@ class PreferenceManager
         }
     }
 
-    protected function toValue(FieldInterface $field, mixed $default = null, ?string $locale = null): mixed
+    protected function toValue(?FieldInterface $field, mixed $default = null, ?string $locale = null): mixed
     {
+        if (is_null($field)) {
+            return null;
+        }
+
         /** @var MetafieldService $metafieldService */
         $metafieldService = app(MetafieldService::class);
 

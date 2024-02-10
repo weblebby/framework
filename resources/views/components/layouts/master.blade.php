@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @seo
     @stack('before_styles')
-    @vite('resources/css/weblebby.css', 'weblebby/build')
+    @vite('resources/css/weblebby.css', panel_build_path())
     @stack('after_styles')
 </head>
 <body>
@@ -22,7 +22,7 @@
   };
 </script>
 @stack('before_scripts')
-@vite('resources/js/weblebby.js', 'weblebby/build')
+@vite('resources/js/weblebby.js', panel_build_path())
 @if (session()->has('message'))
     <script>
       document.addEventListener("DOMContentLoaded", function() {

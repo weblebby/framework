@@ -16,6 +16,11 @@ abstract class ExtensionObserver
         //
     }
 
+    public function afterPanelBoot(): void
+    {
+        //
+    }
+
     public function boot(): void
     {
         //

@@ -2,11 +2,11 @@
   "__api-b40dde4c.js": {
     "file": "assets/_api-b40dde4c.js"
   },
-  "__tab-fa229c78.js": {
-    "file": "assets/_tab-fa229c78.js"
+  "__tab-106d178d.js": {
+    "file": "assets/_tab-106d178d.js"
   },
-  "__tagify-cccd42ea.js": {
-    "file": "assets/_tagify-cccd42ea.js",
+  "__tagify-c5f99a65.js": {
+    "file": "assets/_tagify-c5f99a65.js",
     "imports": [
       "__api-b40dde4c.js"
     ]
@@ -500,7 +500,7 @@
     "src": "node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js"
   },
   "resources/css/weblebby.css": {
-    "file": "assets/weblebby-629526ad.css",
+    "file": "assets/weblebby-5574a36f.css",
     "isEntry": true,
     "src": "resources/css/weblebby.css"
   },
@@ -623,19 +623,19 @@
     "src": "resources/js/code-editor.js"
   },
   "resources/js/navigation.js": {
-    "file": "assets/navigation-69668de3.js",
+    "file": "assets/navigation-d8d81584.js",
     "imports": [
       "__api-b40dde4c.js",
-      "__tagify-cccd42ea.js"
+      "__tagify-c5f99a65.js"
     ],
     "isEntry": true,
     "src": "resources/js/navigation.js"
   },
   "resources/js/pages/post/post.js": {
-    "file": "assets/post-31a9d349.js",
+    "file": "assets/post-3e48dd1c.js",
     "imports": [
       "__api-b40dde4c.js",
-      "__tab-fa229c78.js"
+      "__tab-106d178d.js"
     ],
     "isEntry": true,
     "src": "resources/js/pages/post/post.js"
@@ -645,11 +645,11 @@
       "resources/js/ckeditor/ckeditor.js",
       "resources/js/code-editor.js"
     ],
-    "file": "assets/weblebby-233a365d.js",
+    "file": "assets/weblebby-d5041809.js",
     "imports": [
       "_preload-helper-907c0686.js",
-      "__tab-fa229c78.js",
-      "__tagify-cccd42ea.js",
+      "__tab-106d178d.js",
+      "__tagify-c5f99a65.js",
       "__api-b40dde4c.js"
     ],
     "isEntry": true,

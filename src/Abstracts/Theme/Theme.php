@@ -10,10 +10,13 @@ use Illuminate\Support\Collection;
 use JsonSerializable;
 use Weblebby\Framework\Concerns\HasArray;
 use Weblebby\Framework\Concerns\HasViewAndRoutes;
+use Weblebby\Framework\Items\FieldSectionsItem;
 
 abstract class Theme implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
 {
     use HasArray, HasViewAndRoutes;
+
+    protected array $variants;
 
     abstract public function name(): string;
 
@@ -27,6 +30,21 @@ abstract class Theme implements Arrayable, ArrayAccess, Jsonable, JsonSerializab
     abstract public function templates(): array;
 
     /**
+     * @return array<int, class-string>
+     */
+    abstract public function variants(): array;
+
+    abstract public function preferences(): FieldSectionsItem;
+
+    /**
+     * @return array<int, string>
+     */
+    public function installmentPreferenceKeys(): array
+    {
+        return [];
+    }
+
+    /**
      * @param  class-string  $postType
      * @return Collection<int, Template>
      */
@@ -35,6 +53,16 @@ abstract class Theme implements Arrayable, ArrayAccess, Jsonable, JsonSerializab
         return collect($this->templates())
             ->map(fn (string $template) => new $template())
             ->filter(fn (Template $template) => in_array($postType, Arr::wrap($template->postTypes())))
+            ->values();
+    }
+
+    /**
+     * @return Collection<int, Variant>
+     */
+    public function getVariants(): Collection
+    {
+        return collect($this->variants())
+            ->map(fn (string $variant) => new $variant($this))
             ->values();
     }
 

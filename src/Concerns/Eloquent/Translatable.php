@@ -10,11 +10,15 @@ trait Translatable
 {
     use \Astrotomic\Translatable\Translatable;
 
-    public function scopeWithTranslation(Builder $query): void
+    public function scopeWithTranslation(Builder $query, ?string $locale = null): void
     {
         $query->with([
-            'translations' => function (Relation $query) {
+            'translations' => function (Relation $query) use ($locale) {
                 $column = $this->getTranslationsTable().'.'.$this->getLocaleKey();
+
+                if ($locale) {
+                    return $query->where($column, $locale);
+                }
 
                 if ($this->useFallback()) {
                     return $query->whereIn($column, $this->getLocalesHelper()->all());

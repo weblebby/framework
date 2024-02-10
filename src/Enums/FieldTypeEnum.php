@@ -12,6 +12,7 @@ enum FieldTypeEnum: string
     case HIDDEN = 'hidden';
     case TEL = 'tel';
     case NUMBER = 'number';
+    case COLOR = 'color';
     case SELECT = 'select';
     case CHECKBOX = 'checkbox';
     case RADIO = 'radio';

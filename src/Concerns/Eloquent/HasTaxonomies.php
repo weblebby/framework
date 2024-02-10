@@ -51,6 +51,14 @@ trait HasTaxonomies
         ]);
     }
 
+    public function scopeHasAnyTaxonomy(Builder $query, array $taxonomyIds = []): Builder
+    {
+        return $query->whereHas(
+            'taxonomies',
+            fn (Builder $builder) => $builder->whereIn('taxonomies.id', $taxonomyIds)
+        );
+    }
+
     public function getTaxonomiesFor(string $taxonomy, ?string $locale = null): Collection
     {
         $this->loadMissing([

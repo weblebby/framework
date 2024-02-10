@@ -12,6 +12,7 @@
                     'type' => 'file',
                     'id' => $id ?? false,
                     'name' => $name ?? false,
+                    'data-file-input' => true,
                 ])
                 ->class('fd-block
                     fd-w-full

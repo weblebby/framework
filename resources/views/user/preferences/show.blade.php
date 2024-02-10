@@ -1,8 +1,8 @@
 <x-weblebby::layouts.panel>
     <x-weblebby::page>
         <x-weblebby::page.head>
-            <x-weblebby::page.title>@lang('Ayarlar')</x-weblebby::page.title>
-            <x-weblebby::page.subtitle>@lang('Sitenizin tüm ayarlarını buradan yönetin')</x-weblebby::page.subtitle>
+            <x-weblebby::page.title>{{ $pageTitle }}</x-weblebby::page.title>
+            <x-weblebby::page.subtitle>{{ $pageDescription }}</x-weblebby::page.subtitle>
         </x-weblebby::page.head>
         <div>
             <div class="fd-grid fd-grid-cols-5 fd-gap-3">
@@ -10,7 +10,7 @@
                     <x-weblebby::link-card>
                         @foreach ($bags as $id => $bag)
                             <x-weblebby::link-card.item
-                                    href="{{ panel_route('preferences.show', $id) }}"
+                                    href="{{ panel_route($route, [...$routeParams, $id]) }}"
                                     :active="$selectedBagId === $id">
                                 {{ $bag['title'] }}
                             </x-weblebby::link-card.item>
@@ -36,7 +36,7 @@
     </x-weblebby::page>
     @if($isCodeEditorNeeded)
         @push('after_scripts')
-            @vite('resources/js/code-editor.js', 'weblebby/build')
+            @vite('resources/js/code-editor.js', panel_build_path())
         @endpush
     @endif
 </x-weblebby::layouts.panel>

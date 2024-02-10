@@ -45,6 +45,27 @@ class ExtensionManager
         });
     }
 
+    public function observeRegister(): void
+    {
+        $this->get()->each(function (Extension $extension) {
+            $extension->observer()?->register();
+        });
+    }
+
+    public function observeAfterPanelBoot(): void
+    {
+        $this->get()->each(function (Extension $extension) {
+            $extension->observer()?->afterPanelBoot();
+        });
+    }
+
+    public function observeBoot(): void
+    {
+        $this->get()->each(function (Extension $extension) {
+            $extension->observer()?->boot();
+        });
+    }
+
     /**
      * @param  string|class-string<Extension>  $name
      */
@@ -64,7 +85,7 @@ class ExtensionManager
      */
     public function get(): Collection
     {
-        return $this->extensions->where('is_active', true);
+        return $this->extensions->where(fn (Extension $extension) => $extension->isActive())->values();
     }
 
     /**

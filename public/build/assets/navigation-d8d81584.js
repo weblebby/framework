@@ -1,4 +1,4 @@
-import{a as On}from"./_api-b40dde4c.js";import{c as Ki,g as Zi,T as er}from"./_tagify-cccd42ea.js";var Fn={exports:{}};/*!
+import{a as On}from"./_api-b40dde4c.js";import{c as Ki,g as Zi,T as er}from"./_tagify-c5f99a65.js";var Fn={exports:{}};/*!
  * jQuery JavaScript Library v3.7.1
  * https://jquery.com/
  *

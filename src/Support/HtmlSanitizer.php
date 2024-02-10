@@ -27,15 +27,23 @@ class HtmlSanitizer
             ->allowRelativeMedias();
     }
 
-    public function sanitize(string|HtmlString $input): string
+    public function sanitize(HtmlString|string|null $input): ?string
     {
+        if (is_null($input)) {
+            return null;
+        }
+
         $sanitizer = new SymfonyHtmlSanitizer($this->config);
 
         return $sanitizer->sanitize($input);
     }
 
-    public function sanitizeToHtml(string|HtmlString $input): HtmlString
+    public function sanitizeToHtml(HtmlString|string|null $input): ?HtmlString
     {
+        if (is_null($input)) {
+            return null;
+        }
+
         return new HtmlString($this->sanitize($input));
     }
 }

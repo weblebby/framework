@@ -1,6 +1,6 @@
-@props(['item', 'readonly' => false])
+@props(['item', 'readonly' => false, 'disabled' => false])
 
-<li class="dd-item" data-id="{{ $item->id }}">
+<li @class(['dd-item', 'dd-disabled' => $disabled]) data-id="{{ $item->id }}">
     <div class="navigation-item fd-px-4 fd-py-3 fd-border-y -fd-mt-[1px] fd-bg-white fd-group">
         <div class="fd-flex fd-items-center fd-justify-between">
             <span>{{ $item->title }}</span>

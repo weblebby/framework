@@ -7,10 +7,13 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Weblebby\Framework\Abstracts\Extension\Extension as ExtensionAbstract;
+use Weblebby\Framework\Abstracts\Theme\Theme as ThemeAbstract;
 use Weblebby\Framework\Console\Commands\FetchCurrencyRates;
 use Weblebby\Framework\Console\Commands\InstallWeblebby;
 use Weblebby\Framework\Facades\Extension;
 use Weblebby\Framework\Facades\PostModels;
+use Weblebby\Framework\Facades\Preference;
+use Weblebby\Framework\Facades\Theme;
 use Weblebby\Framework\Models\User;
 
 class WeblebbyServiceProvider extends ServiceProvider
@@ -29,6 +32,7 @@ class WeblebbyServiceProvider extends ServiceProvider
             \Weblebby\Framework\Managers\ExtensionManager::class,
             \Weblebby\Framework\Managers\InjectionManager::class,
             \Weblebby\Framework\Managers\NavigationLinkableManager::class,
+            \Weblebby\Framework\Managers\NavigationItemsManager::class,
             \Weblebby\Framework\Managers\PreferenceManager::class,
             \Weblebby\Framework\Managers\ThemeManager::class,
             \Weblebby\Framework\Managers\LogManager::class,
@@ -49,13 +53,14 @@ class WeblebbyServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->bootCommands();
         } else {
-            $this->registerExtensions();
-            $this->ensureBuildDirectoryExists();
+            $this->ensureBuildsExists();
+            $this->bootPreferences();
             $this->bootViews();
             $this->bootGates();
             $this->bootPostModels();
             $this->setPathsForTranslationFinder();
-            $this->bootExtensions();
+
+            Extension::observeAfterPanelBoot();
         }
 
         $this->loadMigrationsFrom(dirname(__DIR__).'/../database/migrations');
@@ -93,20 +98,6 @@ class WeblebbyServiceProvider extends ServiceProvider
         ]);
     }
 
-    private function registerExtensions(): void
-    {
-        Extension::get()->each(function (ExtensionAbstract $extension) {
-            $extension->observer()?->register();
-        });
-    }
-
-    private function bootExtensions(): void
-    {
-        Extension::get()->each(function (ExtensionAbstract $extension) {
-            $extension->observer()?->boot();
-        });
-    }
-
     private function setPathsForTranslationFinder(): void
     {
         if (Extension::has('multilingual')) {
@@ -118,12 +109,47 @@ class WeblebbyServiceProvider extends ServiceProvider
         }
     }
 
-    private function ensureBuildDirectoryExists(): void
+    private function ensureBuildsExists(): void
     {
-        $path = public_path('weblebby');
+        $this->publishBuild(
+            sourcePath: dirname(__DIR__).'/../public',
+            targetPath: public_path(panel_build_dir())
+        );
 
-        if (! File::isDirectory($path)) {
-            symlink(dirname(__DIR__).'/../public', $path);
+        Theme::get()->each(function (ThemeAbstract $theme) {
+            $this->publishBuild(
+                sourcePath: theme()->path('public'),
+                targetPath: public_path(sprintf('%s/%s', themes_build_dir(), $theme->name()))
+            );
+        });
+
+        Extension::get()->each(function (ExtensionAbstract $extension) {
+            $this->publishBuild(
+                sourcePath: $extension->path('public'),
+                targetPath: public_path(sprintf('%s/%s', extensions_build_dir(), $extension->name()))
+            );
+        });
+    }
+
+    private function bootPreferences(): void
+    {
+        foreach (theme()->preferences()->toArray() as $bag => $section) {
+            Preference::create(theme()->namespace(), $bag)->addMany($section['fields']);
         }
+    }
+
+    private function publishBuild(string $sourcePath, string $targetPath): void
+    {
+        if (! File::exists($sourcePath)) {
+            return;
+        }
+
+        if (File::exists($targetPath)) {
+            return;
+        }
+
+        File::ensureDirectoryExists(dirname($targetPath));
+
+        symlink($sourcePath, $targetPath);
     }
 }

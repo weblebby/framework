@@ -44,6 +44,9 @@
                         :translatable="$field['translatable'] ?? false"
                 />
                 @break
+            @case(\Weblebby\Framework\Enums\FieldTypeEnum::COLOR)
+                <x-weblebby::form.color :attributes="$field['attributes']" :default="$default" />
+                @break
             @case(\Weblebby\Framework\Enums\FieldTypeEnum::FILE)
                 <x-weblebby::form.file
                         :attributes="$field['attributes']"

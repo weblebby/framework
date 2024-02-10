@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 use Spatie\Image\Exceptions\InvalidManipulation;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -119,8 +121,9 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
      */
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('lg')->width(1920)->height(1080);
-        $this->addMediaConversion('sm')->width(400)->height(225);
+        $this->addMediaConversion('lg')->fit(Manipulations::FIT_MAX, 1920, 1080);
+        $this->addMediaConversion('md')->fit(Manipulations::FIT_MAX, 720, 720);
+        $this->addMediaConversion('sm')->fit(Manipulations::FIT_MAX, 360, 360);
     }
 
     public function getMaxPosition(): int
@@ -188,5 +191,15 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
     protected function htmlContent(): Attribute
     {
         return Attribute::get(fn () => app(HtmlSanitizer::class)->sanitizeToHtml($this->content));
+    }
+
+    public function makeSeo(): void
+    {
+        seo()->title($this->getMetafieldValue('seo_title') ?? $this->title);
+        seo()->description($this->getMetafieldValue('seo_description') ?? Str::limit(strip_tags($this->content), 150));
+
+        if ($this->hasMedia('featured')) {
+            seo()->image($this->getFirstMediaUrl('featured', 'md'));
+        }
     }
 }

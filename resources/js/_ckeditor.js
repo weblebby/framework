@@ -6,13 +6,19 @@ const TextEditor = {
 
     init: element => {
         BaseEditor.then(({ default: { Editor } }) => {
-            element._CKEDITOR = Editor.create(element)
+            const editor = (element._CKEDITOR = Editor.create(element))
+
+            element.dispatchEvent(
+                new CustomEvent('ckeditor:load', {
+                    detail: { editor },
+                }),
+            )
         })
     },
 
     initBasic: element => {
         BaseEditor.then(({ default: { Editor } }) => {
-            element._CKEDITOR = Editor.create(element, {
+            const editor = (element._CKEDITOR = Editor.create(element, {
                 toolbar: [
                     'undo',
                     'redo',
@@ -26,7 +32,13 @@ const TextEditor = {
                     'bulletedList',
                     'numberedList',
                 ],
-            })
+            }))
+
+            element.dispatchEvent(
+                new CustomEvent('ckeditor:load', {
+                    detail: { editor },
+                }),
+            )
         })
     },
 }

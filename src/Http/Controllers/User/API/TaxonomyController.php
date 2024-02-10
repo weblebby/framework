@@ -25,11 +25,14 @@ class TaxonomyController extends Controller
             ])
             ->search($validated['term'], $validated['_locale'])
             ->taxonomy($taxonomy)
-            ->get()
-            ->map(fn (Taxonomy $taxonomy) => [
-                'taxonomy_id' => $taxonomy->id,
-                'title' => $taxonomy->term->setDefaultLocale($validated['_locale'])->title,
-            ]);
+            ->get();
+
+        info($taxonomies);
+
+        $taxonomies = $taxonomies->map(fn (Taxonomy $taxonomy) => [
+            'taxonomy_id' => $taxonomy->id,
+            'title' => $taxonomy->term->setDefaultLocale($validated['_locale'])->title,
+        ]);
 
         return response()->json($taxonomies);
     }

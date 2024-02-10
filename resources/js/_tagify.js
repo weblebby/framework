@@ -38,6 +38,17 @@ const Tagify = {
     onInput: (value, tagify, options) => {
         if (!options.source) return
 
+        if (
+            !options.source.startsWith('http://') &&
+            !options.source.startsWith('https://')
+        ) {
+            const path = options.source.startsWith('/')
+                ? options.source
+                : `/${options.source}`
+
+            options.source = window.Weblebby.API.baseUrl + options.source
+        }
+
         tagify.settings.whitelist = []
         tagify.loading(true).dropdown.hide.call(tagify)
 
@@ -46,6 +57,7 @@ const Tagify = {
         const params = new URLSearchParams({
             ...Object.fromEntries(url.searchParams),
             [options?.searchKey || 'term']: value,
+            _locale: options.locale || document.documentElement.lang,
         })
 
         api(`${url.origin}${url.pathname}?${params.toString()}`).then(data => {

@@ -7,7 +7,7 @@
                     @lang('powered by :reseller', ['reseller' => $domain->account->reseller->name])
                 </a>
             @else
-                <span class="fd-text-xs">@lang('powered by weblebby')
+                <span class="fd-text-xs">
                     @lang('powered by :reseller', ['reseller' => $domain->account->reseller->name])
                 </span>
             @endif

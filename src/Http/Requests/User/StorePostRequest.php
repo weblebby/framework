@@ -135,7 +135,7 @@ class StorePostRequest extends FormRequest
 
         /** @var PostFieldService $postFieldService */
         $postFieldService = app(PostFieldService::class);
-        $this->rulesAndAttributes = $postFieldService->rulesAndAttributes($this->postable, $this->input());
+        $this->rulesAndAttributes = $postFieldService->rulesAndAttributes($this->postable, $this->all());
     }
 
     protected function transformTaxonomies(): void

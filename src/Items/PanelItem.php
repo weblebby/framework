@@ -8,7 +8,9 @@ use Weblebby\Framework\Hooks\MenuHook;
 use Weblebby\Framework\Hooks\PermissionHook;
 use Weblebby\Framework\Hooks\PreferenceBagHook;
 use Weblebby\Framework\Http\Middleware\CanUserAccessPanel;
+use Weblebby\Framework\Http\Middleware\EnsureSiteIsSetup;
 use Weblebby\Framework\Http\Middleware\Panel;
+use Weblebby\Framework\Http\Middleware\PreferenceToConfig;
 use Weblebby\Framework\Support\Features;
 
 class PanelItem
@@ -144,8 +146,11 @@ class PanelItem
 
     public function middleware(string|array $middleware): self
     {
-        $this->middlewareForPanel($middleware);
-        $this->middlewareForFortify($middleware);
+        $middlewareForPanel = [...$this->middlewareForPanel ?? [], ...Arr::wrap($middleware)];
+        $middlewareForFortify = [...$this->middlewareForFortify ?? [], ...Arr::wrap($middleware)];
+
+        $this->middlewareForPanel($middlewareForPanel);
+        $this->middlewareForFortify($middlewareForFortify);
 
         return $this;
     }
@@ -153,13 +158,15 @@ class PanelItem
     public function middlewareForPanel(string|array|null $middleware = null): self|array|null
     {
         if (is_null($middleware)) {
-            return [
+            return array_values(array_unique([
                 'web',
                 'auth',
                 ...Arr::wrap($this->middlewareForPanel),
+                EnsureSiteIsSetup::class,
                 Panel::class,
                 CanUserAccessPanel::class,
-            ];
+                PreferenceToConfig::class,
+            ]));
         }
 
         $this->middlewareForPanel = $middleware;
@@ -170,11 +177,12 @@ class PanelItem
     public function middlewareForFortify(string|array|null $middleware = null): self|array|null
     {
         if (is_null($middleware)) {
-            return [
+            return array_values(array_unique([
                 'web',
                 ...Arr::wrap($this->middlewareForFortify),
                 Panel::class,
-            ];
+                PreferenceToConfig::class,
+            ]));
         }
 
         $this->middlewareForFortify = $middleware;

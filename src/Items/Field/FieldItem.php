@@ -102,6 +102,11 @@ class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, Jso
         return (new TextFieldItem($key))->type(FieldTypeEnum::NUMBER);
     }
 
+    public static function color(string $key): TextFieldItem
+    {
+        return (new TextFieldItem($key))->type(FieldTypeEnum::COLOR);
+    }
+
     public static function file(string $key): FileFieldItem
     {
         return (new FileFieldItem($key))->type(FieldTypeEnum::FILE);
@@ -144,12 +149,19 @@ class FieldItem implements Arrayable, ArrayAccess, FieldInterface, Jsonable, Jso
 
     public function __construct(?string $key = null)
     {
-        $this->key = FormComponent::nameToDotted($key);
+        $this->key($key);
     }
 
     public function parent(?FieldInterface $parent): self
     {
         $this->parent = $parent;
+
+        return $this;
+    }
+
+    public function key(?string $key = null): self
+    {
+        $this->key = FormComponent::nameToDotted($key);
 
         return $this;
     }

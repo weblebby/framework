@@ -3,14 +3,14 @@
 namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Weblebby\Framework\Facades\Extension;
 use Weblebby\Framework\Http\Requests\User\StoreNavigationRequest;
 use Weblebby\Framework\Http\Requests\User\UpdateNavigationRequest;
 use Weblebby\Framework\Models\Navigation;
-use Weblebby\Framework\Services\NavigationService;
+use Weblebby\Framework\Services\User\NavigationService;
 
 class NavigationController extends Controller
 {

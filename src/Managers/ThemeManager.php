@@ -66,6 +66,11 @@ class ThemeManager
         return $this->themes->firstWhere('name', $themeName);
     }
 
+    public function findOrFail(string $themeName): Theme
+    {
+        return $this->find($themeName) ?? abort(404);
+    }
+
     public function active(): ?Theme
     {
         return $this->themes->firstWhere('name', $this->activeThemeName);

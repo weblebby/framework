@@ -2,8 +2,8 @@
 
 namespace Weblebby\Framework\Facades;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
+use Weblebby\Framework\Items\Field\Collections\FieldCollection;
 use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
 use Weblebby\Framework\Managers\PreferenceManager;
 
@@ -19,7 +19,8 @@ use Weblebby\Framework\Managers\PreferenceManager;
  * @method static array set(array $data, string $locale = null, array $options = [])
  * @method static array find(string $rawKey)
  * @method static FieldInterface|null field(string $namespace, string $bag, string $key)
- * @method static Collection fields(string $namespace, string $bag)
+ * @method static FieldCollection allFieldsIn(string $namespace)
+ * @method static FieldCollection fields(string $namespace, string $bag)
  *
  * @see PreferenceManager
  */

@@ -6,7 +6,6 @@ use ArrayAccess;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use JsonSerializable;
 use Weblebby\Framework\Concerns\HasArray;
@@ -92,29 +91,6 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
             '--realpath' => true,
             '--force' => true,
         ]);
-    }
-
-    public function publish(): void
-    {
-        if (File::exists($targetPath = public_path("extensions/{$this->name()}"))) {
-            return;
-        }
-
-        $sourcePath = $this->path('public');
-
-        if (! File::exists($sourcePath)) {
-            return;
-        }
-
-        // create extensions directory if not exists
-        File::ensureDirectoryExists(public_path('extensions'));
-
-        if (File::exists($targetPath)) {
-            // delete symlink
-            unlink($targetPath);
-        }
-
-        symlink($sourcePath, $targetPath);
     }
 
     public function registerRoute(string $route): void

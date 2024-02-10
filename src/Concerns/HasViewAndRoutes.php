@@ -5,6 +5,8 @@ namespace Weblebby\Framework\Concerns;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
+use Weblebby\Framework\Abstracts\Extension\Extension;
+use Weblebby\Framework\Abstracts\Theme\Theme;
 
 trait HasViewAndRoutes
 {
@@ -36,6 +38,21 @@ trait HasViewAndRoutes
         $mergeData = Arr::add($mergeData, $key, $this);
 
         return view($this->namespaceWith($view), $data, $mergeData);
+    }
+
+    public function asset(string $path, ?bool $secure = null): string
+    {
+        if ($this instanceof Theme) {
+            $prefix = theme_build_path($this->name());
+        }
+
+        if ($this instanceof Extension) {
+            $prefix = extension_build_path($this->name());
+        }
+
+        $path = '/'.ltrim($path, '/');
+
+        return asset(($prefix ?? '').$path, $secure);
     }
 
     public function route($name, $parameters = [], $absolute = true): string

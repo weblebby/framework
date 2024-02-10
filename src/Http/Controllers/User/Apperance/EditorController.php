@@ -3,9 +3,9 @@
 namespace Weblebby\Framework\Http\Controllers\User\Apperance;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Weblebby\Framework\Http\Requests\User\UpdateAppearanceEditorRequest;
 use Weblebby\Framework\Services\User\AppearanceEditorService;
 
@@ -16,7 +16,7 @@ class EditorController extends Controller
         $this->authorize('appearance:editor:read');
 
         $files = $appearanceEditorService->files();
-        $filePath = $request->input('file', 'home.blade.php');
+        $filePath = $request->input('file', 'home.html.twig');
         $requestedFile = $appearanceEditorService->getFile($filePath);
 
         if (is_null($requestedFile)) {

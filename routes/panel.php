@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Weblebby\Framework\Facades\Panel;
 use Weblebby\Framework\Http\Controllers\User;
 use Weblebby\Framework\Items\PanelItem;
 use Weblebby\Framework\Support\Features;
@@ -23,28 +24,28 @@ if ($panel->supports(Features::navigations())) {
         ->except(['create', 'edit']);
 }
 
-/**
- * Extensions
- */
-if ($panel->supports(Features::extensions())) {
-    Route::controller(User\ExtensionController::class)
-        ->prefix('extensions/{extensions}')
-        ->name('extensions.')
-        ->group(function () {
-            Route::put('enable', 'enable')->name('enable');
-            Route::put('disable', 'disable')->name('disable');
-        });
+if ($panel === Panel::getExtensionPanel()) {
+    /**
+     * Setup
+     */
+    Route::get('setup', [User\SetupController::class, 'index'])->name('setup.index');
+    Route::put('setup', [User\SetupController::class, 'update'])->name('setup.update');
 
-    Route::resource('extensions.preferences', User\ExtensionPreferenceController::class);
-    Route::resource('extensions', User\ExtensionController::class);
-}
+    /**
+     * Extensions
+     */
+    if ($panel->supports(Features::extensions())) {
+        Route::controller(User\ExtensionController::class)
+            ->prefix('extensions/{extensions}')
+            ->name('extensions.')
+            ->group(function () {
+                Route::put('enable', 'enable')->name('enable');
+                Route::put('disable', 'disable')->name('disable');
+            });
 
-/**
- * Appearance
- */
-if ($panel->supports(Features::appearance())) {
-    Route::get('appearance/editor', [User\Apperance\EditorController::class, 'index'])->name('appearance.editor.index');
-    Route::put('appearance/editor', [User\Apperance\EditorController::class, 'update'])->name('appearance.editor.update');
+        Route::resource('extensions.preferences', User\ExtensionPreferenceController::class);
+        Route::resource('extensions', User\ExtensionController::class);
+    }
 }
 
 /**
@@ -84,9 +85,21 @@ if ($panel->supports(Features::posts())) {
 }
 
 /**
+ * Appearance
+ */
+if ($panel->supports(Features::appearance())) {
+    Route::get('appearance/editor', [User\Apperance\EditorController::class, 'index'])->name('appearance.editor.index');
+    Route::put('appearance/editor', [User\Apperance\EditorController::class, 'update'])->name('appearance.editor.update');
+}
+
+/**
  * Themes
  */
 if ($panel->supports(Features::themes())) {
-    Route::get('themes/{theme}/templates/{template}/post-fields', User\ThemeTemplatePostFieldController::class)
-        ->name('themes.templates.post-fields');
+    Route::prefix('themes/{theme}')->as('themes.')->group(function () {
+        Route::get('preferences/{bag?}', [User\ThemePreferenceController::class, 'index'])->name('preferences.index');
+
+        Route::get('templates/{template}/post-fields', User\ThemeTemplatePostFieldController::class)
+            ->name('templates.post-fields');
+    });
 }

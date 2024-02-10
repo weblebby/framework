@@ -1,6 +1,6 @@
 <?php
 
-namespace Weblebby\Framework\Services;
+namespace Weblebby\Framework\Services\User;
 
 use Illuminate\Support\Collection;
 use Weblebby\Framework\Models\Navigation;

@@ -71,10 +71,25 @@ class NavigationItem extends Model implements TranslatableContract
         return $query->with(['children' => fn ($query) => $query->oldest('position')]);
     }
 
+    public function scopeWithActiveRecursiveChildren(Builder $query): Builder
+    {
+        return $query->with([
+            'children' => fn ($query) => $query
+                ->withTranslation()
+                ->activated()
+                ->oldest('position'),
+        ]);
+    }
+
+    public function scopeActivated(Builder $query): Builder
+    {
+        return $query->where('is_active', true);
+    }
+
     public function url(): Attribute
     {
-        return Attribute::get(fn ($value) => match ($this->type) {
-            NavigationTypeEnum::LINK => $value,
+        return Attribute::get(fn () => match ($this->type) {
+            NavigationTypeEnum::LINK => $this->link,
             NavigationTypeEnum::LINKABLE => $this->linkable->url,
             NavigationTypeEnum::SMART => 'smart',
             NavigationTypeEnum::HOMEPAGE => route('home'),
