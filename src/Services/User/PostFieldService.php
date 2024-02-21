@@ -14,9 +14,11 @@ class PostFieldService
     {
         /** @var FieldInputService $fieldInputService */
         $fieldInputService = app(FieldInputService::class);
+        /** @var PostService $postService */
+        $postService = app(PostService::class);
 
-        $sections = $postable::getPostSections()
-            ->withTemplateSections($postable, $input['template'] ?? null)
+        $sections = $postService
+            ->sections($postable, $input['template'] ?? null)
             ->toArray();
 
         foreach ($sections as $key => $section) {

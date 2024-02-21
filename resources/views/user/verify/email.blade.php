@@ -1,14 +1,14 @@
 <x-weblebby::layouts.auth>
     @if (session('status') === 'verification-link-sent')
-        <x-weblebby::alert color="green">@lang('Doğrulama bağlantısı gönderildi.')</x-weblebby::alert>
+        <x-weblebby::alert color="green">@lang('Verification link sent.')</x-weblebby::alert>
     @endif
     <x-weblebby::card padding>
-        <x-weblebby::card.title>@lang('e-Posta adresinizi doğrulayın')</x-weblebby::card.title>
+        <x-weblebby::card.title>@lang('Verify your email')</x-weblebby::card.title>
         <x-weblebby::card.subtitle
-                class="fd-mt-2">@lang('Kaydolurken yazdığınız e-Posta adresinin size ait olduğundan emin olmak için doğrulama bağlantısı olan bir posta gönderdik.')</x-weblebby::card.subtitle>
+                class="fd-mt-2">@lang('We have sent you an email with a verification link to confirm that the email address you provided during registration belongs to you.')</x-weblebby::card.subtitle>
         <x-weblebby::form :action="route('verification.send')" class="fd-mt-4">
             <x-weblebby::button type="submit" variant="light">
-                @lang('Doğrulama bağlantısını gönder')
+                @lang('Send verification link')
             </x-weblebby::button>
         </x-weblebby::form>
     </x-weblebby::card>

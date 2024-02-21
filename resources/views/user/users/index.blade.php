@@ -8,7 +8,7 @@
                             :href="panel_route('users.create')"
                             icon="plus"
                             size="sm"
-                    >@lang('Yeni kullanıcı')</x-weblebby::button>
+                    >@lang('Create user')</x-weblebby::button>
                 @endcan
                 @can('role:read')
                     <x-weblebby::button
@@ -16,17 +16,17 @@
                             :href="panel_route('roles.index')"
                             variant="sky"
                             size="sm"
-                    >@lang('Roller')</x-weblebby::button>
+                    >@lang('Roles')</x-weblebby::button>
                 @endcan
             </x-slot:actions>
-            <x-weblebby::page.title>@lang('Kullanıcılar')</x-weblebby::page.title>
-            <x-weblebby::page.subtitle>@lang('Kullanıcıları yönetin')</x-weblebby::page.subtitle>
+            <x-weblebby::page.title>@lang('Users')</x-weblebby::page.title>
+            <x-weblebby::page.subtitle>@lang('Manage users.')</x-weblebby::page.subtitle>
         </x-weblebby::page.head>
         <div class="fd-space-y-3">
             <x-weblebby::table>
                 <x-weblebby::table.head>
-                    <x-weblebby::table.th>@lang('İsim')</x-weblebby::table.th>
-                    <x-weblebby::table.th>@lang('Oluşturulma tarihi')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Fullname')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Created')</x-weblebby::table.th>
                     <x-weblebby::table.th />
                 </x-weblebby::table.head>
                 <x-weblebby::table.body>
@@ -48,7 +48,7 @@
                                                 variant="red"
                                                 data-modal-open="#modal-delete-user"
                                                 :data-action="panel_route('users.destroy', $user)"
-                                        >@lang('Sil')</x-weblebby::button>
+                                        >@lang('Delete')</x-weblebby::button>
                                     @endcan
                                 </div>
                             </x-weblebby::table.td>
@@ -62,7 +62,7 @@
     @can('user:delete')
         <x-weblebby::modal.destroy
                 id="modal-delete-user"
-                :title="__('Kullanıcyı sil')"
+                :title="__('Delete the user')"
         />
     @endcan
 </x-weblebby::layouts.panel>

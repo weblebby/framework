@@ -72,53 +72,53 @@ class PermissionHook
         if ($navigations) {
             $this
                 ->withGroup('navigation')
-                ->withTitle(__('Navigasyonlar'))
+                ->withTitle(__('Navigations'))
                 ->withPermissions([
-                    'create' => __('Navigasyon oluşturabilir'),
-                    'read' => __('Navigasyonları görüntüleyebilir'),
-                    'update' => __('Navigasyonları düzenleyebilir'),
-                    'delete' => __('Navigasyonları silebilir'),
+                    'create' => __('Can create navigation'),
+                    'read' => __('Can view navigations'),
+                    'update' => __('Can edit navigations'),
+                    'delete' => __('Can delete navigations'),
                 ]);
         }
 
         if ($users) {
             $this
                 ->withGroup('user')
-                ->withTitle(__('Kullanıcılar'))
+                ->withTitle(__('Users'))
                 ->withPermissions([
-                    'create' => __('Kullanıcı oluşturabilir'),
-                    'read' => __('Kullanıcıları görüntüleyebilir'),
-                    'update' => __('Kullanıcıları düzenleyebilir'),
-                    'delete' => __('Kullanıcıları silebilir'),
+                    'create' => __('Can create user'),
+                    'read' => __('Can view users'),
+                    'update' => __('Can edit users'),
+                    'delete' => __('Can delete users'),
                 ]);
         }
 
         if ($extensions) {
             $this
                 ->withGroup('extension')
-                ->withTitle(__('Eklentiler'))
+                ->withTitle(__('Extensions'))
                 ->withPermissions([
-                    'read' => __('Eklentileri görüntüleyebilir'),
-                    'update' => __('Eklentileri düzenleyebilir'),
-                    'delete' => __('Eklentileri silebilir'),
+                    'read' => __('Can view extensions'),
+                    'activate' => __('Can activate extensions'),
+                    'deactivate' => __('Can deactivate extensions'),
                 ]);
         }
 
         if ($appearance) {
             $this
                 ->withGroup('appearance:editor')
-                ->withTitle(__('Tema editörü'))
+                ->withTitle(__('Theme editor'))
                 ->withPermissions([
-                    'read' => __('Tema kodlarını görüntüleyebilir'),
-                    'update' => __('Tema kodlarını düzenleyebilir'),
+                    'read' => __('Can view theme codes'),
+                    'update' => __('Can edit theme codes'),
                 ]);
         }
 
         if ($preferences) {
             $this
                 ->withGroup('preference')
-                ->withTitle(__('Tercihler'))
-                ->withDescription(__('Hangi ayarları düzenleyebileceğini seçin'))
+                ->withTitle(__('Preferences'))
+                ->withDescription(__('Select which settings can be edited'))
                 ->withPermissions(
                     $this->panel
                         ->preference()
@@ -133,12 +133,12 @@ class PermissionHook
         if ($roles) {
             $this
                 ->withGroup('role')
-                ->withTitle(__('Kullanıcı rolleri'))
+                ->withTitle(__('User roles'))
                 ->withPermissions([
-                    'create' => __('Kullanıcı rolü oluşturabilir'),
-                    'read' => __('Kullanıcı rollerini görüntüleyebilir'),
-                    'update' => __('Kullanıcı rollerini düzenleyebilir'),
-                    'delete' => __('Kullanıcı rollerini silebilir'),
+                    'create' => __('Can create user role'),
+                    'read' => __('Can view user roles'),
+                    'update' => __('Can edit user roles'),
+                    'delete' => __('Can delete user roles'),
                 ]);
         }
     }

@@ -2,7 +2,6 @@
 
 namespace Weblebby\Framework\Managers;
 
-use Closure;
 use Illuminate\Support\HtmlString;
 use Illuminate\View\View;
 use Weblebby\Framework\Enums\InjectionTypeEnum;
@@ -11,33 +10,42 @@ class InjectionManager
 {
     protected array $injections = [];
 
-    /**
-     * @param  string|array<int, string>  $name
-     */
-    public function add(InjectionTypeEnum|string|array $name, Closure $callable): void
+    public function has(InjectionTypeEnum|string $key): bool
     {
-        if (is_array($name)) {
-            foreach ($name as $item) {
-                $this->add($item, $callable);
+        if ($key instanceof \BackedEnum) {
+            $key = $key->value;
+        }
+
+        return isset($this->injections[$key]);
+    }
+
+    /**
+     * @param  string|array<int, string>  $key
+     */
+    public function add(InjectionTypeEnum|string|array $key, mixed $value): void
+    {
+        if (is_array($key)) {
+            foreach ($key as $item) {
+                $this->add($item, $value);
             }
 
             return;
         }
 
-        if ($name instanceof \BackedEnum) {
-            $name = $name->value;
+        if ($key instanceof \BackedEnum) {
+            $key = $key->value;
         }
 
-        $this->injections[$name] = [
-            ...$this->injections[$name] ?? [],
-            $callable,
+        $this->injections[$key] = [
+            ...$this->injections[$key] ?? [],
+            $value,
         ];
     }
 
-    public function call(InjectionTypeEnum|string $name, mixed $default = null): mixed
+    public function call(InjectionTypeEnum|string $key, mixed $default = null): mixed
     {
-        if ($name instanceof \BackedEnum) {
-            $name = $name->value;
+        if ($key instanceof \BackedEnum) {
+            $key = $key->value;
         }
 
         return array_map(function ($value) use ($default) {
@@ -46,16 +54,16 @@ class InjectionManager
             }
 
             return $value ?? $default;
-        }, $this->injections[$name] ?? []);
+        }, $this->injections[$key] ?? []);
     }
 
-    public function render(InjectionTypeEnum|string $name): HtmlString
+    public function render(InjectionTypeEnum|string $key): HtmlString
     {
-        if ($name instanceof \BackedEnum) {
-            $name = $name->value;
+        if ($key instanceof \BackedEnum) {
+            $key = $key->value;
         }
 
-        $string = collect($this->injections[$name] ?? [])
+        $string = collect($this->injections[$key] ?? [])
             ->map(function ($callable) {
                 $callable = $callable();
 

@@ -8,17 +8,17 @@
                             :href="panel_route('roles.create')"
                             icon="plus"
                             size="sm"
-                    >@lang('Yeni rol')</x-weblebby::button>
+                    >@lang('Create role')</x-weblebby::button>
                 @endcan
             </x-slot:actions>
-            <x-weblebby::page.title>@lang('Kullanıcı rolleri')</x-weblebby::page.title>
-            <x-weblebby::page.subtitle>@lang('Rolleri yönetin')</x-weblebby::page.subtitle>
+            <x-weblebby::page.title>@lang('User roles')</x-weblebby::page.title>
+            <x-weblebby::page.subtitle>@lang('Manage user roles.')</x-weblebby::page.subtitle>
         </x-weblebby::page.head>
         <div class="fd-space-y-3">
             <x-weblebby::table>
                 <x-weblebby::table.head>
-                    <x-weblebby::table.th>@lang('Rol')</x-weblebby::table.th>
-                    <x-weblebby::table.th>@lang('Oluşturulma tarihi')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Role')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Created')</x-weblebby::table.th>
                     <x-weblebby::table.th />
                 </x-weblebby::table.head>
                 <x-weblebby::table.body>
@@ -41,7 +41,7 @@
                                                     variant="red"
                                                     data-modal-open="#modal-delete-role"
                                                     :data-action="panel_route('roles.destroy', $role)"
-                                            >@lang('Sil')</x-weblebby::button>
+                                            >@lang('Delete')</x-weblebby::button>
                                         @endcan
                                     </div>
                                 @endif
@@ -56,7 +56,7 @@
     @can('role:delete')
         <x-weblebby::modal.destroy
                 id="modal-delete-role"
-                :title="__('Rolü sil')"
+                :title="__('Delete the role')"
         />
     @endcan
 </x-weblebby::layouts.panel>

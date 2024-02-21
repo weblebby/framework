@@ -1,8 +1,8 @@
 <x-weblebby::layouts.panel>
     <x-weblebby::page>
         <x-weblebby::page.head>
-            <x-weblebby::page.title>@lang('Eklentiler')</x-weblebby::page.title>
-            <x-weblebby::page.subtitle>@lang('Eklentiler ile sitenizi zenginleştirin')</x-weblebby::page.subtitle>
+            <x-weblebby::page.title>@lang('Extensions')</x-weblebby::page.title>
+            <x-weblebby::page.subtitle>@lang('Enrich your site with extensions')</x-weblebby::page.subtitle>
         </x-weblebby::page.head>
         <div>
             <div class="fd-grid fd-grid-cols-4 fd-gap-3">

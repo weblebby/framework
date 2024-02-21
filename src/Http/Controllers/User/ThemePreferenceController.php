@@ -25,8 +25,8 @@ class ThemePreferenceController extends Controller
             namespace: $theme->namespace(),
             route: 'themes.preferences.index',
             routeParams: [$theme->name()],
-            pageTitle: __(':theme Teması', ['theme' => $theme->title()]),
-            pageDescription: __('Tema ayarlarınızı buradan yönetin.')
+            pageTitle: __(':theme Theme', ['theme' => $theme->title()]),
+            pageDescription: __('Manage your theme preferences.')
         );
 
         return $preferenceController->show($request, $bag);

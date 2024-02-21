@@ -43,11 +43,11 @@ trait HasViewAndRoutes
     public function asset(string $path, ?bool $secure = null): string
     {
         if ($this instanceof Theme) {
-            $prefix = theme_build_path($this->name());
+            $prefix = theme_asset_path($this->name());
         }
 
         if ($this instanceof Extension) {
-            $prefix = extension_build_path($this->name());
+            $prefix = extension_asset_path($this->name());
         }
 
         $path = '/'.ltrim($path, '/');

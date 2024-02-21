@@ -13,26 +13,26 @@ class ExtensionController extends Controller
     {
         $this->authorize('extension:read');
 
-        seo()->title(__('Yüklü Eklentiler'));
+        seo()->title(__('Extensions'));
 
         return view('weblebby::user.extensions.index');
     }
 
     public function enable(string $name): RedirectResponse
     {
-        $this->authorize('extension:update');
+        $this->authorize('extension:activate');
 
         Extension::findByNameOrFail($name)->activate();
 
-        return back()->with('message', __('Eklenti aktifleştirildi'));
+        return back()->with('message', __('Extension activated'));
     }
 
     public function disable(string $name): RedirectResponse
     {
-        $this->authorize('extension:update');
+        $this->authorize('extension:deactivate');
 
         Extension::findByNameOrFail($name)->deactivate();
 
-        return back()->with('message', __('Eklenti devre dışı bırakıldı'));
+        return back()->with('message', __('Extension deactivated'));
     }
 }

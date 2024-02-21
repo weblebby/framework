@@ -3,6 +3,7 @@
 namespace Weblebby\Framework\Models;
 
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,7 +17,7 @@ use Weblebby\Framework\Services\TaxonomyService;
 
 class NavigationItem extends Model implements TranslatableContract
 {
-    use HasFactory, Translatable;
+    use Cachable, HasFactory, Translatable;
 
     protected $fillable = [
         'position',

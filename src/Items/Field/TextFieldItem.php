@@ -16,7 +16,7 @@ class TextFieldItem extends FieldItem
 
     protected ?string $hint = null;
 
-    protected ?string $default = null;
+    protected mixed $default = null;
 
     protected bool $translatable = false;
 
@@ -50,7 +50,7 @@ class TextFieldItem extends FieldItem
         return $this;
     }
 
-    public function default(?string $default): self
+    public function default(mixed $default): self
     {
         $this->default = $default;
 

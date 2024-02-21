@@ -8,6 +8,7 @@ use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Exists;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Validation\Rules\Unique;
+use Weblebby\Extensions\Multilingual\Support\LocaleRules;
 use Weblebby\Framework\Contracts\Eloquent\PostInterface;
 use Weblebby\Framework\Enums\PostStatusEnum;
 use Weblebby\Framework\Facades\Extension;
@@ -15,6 +16,7 @@ use Weblebby\Framework\Facades\PostModels;
 use Weblebby\Framework\Facades\Theme;
 use Weblebby\Framework\Models\Post;
 use Weblebby\Framework\Services\User\PostFieldService;
+// This class used if "multilingual" extension is active.
 use Weblebby\Framework\Support\Features;
 
 class StorePostRequest extends FormRequest
@@ -72,9 +74,7 @@ class StorePostRequest extends FormRequest
         ];
 
         if (Extension::has('multilingual')) {
-            $locales = \Weblebby\Extensions\Multilingual\Facades\Localization::getSupportedLocales()->pluck('code');
-
-            $rules['_locale'] = ['sometimes', 'required', 'string', new In($locales ?? [])];
+            $rules['_locale'] = LocaleRules::get();
         }
 
         if ($this->postable::doesSupportTemplates() && panel()->supports(Features::themes())) {
@@ -99,14 +99,14 @@ class StorePostRequest extends FormRequest
     public function attributes(): array
     {
         $attributes = [
-            'title' => __('Başlık'),
+            'title' => __('Title'),
             'slug' => __('URL'),
-            'content' => __('İçerik'),
-            'taxonomies' => __('Etiketler'),
-            'template' => __('Şablon'),
-            'status' => __('Durum'),
-            'published_at' => __('Yayınlanma Tarihi'),
-            'position' => __('Sıra'),
+            'content' => __('Content'),
+            'taxonomies' => __('Taxonomies'),
+            'template' => __('Template'),
+            'status' => __('Status'),
+            'published_at' => __('Published At'),
+            'position' => __('Position'),
         ];
 
         return array_merge($this->rulesAndAttributes['attributes'], $attributes);

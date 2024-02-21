@@ -9,7 +9,7 @@
                             icon="plus"
                             size="sm"
                     >
-                        @lang('Yeni :name', ['name' => Str::lower($postable::getSingularName())])
+                        @lang('Create :name', ['name' => Str::lower($postable::getSingularName())])
                     </x-weblebby::button>
                 @endcan
             </x-slot:actions>
@@ -19,11 +19,11 @@
             <form class="fd-flex fd-items-center fd-gap-2" method="GET">
                 <input type="hidden" name="type" value="{{ $postable::getModelName() }}">
                 <x-weblebby::form.group name="term" class="fd-flex-[3]">
-                    <x-weblebby::form.input type="search" :placeholder="__('Ara')" />
+                    <x-weblebby::form.input type="search" :placeholder="__('Search')" />
                 </x-weblebby::form.group>
                 <x-weblebby::form.group name="status" class="fd-flex-1">
                     <x-weblebby::form.select onchange="this.form.submit()">
-                        <x-weblebby::form.option value="">@lang('Tümü')</x-weblebby::form.option>
+                        <x-weblebby::form.option value="">@lang('All')</x-weblebby::form.option>
                         @foreach(\Weblebby\Framework\Enums\PostStatusEnum::cases() as $status)
                             <x-weblebby::form.option :value="$status->value">
                                 {{ $status->label() }}
@@ -34,11 +34,11 @@
             </form>
             <x-weblebby::table>
                 <x-weblebby::table.head>
-                    <x-weblebby::table.th>@lang('Başlık')</x-weblebby::table.th>
-                    <x-weblebby::table.th>@lang('Kategoriler')</x-weblebby::table.th>
-                    <x-weblebby::table.th>@lang('Etiketler')</x-weblebby::table.th>
-                    <x-weblebby::table.th>@lang('Yayında')</x-weblebby::table.th>
-                    <x-weblebby::table.th>@lang('Değişiklik tarihi')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Title')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Categories')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Tags')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Status')</x-weblebby::table.th>
+                    <x-weblebby::table.th>@lang('Amendment date')</x-weblebby::table.th>
                     <x-weblebby::table.th />
                 </x-weblebby::table.head>
                 <x-weblebby::table.body>
@@ -58,7 +58,7 @@
                                 {{ Str::limit($post->getTaxonomiesFor('tag')->implode('term.title', ', '), 30) ?: '-' }}
                             </x-weblebby::table.td>
                             <x-weblebby::table.td>
-                                {{ $post->published_at?->isPast() ? __('Evet') : __('Hayır') }}
+                                {{ $post->status->label() }}
                             </x-weblebby::table.td>
                             <x-weblebby::table.td>
                                 {{ Date::short($post->updated_at) }}
@@ -91,7 +91,9 @@
         </div>
     </x-weblebby::page>
     @can($postable::getPostAbilityFor('delete'))
-        <x-weblebby::modal.destroy id="modal-delete-post"
-                                   :title="__(':name siliyorsunuz', ['name' => $postable::getSingularName()])" />
+        <x-weblebby::modal.destroy
+                id="modal-delete-post"
+                :title="__('Deleting the :title', ['title' => $postable::getSingularName()])"
+        />
     @endcan
 </x-weblebby::layouts.panel>

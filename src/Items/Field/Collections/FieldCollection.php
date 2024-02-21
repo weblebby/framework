@@ -8,6 +8,8 @@ use Weblebby\Framework\Items\Field\Contracts\HasChildFieldInterface;
 
 class FieldCollection extends Collection
 {
+    protected ?FieldCollection $flattenFields = null;
+
     public function findByKey(string $key): ?FieldInterface
     {
         if ($first = $this->first(fn (FieldInterface $field) => $field['key'] === $key)) {
@@ -25,7 +27,9 @@ class FieldCollection extends Collection
 
         $name = preg_replace('/\.\d+\./', '.*.', $name);
 
-        if ($first = $this->first(fn (FieldInterface $field) => $field['name'] === $name)) {
+        return $this->allFields()->first(fn (FieldInterface $field) => $field['name'] === $name);
+
+        /*if ($first = $this->first(fn (FieldInterface $field) => $field['name'] === $name)) {
             return $first;
         }
 
@@ -33,7 +37,7 @@ class FieldCollection extends Collection
             ->filter(fn (FieldInterface $field) => $field instanceof HasChildFieldInterface)
             ->map(fn (HasChildFieldInterface $field) => (new static($field['fields']))->findByName($name))
             ->filter()
-            ->first();
+            ->first();*/
     }
 
     /**
@@ -41,7 +45,9 @@ class FieldCollection extends Collection
      */
     public function hasAnyTypeOf(string $instance): ?FieldInterface
     {
-        if ($first = $this->first(fn (FieldInterface $field) => $field::class === $instance)) {
+        return $this->allFields()->first(fn (FieldInterface $field) => $field::class === $instance);
+
+        /*if ($first = $this->first(fn (FieldInterface $field) => $field::class === $instance)) {
             return $first;
         }
 
@@ -49,7 +55,7 @@ class FieldCollection extends Collection
             ->filter(fn (FieldInterface $field) => $field instanceof HasChildFieldInterface)
             ->map(fn (HasChildFieldInterface $field) => (new static($field['fields']))->hasAnyTypeOf($instance))
             ->filter()
-            ->first();
+            ->first();*/
     }
 
     public function loadMetafields(?string $locale = null): self
@@ -67,5 +73,22 @@ class FieldCollection extends Collection
         });
 
         return $this;
+    }
+
+    public function allFields(): FieldCollection
+    {
+        if ($this->flattenFields) {
+            return $this->flattenFields;
+        }
+
+        return $this->flattenFields = $this
+            ->map(function (FieldInterface $field) {
+                if ($field instanceof HasChildFieldInterface) {
+                    return [$field, ...(new static($field['fields']))->allFields()];
+                }
+
+                return [$field];
+            })
+            ->flatten();
     }
 }

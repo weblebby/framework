@@ -26,7 +26,7 @@
                                 @foreach ($fields as $field)
                                     <x-weblebby::form.field :field="$field" />
                                 @endforeach
-                                <x-weblebby::button type="submit">@lang('Kaydet')</x-weblebby::button>
+                                <x-weblebby::button type="submit">@lang('Save')</x-weblebby::button>
                             </div>
                         </x-weblebby::form>
                     </x-weblebby::card>

@@ -17,16 +17,6 @@ class UpdateNavigationRequest extends FormRequest
     }
 
     /**
-     * Prepare the data for validation.
-     */
-    // protected function prepareForValidation(): void
-    // {
-    //     $this->merge([
-    //         'handle' => Str::slug($this->handle),
-    //     ]);
-    // }
-
-    /**
      * Get the validation rules that apply to the request.
      */
     public function rules(): array

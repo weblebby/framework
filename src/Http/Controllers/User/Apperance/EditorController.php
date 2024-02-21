@@ -23,7 +23,7 @@ class EditorController extends Controller
             abort(404);
         }
 
-        seo()->title(__(':path - Tema Editörü', ['path' => $filePath]));
+        seo()->title(__(':path - Theme Editor', ['path' => $filePath]));
 
         return view('weblebby::user.appearance.editor.index', compact(
             'files',
@@ -41,6 +41,6 @@ class EditorController extends Controller
             $request->input('content')
         );
 
-        return back()->with('message', __('Dosya başarıyla güncellendi.'));
+        return back()->with('message', __('File updated'));
     }
 }

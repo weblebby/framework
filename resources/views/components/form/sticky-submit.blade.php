@@ -1,4 +1,4 @@
-@props(['fixed' => true, 'margin' => true, 'label' => __('Değişiklikleri kaydet')])
+@props(['fixed' => true, 'margin' => true, 'label' => __('Save changes')])
 
 <div>
     @if ($fixed && $margin)

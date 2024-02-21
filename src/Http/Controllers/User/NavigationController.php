@@ -18,7 +18,7 @@ class NavigationController extends Controller
     {
         $this->authorize('navigation:read');
 
-        seo()->title(__('Menüler'));
+        seo()->title(__('Navigations'));
 
         $firstNavigation = Navigation::query()->first();
 
@@ -36,7 +36,7 @@ class NavigationController extends Controller
         $navigation = Navigation::query()->create($request->validated());
 
         return to_panel_route('navigations.show', $navigation)
-            ->with('message', __(':navigation oluşturuldu.', ['navigation' => $navigation->title]));
+            ->with('message', __(':title created', ['title' => $navigation->title]));
     }
 
     public function show(Request $request, Navigation $navigation, NavigationService $navigationService): View
@@ -69,7 +69,7 @@ class NavigationController extends Controller
     {
         $navigation->update($request->validated());
 
-        return back()->with('message', __(':navigation güncellendi.', ['navigation' => $navigation->title]));
+        return back()->with('message', __(':title updated', ['title' => $navigation->title]));
     }
 
     public function destroy(Navigation $navigation)
@@ -79,6 +79,6 @@ class NavigationController extends Controller
         $navigation->delete();
 
         return to_panel_route('navigations.index')
-            ->with('message', __('Menü silindi'));
+            ->with('message', __(':title deleted', ['title' => $navigation->title]));
     }
 }

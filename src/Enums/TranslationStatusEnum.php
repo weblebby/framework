@@ -10,8 +10,8 @@ enum TranslationStatusEnum: int
     public function label(): string
     {
         return match ($this) {
-            self::TRANSLATED => __('Çevrilmiş'),
-            self::NOT_TRANSLATED => __('Çevrilmemiş'),
+            self::TRANSLATED => __('Translated'),
+            self::NOT_TRANSLATED => __('Untranslated'),
         };
     }
 }

@@ -14,7 +14,7 @@ class ExtensionFileService
     {
         $extensions = $this->getExtensionsFromFile();
 
-        return $extensions->firstWhere('name', $extension->name())['is_active'] ?? true;
+        return $extensions->firstWhere('name', $extension->name())['is_active'] ?? false;
     }
 
     public function activateExtension(ExtensionAbstract $extension): void

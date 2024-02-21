@@ -15,15 +15,22 @@ use Spatie\MediaLibrary\MediaCollections\Exceptions\FileDoesNotExist;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\FileIsTooBig;
 use Weblebby\Framework\Enums\FieldTypeEnum;
 use Weblebby\Framework\Items\Field\Collections\FieldCollection;
-use Weblebby\Framework\Items\Field\FieldItem;
+use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
 use Weblebby\Framework\Items\Field\FieldValueItem;
 use Weblebby\Framework\Models\Metafield;
 use Weblebby\Framework\Models\Post;
 use Weblebby\Framework\Models\Preference;
 use Weblebby\Framework\Models\Taxonomy;
+use Weblebby\Framework\Services\User\PostService;
 
 trait HasMetafields
 {
+    protected ?FieldCollection $cachedFieldDefinitions = null;
+
+    protected ?array $cachedMetafields = null;
+
+    protected ?array $cachedMetafieldValues = null;
+
     protected static function bootHasMetafields(): void
     {
         static::deleting(function (self $model) {
@@ -49,7 +56,8 @@ trait HasMetafields
                     'metafieldable',
                     'media',
                 ])
-                ->withTranslation(),
+                ->withTranslation()
+                ->oldest('key'),
         ];
     }
 
@@ -73,72 +81,39 @@ trait HasMetafields
 
     public function getMetafieldValues(
         ?FieldCollection $fieldDefinitions = null,
-        ?string $locale = null
+        ?string $locale = null,
+        array $options = []
     ): array {
+        if ($this->cachedMetafieldValues) {
+            return $this->cachedMetafieldValues;
+        }
+
         $values = [];
 
-        if ($this instanceof Post && is_null($fieldDefinitions)) {
-            $fieldDefinitions = $this::getPostSections()->withTemplateSections($this, $this->template)->allFields();
-        }
-
-        if ($this instanceof Taxonomy && is_null($fieldDefinitions)) {
-            $fieldDefinitions = $this->item->fieldSections()?->allFields();
-        }
-
-        if (is_null($fieldDefinitions)) {
-            return [];
-        }
-
-        /**
-         * @var Collection<int, Metafield> $metafields
-         */
-        $metafields = $this->metafields->sortBy('key')->values();
+        $fieldDefinitions ??= $this->getCachedMetafieldDefinitions();
+        $metafields = $this->getCachedMetafields();
 
         foreach ($metafields as $metafield) {
-            if ($metafield->metafieldable instanceof Preference) {
-                $field = $fieldDefinitions->findByName(
-                    sprintf(
-                        'fields.%s->%s',
-                        $metafield->metafieldable->getNamespaceAndBag(),
-                        $metafield->key
-                    )
-                );
-            } else {
-                $field = $fieldDefinitions->findByName(sprintf('fields.%s', $metafield->key));
+            if ($fieldDefinitions) {
+                $field = $this->findFieldByMetafield($metafield, $fieldDefinitions);
             }
 
-            if (is_null($field)) {
-                continue;
-            }
-
-            $values[$metafield->key] = $metafield->toValue($field, locale: $locale);
+            $values[$metafield->key] = $metafield->toValue(
+                $field ?? null,
+                locale: $locale,
+                options: $options
+            );
         }
 
-        return Arr::undot($values);
+        return $this->cachedMetafieldValues = Arr::undot($values);
     }
 
     public function getMetafieldValue(
         string $key,
         ?string $default = null,
-        // ?FieldItem $fieldDefinition = null,
         ?string $locale = null,
     ): mixed {
         return data_get($this->getMetafieldValues(locale: $locale), $key, $default);
-        /*$metafield = $this->getMetafield($key);
-
-        if (is_null($metafield)) {
-            return $default;
-        }
-
-        if (is_null($fieldDefinition) && method_exists($this, 'getPostSections')) {
-            $fieldDefinition = $this::getPostSections()->allFields()->findByName($key);
-        }
-
-        if (is_null($fieldDefinition)) {
-            return $metafield->original_value ?? $default;
-        }
-
-        return $metafield->toValue($fieldDefinition, $default, $locale ?? app()->getLocale());*/
     }
 
     /**
@@ -378,5 +353,54 @@ trait HasMetafields
         } catch (\Exception) {
             DB::rollBack();
         }
+    }
+
+    public function findFieldByMetafield(Metafield $metafield, FieldCollection $fieldDefinitions): ?FieldInterface
+    {
+        if ($metafield->metafieldable instanceof Preference) {
+            return $fieldDefinitions->findByName(
+                sprintf(
+                    'fields.%s->%s',
+                    $metafield->metafieldable->getNamespaceAndBag(),
+                    $metafield->key
+                )
+            );
+        }
+
+        return $fieldDefinitions->findByName(sprintf('fields.%s', $metafield->key));
+
+    }
+
+    public function getCachedMetafieldDefinitions(): ?FieldCollection
+    {
+        if ($this->cachedFieldDefinitions) {
+            return $this->cachedFieldDefinitions;
+        }
+
+        if ($this instanceof Post) {
+            /** @var PostService $postService */
+            $postService = app(PostService::class);
+
+            return $this->cachedFieldDefinitions = $postService->sections($this, $this->template)->allFields();
+        }
+
+        if ($this instanceof Taxonomy) {
+            return $this->cachedFieldDefinitions = $this->item->fieldSections()?->allFields();
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array<int, Metafield>
+     */
+    public function getCachedMetafields(): array
+    {
+        if ($this->cachedMetafields) {
+            return $this->cachedMetafields;
+        }
+
+        // TODO: Add ->sortBy('key')->values() if there is an error.
+        return $this->cachedMetafields = $this->metafields->all();
     }
 }

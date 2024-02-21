@@ -3,9 +3,9 @@
 namespace Weblebby\Framework\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Weblebby\Framework\Facades\Extension;
 
 class ExtensionPreferenceController extends Controller

@@ -43,8 +43,8 @@ class PreferenceController extends Controller
 
         seo()->title($selectedBag['title']);
 
-        $this->pageTitle ??= __('Ayarlar');
-        $this->pageDescription ??= __('Sitenizin tüm ayarlarını buradan yönetin.');
+        $this->pageTitle ??= __('Preferences');
+        $this->pageDescription ??= __('Manage your preferences.');
 
         return view('weblebby::user.preferences.show', [
             ...compact('bags', 'fields', 'isCodeEditorNeeded'),
@@ -73,6 +73,6 @@ class PreferenceController extends Controller
             'reordered_fields' => $validated['_reordered_fields'] ?? [],
         ]);
 
-        return back()->with('message', __('Ayarlar kaydedildi'));
+        return back()->with('message', __('Preferences saved'));
     }
 }

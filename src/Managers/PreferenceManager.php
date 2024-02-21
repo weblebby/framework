@@ -5,7 +5,6 @@ namespace Weblebby\Framework\Managers;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Weblebby\Framework\Items\Field\Collections\FieldCollection;
 use Weblebby\Framework\Items\Field\Contracts\FieldInterface;
@@ -27,18 +26,18 @@ class PreferenceManager
 
     public function __construct()
     {
-        if (Schema::hasTable('preferences')) {
-            $this->loadPreferences();
-        } else {
-            $this->preferences = collect();
-        }
+        $this->loadPreferences();
     }
 
     public function loadPreferences(): self
     {
-        $this->preferences = Preference::query()
-            ->with(['metafields' => fn (MorphMany $builder) => $builder->withTranslation()->oldest('key')])
-            ->get();
+        try {
+            $this->preferences = Preference::query()
+                ->with(['metafields' => fn (MorphMany $builder) => $builder->withTranslation()->oldest('key')])
+                ->get();
+        } catch (\Exception) {
+            $this->preferences = collect();
+        }
 
         return $this;
     }

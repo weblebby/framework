@@ -9,12 +9,12 @@ class Page extends Post
 {
     public static function getSingularName(): string
     {
-        return __('Sayfa');
+        return __('Page');
     }
 
     public static function getPluralName(): string
     {
-        return __('Sayfalar');
+        return __('Pages');
     }
 
     public static function getPostSections(): FieldSectionsItem
@@ -26,12 +26,12 @@ class Page extends Post
     {
         return [
             TaxonomyItem::make('page_category')
-                ->withSingularName(__('Sayfa kategorisi'))
-                ->withPluralName(__('Sayfa kategorileri')),
+                ->withSingularName(__('Page category'))
+                ->withPluralName(__('Page categories')),
 
             TaxonomyItem::make('page_tag')
-                ->withSingularName(__('Sayfa etiketi'))
-                ->withPluralName(__('Sayfa etiketleri')),
+                ->withSingularName(__('Page tag'))
+                ->withPluralName(__('Page tags')),
         ];
     }
 }

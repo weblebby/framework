@@ -2,6 +2,7 @@
 
 namespace Weblebby\Framework\Models;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Weblebby\Framework\Facades\PostModels;
 
 class Taxonomy extends Model
 {
-    use HasFactory, HasMetafields;
+    use Cachable, HasFactory, HasMetafields;
 
     protected $fillable = [
         'term_id',
@@ -61,8 +62,12 @@ class Taxonomy extends Model
         return $query->where('taxonomy', $taxonomy);
     }
 
-    public function scopeTerm(Builder $query, string $term): Builder
+    public function scopeTerm(Builder $query, ?string $term = null): Builder
     {
+        if (is_null($term)) {
+            return $query->where('id', false);
+        }
+
         return $query->whereHas('term', fn (Builder $query) => $query->where('slug', $term));
     }
 

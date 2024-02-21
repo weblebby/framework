@@ -500,7 +500,7 @@
     "src": "node_modules/monaco-editor/esm/vs/language/typescript/tsMode.js"
   },
   "resources/css/weblebby.css": {
-    "file": "assets/weblebby-5574a36f.css",
+    "file": "assets/weblebby-1848104c.css",
     "isEntry": true,
     "src": "resources/css/weblebby.css"
   },

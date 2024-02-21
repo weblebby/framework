@@ -21,7 +21,7 @@ class UserController extends Controller
 
         $users = User::query()->paginate();
 
-        seo()->title(__('Kullanıcılar'));
+        seo()->title(__('Users'));
 
         return view('weblebby::user.users.index', compact('users'));
     }
@@ -32,7 +32,7 @@ class UserController extends Controller
 
         $roles = $roleService->getAssignableRolesFor($request->user());
 
-        seo()->title(__('Kullanıcı oluştur'));
+        seo()->title(__('Create user'));
 
         return view('weblebby::user.users.create', compact('roles'));
     }
@@ -46,12 +46,9 @@ class UserController extends Controller
 
         $user->assignRole($request->role);
 
-        /**
-         * TODO: Send email to user with password.
-         */
-        info($password);
+        // TODO: Send email to user with password.
 
-        return to_panel_route('users.index')->with('message', __('Kullanıcı oluşturuldu'));
+        return to_panel_route('users.index')->with('message', __('User created'));
     }
 
     public function edit(Request $request, RoleService $roleService, User $user): View
@@ -70,8 +67,7 @@ class UserController extends Controller
         $user->update($request->validated());
         $user->syncRoles($request->role);
 
-        return to_panel_route('users.index')
-            ->with('message', __('Kullanıcı güncellendi'));
+        return to_panel_route('users.index')->with('message', __('User updated'));
     }
 
     public function destroy(User $user): RedirectResponse
@@ -80,7 +76,6 @@ class UserController extends Controller
 
         $user->delete();
 
-        return to_panel_route('users.index')
-            ->with('message', __('Kullanıcı silindi'));
+        return to_panel_route('users.index')->with('message', __('User deleted'));
     }
 }

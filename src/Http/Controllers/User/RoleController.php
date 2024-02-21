@@ -18,7 +18,7 @@ class RoleController extends Controller
 
         $roles = Role::query()->paginate();
 
-        seo()->title(__('Kullanıcı rolleri'));
+        seo()->title(__('User roles'));
 
         return view('weblebby::user.roles.index', compact('roles'));
     }
@@ -27,7 +27,7 @@ class RoleController extends Controller
     {
         $this->authorize('role:create');
 
-        seo()->title(__('Kullanıcı rolü oluştur'));
+        seo()->title(__('Create user role'));
 
         return view('weblebby::user.roles.create');
     }
@@ -43,7 +43,7 @@ class RoleController extends Controller
             $role->givePermissionTo($permission);
         }
 
-        return to_panel_route('roles.index')->with('message', __('Rol oluşturuldu'));
+        return to_panel_route('roles.index')->with('message', __('Role created'));
     }
 
     public function edit(Role $role): View
@@ -63,7 +63,7 @@ class RoleController extends Controller
 
         $role->syncPermissions($request->permissions);
 
-        return back()->with('message', __('Rol güncellendi'));
+        return back()->with('message', __('Role updated'));
     }
 
     public function destroy(Role $role): RedirectResponse
@@ -73,6 +73,6 @@ class RoleController extends Controller
 
         $role->delete();
 
-        return to_panel_route('roles.index')->with('message', __('Rol silindi'));
+        return to_panel_route('roles.index')->with('message', __('Role deleted'));
     }
 }

@@ -48,11 +48,19 @@ abstract class Theme implements Arrayable, ArrayAccess, Jsonable, JsonSerializab
      * @param  class-string  $postType
      * @return Collection<int, Template>
      */
-    public function templatesFor(string $postType): Collection
+    public function templatesFor(string $postType, array $filters = []): Collection
     {
         return collect($this->templates())
             ->map(fn (string $template) => new $template())
-            ->filter(fn (Template $template) => in_array($postType, Arr::wrap($template->postTypes())))
+            ->filter(function (Template $template) use ($postType, $filters) {
+                $postTypes = $this->getPostTypesBy($template);
+
+                foreach ($filters as $column => $filter) {
+                    $postTypes = $postTypes->where("options.{$column}", $filter);
+                }
+
+                return $postTypes->pluck('postable')->contains($postType);
+            })
             ->values();
     }
 
@@ -63,6 +71,19 @@ abstract class Theme implements Arrayable, ArrayAccess, Jsonable, JsonSerializab
     {
         return collect($this->variants())
             ->map(fn (string $variant) => new $variant($this))
+            ->values();
+    }
+
+    public function getPostTypesBy(Template $template): Collection
+    {
+        return collect(Arr::wrap($template->postTypes()))
+            ->map(function ($options, $postable) {
+                if (is_array($options)) {
+                    return compact('postable', 'options');
+                }
+
+                return ['postable' => $options, 'options' => []];
+            })
             ->values();
     }
 

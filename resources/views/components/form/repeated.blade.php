@@ -29,7 +29,7 @@
                 size="sm"
                 :data-repeated-field-add-row="true"
         >
-            @lang('Yeni satır')
+            @lang('Add row')
         </x-weblebby::button>
     </div>
     <div class="fd-hidden fd-space-y-3" data-repeated-field-rows></div>

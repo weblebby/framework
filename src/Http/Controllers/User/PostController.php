@@ -50,7 +50,7 @@ class PostController extends Controller
         $isCodeEditorNeeded = $sections->allFields()->hasAnyTypeOf(CodeEditorFieldItem::class);
         $isTranslatable = Extension::has('multilingual');
 
-        seo()->title(__(':name oluştur', ['name' => $postable::getSingularName()]));
+        seo()->title(__('Create :title', ['title' => $postable::getSingularName()]));
 
         $sections = $sections->toArray();
 
@@ -109,7 +109,7 @@ class PostController extends Controller
         }
 
         return to_panel_route('posts.edit', [$post, 'locale' => $locale])
-            ->with('message', __(':name oluşturuldu', ['name' => $post::getSingularName()]));
+            ->with('message', __(':title created', ['title' => $post::getSingularName()]));
     }
 
     public function edit(Request $request, Post $post, PostService $postService): View
@@ -122,13 +122,15 @@ class PostController extends Controller
         $templates = $postService->templates($post);
         $sections = $postService->sections($post, old('template', $post->template));
         $categories = $postService->taxonomies($post, taxonomy: 'category', locale: $locale);
-        $metafields = $post->getMetafieldValues(locale: $locale);
+        $metafields = $post->getMetafieldValues(locale: $locale, options: [
+            'media_as_url' => true,
+        ]);
         $metafields['slug'] = $translatedPost->slug;
 
         $isCodeEditorNeeded = $sections->allFields()->hasAnyTypeOf(CodeEditorFieldItem::class);
         $isTranslatable = Extension::has('multilingual');
 
-        seo()->title(__('[:post]: Düzenle', ['post' => $post->title]));
+        seo()->title(__('Edit (:title)', ['title' => $post->title]));
 
         $sections = $sections->toArray();
 
@@ -192,7 +194,7 @@ class PostController extends Controller
         }
 
         return to_panel_route('posts.edit', [$post, 'locale' => $locale])
-            ->with('message', __(':post güncellendi', ['post' => $post->title]));
+            ->with('message', __(':title updated', ['title' => $post->title]));
     }
 
     public function destroy(Post $post): RedirectResponse
@@ -202,6 +204,6 @@ class PostController extends Controller
         $post->delete();
 
         return to_panel_route('posts.index', ['type' => $post::getModelName()])
-            ->with('message', __(':post silindi', ['post' => $post::getSingularName()]));
+            ->with('message', __(':title deleted', ['title' => $post::getSingularName()]));
     }
 }

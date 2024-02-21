@@ -2,6 +2,7 @@
 
 namespace Weblebby\Framework\Models;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +11,7 @@ use Weblebby\Framework\Concerns\Eloquent\HasPosition;
 
 class Taxable extends Model
 {
-    use HasFactory, HasPosition;
+    use Cachable, HasFactory, HasPosition;
 
     protected $fillable = [
         'position',

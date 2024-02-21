@@ -74,7 +74,7 @@ class TaxonomyController extends Controller
         $taxonomy->setMetafieldWithSchema($validatedFieldValues, locale: $validated['_locale']);
 
         return to_panel_route('taxonomies.index', ['taxonomy' => $taxonomyItem->name()])
-            ->with('message', __(':taxonomy oluşturuldu', ['taxonomy' => $taxonomyItem->singularName()]));
+            ->with('message', __(':title created', ['title' => $taxonomyItem->singularName()]));
     }
 
     public function edit(Request $request, Taxonomy $taxonomy, UserTaxonomyService $userTaxonomyService): View
@@ -90,7 +90,7 @@ class TaxonomyController extends Controller
 
         $taxonomy->term->setDefaultLocale($locale);
 
-        seo()->title(__(':taxonomy düzenle', ['taxonomy' => $taxonomyItem->singularName()]));
+        seo()->title(__('Edit :title', ['title' => $taxonomyItem->singularName()]));
 
         return view('weblebby::user.taxonomies.index', compact(
             'locale',
@@ -134,7 +134,7 @@ class TaxonomyController extends Controller
         $taxonomy->setMetafieldWithSchema($validatedFieldValues, locale: $validated['_locale']);
 
         return to_panel_route('taxonomies.edit', [$taxonomy, 'locale' => $validated['_locale']])
-            ->with('message', __(':taxonomy güncellendi', ['taxonomy' => $taxonomy->item->singularName()]));
+            ->with('message', __(':title updated', ['title' => $taxonomy->item->singularName()]));
     }
 
     public function destroy(Taxonomy $taxonomy): RedirectResponse
@@ -144,7 +144,7 @@ class TaxonomyController extends Controller
         $taxonomy->delete();
 
         return to_panel_route('taxonomies.index', ['taxonomy' => $taxonomy->item->name()])
-            ->with('message', __(':taxonomy silindi', ['taxonomy' => $taxonomy->item->singularName()]));
+            ->with('message', __(':title deleted', ['title' => $taxonomy->item->singularName()]));
     }
 
     /**

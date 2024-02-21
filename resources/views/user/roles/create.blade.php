@@ -1,14 +1,14 @@
 <x-weblebby::layouts.panel>
     <x-weblebby::page class="lg:fd-w-2/3 fd-mx-auto">
         <x-weblebby::page.head :back="panel_route('roles.index')">
-            <x-weblebby::page.title>@lang('Rol oluşturun')</x-weblebby::page.title>
-            <x-weblebby::page.subtitle>@lang('Yeni bir kullanıcı rolü oluşturun')</x-weblebby::page.subtitle>
+            <x-weblebby::page.title>@lang('Create role')</x-weblebby::page.title>
+            <x-weblebby::page.subtitle>@lang('Create a new user role')</x-weblebby::page.subtitle>
         </x-weblebby::page.head>
         <x-weblebby::form class="fd-space-y-3" :action="panel_route('roles.store')">
             <x-weblebby::card class="fd-space-y-3" padding>
                 <x-weblebby::form.group name="name">
-                    <x-weblebby::form.label>@lang('Rol adı')</x-weblebby::form.label>
-                    <x-weblebby::form.input :placeholder="__('örn: Editör')" autofocus />
+                    <x-weblebby::form.label>@lang('Role name')</x-weblebby::form.label>
+                    <x-weblebby::form.input :placeholder="__('ex. Editor')" autofocus />
                 </x-weblebby::form.group>
             </x-weblebby::card>
             <x-weblebby::card class="fd-space-y-5" padding>
@@ -28,7 +28,7 @@
                     </div>
                 @endforeach
             </x-weblebby::card>
-            <x-weblebby::button type="submit">@lang('Oluştur')</x-weblebby::button>
+            <x-weblebby::button type="submit">@lang('Create')</x-weblebby::button>
             <x-weblebby::form.sticky-submit />
         </x-weblebby::form>
     </x-weblebby::page>

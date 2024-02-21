@@ -29,6 +29,6 @@ class NavigationSortController extends Controller
             $positions[$depth]++;
         }
 
-        return response()->json(['message' => __('Menü sıralaması kaydedildi')]);
+        return response()->json(['message' => __('Menu order saved')]);
     }
 }

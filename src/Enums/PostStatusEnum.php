@@ -4,25 +4,25 @@ namespace Weblebby\Framework\Enums;
 
 enum PostStatusEnum: int
 {
-    case DRAFT = 0;
     case PUBLISHED = 1;
     case PRIVATE = 2;
+    case DRAFT = 0;
 
     public function label(): string
     {
         return match ($this) {
-            self::DRAFT => __('Taslak'),
-            self::PUBLISHED => __('Yayında'),
-            self::PRIVATE => __('Liste Dışı'),
+            self::PUBLISHED => __('Published'),
+            self::PRIVATE => __('Private'),
+            self::DRAFT => __('Draft'),
         };
     }
 
     public function hint(): string
     {
         return match ($this) {
-            self::DRAFT => __('Sitenizde görünmez ve linkle erişilemez.'),
-            self::PUBLISHED => __('Herkes tarafından görülebilir.'),
-            self::PRIVATE => __('Sitenizde görünmez ama linkle erişilebilir.'),
+            self::PUBLISHED => __('Visible to everyone.'),
+            self::PRIVATE => __('Is not visible on your site but can be accessed via a link.'),
+            self::DRAFT => __('Is not visible on your website and cannot be accessed via a link.'),
         };
     }
 }

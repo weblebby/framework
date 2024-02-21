@@ -97,9 +97,9 @@
                 @break
             @case(\Weblebby\Framework\Enums\FieldTypeEnum::SELECT)
                 <x-weblebby::form.select :attributes="$field['attributes']" :default="$default">
-                    <option value="" selected disabled>{{ __('Bir öğe seçin') }}</option>
+                    <option value="" selected disabled>{{ __('Select an item') }}</option>
                     @foreach ($field['options'] as $value => $label)
-                        <option value="{{ $value }}">{{ $label }}</option>
+                        <x-weblebby::form.option :value="$value">{{ $label }}</x-weblebby::form.option>
                     @endforeach
                 </x-weblebby::form.select>
                 @break

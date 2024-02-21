@@ -28,8 +28,6 @@ class ThemeTemplatePostFieldController extends Controller
             ->values()
             ->toArray();
 
-        return response()->json([
-            'tabs' => $tabs,
-        ]);
+        return response()->json(compact('tabs'));
     }
 }

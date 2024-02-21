@@ -3,10 +3,12 @@
 namespace Weblebby\Framework\Models;
 
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\Image\Exceptions\InvalidManipulation;
+use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
@@ -19,7 +21,7 @@ use Weblebby\Framework\Services\MetafieldService;
 
 class Metafield extends Model implements HasMedia, TranslatableContract
 {
-    use HasFactory, InteractsWithMedia, Translatable;
+    use Cachable, HasFactory, InteractsWithMedia, Translatable;
 
     protected $fillable = [
         'key',
@@ -48,8 +50,9 @@ class Metafield extends Model implements HasMedia, TranslatableContract
      */
     public function registerMediaConversions(?Media $media = null): void
     {
-        $this->addMediaConversion('lg')->width(1920)->height(1080);
-        $this->addMediaConversion('sm')->width(400)->height(225);
+        $this->addMediaConversion('lg')->fit(Manipulations::FIT_MAX, 1920, 1080);
+        $this->addMediaConversion('md')->fit(Manipulations::FIT_MAX, 720, 720);
+        $this->addMediaConversion('sm')->fit(Manipulations::FIT_MAX, 360, 360);
     }
 
     public function metafieldable(): MorphTo
@@ -57,11 +60,15 @@ class Metafield extends Model implements HasMedia, TranslatableContract
         return $this->morphTo();
     }
 
-    public function toValue(FieldInterface $field, mixed $default = null, ?string $locale = null): mixed
-    {
+    public function toValue(
+        ?FieldInterface $field,
+        mixed $default = null,
+        ?string $locale = null,
+        array $options = []
+    ): mixed {
         /** @var MetafieldService $metafieldService */
         $metafieldService = app(MetafieldService::class);
 
-        return $metafieldService->toValue($field, $default, $locale, $this);
+        return $metafieldService->toValue($field, $default, $locale, metafield: $this, options: $options);
     }
 }

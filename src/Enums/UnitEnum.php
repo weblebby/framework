@@ -10,16 +10,16 @@ enum UnitEnum: int
     public function title(): string
     {
         return match ($this) {
-            self::MONTH => __('Ay'),
-            self::YEAR => __('Yıl'),
+            self::MONTH => __('Month'),
+            self::YEAR => __('Year'),
         };
     }
 
     public function periodLabel(): string
     {
         return match ($this) {
-            self::MONTH => __('Aylık'),
-            self::YEAR => __('Yıllık'),
+            self::MONTH => __('Monthly'),
+            self::YEAR => __('Annual'),
         };
     }
 

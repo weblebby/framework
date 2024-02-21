@@ -4,7 +4,7 @@
                 class="fd-fixed fd-inset-y-0 fd-z-30 fd-hidden md:fd-flex fd-flex-col fd-w-60 fd-h-full fd-gap-8 fd-bg-zinc-200 fd-border-r fd-border-zinc-300 fd-overflow-auto">
             <div class="fd-flex fd-flex-col">
                 <a href="/" class="fd-px-4 fd-py-3 fd-bg-zinc-50 fd-border-b fd-border-zinc-200">
-                    <div class="fd-uppercase fd-font-bold fd-text-sm fd-text-zinc-700 fd-truncate">{{ preference('general->site_name', 'WebLebby') }}</div>
+                    <div class="fd-uppercase fd-font-bold fd-text-sm fd-text-zinc-700 fd-truncate">{{ preference('general->site_name', 'Weblebby') }}</div>
                 </a>
                 <div class="fd-px-4 fd-py-2 fd-bg-zinc-100 fd-border-b fd-border-zinc-300">
                     <div class="fd-text-zinc-800 fd-font-medium">{{ auth()->user()->name }}</div>

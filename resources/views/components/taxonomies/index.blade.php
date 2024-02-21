@@ -12,9 +12,9 @@
             class="fd-hidden fd-mb-3"
             data-primary-taxonomy-group
     >
-        <x-weblebby::form.label>@lang('Birincil :taxonomy', ['taxonomy' => \Illuminate\Support\Str::title($taxonomyItem->singularName())])</x-weblebby::form.label>
+        <x-weblebby::form.label>@lang('Primary :title', ['title' => \Illuminate\Support\Str::title($taxonomyItem->singularName())])</x-weblebby::form.label>
         <x-weblebby::form.select :data-primary-taxonomy-select="json_encode(($primary ?? null)?->id ?? null)">
-            <option selected disabled>@lang('Seçiniz')</option>
+            <option selected disabled>@lang('Choose')</option>
         </x-weblebby::form.select>
     </x-weblebby::form.group>
 
@@ -26,7 +26,7 @@
             />
         @empty
             <div class="fd-text-sm fd-text-zinc-500">
-                @lang('Hiçbir :taxonomy bulunamadı.', ['taxonomy' => Str::lower($taxonomyItem->singularName())])
+                @lang('No :title found.', ['title' => Str::lower($taxonomyItem->singularName())])
             </div>
         @endforelse
     </div>

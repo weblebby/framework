@@ -69,7 +69,9 @@ class PreferenceBagHook
 
     public function fields(string $bag, ?string $locale = null): FieldCollection
     {
-        return (new FieldCollection($this->get($locale)[$bag]['fields'] ?? []))
+        $fields = $this->get($locale)[$bag]['fields'] ?? [];
+
+        return (new FieldCollection($fields))
             ->sortBy('position')
             ->values();
     }

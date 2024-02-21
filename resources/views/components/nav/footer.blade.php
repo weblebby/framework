@@ -20,6 +20,6 @@
                 type="submit"
                 variant="outline-light"
                 size="sm"
-        >@lang('Oturumu kapat')</x-weblebby::button>
+        >@lang('Sign out')</x-weblebby::button>
     </x-weblebby::form>
 </div>

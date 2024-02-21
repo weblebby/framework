@@ -19,6 +19,14 @@ class PreferenceToConfig
             'app.name' => $siteName = preference('general->site_name'),
             'app.url' => preference('general->site_url'),
             'seo.app.name' => $siteName,
+
+            'mail.mailers.smtp.host' => preference('email->host'),
+            'mail.mailers.smtp.port' => preference('email->port'),
+            'mail.mailers.smtp.username' => preference('email->username'),
+            'mail.mailers.smtp.password' => preference('email->password'),
+            'mail.mailers.smtp.encryption' => preference('email->encryption'),
+            'mail.from.name' => preference('email->from_name'),
+            'mail.from.address' => preference('email->from_address'),
         ]);
 
         return $next($request);

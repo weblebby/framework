@@ -93,7 +93,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
         ]);
     }
 
-    public function registerRoute(string $route): void
+    public function registerPanelRoute(string $route): void
     {
         $panel = Panel::getExtensionPanel();
         $path = $this->path(sprintf('routes/%s.php', $route));
@@ -109,7 +109,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
     {
         $class = $this->observerClass();
 
-        if (is_null($class) || ! $this->isActive()) {
+        if (is_null($class)) {
             return null;
         }
 

@@ -23,20 +23,35 @@ class FieldSectionsItem implements Arrayable, ArrayAccess, Jsonable, JsonSeriali
         return new static();
     }
 
-    public function add(string $name, string $title, array $fields, bool $prepend = false): self
-    {
+    public function add(
+        string $name,
+        string $title,
+        array $fields,
+        bool $prepend = false,
+        ?int $position = null,
+    ): self {
         if ($prepend === true) {
             foreach ($fields as $field) {
                 if (method_exists($field, 'name')) {
-                    $field->key("{$name}.{$field['key']}");
+                    $field->key("{$name}__{$field['key']}");
                     $field->name($field['key']);
                 }
             }
         }
 
+        if (isset($this->sections[$name])) {
+            $this->sections[$name]['fields'] = array_merge(
+                $this->sections[$name]['fields'],
+                $fields,
+            );
+
+            return $this;
+        }
+
         $this->sections[$name] = [
             'title' => $title,
             'fields' => $fields,
+            'position' => $position ?? $this->getNewPosition(),
         ];
 
         return $this;
@@ -49,10 +64,17 @@ class FieldSectionsItem implements Arrayable, ArrayAccess, Jsonable, JsonSeriali
         }
 
         $templates = Theme::active()->templatesFor($postable::class);
+
+        /** @var array<int, FieldSectionsItem> $templateSections */
         $templateSections = $templates->firstWhere('name', $template)?->sections()?->toArray();
 
-        if ($templateSections) {
-            $this->sections = array_merge($this->sections, $templateSections);
+        foreach ($templateSections ?? [] as $key => $section) {
+            $this->add(
+                $key,
+                $section['title'],
+                $section['fields'],
+                position: $section['position'],
+            );
         }
 
         return $this;
@@ -73,6 +95,11 @@ class FieldSectionsItem implements Arrayable, ArrayAccess, Jsonable, JsonSeriali
      */
     public function toArray(): array
     {
-        return $this->sections;
+        return collect($this->sections)->sortBy('position')->toArray();
+    }
+
+    private function getNewPosition(): int
+    {
+        return count($this->sections) * 10;
     }
 }

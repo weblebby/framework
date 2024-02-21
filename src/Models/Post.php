@@ -3,6 +3,7 @@
 namespace Weblebby\Framework\Models;
 
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,7 +30,8 @@ use Weblebby\Framework\Support\HtmlSanitizer;
 
 class Post extends Model implements HasMedia, PostInterface, TranslatableContract
 {
-    use HasFactory,
+    use Cachable,
+        HasFactory,
         HasMetafields,
         HasOwner,
         HasPosition,
@@ -133,46 +135,46 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
 
     public static function getSingularName(): string
     {
-        return __('Yazı');
+        return __('Post');
     }
 
     public static function getPluralName(): string
     {
-        return __('Yazılar');
+        return __('Posts');
     }
 
     public static function getTaxonomies(): array
     {
         return [
             TaxonomyItem::make('post_category')
-                ->withSingularName(__('Yazı kategorisi'))
-                ->withPluralName(__('Yazı kategorileri'))
+                ->withSingularName(__('Post category'))
+                ->withPluralName(__('Post categories'))
                 ->withFieldSections(
                     FieldSectionsItem::make()
-                        ->add('default', 'Genel', [
+                        ->add('default', 'Default', [
                             FieldItem::richText('description')
                                 ->translatable()
-                                ->label(__('Açıklama'))
-                                ->hint(__('Kategori açıklaması'))
+                                ->label(__('Description'))
+                                ->hint(__('Category description'))
                                 ->rules(['nullable', 'string', 'max:50000']),
 
                             FieldItem::image('image')
-                                ->label(__('Resim'))
-                                ->hint(__('Kategori resmi'))
+                                ->label(__('Image'))
+                                ->hint(__('Category image'))
                                 ->rules(['nullable', 'image']),
                         ])
                 ),
 
             TaxonomyItem::make('post_tag')
-                ->withSingularName(__('Yazı etiketi'))
-                ->withPluralName(__('Yazı etiketleri'))
+                ->withSingularName(__('Post tag'))
+                ->withPluralName(__('Post tags'))
                 ->withFieldSections(
                     FieldSectionsItem::make()
-                        ->add('default', 'Genel', [
+                        ->add('default', 'Default', [
                             FieldItem::richText('description')
                                 ->translatable()
-                                ->label(__('Açıklama'))
-                                ->hint(__('Kategori açıklaması')),
+                                ->label(__('Description'))
+                                ->hint(__('Category description')),
                         ])
                 ),
         ];
@@ -188,7 +190,7 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
         return $query->where('type', $type);
     }
 
-    protected function htmlContent(): Attribute
+    protected function sanitizedHtmlContent(): Attribute
     {
         return Attribute::get(fn () => app(HtmlSanitizer::class)->sanitizeToHtml($this->content));
     }

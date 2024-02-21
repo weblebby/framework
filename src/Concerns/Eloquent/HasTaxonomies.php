@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Weblebby\Framework\Models\Taxable;
 use Weblebby\Framework\Models\Taxonomy;
@@ -57,6 +58,22 @@ trait HasTaxonomies
             'taxonomies',
             fn (Builder $builder) => $builder->whereIn('taxonomies.id', $taxonomyIds)
         );
+    }
+
+    public function scopeTaxedBy(Builder $query, string $taxonomy, string|array $terms): Builder
+    {
+        if (is_string($terms) && str_contains($terms, ',')) {
+            $terms = explode(',', $terms);
+        }
+
+        $terms = Arr::wrap($terms);
+
+        return $query->whereHas('taxonomies', fn (Builder $builder) => $builder
+            ->taxonomy($taxonomy)
+            ->whereHas(
+                'term.translations',
+                fn (Builder $builder) => $builder->whereIn('title', $terms)
+            ));
     }
 
     public function getTaxonomiesFor(string $taxonomy, ?string $locale = null): Collection

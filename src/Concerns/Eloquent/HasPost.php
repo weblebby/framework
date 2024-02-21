@@ -71,13 +71,13 @@ trait HasPost
 
                 FieldItem::text('seo_title')
                     ->translatable()
-                    ->label(__('Meta başlığı'))
-                    ->hint(__('Arama motorlarında görünecek sayfa başlığını buradan değiştirebilirsiniz.'))
+                    ->label(__('Meta title'))
+                    ->hint(__('You can modify the page title that will be displayed on search engines.'))
                     ->rules(['nullable', 'string', 'max:191']),
 
                 FieldItem::textarea('seo_description')
                     ->translatable()
-                    ->label(__('Meta açıklaması'))
+                    ->label(__('Meta description'))
                     ->attributes(['rows' => 3])
                     ->rules(['nullable', 'string', 'max:400']),
             ]);
@@ -108,28 +108,30 @@ trait HasPost
     public static function saveAbilitiesToPanel(): void
     {
         $singularName = static::getSingularName();
+        $pluralName = static::getPluralName();
 
         panel()
             ->permission(static::getModelName())
-            ->withTitle(static::getSingularName())
+            ->withTitle($singularName)
             ->withPermissions([
-                'create' => __(':name oluşturabilir', ['name' => $singularName]),
-                'read' => __(':name görüntüleyebilir', ['name' => $singularName]),
-                'update' => __(':name düzenleyebilir', ['name' => $singularName]),
-                'delete' => __(':name silebilir', ['name' => $singularName]),
+                'create' => __('Can create :name', ['name' => $singularName]),
+                'read' => __('Can view :name', ['name' => $pluralName]),
+                'update' => __('Can edit :name', ['name' => $pluralName]),
+                'delete' => __('Can delete :name', ['name' => $pluralName]),
             ]);
 
         foreach (static::getTaxonomies() as $taxonomy) {
             $singularName = $taxonomy->singularName();
+            $pluralName = $taxonomy->pluralName();
 
             panel()
                 ->permission($taxonomy->name())
                 ->withTitle($singularName)
                 ->withPermissions([
-                    'create' => __(':name oluşturabilir', ['name' => $singularName]),
-                    'read' => __(':name görüntüleyebilir', ['name' => $singularName]),
-                    'update' => __(':name düzenleyebilir', ['name' => $singularName]),
-                    'delete' => __(':name silebilir', ['name' => $singularName]),
+                    'create' => __('Can create :name', ['name' => $singularName]),
+                    'read' => __('Can view :name', ['name' => $pluralName]),
+                    'update' => __('Can edit :name', ['name' => $pluralName]),
+                    'delete' => __('Can delete :name', ['name' => $pluralName]),
                 ]);
         }
     }
@@ -140,9 +142,10 @@ trait HasPost
             $taxonomy = sprintf('%s_%s', static::getModelName(), $taxonomy);
         }
 
-        return array_values(
-            array_filter(static::getTaxonomies(), fn (TaxonomyItem $taxonomyItem) => $taxonomyItem->name() === $taxonomy)
-        )[0] ?? null;
+        return array_values(array_filter(
+            static::getTaxonomies(),
+            fn (TaxonomyItem $taxonomyItem): bool => $taxonomyItem->name() === $taxonomy
+        ))[0] ?? null;
     }
 
     public static function getNavigationLinkable(): NavigationLinkableItem

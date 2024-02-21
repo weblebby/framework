@@ -25,7 +25,7 @@
 
     $sizeClasses = match($size) {
         'icon' => 'fd-p-2',
-        'sm' => 'fd-px-3 fd-py-1',
+        'sm' => 'fd-px-2.5 fd-py-1 fd-text-sm',
         'lg' => 'fd-px-5 fd-py-3',
         'full' => 'fd-px-4 fd-py-2 fd-w-full fd-justify-center',
         'none' => '',
@@ -43,7 +43,7 @@
 @endphp
 
 <{{ $as }} {{ $attributes
-    ->class('fd-flex fd-items-center fd-gap-2 fd-transition-colors')
+    ->class('fd-inline-flex fd-items-center fd-gap-2 fd-transition-colors')
     ->class($upper ? 'fd-uppercase fd-text-sm fd-font-medium' : '')
     ->class($roundedClasses)
     ->class($sizeClasses)

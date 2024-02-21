@@ -26,16 +26,19 @@
         <input type="file" id="{{ $id }}" name="{{ $name }}" class="fd-hidden" accept="image/*">
         <div class="fd-h-60" data-image-wrapper>
             @if ($image ?? null)
+                @php($image = $image instanceof \Spatie\MediaLibrary\MediaCollections\Models\Media ? $image->getUrl() : $image)
                 <img class="fd-w-full fd-h-full fd-object-cover" src="{{ $image }}" alt="Uploaded image">
             @endif
         </div>
         <div class="fd-absolute fd-inset-0 fd-text-white fd-bg-black/40 fd-flex fd-flex-col fd-gap-3 fd-items-center fd-justify-center">
             <x-weblebby::icons.upload class="fd-w-8 fd-h-8" />
-            <span class="fd-font-medium">{{ isset($image) ? __('Görseli değiştir') : __('Görsel yükle') }}</span>
+            <span class="fd-font-medium">{{ isset($image) ? __('Change image') : __('Upload image') }}</span>
         </div>
     </label>
     @if ($suffix)
-        <x-weblebby::form.prefix class="fd-mt-2 -fd-ml-[1px] fd-rounded-r"
-                                 :suffix="true">{{ $suffix }}</x-weblebby::form.prefix>
+        <x-weblebby::form.prefix
+                class="fd-mt-2 -fd-ml-[1px] fd-rounded-r"
+                :suffix="true"
+        >{{ $suffix }}</x-weblebby::form.prefix>
     @endif
 </div>

@@ -3,7 +3,7 @@
         <x-weblebby::page.head
                 :back="$taxonomy ? panel_route('taxonomies.index', ['taxonomy' => $taxonomyItem->name()]) : null">
             <x-weblebby::page.title>
-                {{ $taxonomy ? __('Düzenle: :term', ['term' => $taxonomy->term->title]) : $taxonomyItem->pluralName() }}
+                {{ $taxonomy ? __('Edit (:title)', ['title' => $taxonomy->term->title]) : $taxonomyItem->pluralName() }}
             </x-weblebby::page.title>
         </x-weblebby::page.head>
         <div @class([
@@ -26,7 +26,7 @@
                                 @if ($taxonomy)
                                     <div class="fd-flex fd-items-center fd-justify-between fd-mb-3">
                                         <x-weblebby::card.title class="!fd-mb-0">
-                                            @lang('Güncelle: :term', ['term' => $taxonomy->term->title])
+                                            @lang('Edit (:title)', ['title' => $taxonomy->term->title])
                                         </x-weblebby::card.title>
                                         <x-weblebby::button
                                                 as="a"
@@ -38,25 +38,25 @@
                                         />
                                     </div>
                                 @else
-                                    <x-weblebby::card.title>@lang('Yeni :taxonomy', ['taxonomy' => Str::lower($taxonomyItem->singularName())])</x-weblebby::card.title>
+                                    <x-weblebby::card.title>@lang('Create :title', ['title' => Str::lower($taxonomyItem->singularName())])</x-weblebby::card.title>
                                 @endif
                                 <div class="fd-space-y-3">
-                                    <x-weblebby::form.group name="title" :label="__('Başlık')">
+                                    <x-weblebby::form.group name="title" :label="__('Title')">
                                         <x-weblebby::form.input
                                                 :default="$taxonomy?->term?->title"
                                                 :translatable="$isTranslatable"
                                         />
                                     </x-weblebby::form.group>
-                                    <x-weblebby::form.group name="slug" :label="__('Sabit URL')">
+                                    <x-weblebby::form.group name="slug" :label="__('URL')">
                                         <x-weblebby::form.input
                                                 :default="$taxonomy?->term?->slug"
                                                 :translatable="$isTranslatable"
                                         />
                                     </x-weblebby::form.group>
                                     <x-weblebby::form.group name="parent_id"
-                                                            :label="__('Üst :taxonomy', ['taxonomy' => Str::lower($taxonomyItem->singularName())])">
+                                                            :label="__('Parent :title', ['title' => Str::lower($taxonomyItem->singularName())])">
                                         <x-weblebby::form.select>
-                                            <option value="">@lang('Yok')</option>
+                                            <option value="">@lang('None')</option>
                                             @foreach ($taxonomiesForParentSelect as $taxonomyValue)
                                                 <x-weblebby::form.option
                                                         value="{{ $taxonomyValue->id }}">{{ $taxonomyValue->term->title }}</x-weblebby::form.option>
@@ -87,7 +87,7 @@
                             </x-weblebby::tabs>
                             <x-weblebby::card padding>
                                 <x-weblebby::button type="submit">
-                                    {{ $taxonomy ? __('Güncelle') : __('Oluştur') }}
+                                    {{ $taxonomy ? __('Update') : __('Create') }}
                                 </x-weblebby::button>
                             </x-weblebby::card>
                         </div>
@@ -98,9 +98,9 @@
             <div class="fd-space-y-3 fd-col-span-3">
                 <x-weblebby::table>
                     <x-weblebby::table.head>
-                        <x-weblebby::table.th>@lang('Başlık')</x-weblebby::table.th>
-                        <x-weblebby::table.th>@lang('Üst :taxonomy', ['taxonomy' => $taxonomyItem->singularName()])</x-weblebby::table.th>
-                        <x-weblebby::table.th>@lang('Değişiklik tarihi')</x-weblebby::table.th>
+                        <x-weblebby::table.th>@lang('Title')</x-weblebby::table.th>
+                        <x-weblebby::table.th>@lang('Parent')</x-weblebby::table.th>
+                        <x-weblebby::table.th>@lang('Amendment date')</x-weblebby::table.th>
                         <x-weblebby::table.th />
                     </x-weblebby::table.head>
                     <x-weblebby::table.body>
@@ -136,7 +136,7 @@
                                                     size="sm"
                                                     variant="light"
                                             >
-                                                @lang('Düzenle')
+                                                @lang('Edit')
                                             </x-weblebby::button>
                                         @endcan
                                         @can($taxonomyItem->abilityFor('delete'))
@@ -146,7 +146,7 @@
                                                     data-modal-open="#modal-delete-taxonomy"
                                                     :data-action="panel_route('taxonomies.destroy', $taxonomyValue)"
                                             >
-                                                @lang('Sil')
+                                                @lang('Delete')
                                             </x-weblebby::button>
                                         @endcan
                                     </div>
@@ -162,7 +162,7 @@
     @can($taxonomyItem->abilityFor('delete'))
         <x-weblebby::modal.destroy
                 id="modal-delete-taxonomy"
-                :title="__(':name siliyorsunuz', ['name' => $taxonomyItem->singularName()])"
+                :title="__('Deleting the :title', ['title' => $taxonomyItem->singularName()])"
         />
     @endcan
 </x-weblebby::layouts.panel>

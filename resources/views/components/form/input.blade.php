@@ -45,7 +45,9 @@
             read-only:fd-bg-zinc-200
             fd-transition') }}>
     @if ($suffix)
-        <x-weblebby::form.prefix class="-fd-ml-[1px] fd-rounded-r"
-                                 :suffix="true">{{ $suffix }}</x-weblebby::form.prefix>
+        <x-weblebby::form.prefix
+                class="-fd-ml-[1px] fd-rounded-r"
+                :suffix="true"
+        >{{ $suffix }}</x-weblebby::form.prefix>
     @endif
 </div>

@@ -7,6 +7,7 @@ use Weblebby\Extensions\Multilingual\Support\LocaleRules;
 use Weblebby\Framework\Facades\Extension;
 use Weblebby\Framework\Facades\Preference;
 use Weblebby\Framework\Services\FieldInputService;
+// This class used if "multilingual" extension is active.
 use Weblebby\Framework\Services\FieldValidationService;
 
 class UpdatePreferenceRequest extends FormRequest

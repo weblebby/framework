@@ -83,10 +83,10 @@ class StoreTaxonomyRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'title' => __('Başlık'),
+            'title' => __('Title'),
             'slug' => __('URL'),
-            'parent_id' => __('Üst :taxonomy', ['taxonomy' => $this->taxonomyItem->singularName()]),
-            '_locale' => __('Dil'),
+            'parent_id' => __('Parent :taxonomy', ['taxonomy' => $this->taxonomyItem->singularName()]),
+            '_locale' => __('Locale'),
             ...$this->rulesAndAttributes['attributes'],
         ];
     }

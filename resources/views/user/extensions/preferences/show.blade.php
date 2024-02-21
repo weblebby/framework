@@ -4,7 +4,7 @@
     <x-weblebby::page class="{{ count($preferences) <= 1 ? 'lg:fd-w-2/3 fd-mx-auto' : '' }}">
         <x-weblebby::page.head :back="panel_route('extensions.index')">
             <x-weblebby::page.title>{{ $extension->pluralTitle() }}</x-weblebby::page.title>
-            <x-weblebby::page.subtitle>@lang(':extension modülünü ayarlayın', ['extension' => $extension->singularTitle()])</x-weblebby::page.subtitle>
+            <x-weblebby::page.subtitle>@lang('Manage :extension preferences', ['extension' => $extension->singularTitle()])</x-weblebby::page.subtitle>
         </x-weblebby::page.head>
         <div>
             <div class="{{ count($preferences) > 1 ? 'fd-grid lg:fd-grid-cols-5 fd-gap-3' : '' }}">
@@ -33,7 +33,7 @@
                                 @foreach (panel()->preference($extension->name())->fields($selectedBag) as $field)
                                     <x-weblebby::form.field :field="$field" />
                                 @endforeach
-                                <x-weblebby::button type="submit">@lang('Kaydet')</x-weblebby::button>
+                                <x-weblebby::button type="submit">@lang('Save')</x-weblebby::button>
                             </div>
                         </x-weblebby::form>
                     </x-weblebby::card>

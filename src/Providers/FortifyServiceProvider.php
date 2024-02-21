@@ -61,31 +61,31 @@ class FortifyServiceProvider extends ServiceProvider
     private function views(): void
     {
         Fortify::loginView(function () {
-            seo()->title(__('Oturum açın'));
+            seo()->title(__('Sign In'));
 
             return view('weblebby::guest.login');
         });
 
         Fortify::registerView(function () {
-            seo()->title(__('Hesap oluşturun'));
+            seo()->title(__('Sign Up'));
 
             return view('weblebby::guest.register');
         });
 
         Fortify::resetPasswordView(function () {
-            seo()->title(__('Parolamı sıfırla'));
+            seo()->title(__('Reset Password'));
 
             return view('weblebby::guest.passwords.reset');
         });
 
         Fortify::requestPasswordResetLinkView(function () {
-            seo()->title(__('Parolamı unuttum'));
+            seo()->title(__('Request Password Reset'));
 
             return view('weblebby::guest.passwords.email');
         });
 
         Fortify::verifyEmailView(function () {
-            seo()->title(__('e-Posta adresinizi doğrulayın'));
+            seo()->title(__('Confirm Your Email'));
 
             return view('weblebby::user.verify.email');
         });

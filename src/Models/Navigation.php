@@ -2,6 +2,7 @@
 
 namespace Weblebby\Framework\Models;
 
+use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +11,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class Navigation extends Model
 {
-    use HasFactory, HasSlug;
+    use Cachable, HasFactory, HasSlug;
 
     protected $fillable = [
         'title',

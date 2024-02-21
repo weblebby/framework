@@ -5,18 +5,22 @@
         </x-weblebby::page.head>
         @if ($role->is_default)
             <x-weblebby::alert>
-                <div>@lang('Bu rol düzenlenemez.')</div>
+                <div>@lang('This role cannot be edited.')</div>
                 @if ($role->name === 'Super Admin')
-                    <div class="fd-font-normal">@lang('Super Admin rolüne sahip kişiler, tüm yetkilere sahiptirler.')</div>
+                    <div class="fd-font-normal">@lang('Users with the Super Admin role have all authorisations.')</div>
                 @endif
             </x-weblebby::alert>
         @else
-            <x-weblebby::form class="fd-space-y-3" :bind="$role" :action="panel_route('roles.update', $role)"
-                              method="PUT">
+            <x-weblebby::form
+                    class="fd-space-y-3"
+                    :bind="$role"
+                    :action="panel_route('roles.update', $role)"
+                    method="PUT"
+            >
                 <x-weblebby::card class="fd-space-y-3" padding>
                     <x-weblebby::form.group name="name">
-                        <x-weblebby::form.label>@lang('Rol adı')</x-weblebby::form.label>
-                        <x-weblebby::form.input :placeholder="__('örn: Editör')" autofocus />
+                        <x-weblebby::form.label>@lang('Role name')</x-weblebby::form.label>
+                        <x-weblebby::form.input :placeholder="__('ex. Editor')" autofocus />
                     </x-weblebby::form.group>
                 </x-weblebby::card>
                 <x-weblebby::card class="fd-space-y-5" padding>
@@ -40,7 +44,7 @@
                         </div>
                     @endforeach
                 </x-weblebby::card>
-                <x-weblebby::button type="submit">@lang('Kaydet')</x-weblebby::button>
+                <x-weblebby::button type="submit">@lang('Save')</x-weblebby::button>
                 <x-weblebby::form.sticky-submit />
             </x-weblebby::form>
         @endif

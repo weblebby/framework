@@ -11,14 +11,23 @@ use Weblebby\Framework\Services\TaxonomyService;
 
 class PostService
 {
-    public function templates(PostInterface $postable): Collection
+    public function templates(PostInterface $postable, ?array $filters = null): Collection
     {
-        return Theme::active()?->templatesFor($postable::class) ?? collect();
+        $filters ??= ['default' => false];
+
+        return Theme::active()?->templatesFor($postable::class, $filters)?->values() ?? collect();
     }
 
     public function sections(PostInterface $postable, ?string $template = null): FieldSectionsItem
     {
-        return $postable::getPostSections()->withTemplateSections($postable, $template);
+        $sections = $postable::getPostSections()->withTemplateSections($postable, $template);
+        $defaultTemplates = $this->templates($postable, ['default' => true]);
+
+        foreach ($defaultTemplates as $template) {
+            $sections->withTemplateSections($postable, $template->name());
+        }
+
+        return $sections;
     }
 
     public function taxonomies(PostInterface $postable, string $taxonomy, ?string $locale = null): ?Collection

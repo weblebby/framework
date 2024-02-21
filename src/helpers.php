@@ -7,6 +7,8 @@ use Weblebby\Framework\Facades\Preference;
 use Weblebby\Framework\Facades\Theme;
 use Weblebby\Framework\Items\PanelItem;
 use Weblebby\Framework\Managers\PanelManager;
+use Weblebby\Framework\Support\Once;
+use Weblebby\Framework\Support\Onceable;
 
 function panel(?string $panel = null): ?PanelItem
 {
@@ -61,9 +63,14 @@ function extensions_build_dir(): string
     return 'st-extensions';
 }
 
+function extension_asset_path(string $extension): string
+{
+    return sprintf('%s/%s', extensions_build_dir(), $extension);
+}
+
 function extension_build_path(string $extension): string
 {
-    return sprintf('%s/%s/build', extensions_build_dir(), $extension);
+    return extension_asset_path($extension).'/build';
 }
 
 function themes_build_dir(): string
@@ -71,7 +78,30 @@ function themes_build_dir(): string
     return 'st-themes';
 }
 
+function theme_asset_path(string $theme): string
+{
+    return sprintf('%s/%s', themes_build_dir(), $theme);
+}
+
 function theme_build_path(string $theme): string
 {
-    return sprintf('%s/%s/build', themes_build_dir(), $theme);
+    return theme_asset_path($theme).'/build';
+}
+
+/**
+ * Ensures a callable is only called once, and returns the result on subsequent calls.
+ *
+ * @template  TReturnType
+ *
+ * @param  callable(): TReturnType  $callback
+ * @return TReturnType
+ */
+function once(callable $callback)
+{
+    $onceable = Onceable::tryFromTrace(
+        debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2),
+        $callback,
+    );
+
+    return $onceable ? Once::instance()->value($onceable) : call_user_func($callback);
 }
