@@ -118,7 +118,7 @@ class WeblebbyServiceProvider extends ServiceProvider
 
         Theme::get()->each(function (ThemeAbstract $theme) {
             $this->publishBuild(
-                sourcePath: theme()->path('public'),
+                sourcePath: $theme->path('public'),
                 targetPath: public_path(sprintf('%s/%s', themes_build_dir(), $theme->name()))
             );
         });
@@ -133,8 +133,12 @@ class WeblebbyServiceProvider extends ServiceProvider
 
     private function bootPreferences(): void
     {
-        foreach (theme()->preferences()->toArray() as $bag => $section) {
-            Preference::create(theme()->namespace(), $bag)->addMany($section['fields']);
+        if (is_null($theme = theme())) {
+            return;
+        }
+
+        foreach ($theme->preferences()->toArray() as $bag => $section) {
+            Preference::create($theme->namespace(), $bag)->addMany($section['fields']);
         }
     }
 
