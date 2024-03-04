@@ -36,12 +36,12 @@
   "require-dev": {
     "laravel/pint": "^1.13",
     "laravel/framework": "^10.34",
-    "weblebby/core": "dev-main"
+    "weblebby/core": "^1.0"
   },
   "repositories": [
     {
-      "type": "path",
-      "url": "../core"
+      "type": "vcs",
+      "url": "git@github.com:weblebby/core.git"
     }
   ],
   "extra": {

@@ -5,8 +5,12 @@
 @php($name = \Weblebby\Framework\Support\FormComponent::dottedToName($name))
 @php($dottedName = \Weblebby\Framework\Support\FormComponent::nameToDotted($name))
 
-@php($attributes = $attributes->merge(['value' => $default]))
 @php($default = filled(old()) ? old($dottedName, $default) : $default)
+@if ($default === true)
+    @php($default = '1')
+@endif
+
+@php($attributes = $attributes->merge(['value' => $default]))
 @php($checked = \Weblebby\Framework\Support\FormComponent::selected($dottedName, $default, $attributes))
 
 @if ($useHiddenInput)

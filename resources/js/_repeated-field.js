@@ -473,10 +473,25 @@ const RepeatedField = {
     },
 
     reorderRows: rowsEl => {
+        rowsEl
+            .closest('form')
+            .querySelectorAll('input[data-reordered-field-input]')
+            .forEach(input => input.remove())
+
         rowsEl.querySelectorAll('[name]').forEach(input => {
             const row = input.closest(RepeatedField.rowSelector)
             const formGroup = input.closest(RepeatedField.formGroupSelector)
             const itemContainer = rowsEl.closest(RepeatedField.itemSelector)
+
+            const isInsideDeactiveConditionalField = input
+                ?.closest(ConditionalField.containerSelector)
+                ?.classList?.contains('fd-hidden')
+
+            if (isInsideDeactiveConditionalField) {
+                return
+            }
+
+            const oldName = formGroup.dataset.formGroup
 
             const { dottedName } = RepeatedField.parseName(
                 row,
@@ -486,25 +501,17 @@ const RepeatedField = {
                 },
             )
 
-            const oldName = formGroup.dataset.formGroup
-            const newName = dottedName
-
-            if (oldName === newName) {
-                // Remove hiddenInputEl if early created and name is not changed
-                const hiddenInputEl = itemContainer.querySelector(
-                    `input[name="_reordered_fields[${oldName}]"]`,
-                )
-                hiddenInputEl?.remove()
+            if (oldName === dottedName) {
                 return
             }
 
-            // Create hiddenInputEl if not created yet
             const hiddenInputEl = document.createElement('input')
             hiddenInputEl.setAttribute('type', 'hidden')
             hiddenInputEl.setAttribute('name', `_reordered_fields[${oldName}]`)
-            hiddenInputEl.setAttribute('value', newName)
+            hiddenInputEl.setAttribute('data-reordered-field-input', '1')
+            hiddenInputEl.setAttribute('value', dottedName)
 
-            itemContainer.appendChild(hiddenInputEl)
+            itemContainer.closest('form').appendChild(hiddenInputEl)
         })
     },
 
@@ -582,10 +589,7 @@ const RepeatedField = {
                 const computedConditions = conditions.map(condition => {
                     const { id } = RepeatedField.parseName(row, condition.key)
 
-                    return {
-                        ...condition,
-                        key: id,
-                    }
+                    return { ...condition, key: id }
                 })
 
                 conditionalFieldContainer.dataset.conditionalFieldItem =

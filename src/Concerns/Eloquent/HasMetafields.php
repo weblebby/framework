@@ -255,6 +255,8 @@ trait HasMetafields
             }
         }
 
+        info(['Deleted', $deleted]);
+
         return $deleted;
     }
 
@@ -309,8 +311,9 @@ trait HasMetafields
             }
 
             DB::commit();
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             DB::rollBack();
+            throw $e;
         }
     }
 
@@ -350,8 +353,9 @@ trait HasMetafields
             }
 
             DB::commit();
-        } catch (\Exception) {
+        } catch (\Exception $e) {
             DB::rollBack();
+            throw $e;
         }
     }
 

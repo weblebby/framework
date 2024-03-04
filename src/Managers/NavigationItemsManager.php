@@ -88,12 +88,17 @@ class NavigationItemsManager
             })
             ->toArray();
 
+        // TODO: Find a more effective way to do this.
         if ($item->smart_view_all) {
-            $smartItems[] = [
-                'title' => __('View all'),
-                'url' => '#hop',
-                'open_in_new_tab' => $item->open_in_new_tab,
-            ];
+            if ($postable = PostModels::find($item->smart_type)) {
+                if ($primaryTaxonomy = ($postable::getTaxonomies()[0] ?? null)) {
+                    $smartItems[] = [
+                        'title' => __('View all'),
+                        'url' => $primaryTaxonomy->url(),
+                        'open_in_new_tab' => $item->open_in_new_tab,
+                    ];
+                }
+            }
         }
 
         return [

@@ -3,12 +3,16 @@
 namespace Weblebby\Framework\Items;
 
 use ArrayAccess;
+use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Str;
 use JsonSerializable;
 use Weblebby\Framework\Concerns\HasArray;
+use Weblebby\Framework\Contracts\Eloquent\PostInterface;
+use Weblebby\Framework\Facades\PostModels;
 
-class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
+class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable, UrlRoutable
 {
     use HasArray;
 
@@ -59,6 +63,13 @@ class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
         return $this;
     }
 
+    public function postable(): PostInterface
+    {
+        $postableName = explode('_', $this->name(), 2);
+
+        return PostModels::find($postableName[0]);
+    }
+
     public function name(): string
     {
         return $this->name;
@@ -94,14 +105,57 @@ class TaxonomyItem implements Arrayable, ArrayAccess, Jsonable, JsonSerializable
         return $this->abilities()[$ability] ?? null;
     }
 
+    public function slug(): string
+    {
+        return preference(
+            rawKey: sprintf('slugs->%s', $this->name()),
+            default: Str::slug($this->pluralName())
+        );
+    }
+
+    public function url(): string
+    {
+        return route('content', $this->slug());
+    }
+
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
+            'name' => $this->name(),
             'singular_name' => $this->singularName(),
             'plural_name' => $this->pluralName(),
+            'postable' => $this->postable(),
+            'slug' => $this->slug(),
+            'url' => $this->url(),
             'abilities' => $this->abilities(),
             'field_sections' => $this->fieldSections?->toArray(),
         ];
+    }
+
+    public function __get(string $name)
+    {
+        return $this->toArray()[$name] ?? throw new \ErrorException(
+            sprintf('Undefined property: %s::$%s', static::class, $name)
+        );
+    }
+
+    public function getRouteKey(): string
+    {
+        return $this->slug();
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'content';
+    }
+
+    public function resolveRouteBinding($value, $field = null)
+    {
+        dd($value, $field);
+    }
+
+    public function resolveChildRouteBinding($childType, $value, $field)
+    {
+        dd($value, $field);
     }
 }

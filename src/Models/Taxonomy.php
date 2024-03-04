@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Weblebby\Framework\Concerns\Eloquent\HasMetafields;
 use Weblebby\Framework\Facades\PostModels;
+use Weblebby\Framework\Items\TaxonomyItem;
 
 class Taxonomy extends Model
 {
@@ -57,8 +58,24 @@ class Taxonomy extends Model
         );
     }
 
-    public function scopeTaxonomy(Builder $query, string $taxonomy): Builder
+    public function scopeTaxonomy(Builder $query, TaxonomyItem|string|array $taxonomy): Builder
     {
+        if ($taxonomy instanceof TaxonomyItem) {
+            $taxonomy = $taxonomy->name();
+        }
+
+        if (is_array($taxonomy)) {
+            $taxonomies = [];
+
+            foreach ($taxonomy as $item) {
+                $taxonomies[] = $item instanceof TaxonomyItem
+                    ? $item->name()
+                    : $item;
+            }
+
+            return $query->whereIn('taxonomy', $taxonomies);
+        }
+
         return $query->where('taxonomy', $taxonomy);
     }
 
@@ -68,7 +85,7 @@ class Taxonomy extends Model
             return $query->where('id', false);
         }
 
-        return $query->whereHas('term', fn (Builder $query) => $query->where('slug', $term));
+        return $query->whereHas('term', fn (Builder $query) => $query->whereTranslation('slug', $term));
     }
 
     public function scopeParent(Builder $query, string $parent): Builder
@@ -89,5 +106,10 @@ class Taxonomy extends Model
     protected function item(): Attribute
     {
         return Attribute::get(fn () => PostModels::taxonomy($this->taxonomy));
+    }
+
+    protected function url(): Attribute
+    {
+        return Attribute::get(fn () => route('content', "{$this->item->slug()}/{$this->term->slug}"));
     }
 }

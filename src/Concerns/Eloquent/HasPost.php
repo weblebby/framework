@@ -29,9 +29,9 @@ trait HasPost
         return $builder;
     }
 
-    public function url(): Attribute
+    protected function url(): Attribute
     {
-        return Attribute::get(fn () => route('posts.show', $this->slug));
+        return Attribute::get(fn () => route('content', $this->slug));
     }
 
     public function register(): void
@@ -65,7 +65,7 @@ trait HasPost
                     ->translatable()
                     ->label(__('URL'))
                     ->attributes([
-                        'prefix' => route('posts.show', '').'/',
+                        'prefix' => route('content', '').'/',
                     ])
                     ->rules(['nullable', 'string', 'max:191']),
 

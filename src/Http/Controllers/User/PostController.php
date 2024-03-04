@@ -171,14 +171,13 @@ class PostController extends Controller
 
         unset($validated['fields']['slug']);
 
+        $dottedMetafields = $postFieldService->dottedMetafieldValues($post, $validated);
+
         /**
          * This order is important for metafields to be updated correctly.
          */
         $post->deleteMetafields(startsWith: $validated['_deleted_fields'] ?? []);
-        $post->setMetafieldWithSchema(
-            $postFieldService->dottedMetafieldValues($post, $validated),
-            locale: $locale,
-        );
+        $post->setMetafieldWithSchema($dottedMetafields, locale: $locale);
         $post->reorderMetafields($validated['_reordered_fields'] ?? []);
         $post->resetMetafieldKeys();
 

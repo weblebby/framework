@@ -2,6 +2,7 @@
 
 namespace Weblebby\Framework\Managers;
 
+use Illuminate\Support\Collection;
 use Weblebby\Framework\Contracts\Eloquent\PostInterface;
 use Weblebby\Framework\Exceptions\InvalidTaxonomyNameException;
 use Weblebby\Framework\Exceptions\PostTypeAlreadyRegisteredException;
@@ -68,14 +69,13 @@ class PostModelsManager
     }
 
     /**
-     * @return array<string, TaxonomyItem>
+     * @return Collection<int, TaxonomyItem>
      */
-    public function taxonomies(): array
+    public function taxonomies(): Collection
     {
         return collect($this->models)
             ->map(fn ($model) => $model::getTaxonomies())
-            ->flatten()
-            ->all();
+            ->flatten();
     }
 
     public function taxonomy(?string $taxonomy): ?TaxonomyItem

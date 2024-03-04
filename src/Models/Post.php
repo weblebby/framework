@@ -102,6 +102,11 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
 
         if ($isTranslatableField) {
             $firstBindingKey = head(array_keys(request()->route()->bindingFields()));
+
+            if ($firstBindingKey === false) {
+                $firstBindingKey = head(array_keys(request()->route()->parameters()));
+            }
+
             $route = $this->translatedRoute($post, $value, $column, $firstBindingKey);
 
             abort_if($route, redirect()->to($route));

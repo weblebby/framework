@@ -60,13 +60,15 @@ trait HasTaxonomies
         );
     }
 
-    public function scopeTaxedBy(Builder $query, string $taxonomy, string|array $terms): Builder
+    public function scopeTaxedBy(Builder $query, string|array $taxonomy, string|array|null $terms = null): Builder
     {
-        if (is_string($terms) && str_contains($terms, ',')) {
-            $terms = explode(',', $terms);
-        }
+        if (! is_null($terms)) {
+            if (is_string($terms) && str_contains($terms, ',')) {
+                $terms = explode(',', $terms);
+            }
 
-        $terms = Arr::wrap($terms);
+            $terms = Arr::wrap($terms);
+        }
 
         return $query->whereHas('taxonomies', fn (Builder $builder) => $builder
             ->taxonomy($taxonomy)
