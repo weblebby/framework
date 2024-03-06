@@ -2,8 +2,10 @@
 
 namespace Weblebby\Framework\Concerns\Eloquent;
 
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Str;
 use Weblebby\Framework\Facades\NavigationLinkable;
 use Weblebby\Framework\Facades\SmartMenu;
 use Weblebby\Framework\Items\Field\FieldItem;
@@ -11,10 +13,16 @@ use Weblebby\Framework\Items\FieldSectionsItem;
 use Weblebby\Framework\Items\NavigationLinkableItem;
 use Weblebby\Framework\Items\SmartMenuItem;
 use Weblebby\Framework\Items\TaxonomyItem;
+use Weblebby\Framework\Support\HtmlSanitizer;
 
 trait HasPost
 {
     use HasTaxonomies;
+
+    public function scopeTyped(Builder $query, string $type): Builder
+    {
+        return $query->where('type', $type);
+    }
 
     public function scopeSearch(Builder $builder, array $filters = []): Builder
     {
@@ -32,6 +40,11 @@ trait HasPost
     protected function url(): Attribute
     {
         return Attribute::get(fn () => route('content', $this->slug));
+    }
+
+    protected function sanitizedHtmlContent(): Attribute
+    {
+        return Attribute::get(fn () => app(HtmlSanitizer::class)->sanitizeToHtml($this->content));
     }
 
     public function register(): void
@@ -168,5 +181,30 @@ trait HasPost
     public static function doesSupportTemplates(): bool
     {
         return true;
+    }
+
+    public function makeSeo(): void
+    {
+        seo()->title($this->getMetafieldValue('seo_title') ?? $this->title);
+        seo()->description($this->getMetafieldValue('seo_description') ?? Str::limit(strip_tags($this->content), 150));
+
+        if ($this->hasMedia('featured')) {
+            seo()->image($this->getFirstMediaUrl('featured', 'md'));
+        }
+    }
+
+    public function toView(array $data = []): ?View
+    {
+        $prefix = Str::plural(static::getModelName());
+        $template = $this->template ?: 'default';
+
+        try {
+            return theme()->view("{$prefix}.{$template}", [
+                'post' => $this,
+                ...$data,
+            ]);
+        } catch (\InvalidArgumentException) {
+            return null;
+        }
     }
 }

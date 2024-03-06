@@ -5,11 +5,9 @@ namespace Weblebby\Framework\Models;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use GeneaLabs\LaravelModelCaching\Traits\Cachable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Str;
 use Spatie\Image\Exceptions\InvalidManipulation;
 use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia;
@@ -26,7 +24,6 @@ use Weblebby\Framework\Enums\PostStatusEnum;
 use Weblebby\Framework\Items\Field\FieldItem;
 use Weblebby\Framework\Items\FieldSectionsItem;
 use Weblebby\Framework\Items\TaxonomyItem;
-use Weblebby\Framework\Support\HtmlSanitizer;
 
 class Post extends Model implements HasMedia, PostInterface, TranslatableContract
 {
@@ -188,25 +185,5 @@ class Post extends Model implements HasMedia, PostInterface, TranslatableContrac
     public function parent(): BelongsTo
     {
         return $this->belongsTo(static::class);
-    }
-
-    public function scopeTyped(Builder $query, string $type): Builder
-    {
-        return $query->where('type', $type);
-    }
-
-    protected function sanitizedHtmlContent(): Attribute
-    {
-        return Attribute::get(fn () => app(HtmlSanitizer::class)->sanitizeToHtml($this->content));
-    }
-
-    public function makeSeo(): void
-    {
-        seo()->title($this->getMetafieldValue('seo_title') ?? $this->title);
-        seo()->description($this->getMetafieldValue('seo_description') ?? Str::limit(strip_tags($this->content), 150));
-
-        if ($this->hasMedia('featured')) {
-            seo()->image($this->getFirstMediaUrl('featured', 'md'));
-        }
     }
 }
