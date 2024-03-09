@@ -1,4 +1,4 @@
-<img src="https://gist.github.com/assets/18721207/d3e2226b-c745-467b-9d13-1cc43a2a0211">
+<img width="1440" alt="weblebby-panel" src="https://github.com/weblebby/framework/assets/18721207/59aae33a-d472-4b85-8feb-bbd7a0738950">
 
 # Important Notes
 
