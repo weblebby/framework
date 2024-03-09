@@ -15,19 +15,33 @@ class PreferenceToConfig
      */
     public function handle(Request $request, Closure $next): Response
     {
-        config([
-            'app.name' => $siteName = preference('general->site_name'),
-            'app.url' => preference('general->site_url'),
-            'seo.app.name' => $siteName,
+        $siteName = preference('general->site_name');
+        $appUrl = preference('general->site_url');
 
-            'mail.mailers.smtp.host' => preference('email->host'),
-            'mail.mailers.smtp.port' => preference('email->port'),
-            'mail.mailers.smtp.username' => preference('email->username'),
-            'mail.mailers.smtp.password' => preference('email->password'),
-            'mail.mailers.smtp.encryption' => preference('email->encryption'),
-            'mail.from.name' => preference('email->from_name'),
-            'mail.from.address' => preference('email->from_address'),
-        ]);
+        if ($siteName) {
+            config([
+                'app.name' => $siteName,
+                'seo.app.name' => $siteName,
+            ]);
+        }
+
+        if ($appUrl) {
+            config([
+                'app.url' => $appUrl,
+            ]);
+        }
+
+        if (preference('email->host')) {
+            config([
+                'mail.mailers.smtp.host' => preference('email->host'),
+                'mail.mailers.smtp.port' => preference('email->port'),
+                'mail.mailers.smtp.username' => preference('email->username'),
+                'mail.mailers.smtp.password' => preference('email->password'),
+                'mail.mailers.smtp.encryption' => preference('email->encryption'),
+                'mail.from.name' => preference('email->from_name'),
+                'mail.from.address' => preference('email->from_address'),
+            ]);
+        }
 
         return $next($request);
     }

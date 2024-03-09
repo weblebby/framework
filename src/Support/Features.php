@@ -64,4 +64,9 @@ class Features
     {
         return 'registration';
     }
+
+    public static function setup(): string
+    {
+        return 'setup';
+    }
 }

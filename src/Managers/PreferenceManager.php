@@ -16,9 +16,9 @@ use Weblebby\Framework\Services\MetafieldService;
 
 class PreferenceManager
 {
-    protected string $currentNamespace;
+    protected ?string $currentNamespace = null;
 
-    protected string $currentBag;
+    protected ?string $currentBag = null;
 
     protected array $namespaces = [];
 

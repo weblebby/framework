@@ -4,12 +4,13 @@ namespace Weblebby\Framework\Items;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Arr;
+use Weblebby\Framework\Facades\Panel;
 use Weblebby\Framework\Hooks\MenuHook;
 use Weblebby\Framework\Hooks\PermissionHook;
 use Weblebby\Framework\Hooks\PreferenceBagHook;
 use Weblebby\Framework\Http\Middleware\CanUserAccessPanel;
 use Weblebby\Framework\Http\Middleware\EnsureSiteIsSetup;
-use Weblebby\Framework\Http\Middleware\Panel;
+use Weblebby\Framework\Http\Middleware\Panel as PanelMiddleware;
 use Weblebby\Framework\Http\Middleware\PreferenceToConfig;
 use Weblebby\Framework\Support\Features;
 
@@ -158,12 +159,14 @@ class PanelItem
     public function middlewareForPanel(string|array|null $middleware = null): self|array|null
     {
         if (is_null($middleware)) {
+            $supportsSetup = $this === Panel::getMainPanel() && $this->supports(Features::setup());
+
             return array_values(array_unique([
                 'web',
                 'auth',
                 ...Arr::wrap($this->middlewareForPanel),
-                EnsureSiteIsSetup::class,
-                Panel::class,
+                ...$supportsSetup ? [EnsureSiteIsSetup::class] : [],
+                PanelMiddleware::class,
                 CanUserAccessPanel::class,
                 PreferenceToConfig::class,
             ]));
@@ -180,7 +183,7 @@ class PanelItem
             return array_values(array_unique([
                 'web',
                 ...Arr::wrap($this->middlewareForFortify),
-                Panel::class,
+                PanelMiddleware::class,
                 PreferenceToConfig::class,
             ]));
         }

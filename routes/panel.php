@@ -24,12 +24,14 @@ if ($panel->supports(Features::navigations())) {
         ->except(['create', 'edit']);
 }
 
-if ($panel === Panel::getExtensionPanel()) {
-    /**
-     * Setup
-     */
-    Route::get('setup', [User\SetupController::class, 'index'])->name('setup.index');
-    Route::put('setup', [User\SetupController::class, 'update'])->name('setup.update');
+if ($panel === Panel::getMainPanel()) {
+    if ($panel->supports(Features::setup())) {
+        /**
+         * Setup
+         */
+        Route::get('setup', [User\SetupController::class, 'index'])->name('setup.index');
+        Route::put('setup', [User\SetupController::class, 'update'])->name('setup.update');
+    }
 
     /**
      * Extensions

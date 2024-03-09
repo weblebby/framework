@@ -95,7 +95,7 @@ abstract class Extension implements Arrayable, ArrayAccess, Jsonable, JsonSerial
 
     public function registerPanelRoute(string $route): void
     {
-        $panel = Panel::getExtensionPanel();
+        $panel = Panel::getMainPanel();
         $path = $this->path(sprintf('routes/%s.php', $route));
 
         Route::middleware($panel->middlewareForPanel())

@@ -27,7 +27,9 @@
             size="full"
             :href="panel()->route('login')"
     >@lang('Return to the login screen')</x-weblebby::button>
-    <a href="{{ route('home') }}" class="fd-block fd-text-zinc-600 fd-text-center">
-        {{ preference('general->site_name') }}
-    </a>
+    @if (Route::has('home') && $siteName = preference('general->site_name'))
+        <a href="{{ route('home') }}" class="fd-block fd-text-zinc-600 fd-text-center">
+            {{ $siteName }}
+        </a>
+    @endif
 </x-weblebby::layouts.auth>

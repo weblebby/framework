@@ -33,7 +33,7 @@ class Panel
         Paginator::defaultView('weblebby::vendor.pagination.tailwind');
         Paginator::defaultSimpleView('weblebby::vendor.pagination.simple-tailwind');
 
-        if (PanelManager::getExtensionPanel() === panel()) {
+        if (PanelManager::getMainPanel() === panel()) {
             $preference = panel()->preference(theme()->namespace());
 
             foreach (theme()->preferences()->toArray() as $bag => $section) {

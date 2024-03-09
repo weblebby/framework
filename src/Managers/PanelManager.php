@@ -16,7 +16,7 @@ class PanelManager
 
     private ?string $currentPanel = null;
 
-    private ?string $extensionPanel = null;
+    private ?string $mainPanel = null;
 
     public function version(): string
     {
@@ -63,21 +63,21 @@ class PanelManager
         $this->currentPanel = $panel;
     }
 
-    public function getExtensionPanel(): ?PanelItem
+    public function getMainPanel(): ?PanelItem
     {
-        return $this->find($this->extensionPanel);
+        return $this->find($this->mainPanel);
     }
 
     /**
      * @throws PanelNotFoundException
      */
-    public function setExtensionPanel(string $panel): void
+    public function setMainPanel(string $panel): void
     {
         if (! $this->find($panel)) {
             throw new PanelNotFoundException($panel);
         }
 
-        $this->extensionPanel = $panel;
+        $this->mainPanel = $panel;
     }
 
     public function usePanelRoutes(): void

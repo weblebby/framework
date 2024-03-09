@@ -31,7 +31,9 @@
                 size="full"
         >@lang('Create new account')</x-weblebby::button>
     @endif
-    <a href="{{ route('home') }}" class="fd-block fd-text-zinc-600 fd-text-center">
-        {{ preference('general->site_name') }}
-    </a>
+    @if (Route::has('home') && $siteName = preference('general->site_name'))
+        <a href="{{ route('home') }}" class="fd-block fd-text-zinc-600 fd-text-center">
+            {{ $siteName }}
+        </a>
+    @endif
 </x-weblebby::layouts.auth>
