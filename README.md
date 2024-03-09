@@ -261,7 +261,6 @@ class AppServiceProvider extends ServiceProvider
             FieldItem::text('site_url')
                 ->label(__('Site URL'))
                 ->rules(['required', 'string', 'url', 'max:191']),
-
             
             /**
              * For select field items, the `in` rule is automatically created using the options available.
@@ -281,6 +280,10 @@ class AppServiceProvider extends ServiceProvider
     }
 }
 ```
+
+## Authentication Middleware
+
+To avoid exceptions, update `route('login')` to `route('admin::login')` in `app/Http/Middleware/Authenticate.php`.
 
 Finally, we run `weblebby:install` to configure the database and create the admin user.
 
