@@ -1,7 +1,7 @@
 <div class="fd-px-4 fd-pb-4">
     <div class="fd-text-zinc-400">
         <div class="fd-text-sm">v{{ Panel::version() }}</div>
-        @if (($domain = domain()) && $domain->account?->reseller)
+        @if (function_exists('domain') && ($domain = domain()) && $domain->account?->reseller)
             @if ($domain->account->reseller->url)
                 <a href="{{ $domain->account->reseller->url }}" target="_blank" class="fd-text-xs">
                     @lang('powered by :reseller', ['reseller' => $domain->account->reseller->name])

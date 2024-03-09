@@ -2,6 +2,7 @@
 
 namespace Weblebby\Framework\Managers;
 
+use Composer\InstalledVersions;
 use Exception;
 use Illuminate\Support\Facades\Route;
 use Weblebby\Framework\Exceptions\PanelNotFoundException;
@@ -20,7 +21,10 @@ class PanelManager
 
     public function version(): string
     {
-        return '1.0.0';
+        $version = explode('.', InstalledVersions::getVersion('weblebby/framework'));
+        unset($version[3]);
+
+        return implode('.', $version);
     }
 
     /**

@@ -7,6 +7,7 @@ use Weblebby\Framework\Contracts\Eloquent\PostInterface;
 use Weblebby\Framework\Exceptions\InvalidTaxonomyNameException;
 use Weblebby\Framework\Exceptions\PostTypeAlreadyRegisteredException;
 use Weblebby\Framework\Items\TaxonomyItem;
+use Weblebby\Framework\Support\Features;
 
 class PostModelsManager
 {
@@ -51,7 +52,11 @@ class PostModelsManager
      */
     public function get(): array
     {
-        return $this->models;
+        if (panel()->supports(Features::posts())) {
+            return $this->models;
+        }
+
+        return [];
     }
 
     public function find(string $key): ?PostInterface

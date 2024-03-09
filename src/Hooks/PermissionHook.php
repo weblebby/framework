@@ -122,11 +122,17 @@ class PermissionHook
                 ->withPermissions(
                     $this->panel
                         ->preference()
+                        /**
+                         * We should ignore authorization to get all preferences.
+                         */
                         ->ignoreAuthorization()
                         ->toDotted(all: true)
                         ->toArray()
                 );
 
+            /**
+             * Enable authorization again.
+             */
             $this->panel->preference()->withAuthorization();
         }
 
