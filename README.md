@@ -281,9 +281,11 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-## Authentication Middleware
+## Authentication middleware
 
 To avoid exceptions, update `route('login')` to `route('admin::login')` in `app/Http/Middleware/Authenticate.php`.
+
+## Installation command
 
 Finally, we run `weblebby:install` to configure the database and create the admin user.
 
